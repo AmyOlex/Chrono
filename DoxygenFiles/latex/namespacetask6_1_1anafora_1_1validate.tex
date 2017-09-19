@@ -1,0 +1,134 @@
+\hypertarget{namespacetask6_1_1anafora_1_1validate}{}\section{task6.\+anafora.\+validate Namespace Reference}
+\label{namespacetask6_1_1anafora_1_1validate}\index{task6.\+anafora.\+validate@{task6.\+anafora.\+validate}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1validate_1_1Schema}{Schema}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1validate_1_1SchemaProperty}{Schema\+Property}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1validate_1_1SchemaValidationError}{Schema\+Validation\+Error}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacetask6_1_1anafora_1_1validate_af439ad4edc7f6930cf79fa95906eb7f4}{log\+\_\+schema\+\_\+errors} (schema, anafora\+\_\+dir, xml\+\_\+name\+\_\+regex)
+\item 
+def \hyperlink{namespacetask6_1_1anafora_1_1validate_abf9a7c1cb1abdaf8fb17e797e3830d96}{find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans} (data)
+\item 
+def \hyperlink{namespacetask6_1_1anafora_1_1validate_a253ca8a713a1aff34c1e68229c3c37ad}{log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans} (anafora\+\_\+dir, xml\+\_\+name\+\_\+regex)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a3447f48e5c837ed3695fa4abfa572f89}{parser} = argparse.\+Argument\+Parser(description=)
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a8bcdfdbd01b512444eff296eb5dc4464}{metavar}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a581b517a43ab518ae5556c92558990b1}{required}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a49e67e8d62f79664ce9f8baea63a79e9}{help}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a418c197eeae0f84a35603719539583c5}{True}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_aea9aa849ad2df98babc9d15c4978e4b5}{dest}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_ac32fdb0d185a99ef24096abfa84ad579}{default}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a13d39cf763ec9641e08cc89c1054e8ce}{action}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_abd8d766dc685fb0b059c93aff4237e2f}{args} = parser.\+parse\+\_\+args()
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1validate_a8073347f0a63de70012259797a4d5a2d}{format}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_abf9a7c1cb1abdaf8fb17e797e3830d96}\label{namespacetask6_1_1anafora_1_1validate_abf9a7c1cb1abdaf8fb17e797e3830d96}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans@{find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans}}
+\index{find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans@{find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans()}{find\_entities\_with\_identical\_spans()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+validate.\+find\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans (\begin{DoxyParamCaption}\item[{}]{data }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}:param AnaforaData data: the Anafora data to be searched
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a253ca8a713a1aff34c1e68229c3c37ad}\label{namespacetask6_1_1anafora_1_1validate_a253ca8a713a1aff34c1e68229c3c37ad}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans@{log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans}}
+\index{log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans@{log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans()}{log\_entities\_with\_identical\_spans()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+validate.\+log\+\_\+entities\+\_\+with\+\_\+identical\+\_\+spans (\begin{DoxyParamCaption}\item[{}]{anafora\+\_\+dir,  }\item[{}]{xml\+\_\+name\+\_\+regex }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}:param AnaforaData data: the Anafora data to be searched
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_af439ad4edc7f6930cf79fa95906eb7f4}\label{namespacetask6_1_1anafora_1_1validate_af439ad4edc7f6930cf79fa95906eb7f4}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!log\+\_\+schema\+\_\+errors@{log\+\_\+schema\+\_\+errors}}
+\index{log\+\_\+schema\+\_\+errors@{log\+\_\+schema\+\_\+errors}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{log\+\_\+schema\+\_\+errors()}{log\_schema\_errors()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+validate.\+log\+\_\+schema\+\_\+errors (\begin{DoxyParamCaption}\item[{}]{schema,  }\item[{}]{anafora\+\_\+dir,  }\item[{}]{xml\+\_\+name\+\_\+regex }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}:param Schema schema: the schema to validate against
+:param string anafora_dir: the Anafora directory containing directories to validate
+\end{DoxyVerb}
+ 
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a13d39cf763ec9641e08cc89c1054e8ce}\label{namespacetask6_1_1anafora_1_1validate_a13d39cf763ec9641e08cc89c1054e8ce}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!action@{action}}
+\index{action@{action}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{action}{action}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+action}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_abd8d766dc685fb0b059c93aff4237e2f}\label{namespacetask6_1_1anafora_1_1validate_abd8d766dc685fb0b059c93aff4237e2f}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!args@{args}}
+\index{args@{args}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{args}{args}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+args = parser.\+parse\+\_\+args()}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_ac32fdb0d185a99ef24096abfa84ad579}\label{namespacetask6_1_1anafora_1_1validate_ac32fdb0d185a99ef24096abfa84ad579}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!default@{default}}
+\index{default@{default}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{default}{default}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+default}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_aea9aa849ad2df98babc9d15c4978e4b5}\label{namespacetask6_1_1anafora_1_1validate_aea9aa849ad2df98babc9d15c4978e4b5}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!dest@{dest}}
+\index{dest@{dest}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{dest}{dest}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+dest}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a8073347f0a63de70012259797a4d5a2d}\label{namespacetask6_1_1anafora_1_1validate_a8073347f0a63de70012259797a4d5a2d}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!format@{format}}
+\index{format@{format}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{format}{format}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+format}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a49e67e8d62f79664ce9f8baea63a79e9}\label{namespacetask6_1_1anafora_1_1validate_a49e67e8d62f79664ce9f8baea63a79e9}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!help@{help}}
+\index{help@{help}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{help}{help}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+help}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a8bcdfdbd01b512444eff296eb5dc4464}\label{namespacetask6_1_1anafora_1_1validate_a8bcdfdbd01b512444eff296eb5dc4464}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!metavar@{metavar}}
+\index{metavar@{metavar}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{metavar}{metavar}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+metavar}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a3447f48e5c837ed3695fa4abfa572f89}\label{namespacetask6_1_1anafora_1_1validate_a3447f48e5c837ed3695fa4abfa572f89}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!parser@{parser}}
+\index{parser@{parser}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{parser}{parser}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+parser = argparse.\+Argument\+Parser(description=)}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a581b517a43ab518ae5556c92558990b1}\label{namespacetask6_1_1anafora_1_1validate_a581b517a43ab518ae5556c92558990b1}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!required@{required}}
+\index{required@{required}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{required}{required}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+required}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1validate_a418c197eeae0f84a35603719539583c5}\label{namespacetask6_1_1anafora_1_1validate_a418c197eeae0f84a35603719539583c5}} 
+\index{task6\+::anafora\+::validate@{task6\+::anafora\+::validate}!True@{True}}
+\index{True@{True}!task6\+::anafora\+::validate@{task6\+::anafora\+::validate}}
+\subsubsection{\texorpdfstring{True}{True}}
+{\footnotesize\ttfamily task6.\+anafora.\+validate.\+True}
+

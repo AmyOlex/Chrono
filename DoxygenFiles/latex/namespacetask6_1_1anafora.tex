@@ -1,0 +1,84 @@
+\hypertarget{namespacetask6_1_1anafora}{}\section{task6.\+anafora Namespace Reference}
+\label{namespacetask6_1_1anafora}\index{task6.\+anafora@{task6.\+anafora}}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1cleanup}{cleanup}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1copy__text}{copy\+\_\+text}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1evaluate}{evaluate}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1heuristic}{heuristic}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1regex}{regex}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1select}{select}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1test}{test}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1timeml}{timeml}
+\item 
+ \hyperlink{namespacetask6_1_1anafora_1_1validate}{validate}
+\end{DoxyCompactItemize}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1__XMLWrapper}{\+\_\+\+X\+M\+L\+Wrapper}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1AnaforaAnnotation}{Anafora\+Annotation}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1AnaforaAnnotations}{Anafora\+Annotations}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1AnaforaData}{Anafora\+Data}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1AnaforaEntity}{Anafora\+Entity}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1AnaforaProperties}{Anafora\+Properties}
+\item 
+class \hyperlink{classtask6_1_1anafora_1_1AnaforaRelation}{Anafora\+Relation}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacetask6_1_1anafora_abb97d4716ebadd198d5a7cc1bf2d7bd0}{walk} (root, xml\+\_\+name\+\_\+regex=\char`\"{}\mbox{[}.\mbox{]}xml\$\char`\"{})
+\item 
+def \hyperlink{namespacetask6_1_1anafora_a2115457e498409fccbdf7ce1fd64027a}{walk\+\_\+anafora\+\_\+to\+\_\+anafora} (root, xml\+\_\+name\+\_\+regex=\char`\"{}\mbox{[}.\mbox{]}xml\$\char`\"{})
+\item 
+def \hyperlink{namespacetask6_1_1anafora_a805515fcdc638cb1994074e6450e498d}{walk\+\_\+flat\+\_\+to\+\_\+anafora} (text\+\_\+dir)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacetask6_1_1anafora_abb97d4716ebadd198d5a7cc1bf2d7bd0}\label{namespacetask6_1_1anafora_abb97d4716ebadd198d5a7cc1bf2d7bd0}} 
+\index{task6\+::anafora@{task6\+::anafora}!walk@{walk}}
+\index{walk@{walk}!task6\+::anafora@{task6\+::anafora}}
+\subsubsection{\texorpdfstring{walk()}{walk()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+walk (\begin{DoxyParamCaption}\item[{}]{root,  }\item[{}]{xml\+\_\+name\+\_\+regex = {\ttfamily \char`\"{}\mbox{[}.\mbox{]}xml\$\char`\"{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}:param root: directory containing Anafora XML directories
+:param str xml_name_regex: regular expression identifying .xml files to include
+:return iterator: an iterator of (sub-dir, text-file-name, xml-file-names) where sub-dir is the path to the Anafora
+    directory relative to root, text-file-name is the name of the Anafora text file, and xml-file-names is a list
+    of names of Anafora XML files
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacetask6_1_1anafora_a2115457e498409fccbdf7ce1fd64027a}\label{namespacetask6_1_1anafora_a2115457e498409fccbdf7ce1fd64027a}} 
+\index{task6\+::anafora@{task6\+::anafora}!walk\+\_\+anafora\+\_\+to\+\_\+anafora@{walk\+\_\+anafora\+\_\+to\+\_\+anafora}}
+\index{walk\+\_\+anafora\+\_\+to\+\_\+anafora@{walk\+\_\+anafora\+\_\+to\+\_\+anafora}!task6\+::anafora@{task6\+::anafora}}
+\subsubsection{\texorpdfstring{walk\+\_\+anafora\+\_\+to\+\_\+anafora()}{walk\_anafora\_to\_anafora()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+walk\+\_\+anafora\+\_\+to\+\_\+anafora (\begin{DoxyParamCaption}\item[{}]{root,  }\item[{}]{xml\+\_\+name\+\_\+regex = {\ttfamily \char`\"{}\mbox{[}.\mbox{]}xml\$\char`\"{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}:param str root: path of the root directory to be walked
+:param str xml_name_regex: regular expression identifying .xml files to include
+:return iterator: an iterator of (input-sub-dir, output-sub-dir, text-file-name, xml-file-names)
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacetask6_1_1anafora_a805515fcdc638cb1994074e6450e498d}\label{namespacetask6_1_1anafora_a805515fcdc638cb1994074e6450e498d}} 
+\index{task6\+::anafora@{task6\+::anafora}!walk\+\_\+flat\+\_\+to\+\_\+anafora@{walk\+\_\+flat\+\_\+to\+\_\+anafora}}
+\index{walk\+\_\+flat\+\_\+to\+\_\+anafora@{walk\+\_\+flat\+\_\+to\+\_\+anafora}!task6\+::anafora@{task6\+::anafora}}
+\subsubsection{\texorpdfstring{walk\+\_\+flat\+\_\+to\+\_\+anafora()}{walk\_flat\_to\_anafora()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+walk\+\_\+flat\+\_\+to\+\_\+anafora (\begin{DoxyParamCaption}\item[{}]{text\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}:param str text_dir: path to a directory of text files (and no subdirectories)
+:return iterator: an iterator of (input-sub-dir, output-sub-dir, text-file-name, xml-file-names)
+\end{DoxyVerb}
+ 

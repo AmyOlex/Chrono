@@ -1,0 +1,193 @@
+\hypertarget{namespacetask6_1_1anafora_1_1heuristic}{}\section{task6.\+anafora.\+heuristic Namespace Reference}
+\label{namespacetask6_1_1anafora_1_1heuristic}\index{task6.\+anafora.\+heuristic@{task6.\+anafora.\+heuristic}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacetask6_1_1anafora_1_1heuristic_aeec05eea339675bfa584e8486470ba83}{add\+\_\+relations\+\_\+to\+\_\+closest} (data, source\+\_\+type, target\+\_\+type, relation\+\_\+type, relation\+\_\+source\+\_\+property\+\_\+name, relation\+\_\+target\+\_\+property\+\_\+name, relation\+\_\+other\+\_\+properties=None)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_ab794a5fa386cc3899781c999e0ffbe84}{parser} = argparse.\+Argument\+Parser()
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a76bb4fa398b2b4a09ea1f3dbef15578c}{metavar}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a819a73aa552153c122f935c2425dda6e}{required}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_abbb4ab68f434fd71ac56434f6c9e0605}{True}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a381bbe904bbbaafb97b55654fd27db40}{dest}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_aa0cf3a813f96b0ad54c3c83901af00b0}{help}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a562208344b3e47eaf9d95b2f434ef92e}{default}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a0cfc2949aae6bff43d53d7424d710429}{subparsers} = parser.\+add\+\_\+subparsers()
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a594ea27232287e567728da800879b6a6}{relations\+\_\+to\+\_\+closest\+\_\+parser}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a552edc6c57827ad01dc415fac018076d}{func} = kwargs.\+pop(\char`\"{}func\char`\"{})
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a60e1cbafff2f75d68c99e49b02981064}{nargs}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a34e63c2ca24090832c4322efea4cd132}{type}
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a8b29eeab29d66e234877fd19b8402e2e}{args} = parser.\+parse\+\_\+args()
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a394d316fdd41d938d2bb8f12d922706e}{kwargs} = vars(\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a8b29eeab29d66e234877fd19b8402e2e}{args})
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a035f8d80cd7a366418422da543c3e2ff}{input\+\_\+dir} = kwargs.\+pop(\textquotesingle{}input\+\_\+dir\textquotesingle{})
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a3804b5556c59fb441e428d47e4e77915}{xml\+\_\+name\+\_\+regex} = kwargs.\+pop(\textquotesingle{}xml\+\_\+name\+\_\+regex\textquotesingle{})
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a646753c8af303cd188bd90f92621827c}{output\+\_\+dir} = kwargs.\+pop(\textquotesingle{}output\+\_\+dir\textquotesingle{})
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_ada6e7f32fd39001bf7703c8f138c876c}{input\+\_\+data} = \hyperlink{classtask6_1_1anafora_1_1AnaforaData_a56eaf8ae37770b37cf08c7ae12b07ca9}{anafora.\+Anafora\+Data.\+from\+\_\+file}(os.\+path.\+join(\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a035f8d80cd7a366418422da543c3e2ff}{input\+\_\+dir}, sub\+\_\+dir, xml\+\_\+file\+\_\+name))
+\item 
+\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a80bc05906d57d97767a9d0b0c5443041}{output\+\_\+sub\+\_\+dir} = os.\+path.\+join(\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a646753c8af303cd188bd90f92621827c}{output\+\_\+dir}, sub\+\_\+dir)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_aeec05eea339675bfa584e8486470ba83}\label{namespacetask6_1_1anafora_1_1heuristic_aeec05eea339675bfa584e8486470ba83}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!add\+\_\+relations\+\_\+to\+\_\+closest@{add\+\_\+relations\+\_\+to\+\_\+closest}}
+\index{add\+\_\+relations\+\_\+to\+\_\+closest@{add\+\_\+relations\+\_\+to\+\_\+closest}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{add\+\_\+relations\+\_\+to\+\_\+closest()}{add\_relations\_to\_closest()}}
+{\footnotesize\ttfamily def task6.\+anafora.\+heuristic.\+add\+\_\+relations\+\_\+to\+\_\+closest (\begin{DoxyParamCaption}\item[{}]{data,  }\item[{}]{source\+\_\+type,  }\item[{}]{target\+\_\+type,  }\item[{}]{relation\+\_\+type,  }\item[{}]{relation\+\_\+source\+\_\+property\+\_\+name,  }\item[{}]{relation\+\_\+target\+\_\+property\+\_\+name,  }\item[{}]{relation\+\_\+other\+\_\+properties = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Adds a relation from each `source_type` annotation to the closest `target_type` annotation.
+
+:param anafora.AnaforaData data: the Anafora data where relations should be added
+:param str source_type: the type of the source annotations
+:param str target_type: the type of the target annotations
+:param str relation_type: the type of relation annotation to be created
+:param str relation_source_property_name: the name of the property on the relation annotation that should point to
+    the source annotation
+:param str relation_target_property_name: the name of the property on the relation annotation that should point to
+    the target annotation
+:param list relation_other_properties: a list of (name, value) tuples of other properties that should be set on the
+    relation annotations that are created
+\end{DoxyVerb}
+ 
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a8b29eeab29d66e234877fd19b8402e2e}\label{namespacetask6_1_1anafora_1_1heuristic_a8b29eeab29d66e234877fd19b8402e2e}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!args@{args}}
+\index{args@{args}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{args}{args}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+args = parser.\+parse\+\_\+args()}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a562208344b3e47eaf9d95b2f434ef92e}\label{namespacetask6_1_1anafora_1_1heuristic_a562208344b3e47eaf9d95b2f434ef92e}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!default@{default}}
+\index{default@{default}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{default}{default}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+default}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a381bbe904bbbaafb97b55654fd27db40}\label{namespacetask6_1_1anafora_1_1heuristic_a381bbe904bbbaafb97b55654fd27db40}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!dest@{dest}}
+\index{dest@{dest}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{dest}{dest}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+dest}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a552edc6c57827ad01dc415fac018076d}\label{namespacetask6_1_1anafora_1_1heuristic_a552edc6c57827ad01dc415fac018076d}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!func@{func}}
+\index{func@{func}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{func}{func}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+func = kwargs.\+pop(\char`\"{}func\char`\"{})}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_aa0cf3a813f96b0ad54c3c83901af00b0}\label{namespacetask6_1_1anafora_1_1heuristic_aa0cf3a813f96b0ad54c3c83901af00b0}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!help@{help}}
+\index{help@{help}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{help}{help}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+help}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_ada6e7f32fd39001bf7703c8f138c876c}\label{namespacetask6_1_1anafora_1_1heuristic_ada6e7f32fd39001bf7703c8f138c876c}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!input\+\_\+data@{input\+\_\+data}}
+\index{input\+\_\+data@{input\+\_\+data}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{input\+\_\+data}{input\_data}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+input\+\_\+data = \hyperlink{classtask6_1_1anafora_1_1AnaforaData_a56eaf8ae37770b37cf08c7ae12b07ca9}{anafora.\+Anafora\+Data.\+from\+\_\+file}(os.\+path.\+join(\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a035f8d80cd7a366418422da543c3e2ff}{input\+\_\+dir}, sub\+\_\+dir, xml\+\_\+file\+\_\+name))}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a035f8d80cd7a366418422da543c3e2ff}\label{namespacetask6_1_1anafora_1_1heuristic_a035f8d80cd7a366418422da543c3e2ff}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!input\+\_\+dir@{input\+\_\+dir}}
+\index{input\+\_\+dir@{input\+\_\+dir}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{input\+\_\+dir}{input\_dir}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+input\+\_\+dir = kwargs.\+pop(\textquotesingle{}input\+\_\+dir\textquotesingle{})}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a394d316fdd41d938d2bb8f12d922706e}\label{namespacetask6_1_1anafora_1_1heuristic_a394d316fdd41d938d2bb8f12d922706e}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!kwargs@{kwargs}}
+\index{kwargs@{kwargs}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{kwargs}{kwargs}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+kwargs = vars(\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a8b29eeab29d66e234877fd19b8402e2e}{args})}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a76bb4fa398b2b4a09ea1f3dbef15578c}\label{namespacetask6_1_1anafora_1_1heuristic_a76bb4fa398b2b4a09ea1f3dbef15578c}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!metavar@{metavar}}
+\index{metavar@{metavar}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{metavar}{metavar}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+metavar}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a60e1cbafff2f75d68c99e49b02981064}\label{namespacetask6_1_1anafora_1_1heuristic_a60e1cbafff2f75d68c99e49b02981064}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!nargs@{nargs}}
+\index{nargs@{nargs}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{nargs}{nargs}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+nargs}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a646753c8af303cd188bd90f92621827c}\label{namespacetask6_1_1anafora_1_1heuristic_a646753c8af303cd188bd90f92621827c}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!output\+\_\+dir@{output\+\_\+dir}}
+\index{output\+\_\+dir@{output\+\_\+dir}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{output\+\_\+dir}{output\_dir}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+output\+\_\+dir = kwargs.\+pop(\textquotesingle{}output\+\_\+dir\textquotesingle{})}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a80bc05906d57d97767a9d0b0c5443041}\label{namespacetask6_1_1anafora_1_1heuristic_a80bc05906d57d97767a9d0b0c5443041}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!output\+\_\+sub\+\_\+dir@{output\+\_\+sub\+\_\+dir}}
+\index{output\+\_\+sub\+\_\+dir@{output\+\_\+sub\+\_\+dir}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{output\+\_\+sub\+\_\+dir}{output\_sub\_dir}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+output\+\_\+sub\+\_\+dir = os.\+path.\+join(\hyperlink{namespacetask6_1_1anafora_1_1heuristic_a646753c8af303cd188bd90f92621827c}{output\+\_\+dir}, sub\+\_\+dir)}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_ab794a5fa386cc3899781c999e0ffbe84}\label{namespacetask6_1_1anafora_1_1heuristic_ab794a5fa386cc3899781c999e0ffbe84}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!parser@{parser}}
+\index{parser@{parser}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{parser}{parser}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+parser = argparse.\+Argument\+Parser()}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a594ea27232287e567728da800879b6a6}\label{namespacetask6_1_1anafora_1_1heuristic_a594ea27232287e567728da800879b6a6}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!relations\+\_\+to\+\_\+closest\+\_\+parser@{relations\+\_\+to\+\_\+closest\+\_\+parser}}
+\index{relations\+\_\+to\+\_\+closest\+\_\+parser@{relations\+\_\+to\+\_\+closest\+\_\+parser}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{relations\+\_\+to\+\_\+closest\+\_\+parser}{relations\_to\_closest\_parser}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+relations\+\_\+to\+\_\+closest\+\_\+parser}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+1 =  subparsers.add\_parser(\textcolor{stringliteral}{'closest'}, help=\textcolor{stringliteral}{"Link each source annotation to the target "} +
+2                                                                         \textcolor{stringliteral}{"annotation with the closest
+       character offsets"})
+\end{DoxyCode}
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a819a73aa552153c122f935c2425dda6e}\label{namespacetask6_1_1anafora_1_1heuristic_a819a73aa552153c122f935c2425dda6e}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!required@{required}}
+\index{required@{required}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{required}{required}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+required}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a0cfc2949aae6bff43d53d7424d710429}\label{namespacetask6_1_1anafora_1_1heuristic_a0cfc2949aae6bff43d53d7424d710429}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!subparsers@{subparsers}}
+\index{subparsers@{subparsers}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{subparsers}{subparsers}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+subparsers = parser.\+add\+\_\+subparsers()}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_abbb4ab68f434fd71ac56434f6c9e0605}\label{namespacetask6_1_1anafora_1_1heuristic_abbb4ab68f434fd71ac56434f6c9e0605}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!True@{True}}
+\index{True@{True}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{True}{True}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+True}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a34e63c2ca24090832c4322efea4cd132}\label{namespacetask6_1_1anafora_1_1heuristic_a34e63c2ca24090832c4322efea4cd132}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!type@{type}}
+\index{type@{type}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{type}{type}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+type}
+
+\mbox{\Hypertarget{namespacetask6_1_1anafora_1_1heuristic_a3804b5556c59fb441e428d47e4e77915}\label{namespacetask6_1_1anafora_1_1heuristic_a3804b5556c59fb441e428d47e4e77915}} 
+\index{task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}!xml\+\_\+name\+\_\+regex@{xml\+\_\+name\+\_\+regex}}
+\index{xml\+\_\+name\+\_\+regex@{xml\+\_\+name\+\_\+regex}!task6\+::anafora\+::heuristic@{task6\+::anafora\+::heuristic}}
+\subsubsection{\texorpdfstring{xml\+\_\+name\+\_\+regex}{xml\_name\_regex}}
+{\footnotesize\ttfamily task6.\+anafora.\+heuristic.\+xml\+\_\+name\+\_\+regex = kwargs.\+pop(\textquotesingle{}xml\+\_\+name\+\_\+regex\textquotesingle{})}
+
