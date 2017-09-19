@@ -27,7 +27,7 @@ class t6Entity :
 	def parentType(self) :
 		return self.parent_type
 
-	def printXML(self)
+	def printXML(self) :
 		print "<XML>"
 
 class t6IntervalEntity(t6Entity) :
