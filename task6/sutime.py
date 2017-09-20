@@ -73,7 +73,7 @@ class SUTime(object):
 
     def _create_classpath(self):
         sutime_jar = os.path.join(*[
-            imp.find_module('sutime')[1],
+            imp.find_module('task6')[1], #changed this line to look in the proper directory
             'jars',
             'stanford-corenlp-sutime-python-1.0.0.jar'
         ])
