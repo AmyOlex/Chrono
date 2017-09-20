@@ -1,0 +1,225 @@
+\begin{theindex}
+
+  \item {\+\_\+\+\_\+init\+\_\+\+\_\+}
+    \subitem {task6\+::sutime\+::\+S\+U\+Time}, \hyperpage{20}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{22}
+    \subitem {task6\+::t6\+Entities\+::t6\+Interval\+Entity}, 
+		\hyperpage{25}
+    \subitem {task6\+::t6\+Entities\+::t6\+Operator}, \hyperpage{26}
+    \subitem {task6\+::t6\+Entities\+::t6\+Period\+Entity}, 
+		\hyperpage{27}
+    \subitem {task6\+::t6\+Entities\+::t6\+Repeating\+Interval\+Entity}, 
+		\hyperpage{28}
+  \item {\+\_\+\+\_\+str\+\_\+\+\_\+}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{22}
+
+  \indexspace
+
+  \item {author}
+    \subitem {setup}, \hyperpage{11}
+  \item {author\+\_\+email}
+    \subitem {setup}, \hyperpage{11}
+
+  \indexspace
+
+  \item {call\+S\+U\+Time\+Parse}
+    \subitem {task6\+::sutime\+\_\+wrapper}, \hyperpage{15}
+  \item {classifiers}
+    \subitem {setup}, \hyperpage{12}
+
+  \indexspace
+
+  \item {description}
+    \subitem {setup}, \hyperpage{12}
+
+  \indexspace
+
+  \item {encoding}
+    \subitem {setup}, \hyperpage{12}
+  \item {end\+\_\+span}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{24}
+
+  \indexspace
+
+  \item {get\+ID}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{22}
+  \item {get\+Whitespace\+Spans}
+    \subitem {task6\+::utils}, \hyperpage{15}
+
+  \indexspace
+
+  \item {here}
+    \subitem {setup}, \hyperpage{12}
+
+  \indexspace
+
+  \item {id}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{24}
+  \item {include\+\_\+range}
+    \subitem {task6\+::sutime\+::\+S\+U\+Time}, \hyperpage{20}
+  \item {install\+\_\+requires}
+    \subitem {setup}, \hyperpage{12}
+
+  \indexspace
+
+  \item {jars}
+    \subitem {task6\+::sutime\+::\+S\+U\+Time}, \hyperpage{21}
+
+  \indexspace
+
+  \item {keywords}
+    \subitem {setup}, \hyperpage{12}
+
+  \indexspace
+
+  \item {license}
+    \subitem {setup}, \hyperpage{13}
+  \item {long\+\_\+description}
+    \subitem {setup}, \hyperpage{13}
+
+  \indexspace
+
+  \item {mark\+\_\+time\+\_\+ranges}
+    \subitem {task6\+::sutime\+::\+S\+U\+Time}, \hyperpage{21}
+
+  \indexspace
+
+  \item {name}
+    \subitem {setup}, \hyperpage{13}
+
+  \indexspace
+
+  \item {packages}
+    \subitem {setup}, \hyperpage{13}
+  \item {parent\+\_\+type}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{24}
+  \item {parent\+Type}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{23}
+  \item {parse}
+    \subitem {task6\+::sutime\+::\+S\+U\+Time}, \hyperpage{20}
+  \item {period\+Type}
+    \subitem {task6\+::t6\+Entities\+::t6\+Period\+Entity}, 
+		\hyperpage{27}
+  \item {print\+String}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{23}
+  \item {print\+X\+ML}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{23}
+
+  \indexspace
+
+  \item {r}
+    \subitem {test}, \hyperpage{16}
+    \subitem {test\+::test}, \hyperpage{17}
+  \item {R\+E\+A\+D\+M\+E.\+md}, \hyperpage{29}
+
+  \indexspace
+
+  \item {s}
+    \subitem {test}, \hyperpage{16}
+    \subitem {test\+::test}, \hyperpage{17}
+  \item {set\+ID}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{23}
+  \item {setup}, \hyperpage{11}
+    \subitem {author}, \hyperpage{11}
+    \subitem {author\+\_\+email}, \hyperpage{11}
+    \subitem {classifiers}, \hyperpage{12}
+    \subitem {description}, \hyperpage{12}
+    \subitem {encoding}, \hyperpage{12}
+    \subitem {here}, \hyperpage{12}
+    \subitem {install\+\_\+requires}, \hyperpage{12}
+    \subitem {keywords}, \hyperpage{12}
+    \subitem {license}, \hyperpage{13}
+    \subitem {long\+\_\+description}, \hyperpage{13}
+    \subitem {name}, \hyperpage{13}
+    \subitem {packages}, \hyperpage{13}
+    \subitem {url}, \hyperpage{13}
+    \subitem {version}, \hyperpage{13}
+  \item {setup.\+py}, \hyperpage{29}
+  \item {start\+\_\+span}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{24}
+
+  \indexspace
+
+  \item {t}
+    \subitem {test}, \hyperpage{16}
+    \subitem {test\+::test}, \hyperpage{17}
+  \item {t6\+Entity}, \hyperpage{14}
+  \item {task6}, \hyperpage{14}
+  \item {task6.\+sutime}, \hyperpage{14}
+  \item {task6.\+sutime.\+S\+U\+Time}, \hyperpage{19}
+  \item {task6.\+sutime\+\_\+wrapper}, \hyperpage{14}
+  \item {task6.\+t6\+Entities}, \hyperpage{15}
+  \item {task6.\+t6\+Entities.\+t6\+Entity}, \hyperpage{21}
+  \item {task6.\+t6\+Entities.\+t6\+Interval\+Entity}, \hyperpage{25}
+  \item {task6.\+t6\+Entities.\+t6\+Operator}, \hyperpage{26}
+  \item {task6.\+t6\+Entities.\+t6\+Period\+Entity}, \hyperpage{27}
+  \item {task6.\+t6\+Entities.\+t6\+Repeating\+Interval\+Entity}, 
+		\hyperpage{28}
+  \item {task6.\+utils}, \hyperpage{15}
+  \item {task6/\+\_\+\+\_\+init\+\_\+\+\_\+.\+py}, \hyperpage{29}
+  \item {task6/sutime.\+py}, \hyperpage{30}
+  \item {task6/sutime\+\_\+wrapper.\+py}, \hyperpage{30}
+  \item {task6/t6\+Entities.\+py}, \hyperpage{30}
+  \item {task6/utils.\+py}, \hyperpage{31}
+  \item {task6\+::sutime\+::\+S\+U\+Time}
+    \subitem {\+\_\+\+\_\+init\+\_\+\+\_\+}, \hyperpage{20}
+    \subitem {include\+\_\+range}, \hyperpage{20}
+    \subitem {jars}, \hyperpage{21}
+    \subitem {mark\+\_\+time\+\_\+ranges}, \hyperpage{21}
+    \subitem {parse}, \hyperpage{20}
+  \item {task6\+::sutime\+\_\+wrapper}
+    \subitem {call\+S\+U\+Time\+Parse}, \hyperpage{15}
+  \item {task6\+::t6\+Entities\+::t6\+Entity}
+    \subitem {\+\_\+\+\_\+init\+\_\+\+\_\+}, \hyperpage{22}
+    \subitem {\+\_\+\+\_\+str\+\_\+\+\_\+}, \hyperpage{22}
+    \subitem {end\+\_\+span}, \hyperpage{24}
+    \subitem {get\+ID}, \hyperpage{22}
+    \subitem {id}, \hyperpage{24}
+    \subitem {parent\+\_\+type}, \hyperpage{24}
+    \subitem {parent\+Type}, \hyperpage{23}
+    \subitem {print\+String}, \hyperpage{23}
+    \subitem {print\+X\+ML}, \hyperpage{23}
+    \subitem {set\+ID}, \hyperpage{23}
+    \subitem {start\+\_\+span}, \hyperpage{24}
+    \subitem {type}, \hyperpage{24}
+  \item {task6\+::t6\+Entities\+::t6\+Interval\+Entity}
+    \subitem {\+\_\+\+\_\+init\+\_\+\+\_\+}, \hyperpage{25}
+    \subitem {value}, \hyperpage{25}
+  \item {task6\+::t6\+Entities\+::t6\+Operator}
+    \subitem {\+\_\+\+\_\+init\+\_\+\+\_\+}, \hyperpage{26}
+  \item {task6\+::t6\+Entities\+::t6\+Period\+Entity}
+    \subitem {\+\_\+\+\_\+init\+\_\+\+\_\+}, \hyperpage{27}
+    \subitem {period\+Type}, \hyperpage{27}
+  \item {task6\+::t6\+Entities\+::t6\+Repeating\+Interval\+Entity}
+    \subitem {\+\_\+\+\_\+init\+\_\+\+\_\+}, \hyperpage{28}
+  \item {task6\+::utils}
+    \subitem {get\+Whitespace\+Spans}, \hyperpage{15}
+  \item {test}, \hyperpage{16}
+    \subitem {r}, \hyperpage{16}
+    \subitem {s}, \hyperpage{16}
+    \subitem {t}, \hyperpage{16}
+  \item {test.\+py}, \hyperpage{31}
+  \item {test.\+test}, \hyperpage{17}
+  \item {test/\+\_\+\+\_\+init\+\_\+\+\_\+.\+py}, \hyperpage{30}
+  \item {test/test.\+py}, \hyperpage{31}
+  \item {test\+::test}
+    \subitem {r}, \hyperpage{17}
+    \subitem {s}, \hyperpage{17}
+    \subitem {t}, \hyperpage{17}
+  \item {type}
+    \subitem {task6\+::t6\+Entities\+::t6\+Entity}, \hyperpage{24}
+
+  \indexspace
+
+  \item {url}
+    \subitem {setup}, \hyperpage{13}
+
+  \indexspace
+
+  \item {value}
+    \subitem {task6\+::t6\+Entities\+::t6\+Interval\+Entity}, 
+		\hyperpage{25}
+  \item {version}
+    \subitem {setup}, \hyperpage{13}
+
+\end{theindex}

@@ -1,0 +1,222 @@
+\hypertarget{classtask6_1_1t6Entities_1_1T6Entity}{}\section{task6.\+t6\+Entities.\+T6\+Entity Class Reference}
+\label{classtask6_1_1t6Entities_1_1T6Entity}\index{task6.\+t6\+Entities.\+T6\+Entity@{task6.\+t6\+Entities.\+T6\+Entity}}
+
+
+Class definitions for all Time\+Norm entities -\/ Intervals, Periods, Repeating-\/\+Intervals, and Operators.  
+
+
+Inheritance diagram for task6.\+t6\+Entities.\+T6\+Entity\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.233871cm]{classtask6_1_1t6Entities_1_1T6Entity}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_acd7eefda53a955f5a2e2c33331377845}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self, \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_afeeced8134bb3ebe0cfecc64d0ab46a4}{id}, \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a52779e9af8864dc98e8b02fc5b9b041a}{start\+\_\+span}, \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_aeb402200b156cd9562c5111dfe777b98}{end\+\_\+span}, \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_ae4299399be3ecbd68dbb9ae988bff5a8}{type}, \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a2e9b6dc858c26a85ad740ad7e1bfda67}{parent\+\_\+type})
+\begin{DoxyCompactList}\small\item\em The constructor. \end{DoxyCompactList}\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a4fe9419bea53693abf1b475c88ed5494}{\+\_\+\+\_\+str\+\_\+\+\_\+} (self)
+\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_aae04121cb00d82840741e39cf0da5706}{set\+\_\+id} (self, \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_afeeced8134bb3ebe0cfecc64d0ab46a4}{id})
+\begin{DoxyCompactList}\small\item\em Sets the entity\textquotesingle{}s ID. \end{DoxyCompactList}\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a3b9262436cde3e62dd006ab4986961e1}{get\+\_\+id} (self)
+\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a5b8a42787e0d8c65840e69c56eaeeb93}{print\+\_\+string} (self)
+\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a3463d49b756cd711c82ce3505521e3ff}{parent\+\_\+type} (self)
+\item 
+def \hyperlink{classtask6_1_1t6Entities_1_1T6Entity_aadc043ccba4eb2b57cb9ac365dc7dbfe}{print\+\_\+xml} (self)
+\begin{DoxyCompactList}\small\item\em Prints the X\+ML representation of the entity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classtask6_1_1t6Entities_1_1T6Entity_afeeced8134bb3ebe0cfecc64d0ab46a4}{id}
+\item 
+\hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a52779e9af8864dc98e8b02fc5b9b041a}{start\+\_\+span}
+\item 
+\hyperlink{classtask6_1_1t6Entities_1_1T6Entity_aeb402200b156cd9562c5111dfe777b98}{end\+\_\+span}
+\item 
+\hyperlink{classtask6_1_1t6Entities_1_1T6Entity_ae4299399be3ecbd68dbb9ae988bff5a8}{type}
+\item 
+\hyperlink{classtask6_1_1t6Entities_1_1T6Entity_a2e9b6dc858c26a85ad740ad7e1bfda67}{parent\+\_\+type}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class definitions for all Time\+Norm entities -\/ Intervals, Periods, Repeating-\/\+Intervals, and Operators. 
+
+
+
+ Date\+: 9/19/17
+
+Programmer Name\+: Luke Maffey Superclass for all entities
+
+Entities are either an Interval, Period, Repeating-\/\+Interval, or Operator 
+\begin{DoxyParams}{Parameters}
+{\em id} & Assigned ID number \\
+\hline
+{\em start\+\_\+span} & The location of the first character \\
+\hline
+{\em end\+\_\+span} & The location of the last character \\
+\hline
+{\em type} & The type of the entity \\
+\hline
+{\em parent\+\_\+type} & The parent type of the entity \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 16 of file t6\+Entities.\+py.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_acd7eefda53a955f5a2e2c33331377845}\label{classtask6_1_1t6Entities_1_1T6Entity_acd7eefda53a955f5a2e2c33331377845}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{id,  }\item[{}]{start\+\_\+span,  }\item[{}]{end\+\_\+span,  }\item[{}]{type,  }\item[{}]{parent\+\_\+type }\end{DoxyParamCaption})}
+
+
+
+The constructor. 
+
+
+
+Definition at line 19 of file t6\+Entities.\+py.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_a4fe9419bea53693abf1b475c88ed5494}\label{classtask6_1_1t6Entities_1_1T6Entity_a4fe9419bea53693abf1b475c88ed5494}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!\+\_\+\+\_\+str\+\_\+\+\_\+@{\+\_\+\+\_\+str\+\_\+\+\_\+}}
+\index{\+\_\+\+\_\+str\+\_\+\+\_\+@{\+\_\+\+\_\+str\+\_\+\+\_\+}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{\+\_\+\+\_\+str\+\_\+\+\_\+()}{\_\_str\_\_()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+\_\+\+\_\+str\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Definition at line 26 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_a3b9262436cde3e62dd006ab4986961e1}\label{classtask6_1_1t6Entities_1_1T6Entity_a3b9262436cde3e62dd006ab4986961e1}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!get\+\_\+id@{get\+\_\+id}}
+\index{get\+\_\+id@{get\+\_\+id}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{get\+\_\+id()}{get\_id()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+get\+\_\+id (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Definition at line 34 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_a3463d49b756cd711c82ce3505521e3ff}\label{classtask6_1_1t6Entities_1_1T6Entity_a3463d49b756cd711c82ce3505521e3ff}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!parent\+\_\+type@{parent\+\_\+type}}
+\index{parent\+\_\+type@{parent\+\_\+type}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{parent\+\_\+type()}{parent\_type()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+parent\+\_\+type (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Definition at line 40 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_a5b8a42787e0d8c65840e69c56eaeeb93}\label{classtask6_1_1t6Entities_1_1T6Entity_a5b8a42787e0d8c65840e69c56eaeeb93}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!print\+\_\+string@{print\+\_\+string}}
+\index{print\+\_\+string@{print\+\_\+string}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{print\+\_\+string()}{print\_string()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+print\+\_\+string (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Definition at line 37 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_aadc043ccba4eb2b57cb9ac365dc7dbfe}\label{classtask6_1_1t6Entities_1_1T6Entity_aadc043ccba4eb2b57cb9ac365dc7dbfe}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!print\+\_\+xml@{print\+\_\+xml}}
+\index{print\+\_\+xml@{print\+\_\+xml}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{print\+\_\+xml()}{print\_xml()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+print\+\_\+xml (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Prints the X\+ML representation of the entity. 
+
+Subclasses need to close the properties and entities tags 
+
+Definition at line 46 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_aae04121cb00d82840741e39cf0da5706}\label{classtask6_1_1t6Entities_1_1T6Entity_aae04121cb00d82840741e39cf0da5706}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!set\+\_\+id@{set\+\_\+id}}
+\index{set\+\_\+id@{set\+\_\+id}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{set\+\_\+id()}{set\_id()}}
+{\footnotesize\ttfamily def task6.\+t6\+Entities.\+T6\+Entity.\+set\+\_\+id (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{id }\end{DoxyParamCaption})}
+
+
+
+Sets the entity\textquotesingle{}s ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & The ID to set it to \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 31 of file t6\+Entities.\+py.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_aeb402200b156cd9562c5111dfe777b98}\label{classtask6_1_1t6Entities_1_1T6Entity_aeb402200b156cd9562c5111dfe777b98}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!end\+\_\+span@{end\+\_\+span}}
+\index{end\+\_\+span@{end\+\_\+span}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{end\+\_\+span}{end\_span}}
+{\footnotesize\ttfamily task6.\+t6\+Entities.\+T6\+Entity.\+end\+\_\+span}
+
+
+
+Definition at line 22 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_afeeced8134bb3ebe0cfecc64d0ab46a4}\label{classtask6_1_1t6Entities_1_1T6Entity_afeeced8134bb3ebe0cfecc64d0ab46a4}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!id@{id}}
+\index{id@{id}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{id}{id}}
+{\footnotesize\ttfamily task6.\+t6\+Entities.\+T6\+Entity.\+id}
+
+
+
+Definition at line 20 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_a2e9b6dc858c26a85ad740ad7e1bfda67}\label{classtask6_1_1t6Entities_1_1T6Entity_a2e9b6dc858c26a85ad740ad7e1bfda67}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!parent\+\_\+type@{parent\+\_\+type}}
+\index{parent\+\_\+type@{parent\+\_\+type}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{parent\+\_\+type}{parent\_type}}
+{\footnotesize\ttfamily task6.\+t6\+Entities.\+T6\+Entity.\+parent\+\_\+type}
+
+
+
+Definition at line 24 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_a52779e9af8864dc98e8b02fc5b9b041a}\label{classtask6_1_1t6Entities_1_1T6Entity_a52779e9af8864dc98e8b02fc5b9b041a}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!start\+\_\+span@{start\+\_\+span}}
+\index{start\+\_\+span@{start\+\_\+span}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{start\+\_\+span}{start\_span}}
+{\footnotesize\ttfamily task6.\+t6\+Entities.\+T6\+Entity.\+start\+\_\+span}
+
+
+
+Definition at line 21 of file t6\+Entities.\+py.
+
+\mbox{\Hypertarget{classtask6_1_1t6Entities_1_1T6Entity_ae4299399be3ecbd68dbb9ae988bff5a8}\label{classtask6_1_1t6Entities_1_1T6Entity_ae4299399be3ecbd68dbb9ae988bff5a8}} 
+\index{task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}!type@{type}}
+\index{type@{type}!task6\+::t6\+Entities\+::\+T6\+Entity@{task6\+::t6\+Entities\+::\+T6\+Entity}}
+\subsubsection{\texorpdfstring{type}{type}}
+{\footnotesize\ttfamily task6.\+t6\+Entities.\+T6\+Entity.\+type}
+
+
+
+Definition at line 23 of file t6\+Entities.\+py.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+task6/\hyperlink{t6Entities_8py}{t6\+Entities.\+py}\end{DoxyCompactItemize}

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['setid',['setID',['../classtask6_1_1t6Entities_1_1t6Entity.html#a5387d85b2aa40e213b9962470207bd09',1,'task6::t6Entities::t6Entity']]]
+  ['set_5fid',['set_id',['../classtask6_1_1t6Entities_1_1T6Entity.html#aae04121cb00d82840741e39cf0da5706',1,'task6::t6Entities::T6Entity']]]
 ];

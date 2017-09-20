@@ -2,24 +2,24 @@
 \label{classtask6_1_1t6Entities_1_1t6Entity}\index{task6.\+t6\+Entities.\+t6\+Entity@{task6.\+t6\+Entities.\+t6\+Entity}}
 
 
-Programmer Name\+: Luke Maffey Date\+: 9/19/17 Module Purpose\+: Class definitions for all Time\+Norm entities -\/ Intervals, Periods, Repeating-\/\+Intervals, and Operators.  
+Class definitions for all Time\+Norm entities -\/ Intervals, Periods, Repeating-\/\+Intervals, and Operators.  
 
 
 Inheritance diagram for task6.\+t6\+Entities.\+t6\+Entity\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[height=1.138211cm]{classtask6_1_1t6Entities_1_1t6Entity}
+\includegraphics[height=5.918699cm]{classtask6_1_1t6Entities_1_1t6Entity}
 \end{center}
 \end{figure}
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_ac0bcf8dbefa28c8e1a77d891e368c9e1}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self, \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a96b2e7fb553c920ab2db6f6deb31e3b4}{id}, \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a8221c36d2995a24200cdfbd74cc9233c}{start\+\_\+span}, \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a597d42bb02fc9f42277098f0ce21917c}{end\+\_\+span}, \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_af0496eb852234bb168ab22d031c99ed3}{type}, \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a18ba365facb8cb062830abb11cf741f6}{parent\+\_\+type})
-\item 
+\begin{DoxyCompactList}\small\item\em The constructor. \end{DoxyCompactList}\item 
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a60cd3a7b64d13bbacb877267fa0151fe}{\+\_\+\+\_\+str\+\_\+\+\_\+} (self)
 \item 
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a5387d85b2aa40e213b9962470207bd09}{set\+ID} (self, \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a96b2e7fb553c920ab2db6f6deb31e3b4}{id})
-\item 
+\begin{DoxyCompactList}\small\item\em Sets the entity\textquotesingle{}s ID. \end{DoxyCompactList}\item 
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_aadb42e2b65a301043fb6162e4f14edd7}{get\+ID} (self)
 \item 
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_ae24a589eee8e89e5cc9d2116a05f574c}{print\+String} (self)
@@ -27,14 +27,14 @@ def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_ae24a589eee8e89e5cc9d2116a05
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_ad72f67fab17e07055b34d77834174f75}{parent\+Type} (self)
 \item 
 def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_acd1af6b899f68fec07c9749e5d0129fa}{print\+X\+ML} (self)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Prints the X\+ML representation of the entity. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a96b2e7fb553c920ab2db6f6deb31e3b4}{id}
 \item 
 \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a8221c36d2995a24200cdfbd74cc9233c}{start\+\_\+span}
-\item 
+\begin{DoxyCompactList}\small\item\em Where the entity starts in the text. \end{DoxyCompactList}\item 
 \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_a597d42bb02fc9f42277098f0ce21917c}{end\+\_\+span}
 \item 
 \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_af0496eb852234bb168ab22d031c99ed3}{type}
@@ -44,9 +44,30 @@ def \hyperlink{classtask6_1_1t6Entities_1_1t6Entity_acd1af6b899f68fec07c9749e5d0
 
 
 \subsection{Detailed Description}
-Programmer Name\+: Luke Maffey Date\+: 9/19/17 Module Purpose\+: Class definitions for all Time\+Norm entities -\/ Intervals, Periods, Repeating-\/\+Intervals, and Operators. 
+Class definitions for all Time\+Norm entities -\/ Intervals, Periods, Repeating-\/\+Intervals, and Operators. 
 
-Definition at line 7 of file t6\+Entities.\+py.
+
+
+ Date\+: 9/19/17
+
+Programmer Name\+: Luke Maffey Superclass for all entities
+
+Entities are either an Interval, Period, Repeating-\/\+Interval, or Operator 
+\begin{DoxyParams}{Parameters}
+{\em id} & Assigned ID number \\
+\hline
+{\em start\+\_\+span} & The location of the first character \\
+\hline
+{\em end\+\_\+span} & The location of the last character \\
+\hline
+{\em type} & The type of the entity \\
+\hline
+{\em parent\+\_\+type} & The parent type of the entity \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 16 of file t6\+Entities.\+py.
 
 
 
@@ -59,7 +80,11 @@ Definition at line 7 of file t6\+Entities.\+py.
 
 
 
-Definition at line 8 of file t6\+Entities.\+py.
+The constructor. 
+
+
+
+Definition at line 19 of file t6\+Entities.\+py.
 
 
 
@@ -72,7 +97,7 @@ Definition at line 8 of file t6\+Entities.\+py.
 
 
 
-Definition at line 15 of file t6\+Entities.\+py.
+Definition at line 29 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_aadb42e2b65a301043fb6162e4f14edd7}\label{classtask6_1_1t6Entities_1_1t6Entity_aadb42e2b65a301043fb6162e4f14edd7}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!get\+ID@{get\+ID}}
@@ -82,7 +107,7 @@ Definition at line 15 of file t6\+Entities.\+py.
 
 
 
-Definition at line 21 of file t6\+Entities.\+py.
+Definition at line 37 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_ad72f67fab17e07055b34d77834174f75}\label{classtask6_1_1t6Entities_1_1t6Entity_ad72f67fab17e07055b34d77834174f75}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!parent\+Type@{parent\+Type}}
@@ -92,7 +117,7 @@ Definition at line 21 of file t6\+Entities.\+py.
 
 
 
-Definition at line 27 of file t6\+Entities.\+py.
+Definition at line 43 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_ae24a589eee8e89e5cc9d2116a05f574c}\label{classtask6_1_1t6Entities_1_1t6Entity_ae24a589eee8e89e5cc9d2116a05f574c}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!print\+String@{print\+String}}
@@ -102,7 +127,7 @@ Definition at line 27 of file t6\+Entities.\+py.
 
 
 
-Definition at line 24 of file t6\+Entities.\+py.
+Definition at line 40 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_acd1af6b899f68fec07c9749e5d0129fa}\label{classtask6_1_1t6Entities_1_1t6Entity_acd1af6b899f68fec07c9749e5d0129fa}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!print\+X\+ML@{print\+X\+ML}}
@@ -112,7 +137,11 @@ Definition at line 24 of file t6\+Entities.\+py.
 
 
 
-Definition at line 30 of file t6\+Entities.\+py.
+Prints the X\+ML representation of the entity. 
+
+
+
+Definition at line 47 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_a5387d85b2aa40e213b9962470207bd09}\label{classtask6_1_1t6Entities_1_1t6Entity_a5387d85b2aa40e213b9962470207bd09}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!set\+ID@{set\+ID}}
@@ -122,7 +151,16 @@ Definition at line 30 of file t6\+Entities.\+py.
 
 
 
-Definition at line 18 of file t6\+Entities.\+py.
+Sets the entity\textquotesingle{}s ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & The ID to set it to \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 34 of file t6\+Entities.\+py.
 
 
 
@@ -135,7 +173,7 @@ Definition at line 18 of file t6\+Entities.\+py.
 
 
 
-Definition at line 11 of file t6\+Entities.\+py.
+Definition at line 25 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_a96b2e7fb553c920ab2db6f6deb31e3b4}\label{classtask6_1_1t6Entities_1_1t6Entity_a96b2e7fb553c920ab2db6f6deb31e3b4}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!id@{id}}
@@ -145,7 +183,7 @@ Definition at line 11 of file t6\+Entities.\+py.
 
 
 
-Definition at line 9 of file t6\+Entities.\+py.
+Definition at line 20 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_a18ba365facb8cb062830abb11cf741f6}\label{classtask6_1_1t6Entities_1_1t6Entity_a18ba365facb8cb062830abb11cf741f6}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!parent\+\_\+type@{parent\+\_\+type}}
@@ -155,7 +193,7 @@ Definition at line 9 of file t6\+Entities.\+py.
 
 
 
-Definition at line 13 of file t6\+Entities.\+py.
+Definition at line 27 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_a8221c36d2995a24200cdfbd74cc9233c}\label{classtask6_1_1t6Entities_1_1t6Entity_a8221c36d2995a24200cdfbd74cc9233c}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!start\+\_\+span@{start\+\_\+span}}
@@ -165,7 +203,11 @@ Definition at line 13 of file t6\+Entities.\+py.
 
 
 
-Definition at line 10 of file t6\+Entities.\+py.
+Where the entity starts in the text. 
+
+
+
+Definition at line 24 of file t6\+Entities.\+py.
 
 \mbox{\Hypertarget{classtask6_1_1t6Entities_1_1t6Entity_af0496eb852234bb168ab22d031c99ed3}\label{classtask6_1_1t6Entities_1_1t6Entity_af0496eb852234bb168ab22d031c99ed3}} 
 \index{task6\+::t6\+Entities\+::t6\+Entity@{task6\+::t6\+Entities\+::t6\+Entity}!type@{type}}
@@ -175,7 +217,7 @@ Definition at line 10 of file t6\+Entities.\+py.
 
 
 
-Definition at line 12 of file t6\+Entities.\+py.
+Definition at line 26 of file t6\+Entities.\+py.
 
 
 
