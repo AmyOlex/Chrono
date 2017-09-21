@@ -1,7 +1,7 @@
-var classtask6_1_1t6Entities_1_1T6AMPMOfDay =
+var classtask6_1_1t6Entities_1_1t6AMPMOfDay =
 [
-    [ "__init__", "classtask6_1_1t6Entities_1_1T6AMPMOfDay.html#a800af0268e3964a5d98d53316c1d6fd4", null ],
-    [ "ampm_type", "classtask6_1_1t6Entities_1_1T6AMPMOfDay.html#ad5d347e7a4819e052b39c4709d08038d", null ],
-    [ "modifier", "classtask6_1_1t6Entities_1_1T6AMPMOfDay.html#a775ca0b3161fef5d092cd5364bc4a954", null ],
-    [ "number", "classtask6_1_1t6Entities_1_1T6AMPMOfDay.html#a3d94781e4fb82b58d2adc8637bf515ac", null ]
+    [ "__init__", "classtask6_1_1t6Entities_1_1t6AMPMOfDay.html#a1c76a35724907be72e663d23e7028575", null ],
+    [ "ampmType", "classtask6_1_1t6Entities_1_1t6AMPMOfDay.html#adc829f7c35873d5af0cad12e8204b1fb", null ],
+    [ "modifier", "classtask6_1_1t6Entities_1_1t6AMPMOfDay.html#af7d283b12c4c96aa7e01782436dda882", null ],
+    [ "number", "classtask6_1_1t6Entities_1_1t6AMPMOfDay.html#a99678a4e401421ec921e417fd960f9e8", null ]
 ];
