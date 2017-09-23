@@ -15,21 +15,23 @@
 class refToken :
 
     ## The constructor
-    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None) :
+    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, t6list=None) :
         self.id = id
         self.text = text
         self.start_span = start_span
         self.end_span = end_span
         self.pos = pos
         self.temporal = temporal
+        self.t6list = t6list
         
     def __str__(self) :
         #return str(self.id) + " " + self.text
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
         pos_str = "" if self.pos is None else ("pos: " + self.pos)
         temp_str = "" if self.temporal is None else (" isTemp: " + str(self.temporal))
+        t6_str = "" if self.t6list is None else (" T6List: " + str(self.t6list))
         #return str(self.id) + " " + self.text
-        return str(self.id) + " " + self.text + span_str + pos_str  + temp_str
+        return str(self.id) + " " + self.text + span_str + pos_str  + temp_str + t6_str
         
     #### Methods to SET properties ###
     
@@ -59,6 +61,16 @@ class refToken :
     #  @param temp A boolean, 1 if it is a temporal token, 0 otherwise
     def setTemporal(self, temp) :
         self.temporal = temp
+
+    ## Adds to the entities list of T6 entities
+    #  @param t6id an integer of the t6 entities ID
+    def t6Append(self, t6id) :
+        if self.t6list is None :
+            self.t6list = []
+            self.t6list.append(t6id)
+        else :
+            self.t6list.append(t6id)
+
         
     #### Methods to GET properties ####
     
@@ -75,14 +87,16 @@ class refToken :
         return(self.start_span, self.end_span)
         
     ## Gets the entity's POS
-    def getPos(self, pos) :
+    def getPos(self) :
         return(self.pos)
         
     ## Gets the entity's temporal flag
-    def isTemporal(self, temp) :
+    def isTemporal(self) :
         return(self.temporal)
 
-
+    ## Gets the entity's t6list
+    def getT6list(self) :
+        return(self.t6list)
 
 ## Function to convert a list of tokens into a list of refToken objects
 # @author Amy Olex
