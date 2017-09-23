@@ -87,7 +87,7 @@ class sutimeEntity :
 # @param sut_json The SUTime parsed json string (required)
 # @param id_counter The number the ID counter should start at. Default is 0.
 # @output A list of sutimeEntity objects in the same order as the input json list.
-def getSutimeEntityList(sut_json, id_counter=0) :
+def import_SUTime(sut_json, id_counter=0) :
     su_list = []
     for j in sut_json:
         su_list.append(sutimeEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], sutype=j['type'], suvalue=j['value']))
