@@ -5,6 +5,7 @@
 # Programmer Name: Amy Olex
 
 ## Class to define a whitespace-parsed token from raw text.
+# @author Amy Olex
 # @param id Unique numerical ID
 # @param text The text of the token
 # @param start_span The location of the first character
@@ -84,6 +85,7 @@ class refToken :
 
 
 ## Function to convert a list of tokens into a list of refToken objects
+# @author Amy Olex
 # @param tok_list The list of tokens (required)
 # @param id_counter The number the ID counter should start at. Default is 0.
 # @param span A list of spans for each token in the tok_list. Must be the same length as tok_list. Assumes it is a one-to-one relationship in the same order as tok_list.
