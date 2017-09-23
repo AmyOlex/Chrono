@@ -6,9 +6,9 @@
 
 ###### Workflow ######
 ##
-## 1) get location of files to parse
-## 2) get location of output directory
-## 3) Initilize out T6Entity list
+## 1) get location of files to parse (DONE)
+## 2) get location of output directory/create output directories (DONE)
+## 3) Initilize the T6Entity list
 ## 4) Initilize the globally unique ID counter
 ## 5) For each FILE:
 ##      a) parse with stanford parser to get whitespace tokens and associated spans
@@ -22,7 +22,13 @@
 import sys
 import os
 import argparse
+from task6 import t6Entities
+from task6 import utils
+from task6 import sutimeEntity
+from task6 import referenceToken
+from task6 import sutime_wrapper
 
+debug=True
 # @description This is the driver method to run all of task6. 
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -36,6 +42,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
     parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
+    parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
     
@@ -43,18 +50,46 @@ if __name__ == "__main__":
     indirs = []
     infiles = []
     outfiles = []
+    outdirs = []
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
           indirs.append(os.path.join(root, name))
           infiles.append(os.path.join(root, name,name))
-          outfiles.append(name)
+          outfiles.append(os.path.join(args.o,name,name))
+          outdirs.append(os.path.join(args.o,name))
+          if not os.path.exists(os.path.join(args.o,name)):
+              os.makedirs(os.path.join(args.o,name))
     
-    ## Now create each output directory
-    ## Loop through outfiles and create a directory for each
-    ## Then walk the structure to get the full paths to each output file.
+    ## Init the T6Entity list
+    my_t6entities = []
+    my_t6IDcounter = 1
+    
+    ## Loop through each file and parse
+    for file in infiles :
+        ## parse out reference tokens
+        text, tokens, spans = utils.getWhitespaceTokens(file)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans)
+        if(debug) : 
+            print("REFERENCE TOKENS:\n")
+            for tok in my_refToks : print(tok)
+        
+        ## parse out SUTime entities
+        json_str = sutime_wrapper.callSUTimeParse(file, args.j)
+        suList = sutimeEntity.import_SUTime(sut_json=json_str)
+        if(debug) : 
+            print("SUTIME ENTITIES:\n")
+            for s in suList : print(s)
     
     
-    
+        ## Need functions to parse the SUTime data into T6 format with links!
+        ## I think we may need to create a class that is a T6List. We are going to 
+        ## need to pull out specific entities based on ID to link them to others if 
+        ## we are going to do multiple passes of the text.
+        
+        ########### Parse time data HERE ##############
+        
+        ##### Manually adding some T6 entities based on the wsj_0152 file #########
+        
     
     
     

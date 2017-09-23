@@ -23,5 +23,5 @@ def getWhitespaceTokens(file_path):
     tokenized_text = WhitespaceTokenizer().tokenize(text)
     return text, tokenized_text, spans
 
-#def getSubspan(tok)
-#    
+def manualT6AddEntities():
+    
