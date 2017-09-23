@@ -504,7 +504,7 @@ class T6AfterOperator(T6Operator) :
 # @param end_included {Included, Not-Included(default)}
 class T6BetweenOperator(T6Operator) :
 	def __init__(self, id, start_span, end_span, start_interval_type,
-	             start_interval=None, end_interval_type, end_interval=None,
+	             end_interval_type, start_interval=None, end_interval=None,
 	             start_included="Not-Included", end_included="Not-Included") :
 		super().__init__(id, start_span, end_span, "Between")
 		self.start_interval_type = start_interval_type
@@ -552,8 +552,8 @@ class T6NthOperator(T6Operator) :
 # @param interval_type Defaults to DocTime
 # @param interval Defaults to None
 class T6TwoDigitYearOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, interval_type="DocTime",
-	             interval=None, period, sub_interval) :
+	def __init__(self, id, start_span, end_span, period, sub_interval, 
+	             interval_type="DocTime", interval=None) :
 		super().__init__(id, start_span, end_span, "Two-Digit-Year")
 		self.interval_type = interval_type
 		self.interval = interval
