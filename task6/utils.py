@@ -7,7 +7,7 @@
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
 
-#### getWhitespaceSpans()
+#### getWhitespaceTokens()
 # Function Purpose: Pasrses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # Input: String containing the location and name of the text file to be parsed.
 # Outputs: 
@@ -15,7 +15,7 @@ from nltk.tokenize import WhitespaceTokenizer
 #   tokenized_text - a list containing each token that was seperated by white space.
 #   spans - the coordinates for each token.
 ####
-def getWhitespaceSpans(file_path):
+def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
     span_generator = WhitespaceTokenizer().span_tokenize(text)
