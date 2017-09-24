@@ -45,7 +45,7 @@ class T6Entity :
 	#
 	# Subclasses need to close the properties and entities tags
 	def print_xml(self) :
-		print("<entity>\n\t<id>{}</id>\n\t<span>{},{}</span>\n\t"
+		return("<entity>\n\t<id>{}</id>\n\t<span>{},{}</span>\n\t"
 			  "<type>{}</type>\n\t<parentsType>{}</parentsType>"
 			  "\n\t<properties>".format(self.id, self.start_span,
 			  self.end_span, self.type,	self.parent_type))
@@ -69,8 +69,7 @@ class T6YearEntity(T6IntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Modifier>{}</Modifier>\n\t</properties>\n</entity>\n".format(
 			  	self.value, self.sub_interval or '', self.modifier or ''))
 
@@ -87,8 +86,7 @@ class T6PeriodEntity(T6Entity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
+		return(super().print_xml() + "\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
 			  "\t\t<Modifier>{}</Modifier>\n\t</properties>\n</entity>\n".format(
 			  self.period_type, self.number or '', self.modifier or ''))
 
@@ -110,8 +108,7 @@ class T6MonthOfYearEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Type>{}</Type>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
+		return(super().print_xml() + "\t\t<Type>{}</Type>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Number>{}</Number>\n\t\t<Modifier>{}</Modifier>\n"
 			  "\t</properties>\n</entity>\n".format(self.month_type,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -131,8 +128,7 @@ class T6WeekOfYearEntity(T6RepeatingIntervalEntity) :
 	#
 	# No examples, so this is the assumed format
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Number>{}</Number>\n\t\t<Modifier>{}</Modifier>\n"
 			  "\t</properties>\n</entity>\n".format(self.sub_interval or '',
 			  self.number or '', self.modifier or ''))
@@ -149,8 +145,7 @@ class T6DayOfMonthEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Number>{}</Number>\n\t\t<Modifier>{}</Modifier>\n"
 			  "\t</properties>\n</entity>\n".format(self.value,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -167,8 +162,7 @@ class T6DayOfWeekEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Type>{}</Type>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
+		return(super().print_xml() + "\t\t<Type>{}</Type>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Number>{}</Number>\n\t\t<Modifier>{}</Modifier>\n"
 			  "\t</properties>\n</entity>\n".format(self.day_type,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -189,8 +183,7 @@ class T6HourOfDayEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<AMPM-Of-Day>{}</AMPM-Of-Day>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<AMPM-Of-Day>{}</AMPM-Of-Day>\n"
 			  "\t\t<Time-Zone>{}</Time-Zone>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Number>{}</Number>\n\t\t<Modifier>{}</Modifier>\n"
 			  "\t</properties>\n</entity>\n".format(self.value, self.ampm or '',
@@ -208,8 +201,7 @@ class T6MinuteOfHourEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t<Number>{}</Number>\n\t\t<Modifier>{}</Modifier>\n"
 			  "\t</properties>\n</entity>\n".format(self.value,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -224,8 +216,7 @@ class T6SecondOfMinuteEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<Number>{}</Number>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<Number>{}</Number>\n"
 			  "\t\t<Modifier>{}</Modifier>\n\t</properties>\n</entity>\n".format(
 			  self.value, self.number or '', self.modifier or ''))
 
@@ -241,8 +232,7 @@ class T6CalendarIntervalEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
+		return(super().print_xml() + "\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
 			  "\t\t<Modifier>{}</Modifier>\n\t</properties>\n</entity>\n".format(
 			  self.calendar_type, self.number or '', self.modifier or ''))
 
@@ -257,8 +247,7 @@ class T6PartOfDayEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
+		return(super().print_xml() + "\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
 			  "\t\t<Modifier>{}</Modifier>\n\t</properties>\n</entity>\n".format(
 			  self.part_of_day_type, self.number or '', self.modifier or ''))
 
@@ -273,8 +262,7 @@ class T6AMPMOfDayEntity(T6RepeatingIntervalEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
+		return(super().print_xml() + "\t\t<Type>{}</Type>\n\t\t<Number>{}</Number>\n"
 			  "\t\t<Modifier>{}</Modifier>\n\t</properties>\n</entity>\n".format(
 			  self.ampm_type, self.number or '', self.modifier or ''))
 
@@ -284,8 +272,7 @@ class T6TimeZoneEntity(T6RepeatingIntervalEntity) :
 		super().__init__(id, start_span, end_span, "Time-Zone")
 
 	def print_xml(self) :
-		super().print_xml()
-		print("\t</properties>\n</entity>\n")
+		return(super().print_xml() + "\t</properties>\n</entity>\n")
 
 ## Super class for all Operators
 class T6Operator(T6Entity) :
@@ -301,8 +288,7 @@ class T6SumOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Period>{}</Period>\n\t\t<Period>{}</Period>\n"
+		return(super().print_xml() + "\t\t<Period>{}</Period>\n\t\t<Period>{}</Period>\n"
 			  "\t</properties>\n</entity>\n".format(self.period_1, self.period_2))
 
 class T6DifferenceOperator(T6Operator) :
@@ -313,8 +299,7 @@ class T6DifferenceOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Period>{}</Period>\n\t\t<Period>{}</Period>\n"
+		return(super().print_xml() + "\t\t<Period>{}</Period>\n\t\t<Period>{}</Period>\n"
 			  "\t</properties>\n</entity>\n".format(self.period_1, self.period_2))
 
 
@@ -327,8 +312,7 @@ class T6UnionOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
+		return(super().print_xml() + "\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t</properties>\n</entity>\n".format(self.repeating_intervals_1,
 			  self.repeating_intervals_2))
@@ -342,8 +326,7 @@ class T6IntersectionOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
+		return(super().print_xml() + "\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t</properties>\n</entity>\n".format(self.repeating_intervals_1,
 			  self.repeating_intervals_2))
@@ -373,8 +356,7 @@ class T6LastOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Semantics>{}</Semantics>\n"
+		return(super().print_xml() + "\t\t<Semantics>{}</Semantics>\n"
 			  "\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t<Interval>{}</Interval>\n\t\t<Period>{}</Period>\n"
 			  "\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
@@ -402,8 +384,7 @@ class T6NextOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Interval-Type>{}</Interval-Type>\n"
+		return(super().print_xml() + "\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t<Interval>{}</Interval>\n\t\t<Period>{}</Period>\n"
 			  "\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t<Semantics>{}</Semantics>\n"
@@ -428,8 +409,7 @@ class T6ThisOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Interval-Type>{}</Interval-Type>\n"
+		return(super().print_xml() + "\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t<Interval>{}</Interval>\n\t\t<Period>{}</Period>\n"
 			  "\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t</properties>\n</entity>\n".format(self.interval_type,
@@ -456,8 +436,7 @@ class T6BeforeOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Interval-Type>{}</Interval-Type>\n"
+		return(super().print_xml() + "\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t<Interval>{}</Interval>\n\t\t<Period>{}</Period>\n"
 			  "\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t<Semantics>{}</Semantics>\n"
@@ -485,8 +464,7 @@ class T6AfterOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Interval-Type>{}</Interval-Type>\n"
+		return(super().print_xml() + "\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t<Interval>{}</Interval>\n\t\t<Period>{}</Period>\n"
 			  "\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t<Semantics>{}</Semantics>\n"
@@ -516,8 +494,7 @@ class T6BetweenOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Start-Interval-Type>{}</Start-Interval-Type>\n"
+		return(super().print_xml() + "\t\t<Start-Interval-Type>{}</Start-Interval-Type>\n"
 			  "\t\t<Start-Interval>{}</Start-Interval>\n"
 			  "\t\t<End-Interval-Type>{}</End-Interval-Type>\n"
 			  "\t\t<End-Interval>{}</End-Interval>\n"
@@ -525,7 +502,7 @@ class T6BetweenOperator(T6Operator) :
 			  "\t\t<End-Included>{}</End-Included>\n"
 			  "\t</properties>\n</entity>\n".format(self.start_interval_type,
 			  self.start_interval or '', self.end_interval_type,
-			  self.end_interval or '', self.star_included, self.end_included))
+			  self.end_interval or '', self.start_included, self.end_included))
 
 ## Creates and Nth operator e.g. 5th(Value) day(Calendar-Interval) 
 # of 2016(Repeating-Interval)
@@ -542,8 +519,7 @@ class T6NthOperator(T6Operator) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t\t<Interval>{}</Interval>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t\t<Interval>{}</Interval>\n"
 			  "\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t</properties>\n</entity>\n".format(self.value,
 			  self.interval, self.repeating_interval or ''))
@@ -552,17 +528,16 @@ class T6NthOperator(T6Operator) :
 # @param interval_type Defaults to DocTime
 # @param interval Defaults to None
 class T6TwoDigitYearOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, period, sub_interval, 
+	def __init__(self, id, start_span, end_span, value, sub_interval, 
 	             interval_type="DocTime", interval=None) :
 		super().__init__(id, start_span, end_span, "Two-Digit-Year")
 		self.interval_type = interval_type
 		self.interval = interval
-		self.period = period
+		self.value = value
 		self.sub_interval = sub_interval
 
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Interval-Type>{}</Interval-Type>\n"
+		return(super().print_xml() + "\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t<Interval>{}</Interval>\n\t\t<Value>{}</Value>\n"
 			  "\t\t<Sub-Interval>{}</Sub-Interval>"
 			  "\t</properties>\n</entity>\n".format(self.interval_type,
@@ -580,8 +555,7 @@ class T6Number(T6OtherEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Value>{}</Value>\n\t</properties>\n"
+		return(super().print_xml() + "\t\t<Value>{}</Value>\n\t</properties>\n"
 			  "</entity>\n".format(self.value))
 
 class T6Modifier(T6OtherEntity) :
@@ -591,8 +565,7 @@ class T6Modifier(T6OtherEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t\t<Modifier>{}</Modifier>\n\t</properties>\n"
+		return(super().print_xml() + "\t\t<Modifier>{}</Modifier>\n\t</properties>\n"
 			  "</entity>\n".format(self.modifier))
 
 class T6Event(T6OtherEntity) :
@@ -601,6 +574,5 @@ class T6Event(T6OtherEntity) :
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
-		super().print_xml()
-		print("\t</properties>\n</entity>\n")
+		return(super().print_xml() + "\t</properties>\n</entity>\n")
 
