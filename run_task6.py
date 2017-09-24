@@ -18,6 +18,12 @@
 ##      e) EITHER 1) parse all SUTime entities into T6Entities OR parse all temporally tagged refTokens into T6Entities. << not sure which is better at the moment.
 ## 6) Print out the T6Entity list to an XML file
 ## 7) Run the evaluation code and print out precision and recall **need to import this code into our package**
+##
+## To test run:
+## python run_task6.py -i /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_test -o /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_eval -r path3 -j /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/task6/jars/ -a /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/anaforatools/
+
+
+
 
 import sys
 import os
@@ -28,7 +34,7 @@ from task6 import sutimeEntity
 from task6 import referenceToken
 from task6 import sutime_wrapper
 
-debug=True
+debug=False
 # @description This is the driver method to run all of task6. 
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -43,6 +49,8 @@ if __name__ == "__main__":
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
     parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
     parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
+    parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
+    
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
     
@@ -65,16 +73,16 @@ if __name__ == "__main__":
     my_t6IDcounter = 1
     
     ## Loop through each file and parse
-    for file in infiles :
+    for f in range(0,len(infiles)) :
         ## parse out reference tokens
-        text, tokens, spans = utils.getWhitespaceTokens(file)
+        text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans)
         if(debug) : 
             print("REFERENCE TOKENS:\n")
             for tok in my_refToks : print(tok)
         
         ## parse out SUTime entities
-        json_str = sutime_wrapper.callSUTimeParse(file, args.j)
+        json_str = sutime_wrapper.callSUTimeParse(infiles[f], args.j)
         suList = sutimeEntity.import_SUTime(sut_json=json_str)
         if(debug) : 
             print("SUTIME ENTITIES:\n")
@@ -90,8 +98,11 @@ if __name__ == "__main__":
         
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
         t6list = utils.manualT6AddEntities()
-        t6list[0].print_xml()
+        utils.write_xml(t6list=t6list, outfile=outfiles[f])
     
+    
+    os.chdir(args.a)
+    os.system("python -m anafora.evaluate -r ../TempEval-2013_test -p ../TempEval-2013_eval")
     
     
     

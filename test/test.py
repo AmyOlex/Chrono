@@ -28,10 +28,11 @@ for tok in my_list:
 ## Parsing with SUTime and converting to a list of sutimeEntity objects.
 path = "/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_PracticeData/"
 #name = "wsj_0152/wsj_0152"
-name = "APW19980820.1428/APW19980820.1428"
+#name = "APW19980820.1428/APW19980820.1428"
+name = "APW19980213.1320/APW19980213.1320"
 jars = "../task6/jars"
 json_str = sutime_wrapper.callSUTimeParse(path+name, jars)
-suList = sutimeEntity.getSutimeEntityList(sut_json=json_str)
+suList = sutimeEntity.import_SUTime(sut_json=json_str)
 for s in suList:
     print(s)
     

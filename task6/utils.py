@@ -37,10 +37,10 @@ def manualT6AddEntities():
     t6list.append(t6.T6AMPMOfDayEntity(id=40, start_span=395, end_span=399, ampm_type="PM", number=None, modifier=None))
     t6list.append(t6.T6DayOfMonthEntity(id=41, start_span=15, end_span=17, value=2,sub_interval=None, number=None, modifier=None))
     t6list.append(t6.T6DayOfMonthEntity(id=42, start_span=541, end_span=542, value=6,sub_interval=None, number=None, modifier=None))
-    t6list.append(t6.T6TwoDigitYearOperator(id=43, start_span=158, end_span=160, period=89, sub_interval=38))
+    t6list.append(t6.T6TwoDigitYearOperator(id=43, start_span=158, end_span=160, value=89, sub_interval=38))
     t6list.append(t6.T6MonthOfYearEntity(id=44, start_span=404, end_span=408, month_type="November",sub_interval=45, number=None, modifier=None))
     t6list.append(t6.T6DayOfMonthEntity(id=45, start_span=409, end_span=410, value=9,sub_interval=32, number=None, modifier=None))
-    t6list.append(t6.T6TwoDigitYearOperator(id=46, start_span=18, end_span=20, period=89, sub_interval=33))
+    t6list.append(t6.T6TwoDigitYearOperator(id=46, start_span=18, end_span=20, value=89, sub_interval=33))
     t6list.append(t6.T6NextOperator(id=47, start_span=145, end_span=149, period=None, repeating_interval=36))
     t6list.append(t6.T6NextOperator(id=48, start_span=404, end_span=408, period=None, repeating_interval=44))
     t6list.append(t6.T6NextOperator(id=49, start_span=536, end_span=540, period=None, repeating_interval=34))
@@ -49,9 +49,14 @@ def manualT6AddEntities():
     
     return(t6list)
     
+def write_xml(t6list, outfile):
+    fout = open(outfile + ".completed.xml", "w")
+    fout.write("<data>\n<annotations>\n")
+    for t6 in t6list :
+        fout.write(str(t6.print_xml()))
     
-    
-    
+    fout.write("\n</annotations>\n</data>")
+    fout.close()
     
     
     
