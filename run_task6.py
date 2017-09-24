@@ -89,7 +89,8 @@ if __name__ == "__main__":
         ########### Parse time data HERE ##############
         
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
-        
+        t6list = utils.manualT6AddEntities()
+        t6list[0].print_xml()
     
     
     
