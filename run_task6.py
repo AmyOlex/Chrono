@@ -20,7 +20,7 @@
 ## 7) Run the evaluation code and print out precision and recall **need to import this code into our package**
 ##
 ## To test run:
-## python run_task6.py -i /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_test -o /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_eval -r path3 -j /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/task6/jars/ -a /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/anaforatools/
+## python run_task6.py -i /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_test -o /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_eval -r /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_test -j /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/task6/jars/ -a /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/anaforatools/
 
 
 
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     
     
     os.chdir(args.a)
-    os.system("python -m anafora.evaluate -r ../TempEval-2013_test -p ../TempEval-2013_eval")
+    os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o)
     
     
     
