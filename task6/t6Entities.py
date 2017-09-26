@@ -9,7 +9,7 @@
 ## Superclass for all entities
 #
 # Entities are either an Interval, Period, Repeating-Interval, or Operator
-# @param id Assigned ID number
+# @param entityID Assigned ID number
 # @param start_span The location of the first character
 # @param end_span The location of the last character
 # @param type The type of the entity
@@ -17,8 +17,8 @@
 class T6Entity :
 
 	## The constructor
-	def __init__(self, id, start_span, end_span, type, parent_type) :
-		self.id = id
+	def __init__(self, entityID, start_span, end_span, type, parent_type) :
+		self.entityID = entityID
 		self.start_span = start_span
 		self.end_span = end_span
 		self.type = type
@@ -26,19 +26,37 @@ class T6Entity :
 
 	## Tells python how to convert a T6Entity to a string
 	def __str__(self) :
-		return self.id + " " + self.type
+		return self.entityID + " " + self.type
 
-	##  @param id The ID to set it to
-	def set_id(self, id) :
-		self.id = id
+	##  @param entityID The ID to set it to
+	def set_id(self, entityID) :
+		self.entityID = entityID
 
 	def get_id(self) :
-		return self.id
+		return self.entityID
+	
+	def set_start_span(self, start_span) :
+		self.start_span = start_span
+	
+	def get_start_span(self) :
+		return self.start_span
+	
+	def set_end_span(self, end_span) :
+		self.end_span = end_span
+	
+	def get_end_span(self) :
+		return self.end_span
+	
+	def set_type(self, type) :
+		self.type = type
+		
+	def get_type(self) :
+		return self.type
 
-	def print_string(self) :
-		print(str(self))
+	def set_parent_type(self, parent_type) :
+		self.parent_type = parent_type
 
-	def parent_type(self) :
+	def get_parent_type(self) :
 		return self.parent_type
 
 	## Prints the XML representation of the entity
@@ -47,25 +65,43 @@ class T6Entity :
 	def print_xml(self) :
 		return("\t<entity>\n\t\t<id>{}</id>\n\t\t<span>{},{}</span>\n\t\t"
 			  "<type>{}</type>\n\t\t<parentsType>{}</parentsType>"
-			  "\n\t\t<properties>\n\t\t".format(self.id, self.start_span,
+			  "\n\t\t<properties>\n\t\t".format(self.entityID, self.start_span,
 			  self.end_span, self.type,	self.parent_type))
 
 ## Super class for Intervals which are defined as years
 class T6IntervalEntity(T6Entity) :
-	def __init__(self, id, start_span, end_span, type) :
-		super().__init__(id, start_span, end_span, type, "Interval")
+	def __init__(self, entityID, start_span, end_span, type) :
+		super().__init__(entityID, start_span, end_span, type, "Interval")
 
 ## A year interval
 # @param value Which year, e.g. 1998
 # @param sub_interval The associated sub-interval, defaults to None
 # @param modifier Any modifiers, sometimes "approx", defaults to None
 class T6YearEntity(T6IntervalEntity) :
-	def __init__(self, id, start_span, end_span, value, sub_interval=None, 
+	def __init__(self, entityID, start_span, end_span, value, sub_interval=None, 
 		         modifier=None) :
-		super().__init__(id, start_span, end_span, "Year")
+		super().__init__(entityID, start_span, end_span, "Year")
 		self.value = value
 		self.sub_interval = sub_interval
 		self.modifier = modifier
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+	
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -77,12 +113,30 @@ class T6YearEntity(T6IntervalEntity) :
 # @param period_type Required {Weeks, Days,...}
 # @param number Required
 class T6PeriodEntity(T6Entity) :
-	def __init__(self, id, start_span, end_span, period_type, number,
+	def __init__(self, entityID, start_span, end_span, period_type, number,
 	             modifier=None) :
-		super().__init__(id, start_span, end_span, "Period", "Duration")
+		super().__init__(entityID, start_span, end_span, "Period", "Duration")
 		self.period_type = period_type
 		self.number = number
 		self.modifier = modifier
+		
+	def set_period_type(self, period_type) :
+		self.period_type = period_type
+		
+	def get_period_type(self) :
+		return self.period_type
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -92,19 +146,43 @@ class T6PeriodEntity(T6Entity) :
 
 ## Super class for all Repeating-intervals
 class T6RepeatingIntervalEntity(T6Entity) :
-	def __init__(self, id, start_span, end_span, repeatingType) :
-		super().__init__(id, start_span, end_span, repeatingType,
+	def __init__(self, entityID, start_span, end_span, repeatingType) :
+		super().__init__(entityID, start_span, end_span, repeatingType,
 		                 "Repeating-Interval")
 
 ## @param month_type Required {January, Februray,...}
 class T6MonthOfYearEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, month_type, sub_interval=None,
+	def __init__(self, entityID, start_span, end_span, month_type, sub_interval=None,
 	             number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Month-Of-Year")
+		super().__init__(entityID, start_span, end_span, "Month-Of-Year")
 		self.month_type = month_type
 		self.sub_interval = sub_interval
 		self.number = number
 		self.modifier = modifier
+		
+	def set_month_type(self, month_type) :
+		self.month_type = month_type
+		
+	def get_month_type(self) :
+		return self.month_type
+	
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -116,13 +194,37 @@ class T6MonthOfYearEntity(T6RepeatingIntervalEntity) :
 ## Based on the paper, I assume this takes a value to denote which week of the year
 # @param value Required {1-52}
 class T6WeekOfYearEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, value, sub_interval=None,
+	def __init__(self, entityID, start_span, end_span, value, sub_interval=None,
 		         number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Week-Of-Year")
+		super().__init__(entityID, start_span, end_span, "Week-Of-Year")
 		self.value = value
 		self.sub_interval = sub_interval
 		self.number = number
 		self.modifier = modifier
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+		
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	#
@@ -135,13 +237,38 @@ class T6WeekOfYearEntity(T6RepeatingIntervalEntity) :
 
 ## @param value Required {1-31}
 class T6DayOfMonthEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, value, sub_interval=None,
+	def __init__(self, entityID, start_span, end_span, value, sub_interval=None,
 	             number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Day-Of-Month")
+		super().__init__(entityID, start_span, end_span, "Day-Of-Month")
 		self.value = value
 		self.sub_interval = sub_interval
 		self.number = number
 		self.modifier = modifier
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+		
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
+
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -152,13 +279,38 @@ class T6DayOfMonthEntity(T6RepeatingIntervalEntity) :
 
 ## @param day_type Required {"Monday" - "Sunday"}
 class T6DayOfWeekEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, day_type, sub_interval=None,
+	def __init__(self, entityID, start_span, end_span, day_type, sub_interval=None,
 		         number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Day-Of-Week")
-		self.dayType = day_type
+		super().__init__(entityID, start_span, end_span, "Day-Of-Week")
+		self.day_type = day_type
 		self.sub_interval = sub_interval
 		self.number = number
 		self.modifier = modifier
+		
+	def set_day_type(self, day_type) :
+		self.day_type = day_type
+		
+	def get_day_type(self) :
+		return self.day_type
+		
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
+
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -171,15 +323,52 @@ class T6DayOfWeekEntity(T6RepeatingIntervalEntity) :
 # @param ampm Optional, refers to a T6AMPMOfDayEntity
 # @param time_zone Optional, refers to a T6TimeZoneEntity
 class T6HourOfDayEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, value, ampm=None, time_zone=None,
+	def __init__(self, entityID, start_span, end_span, value, ampm=None, time_zone=None,
 	             sub_interval=None, number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Hour-Of-Day")
+		super().__init__(entityID, start_span, end_span, "Hour-Of-Day")
 		self.value = value
 		self.ampm = ampm
 		self.time_zone = time_zone
 		self.sub_interval = sub_interval
 		self.number = number
 		self.modifier = modifier
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+	
+	def set_ampm(self, ampm) :
+		self.ampm = ampm
+		
+	def get_ampm(self) :
+		return self.ampm
+	
+	def set_time_zone(self, time_zone) :
+		self.time_zone = time_zone
+		
+	def get(self) :
+		return self.time_zone
+		
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
+
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -192,12 +381,37 @@ class T6HourOfDayEntity(T6RepeatingIntervalEntity) :
 
 ## @param value Required {0-59}
 class T6MinuteOfHourEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, value, sub_interval=None, number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Minute-Of-Hour")
+	def __init__(self, entityID, start_span, end_span, value, sub_interval=None, number=None, modifier=None) :
+		super().__init__(entityID, start_span, end_span, "Minute-Of-Hour")
 		self.value = value
 		self.sub_interval = sub_interval
 		self.number = number
 		self.modifier = modifier
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+		
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
+
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -208,11 +422,29 @@ class T6MinuteOfHourEntity(T6RepeatingIntervalEntity) :
 
 ## @param value Required {0-59}
 class T6SecondOfMinuteEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, value, number=None, modifier=None) :
-		super().__init__(id, start_span, end_span, "Second-Of-Minute")
+	def __init__(self, entityID, start_span, end_span, value, number=None, modifier=None) :
+		super().__init__(entityID, start_span, end_span, "Second-Of-Minute")
 		self.value = value
 		self.number = number
 		self.modifier = modifier
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -223,12 +455,30 @@ class T6SecondOfMinuteEntity(T6RepeatingIntervalEntity) :
 ## Specifies a number of {days, weeks, months, etc}
 # @param calendar_type Required {Day, Month, Week, etc}
 class T6CalendarIntervalEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, calendar_type, number=None,
+	def __init__(self, entityID, start_span, end_span, calendar_type, number=None,
 		         modifier=None) :
-		super().__init__(id, start_span, end_span, "Calendar-Interval")
+		super().__init__(entityID, start_span, end_span, "Calendar-Interval")
 		self.calendar_type = calendar_type
 		self.number = number
 		self.modifier = modifier
+		
+	def set_calendar_type(self, calendar_type) :
+		self.calendar_type = calendar_type
+		
+	def get_calendar_type(self) :
+		return self.calendar_type
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -238,12 +488,31 @@ class T6CalendarIntervalEntity(T6RepeatingIntervalEntity) :
 
 ## @param part_of_day_type Required {Night, Morning, etc}
 class T6PartOfDayEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, part_of_day_type, number=None,
+	def __init__(self, entityID, start_span, end_span, part_of_day_type, number=None,
 		         modifier=None) :
-		super().__init__(id, start_span, end_span, "Part-Of-Day")
+		super().__init__(entityID, start_span, end_span, "Part-Of-Day")
 		self.part_of_day_type = part_of_day_type
 		self.number = number
 		self.modifier = modifier
+		
+		
+	def set_part_of_day_type(self, part_of_day_type) :
+		self.part_of_day_type = part_of_day_type
+		
+	def get_part_of_day_type(self) :
+		return self.part_of_day_type
+		
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -253,12 +522,30 @@ class T6PartOfDayEntity(T6RepeatingIntervalEntity) :
 
 ## @param ampm_type Required {AM, PM}
 class T6AMPMOfDayEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span, ampm_type, number=None,
+	def __init__(self, entityID, start_span, end_span, ampm_type, number=None,
 		         modifier=None) :
-		super().__init__(id, start_span, end_span, "AMPM-Of-Day")
+		super().__init__(entityID, start_span, end_span, "AMPM-Of-Day")
 		self.ampm_type = ampm_type
 		self.number = number
 		self.modifier = modifier
+		
+	def set_ampm_type(self, ampm_type) :
+		self.ampm_type = ampm_type
+		
+	def get_ampm_type(self) :
+		return self.ampm_type
+
+	def set_number(self, number) :
+		self.number = number
+		
+	def get_number(self) :
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -268,23 +555,35 @@ class T6AMPMOfDayEntity(T6RepeatingIntervalEntity) :
 
 ## No special parameters, just identifies the location of a time zone in text
 class T6TimeZoneEntity(T6RepeatingIntervalEntity) :
-	def __init__(self, id, start_span, end_span) :
-		super().__init__(id, start_span, end_span, "Time-Zone")
+	def __init__(self, entityID, start_span, end_span) :
+		super().__init__(entityID, start_span, end_span, "Time-Zone")
 
 	def print_xml(self) :
 		return(super().print_xml() + "</properties>\n\t</entity>\n")
 
 ## Super class for all Operators
 class T6Operator(T6Entity) :
-	def __init__(self, id, start_span, end_span, operator_type) :
-		super().__init__(id, start_span, end_span, operator_type, "Operator")
+	def __init__(self, entityID, start_span, end_span, operator_type) :
+		super().__init__(entityID, start_span, end_span, operator_type, "Operator")
 
 
 class T6SumOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, period_1, period_2) :
-		super().__init__(id, start_span, end_span, "Sum")
+	def __init__(self, entityID, start_span, end_span, period_1, period_2) :
+		super().__init__(entityID, start_span, end_span, "Sum")
 		self.period_1 = period_1
 		self.period_2 = period_2
+		
+	def set_period_1(self, period_1) :
+		self.period_1 = period_1
+					
+	def get_period_1(self) :
+		return self.period_1
+		
+	def set_period_2(self, period_2) :
+		self.period_2 = period_2
+
+	def get_period_2(self) :
+		return self.period_2
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -292,10 +591,22 @@ class T6SumOperator(T6Operator) :
 			  "\t\t</properties>\n\t</entity>\n".format(self.period_1, self.period_2))
 
 class T6DifferenceOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, period_1, period_2) :
-		super().__init__(id, start_span, end_span, "Difference")
+	def __init__(self, entityID, start_span, end_span, period_1, period_2) :
+		super().__init__(entityID, start_span, end_span, "Difference")
 		self.period_1 = period_1
 		self.period_2 = period_2
+		
+	def set_period_1(self, period_1) :
+		self.period_1 = period_1
+					
+	def get_period_1(self) :
+		return self.period_1
+		
+	def set_period_2(self, period_2) :
+		self.period_2 = period_2
+
+	def get_period_2(self) :
+		return self.period_2
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -304,11 +615,23 @@ class T6DifferenceOperator(T6Operator) :
 
 
 class T6UnionOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, repeating_intervals_1,
+	def __init__(self, entityID, start_span, end_span, repeating_intervals_1,
 		         repeating_intervals_2) :
-		super().__init__(id, start_span, end_span, "Union")
+		super().__init__(entityID, start_span, end_span, "Union")
 		self.repeating_intervals_1 = repeating_intervals_1
 		self.repeating_intervals_2 = repeating_intervals_2
+		
+	def set_repeating_intervals_1(self, repeating_intervals_1) :
+		self.repeating_intervals_1 = repeating_intervals_1
+					
+	def get_repeating_intervals_1(self) :
+		return self.repeating_intervals_1
+		
+	def set_repeating_intervals_2(self, repeating_intervals_2) :
+		self.repeating_intervals_2 = repeating_intervals_2
+
+	def get_repeating_intervals_2(self) :
+		return self.repeating_intervals_2
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -318,11 +641,23 @@ class T6UnionOperator(T6Operator) :
 			  self.repeating_intervals_2))
 
 class T6IntersectionOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, repeating_intervals_1,
+	def __init__(self, entityID, start_span, end_span, repeating_intervals_1,
 		         repeating_intervals_2) :
-		super().__init__(id, start_span, end_span, "Intersection")
+		super().__init__(entityID, start_span, end_span, "Intersection")
 		self.repeating_intervals_1 = repeating_intervals_1
 		self.repeating_intervals_2 = repeating_intervals_2
+
+	def set_repeating_intervals_1(self, repeating_intervals_1) :
+		self.repeating_intervals_1 = repeating_intervals_1
+					
+	def get_repeating_intervals_1(self) :
+		return self.repeating_intervals_1
+		
+	def set_repeating_intervals_2(self, repeating_intervals_2) :
+		self.repeating_intervals_2 = repeating_intervals_2
+
+	def get_repeating_intervals_2(self) :
+		return self.repeating_intervals_2
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -333,8 +668,8 @@ class T6IntersectionOperator(T6Operator) :
 
 ## No examples, currently a placeholder
 class T6EveryNthOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span) :
-		super().__init__(id, start_span, end_span, "Every-Nth")
+	def __init__(self, entityID, start_span, end_span) :
+		super().__init__(entityID, start_span, end_span, "Every-Nth")
 
 ## Create a last(Period) or last(Repeating-Interval) operator, 
 # must specify one or the other
@@ -344,15 +679,45 @@ class T6EveryNthOperator(T6Operator) :
 # @param period Defaults to None
 # @param repeating_interval Defaults to None
 class T6LastOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, semantics="Interval-Not-Included",
+	def __init__(self, entityID, start_span, end_span, semantics="Interval-Not-Included",
 	             interval_type="DocTime",interval=None, period=None,
 	             repeating_interval=None) :
-		super().__init__(id, start_span, end_span, "Last")
+		super().__init__(entityID, start_span, end_span, "Last")
 		self.semantics = semantics
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
+		
+	def set_semantics(self, semantics) :
+		self.semantics = semantics
+					
+	def get_semantics(self) :
+		return self.semantics
+		
+	def set_interval_type(self, interval_type) :
+		self.interval_type = interval_type
+
+	def get_interval_type(self) :
+		return self.interval_type
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_period(self, period) :
+		self.period = period
+		
+	def get_period(self) :
+		return self.period
+	
+	def set_repeating_interval(self, repeating_interval) :
+		self.repeating_interval = repeating_interval
+		
+	def get_repeating_interval(self) :
+		return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -372,15 +737,45 @@ class T6LastOperator(T6Operator) :
 # @param repeating_interval Defaults to None
 # @param semantics {Interval-Included, Interval-Not-Included(default)}
 class T6NextOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, interval_type="DocTime",
+	def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
 		         interval=None, period=None, repeating_interval=None,
 		         semantics="Interval-Not-Included") :
-		super().__init__(id, start_span, end_span, "Next")
+		super().__init__(entityID, start_span, end_span, "Next")
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
 		self.semantics = semantics
+		
+	def set_interval_type(self, interval_type) :
+		self.interval_type = interval_type
+
+	def get_interval_type(self) :
+		return self.interval_type
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_period(self, period) :
+		self.period = period
+		
+	def get_period(self) :
+		return self.period
+	
+	def set_repeating_interval(self, repeating_interval) :
+		self.repeating_interval = repeating_interval
+		
+	def get_repeating_interval(self) :
+		return self.repeating_interval
+	
+	def set_semantics(self, semantics) :
+		self.semantics = semantics
+					
+	def get_semantics(self) :
+		return self.semantics
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -399,13 +794,37 @@ class T6NextOperator(T6Operator) :
 # @param period Defaults to None
 # @param repeating_interval Defaults to None
 class T6ThisOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, interval_type="DocTime",
+	def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
 	             interval=None, period=None, repeating_interval=None) :
-		super().__init__(id, start_span, end_span, "This")
+		super().__init__(entityID, start_span, end_span, "This")
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
+		
+	def set_interval_type(self, interval_type) :
+		self.interval_type = interval_type
+
+	def get_interval_type(self) :
+		return self.interval_type
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_period(self, period) :
+		self.period = period
+		
+	def get_period(self) :
+		return self.period
+	
+	def set_repeating_interval(self, repeating_interval) :
+		self.repeating_interval = repeating_interval
+		
+	def get_repeating_interval(self) :
+		return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -424,15 +843,46 @@ class T6ThisOperator(T6Operator) :
 # @param repeating_interval Defaults to None
 # @param semantics {Interval-Included, Interval-Not-Included(default)}
 class T6BeforeOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, interval_type="DocTime",
+	def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
 		         interval=None, period=None, repeating_interval=None,
 		         semantics="Interval-Not-Included") :
-		super().__init__(id, start_span, end_span, "Before")
+		super().__init__(entityID, start_span, end_span, "Before")
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
 		self.semantics = semantics
+		
+	def set_interval_type(self, interval_type) :
+		self.interval_type = interval_type
+
+	def get_interval_type(self) :
+		return self.interval_type
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_period(self, period) :
+		self.period = period
+		
+	def get_period(self) :
+		return self.period
+	
+	def set_repeating_interval(self, repeating_interval) :
+		self.repeating_interval = repeating_interval
+		
+	def get_repeating_interval(self) :
+		return self.repeating_interval
+	
+	def set_semantics(self, semantics) :
+		self.semantics = semantics
+					
+	def get_semantics(self) :
+		return self.semantics
+
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -452,15 +902,46 @@ class T6BeforeOperator(T6Operator) :
 # @param repeating_interval Defaults to None
 # @param semantics {Interval-Included, Interval-Not-Included(default)}
 class T6AfterOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, interval_type="DocTime",
+	def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
 		         interval=None, period=None, repeating_interval=None,
 		         semantics="Interval-Not-Included") :
-		super().__init__(id, start_span, end_span, "After")
+		super().__init__(entityID, start_span, end_span, "After")
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
 		self.semantics = semantics
+		
+	def set_interval_type(self, interval_type) :
+		self.interval_type = interval_type
+
+	def get_interval_type(self) :
+		return self.interval_type
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_period(self, period) :
+		self.period = period
+		
+	def get_period(self) :
+		return self.period
+	
+	def set_repeating_interval(self, repeating_interval) :
+		self.repeating_interval = repeating_interval
+		
+	def get_repeating_interval(self) :
+		return self.repeating_interval
+	
+	def set_semantics(self, semantics) :
+		self.semantics = semantics
+					
+	def get_semantics(self) :
+		return self.semantics
+
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -481,16 +962,52 @@ class T6AfterOperator(T6Operator) :
 # @param start_included {Included, Not-Included(default)}
 # @param end_included {Included, Not-Included(default)}
 class T6BetweenOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, start_interval_type,
+	def __init__(self, entityID, start_span, end_span, start_interval_type,
 	             end_interval_type, start_interval=None, end_interval=None,
 	             start_included="Not-Included", end_included="Not-Included") :
-		super().__init__(id, start_span, end_span, "Between")
+		super().__init__(entityID, start_span, end_span, "Between")
 		self.start_interval_type = start_interval_type
 		self.start_interval = start_interval
 		self.end_interval_type = end_interval_type
 		self.end_interval = end_interval
 		self.start_included = start_included
 		self.end_included = end_included
+		
+	def set_start_interval_type(self, start_interval_type) :
+		self.start_interval_type = start_interval_type
+
+	def get_start_interval_type(self) :
+		return self.start_interval_type
+	
+	def set_start_interval(self, start_interval) :
+		self.start_interval = start_interval
+		
+	def get_start_interval(self) :
+		return self.start_interval
+	
+	def set_end_interval_type(self, end_interval_type) :
+		self.end_interval_type = end_interval_type
+		
+	def get_end_interval_type(self) :
+		return self.end_interval_type
+	
+	def set_end_interval(self, end_interval) :
+		self.end_interval = end_interval
+		
+	def get_end_interval(self) :
+		return self.end_interval
+	
+	def set_start_included(self, start_included) :
+		self.start_included = start_included
+					
+	def get_start_included(self) :
+		return self.start_included
+	
+	def set_end_included(self, end_included) :
+		self.end_included = end_included
+					
+	def get_end_included(self) :
+		return self.end_included
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -510,12 +1027,30 @@ class T6BetweenOperator(T6Operator) :
 # @param interval The Calendar-Interval to link to
 # @param repeating_interval The repeating interval to link to
 class T6NthOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, value, interval,
+	def __init__(self, entityID, start_span, end_span, value, interval,
 	             repeating_interval) :
-		super().__init__(id, start_span, end_span, "Nth")
+		super().__init__(entityID, start_span, end_span, "Nth")
 		self.value = value
 		self.interval = interval
 		self.repeating_interval = repeating_interval
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_repeating_interval(self, repeating_interval) :
+		self.repeating_interval = repeating_interval
+		
+	def get_repeating_interval(self) :
+		return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -528,13 +1063,37 @@ class T6NthOperator(T6Operator) :
 # @param interval_type Defaults to DocTime
 # @param interval Defaults to None
 class T6TwoDigitYearOperator(T6Operator) :
-	def __init__(self, id, start_span, end_span, value, sub_interval, 
+	def __init__(self, entityID, start_span, end_span, value, sub_interval, 
 	             interval_type="DocTime", interval=None) :
-		super().__init__(id, start_span, end_span, "Two-Digit-Year")
+		super().__init__(entityID, start_span, end_span, "Two-Digit-Year")
 		self.interval_type = interval_type
 		self.interval = interval
 		self.value = value
 		self.sub_interval = sub_interval
+		
+	def set_interval_type(self, interval_type) :
+		self.interval_type = interval_type
+
+	def get_interval_type(self) :
+		return self.interval_type
+	
+	def set_interval(self, interval) :
+		self.interval = interval
+		
+	def get_interval(self) :
+		return self.interval
+	
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
+	
+	def set_sub_interval(self, sub_interval) :
+		self.sub_interval = sub_interval
+		
+	def get_sub_interval(self) :
+		return self.sub_interval
 
 	def print_xml(self) :
 		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
@@ -545,13 +1104,19 @@ class T6TwoDigitYearOperator(T6Operator) :
 
 ## Super class for all Other entities
 class T6OtherEntity(T6Entity) :
-	def __init__(self, id, start_span, end_span, otherType) :
-		super().__init__(id, start_span, end_span, otherType, "Other")
+	def __init__(self, entityID, start_span, end_span, otherType) :
+		super().__init__(entityID, start_span, end_span, otherType, "Other")
 
 class T6Number(T6OtherEntity) :
-	def __init__(self, id, start_span, end_span, value) :
-		super().__init__(id, start_span, end_span, "Number")
+	def __init__(self, entityID, start_span, end_span, value) :
+		super().__init__(entityID, start_span, end_span, "Number")
 		self.value = value
+		
+	def set_value(self, value) :
+		self.value = value
+		
+	def get_value(self) :
+		return self.value
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -559,9 +1124,15 @@ class T6Number(T6OtherEntity) :
 			  "</entity>\n".format(self.value))
 
 class T6Modifier(T6OtherEntity) :
-	def __init__(self, id, start_span, end_span, modifier) :
-		super().__init__(id, start_span, end_span, "Modifier")
+	def __init__(self, entityID, start_span, end_span, modifier) :
+		super().__init__(entityID, start_span, end_span, "Modifier")
 		self.modifier = modifier
+		
+	def set_modifier(self, modifier) :
+		self.modifier = modifier
+		
+	def get_modifier(self) :
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
@@ -569,8 +1140,8 @@ class T6Modifier(T6OtherEntity) :
 			  "</entity>\n".format(self.modifier))
 
 class T6Event(T6OtherEntity) :
-	def __init__(self, id, start_span, end_span) :
-		super().__init__(id, start_span, end_span, "Event")
+	def __init__(self, entityID, start_span, end_span) :
+		super().__init__(entityID, start_span, end_span, "Event")
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self) :
