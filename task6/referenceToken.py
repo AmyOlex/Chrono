@@ -135,4 +135,22 @@ def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=Non
         id_counter = id_counter +1
         
     return ref_list
+
+## Function to remove stopwords from a list of refToken objects
+# @author Luke Maffey
+# @param tok_list The list of tokens (required)
+# @param stopwords_path The file with stopwords, defaults to "./stopwords_short"
+# @output A list of refTokens in the same order as the input tok_list with stopwords removed
+
+def removeStopWords(tok_list, stopwords_path="./stopwords_short") :
+    with open(stopwords_path) as raw:
+        stopwords = raw.read().splitlines()
+    
+    filtered_tokens = []
+    for tok in tok_list :
+        if tok.getText() not in stopwords :
+            filtered_tokens.append(tok) 
+            
+    return filtered_tokens
+    
     
