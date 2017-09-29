@@ -9,6 +9,7 @@ from nltk.tokenize import WhitespaceTokenizer
 from task6 import t6Entities as t6
 import dateutil.parser
 import datetime
+from task6 import SUTime_To_T6
 
 ## getWhitespaceTokens(): Pasrses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -36,8 +37,7 @@ def getDocTime(file_path):
 ## manualT6AddEntities(): Manually creates the wsj_0152 t6Entity data
 # @author Amy Olex
 # @output A list of t6 entity objects
-def manualT6AddEntities():
-    t6list = []
+def manualT6AddEntities(t6list):
     t6list.append(t6.T6HourOfDayEntity(entityID=32, start_span=393, end_span=394, value=5, ampm=40, time_zone=35,sub_interval=None, number=None, modifier=None))
     t6list.append(t6.T6MonthOfYearEntity(entityID=33, start_span=12, end_span=14, month_type="November",sub_interval=41, number=None, modifier=None))
     t6list.append(t6.T6MonthOfYearEntity(entityID=34, start_span=536, end_span=540, month_type="November",sub_interval=42, number=None, modifier=None))
@@ -74,7 +74,38 @@ def write_xml(t6list, outfile):
     fout.write("\n</annotations>\n</data>")
     fout.close()
     
+
+
+## buildDayOfWeek(): Parses out all sutime entities that contain a day of the week written out in text form
+# @author Amy Olex
+# @param t6list The list of T6 objects we currently have.  Will add to these.
+# @param suList The list of SUtime entities to parse
+def buildDayOfWeek(t6list, t6idCounter, suList):
     
+    ## Test out the identification of days
+    for s in suList :
+        boo, val, idxstart, idxend = SUTime_To_T6.hasDayOfWeek(s)
+        if boo:
+            ref_Sspan, ref_Espan = s.getSpan()
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            my_entity = t6.T6DayOfWeekEntity(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, day_type=val)
+            t6list.append(my_entity)
+            t6idCounter = t6idCounter+1
+            #check here to see if it has a modifier
+            #if THIS, create a THIS object
+            #if NEXT, create a NEXT object
+            #if LAST, create a LAST object
+            #if each, not sure what to do
+            #if none, assume LAST
+            t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+            t6idCounter = t6idCounter+1
+            
+            
+            
+    return t6list, t6idCounter
+    
+
     
     
     
