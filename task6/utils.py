@@ -129,7 +129,6 @@ def buildTextMonthAndDay(t6list, t6idCounter, suList):
     ## Test out the identification of days
     for s in suList :
         boo, val, idxstart, idxend = SUTime_To_T6.hasTextMonth(s)
-        if val is not None: print("Has Text Month: " + val)
         if boo:
             ref_Sspan, ref_Espan = s.getSpan()
             abs_Sspan = ref_Sspan + idxstart
@@ -155,6 +154,57 @@ def buildTextMonthAndDay(t6list, t6idCounter, suList):
             
             t6list.append(my_month_entity)
         
+            
+    return t6list, t6idCounter
+ 
+ 
+## buildAMPM(): Parses out all sutime entities that contain a AM or PM time indication
+# @author Amy Olex
+# @param t6list The list of T6 objects we currently have.  Will add to these.
+# @param suList The list of SUtime entities to parse
+def buildAMPM(t6list, t6idCounter, suList):
+    
+    ## Test out the identification of days
+    for s in suList :
+        ref_Sspan, ref_Espan = s.getSpan()
+        ## Identify if a time zone string exists
+        tz = SUTime_To_T6.hasTimeZone(s)
+        if tz is not None:
+            my_tz_entity = t6.T6TimeZoneEntity(str(t6idCounter)+"entity", start_span = tz.span(0)[0]+ref_Sspan, end_span=tz.span(0)[1]+ref_Sspan)
+            t6list.append(my_tz_entity)
+            t6idCounter = t6idCounter+1
+        else:
+            my_tz_entity = None
+         
+        boo, val, idxstart, idxend = SUTime_To_T6.hasAMPM(s)
+        if boo:
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            my_AMPM_entity = t6.T6AMPMOfDayEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, ampm_type=val)
+            t6idCounter = t6idCounter+1
+            t6list.append(my_AMPM_entity)
+            
+            #check to see if it has a time associated with it.  We assume the time comes before the AMPM string
+            #We could parse out the time from the sutime normalized value.  The problem is getting the correct span.
+            #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
+            if idxstart > 0:
+                m = re.search('([0-9]{1,2})', s.getText()[0:idxstart])
+                if m is not None :
+                    hour_val = m.group(0)
+                    abs_Sspan = ref_Sspan + m.span(0)[0]
+                    abs_Espan = ref_Sspan + m.span(0)[1]
+                
+                    my_hour_entity = t6.T6HourOfDayEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=hour_val, ampm=my_AMPM_entity.get_id())
+                     
+                    t6idCounter = t6idCounter+1
+                     
+                    if my_tz_entity is not None:
+                        my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                    
+                    #add the hour entity to the list
+                    t6list.append(my_hour_entity)
+                         
+
             
     return t6list, t6idCounter
     

@@ -101,7 +101,7 @@ if __name__ == "__main__":
         #t6MasterList=SUTime_To_T6.buildT6List(suList)
         my_t6entities, my_t6IDcounter = utils.buildDayOfWeek(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = utils.buildTextMonthAndDay(my_t6entities, my_t6IDcounter, suList)
-        
+        my_t6entities, my_t6IDcounter = utils.buildAMPM(my_t6entities, my_t6IDcounter, suList)
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
         ## need to pull out specific entities based on ID to link them to others if 

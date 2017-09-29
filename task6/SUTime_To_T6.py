@@ -7,6 +7,7 @@
 from task6 import t6Entities as t6
 import calendar
 import string
+import re
 
 #Example SUTime List
 #Wsj_0152
@@ -421,6 +422,135 @@ def hasTextMonth(suentity):
 #END_MODULE
 ####
 
+
+## hasModifier(): Takes in a single text string and identifies if it has any modufying phrases
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index 
+def hasModifier(suentity):
+    
+    #convert to all lower
+    text_lower = suentity.getText().lower()
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my day lists
+    modifiers = ["this","next","last","a","each","between","from"]
+    
+    #figure out if any of the tokens in the text_list are also in the modifiers list
+    intersect = list(set(text_list) & set(modifiers))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        #test if the intersect list contains which days.
+        if intersect[0] == "this":
+            start_idx = text_norm.index("this")
+            end_idx = start_idx + len("this")
+            return True, "This", start_idx, end_idx
+            
+        if intersect[0] == "next":
+            start_idx = text_norm.index("next")
+            end_idx = start_idx + len("next")
+            return True, "Next", start_idx, end_idx
+            
+        if intersect[0] == "last":
+            start_idx = text_norm.index("last")
+            end_idx = start_idx + len("last")
+            return True, "Last", start_idx, end_idx
+            
+        if intersect[0] == "a":
+            start_idx = text_norm.index("a")
+            end_idx = start_idx + len("a")
+            return True, "Period", start_idx, end_idx
+         
+        if intersect[0] == "each":
+            start_idx = text_norm.index("each")
+            end_idx = start_idx + len("each")
+            return True, "Period", start_idx, end_idx
+        
+        if intersect[0] == "between":
+            start_idx = text_norm.index("between")
+            end_idx = start_idx + len("between")
+            return True, "Period", start_idx, end_idx  
+            
+        if intersect[0] == "from":
+            start_idx = text_norm.index("from")
+            end_idx = start_idx + len("from")
+            return True, "Period", start_idx, end_idx  
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
+
+
+
+## hasAMPM(): Takes in a single text string and identifies if it has any AM or PM phrases
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index 
+def hasAMPM(suentity):
+    
+    #convert to all lower
+    #text_lower = suentity.getText().lower()
+    text = suentity.getText()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my day lists
+    am = ["AM","am","A.M.","AM.","a.m.","am."]
+    pm = ["PM","pm","P.M.","p.m.","pm.","PM."]
+    
+    ampm = am+pm
+    
+    #figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(ampm))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        #test if the intersect list contains which days.
+        if len(list(set(intersect) & set (am))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (am))[0])
+            return True, "AM", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (pm))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (pm))[0])
+            return True, "PM", start_idx, end_idx
+       
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
+
+## hasTimeZone(): Takes in a single sutime entity and determines if it has a time zone specified in the text.
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs the regex object or None 
+def hasTimeZone(suentity):
+    return re.search('(AST|EST|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
+
+####
+#END_MODULE
+####
+
+## getSpan(): identifies the local span of the serach_text in the input "text"
+# @author Amy Olex
+# @param text The text to be searched
+# @param search_text The text to search for.
+# @output The start index and end index of the search_text string.
 def getSpan(text, search_text):
     try:
         start_idx = text.index(search_text)
