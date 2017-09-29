@@ -1,9 +1,9 @@
 # CMSC516 - Advanced Natural Language Processing Fall 2017
 ##SemEval-2018 Task 6 - Parsing Time Normalizations
-Authors - Amy Olex, Nicholas Morton, Luke Maffey
+###Authors - Amy Olex, Nicholas Morton, Luke Maffey
 ------------------------------------------------------------------------
 
-###1.  Introduction
+####1.  Introduction
 
 Our task was to take text from the AQUINT and TimeBank corpora input and output an xml file for each input file with temporal expressions identified and normalized according to the framework laid out in "A Semantically Compositional Annotation Scheme for Time Normalization"<sup>1</sup>.  
 
