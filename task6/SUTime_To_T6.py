@@ -6,6 +6,7 @@
 
 from task6 import t6Entities as t6
 import calendar
+import string
 
 #Example SUTime List
 #Wsj_0152
@@ -16,6 +17,7 @@ import calendar
 
 #Need a way to handle sub-intervals, still thinking of the best way to do this...
 
+
 ## buildT6List(): Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
 # @param list of SUTime Output
@@ -25,12 +27,13 @@ def buildT6List(suTimeList, dct=None):
     t6list = []
     for s in suTimeList : 
         #Split each entity into seperate chunks for evaluation
-        eid = s.id
-        etext = s.text
-        eBeginSpan = s.start_span
-        eEndSpan = s.end_span
-        etype = s.sutype
-        evalue = s.suvalue
+        eid = s.split()[0]
+        etext = s.split()[1]
+        espan = s.split()[2]
+        eBeginSpan = epsan.split(",")[0].strip("<") #not sure if this is the best way, gonna write a function soon
+        eEndSpan = epspan.split(",")[1].strip(">")
+        etype = s.split()[3]
+        evalue = s.split()[4]
         
         if "DATE" in etype:  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
             #Parse out Year function
@@ -202,6 +205,3 @@ def hasDayOfWeek(text):
 ####
 #END_MODULE
 ####
-
-
-

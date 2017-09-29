@@ -89,9 +89,20 @@ if __name__ == "__main__":
         suList = sutimeEntity.import_SUTime(sut_json=json_str)
         if(debug) : 
             print("SUTIME ENTITIES:\n")
-            for s in suList : print(s)   
+            for s in suList : print(s)
         
-        t6MasterList=SUTime_To_T6.buildT6List(suList)
+        ## parse out the doctime
+        docTime = utils.getDocTime(infiles[f] + ".dct")
+        print(docTime) 
+        
+        #t6MasterList=SUTime_To_T6.buildT6List(suList)
+        
+        ## Test out the identification of days
+        for s in suList :
+            val = SUTime_To_T6.hasDayOfWeek(s.getText())
+            if val is not None:
+                print("Normalized DatOfWeek:" + val)
+
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
         ## need to pull out specific entities based on ID to link them to others if 
