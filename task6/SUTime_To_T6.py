@@ -15,13 +15,12 @@ def buildT6List(suTimeList, dct=None):
     t6list = []
     for s in suTimeList : 
         #Split each entity into seperate chunks for evaluation
-        eid = s.split()[0]
-        etext = s.split()[1]
-        espan = s.split()[2]
-        eBeginSpan = epsan.split(",")[0].strip("<") #not sure if this is the best way, gonna write a function soon
-        eEndSpan = epspan.split(",")[1].strip(">")
-        etype = s.split()[3]
-        evalue = s.split()[4]
+        eid = s.id
+        etext = s.text
+        eBeginSpan = s.start_span
+        eEndSpan = s.end_span
+        etype = s.sutype
+        evalue = s.suvalue
         
         if "DATE" in etype:
             if len(evalue) == 4: #Found Year Entity, I.E. 1998 // Also want to check for numbers only
