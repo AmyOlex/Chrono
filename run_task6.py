@@ -87,6 +87,10 @@ if __name__ == "__main__":
         if(debug) : 
             print("SUTIME ENTITIES:\n")
             for s in suList : print(s)
+        
+        ## parse out the doctime
+        docTime = utils.getDocTime(infiles[f] + ".dct")
+        print(docTime)
     
     
         ## Need functions to parse the SUTime data into T6 format with links!
