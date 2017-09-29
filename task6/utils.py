@@ -93,15 +93,28 @@ def buildDayOfWeek(t6list, t6idCounter, suList):
             t6list.append(my_entity)
             t6idCounter = t6idCounter+1
             #check here to see if it has a modifier
-            #if THIS, create a THIS object
-            #if NEXT, create a NEXT object
-            #if LAST, create a LAST object
-            #if each, not sure what to do
-            #if none, assume LAST
-            t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-            t6idCounter = t6idCounter+1
-            
-            
+            hasMod, mod_type, mod_start, mod_end = SUTime_To_T6.hasModifier(s)
+            if(hasMod):
+                if mod_type == "This":
+                    t6list.append(t6.T6ThisOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
+                    
+                if mod_type == "Next":
+                    t6list.append(t6.T6NextOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
+                    
+                if mod_type == "Last":
+                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
+                    
+                else:
+                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
+                    
+            else:
+                t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6idCounter = t6idCounter+1
+        
             
     return t6list, t6idCounter
     

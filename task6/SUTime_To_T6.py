@@ -256,3 +256,69 @@ def hasDayOfWeek(suentity):
 ####
 #END_MODULE
 ####
+
+## hasModifier(): Takes in a single text string and identifies if it has any modufying phrases
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index 
+def hasModifier(suentity):
+    
+    #convert to all lower
+    text_lower = suentity.getText().lower()
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my day lists
+    modifiers = ["this","next","last","a","each","between","from"]
+    
+    #figure out if any of the tokens in the text_list are also in the modifiers list
+    intersect = list(set(text_list) & set(modifiers))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        #test if the intersect list contains which days.
+        if intersect[0] == "this":
+            start_idx = text_norm.index("this")
+            end_idx = start_idx + len("this")
+            return True, "This", start_idx, end_idx
+            
+        if intersect[0] == "next":
+            start_idx = text_norm.index("next")
+            end_idx = start_idx + len("next")
+            return True, "Next", start_idx, end_idx
+            
+        if intersect[0] == "last":
+            start_idx = text_norm.index("last")
+            end_idx = start_idx + len("last")
+            return True, "Last", start_idx, end_idx
+            
+        if intersect[0] == "a":
+            start_idx = text_norm.index("a")
+            end_idx = start_idx + len("a")
+            return True, "Period", start_idx, end_idx
+         
+        if intersect[0] == "each":
+            start_idx = text_norm.index("each")
+            end_idx = start_idx + len("each")
+            return True, "Period", start_idx, end_idx
+        
+        if intersect[0] == "between":
+            start_idx = text_norm.index("between")
+            end_idx = start_idx + len("between")
+            return True, "Period", start_idx, end_idx  
+            
+        if intersect[0] == "from":
+            start_idx = text_norm.index("from")
+            end_idx = start_idx + len("from")
+            return True, "Period", start_idx, end_idx  
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
