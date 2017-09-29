@@ -8,6 +8,8 @@ To use type:
 
 `python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR} -a {ANAFORA DIR}`
 
+---
+
 ### 1.  Introduction
 
 Our task was to take text from the AQUINT and TimeBank corpora input and output an xml file for each input file with temporal expressions identified and normalized according to the framework laid out in "A Semantically Compositional Annotation Scheme for Time Normalization"<sup>1</sup>.  We developed a package using python which uses the SUTime<sup>2</sup> tagger to identify and mark temporal expressions in documents for processing.
