@@ -15,7 +15,7 @@ Our task was to take text from the AQUINT and TimeBank corpora input and output 
 
 ### 2.  Background
 
-The intent of the this annotation scheme is to capture periods of time that are not well covered by currently existing schemes.  The most common scheme is the TIMEX3<sup>3</sup> system used by TimeML<sup>4</sup> developed out of the older TIMEX scheme which was created by DARPA in 1995<sup>5,6</sup>.
+The intent of the this annotation scheme is to capture periods of time that are not well covered by currently existing schemes.  The most common scheme is the TIMEX3<sup>3</sup> system used by TimeML<sup>4</sup> developed out of the older TIMEX scheme which was created by DARPA in 1995<sup>5,6</sup>. 
 
 
 ### 3.  Method
