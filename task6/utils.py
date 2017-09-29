@@ -10,6 +10,7 @@ from task6 import t6Entities as t6
 import dateutil.parser
 import datetime
 from task6 import SUTime_To_T6
+import re
 
 ## getWhitespaceTokens(): Pasrses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -89,7 +90,7 @@ def buildDayOfWeek(t6list, t6idCounter, suList):
             ref_Sspan, ref_Espan = s.getSpan()
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_entity = t6.T6DayOfWeekEntity(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, day_type=val)
+            my_entity = t6.T6DayOfWeekEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, day_type=val)
             t6list.append(my_entity)
             t6idCounter = t6idCounter+1
             #check here to see if it has a modifier
@@ -133,30 +134,26 @@ def buildTextMonthAndDay(t6list, t6idCounter, suList):
             ref_Sspan, ref_Espan = s.getSpan()
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_entity = t6.T6MonthOfYearEntity(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, month_type=val)
-            t6list.append(my_entity)
+            my_month_entity = t6.T6MonthOfYearEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, month_type=val)
             t6idCounter = t6idCounter+1
-            #check here to see if it has a modifier
-            hasMod, mod_type, mod_start, mod_end = SUTime_To_T6.hasModifier(s)
-            if(hasMod):
-                if mod_type == "This":
-                    t6list.append(t6.T6ThisOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
-                    
-                if mod_type == "Next":
-                    t6list.append(t6.T6NextOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
-                    
-                if mod_type == "Last":
-                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
-                else:
-                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
-                    
-            else:
-                t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+            
+            #check to see if it has a day associated with it.  We assume the day comes after the month.
+            #idx_end is the last index of the month.  If there are any characters after it the lenght of the string will be greater than the endidx.
+            if(idxend < len(s.getText())):
+                m = re.search('([0-9]{1,2})', s.getText()[idxend:len(s.getText())])
+                day_val = m.group(0)
+                print("DAY VALUE: " + day_val + "\nFULL TEXT: " + s.getText())
+                day_startidx, day_endidx = SUTime_To_T6.getSpan(s.getText(), day_val)
+                abs_Sspan = ref_Sspan + day_startidx
+                abs_Espan = ref_Sspan + day_endidx
+                
+                my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
+                t6list.append(my_day_entity)
                 t6idCounter = t6idCounter+1
+                #now link the month to the day
+                my_month_entity.set_sub_interval(my_day_entity.get_id())
+            
+            t6list.append(my_month_entity)
         
             
     return t6list, t6idCounter

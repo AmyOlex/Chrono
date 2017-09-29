@@ -422,6 +422,10 @@ def hasTextMonth(suentity):
 ####
 
 def getSpan(text, search_text):
-    start_idx = text.index(search_text)
-    end_idx = start_idx + len(search_text)
+    try:
+        start_idx = text.index(search_text)
+        end_idx = start_idx + len(search_text)
+    except ValueError:
+        return None, None
+        
     return start_idx, end_idx
