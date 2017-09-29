@@ -43,7 +43,7 @@ class SUTime(object):
         self._lock = threading.Lock()
 
         if not jvm_started:
-            print("jvm not started...")
+            #print("jvm not started...")
             self._classpath = self._create_classpath()
             self._start_jvm()
 
@@ -63,7 +63,7 @@ class SUTime(object):
             self._lock.release()
 
     def _start_jvm(self):
-        print("Made it to start JVM")
+        #print("Made it to start JVM")
         if jpype.isJVMStarted() is not 1:
             jpype.startJVM(
                 jpype.getDefaultJVMPath(),

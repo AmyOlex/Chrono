@@ -7,6 +7,7 @@
 import os
 import json
 from task6.sutime import SUTime
+from task6 import t6Entities as t6
 
 
 ## callSUTIMEParse(): Takes in raw text file and performs SUTime's algorithm on #it and returns it in JSON format.
@@ -30,9 +31,5 @@ def callSUTimeParse(file_path, jar_files):
 #print(callSUTimeParse("/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_PracticeData/wsj_0152/wsj_0152","/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/task6/jars"))
 
 #print(callSUTimeParse("/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_PracticeData/wsj_0152/wsj_0152","/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/sutimetest/python-sutime"))
-
-
-
-
 
 
