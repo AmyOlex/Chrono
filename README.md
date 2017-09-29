@@ -1,11 +1,7 @@
 # CMSC516 - Advanced Natural Language Processing Fall 2017
-
 ##SemEval-2018 Task 6 - Parsing Time Normalizations
-
 Authors - Amy Olex, Nicholas Morton, Luke Maffey
 ------------------------------------------------------------------------
-
-
 
 ###1.  Introduction
 
