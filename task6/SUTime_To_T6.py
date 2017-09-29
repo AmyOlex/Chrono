@@ -322,3 +322,106 @@ def hasModifier(suentity):
 ####
 #END_MODULE
 ####
+
+
+
+
+## hasTextMonth(): Takes in a single text string and identifies if it is a month of the year
+# @author Amy Olex
+# @param suentity The entity to parse
+# @output value The normalized string value for the month of the year, or None if no month of year found.
+# @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
+def hasTextMonth(suentity):
+    
+    #convert to all lower
+    text_lower = suentity.getText().lower()
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my day lists
+    M1 = ["january","jan."]
+    M2 = ["february","feb."]
+    M3 = ["march","mar."]
+    M4 = ["april","apr."]
+    M5 = ["may"]
+    M6 = ["june","jun."]
+    M7 = ["july","jul."]
+    M8 = ["august","aug."]
+    M9 = ["september","sep.", "sept."]
+    M10 = ["october","oct."]
+    M11 = ["november","nov."]
+    M12 = ["december","dec."]
+    
+    full_year = M1+M2+M3+M4+M5+M6+M7+M8+M9+M10+M11+M12
+    
+    
+    #figure out if any of the tokens in the text_list are also in the months list
+    intersect = list(set(text_list) & set(full_year))
+    
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    if len(intersect) >= 1 :
+        #test if the intersect list contains which days.
+        if len(list(set(intersect) & set (M1))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M1))[0])
+            return True, "January", start_idx, end_idx
+        
+        if len(list(set(intersect) & set (M2))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M2))[0])
+            return True, "February", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M3))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M3))[0])
+            return True, "March", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M4))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M4))[0])
+            return True, "April", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M5))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M5))[0])
+            return True, "May", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M6))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M6))[0])
+            return True, "June", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M7))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M7))[0])
+            return True, "July", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M8))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M8))[0])
+            return True, "August", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M9))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M9))[0])
+            return True, "September", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M10))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M10))[0])
+            return True, "October", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M11))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M11))[0])
+            return True, "November", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (M12))) == 1:
+            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M12))[0])
+            return True, "December", start_idx, end_idx
+
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
+
+def getSpan(text, search_text):
+    start_idx = text.index(search_text)
+    end_idx = start_idx + len(search_text)
+    return start_idx, end_idx

@@ -106,7 +106,50 @@ def buildDayOfWeek(t6list, t6idCounter, suList):
                 if mod_type == "Last":
                     t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                     t6idCounter = t6idCounter+1
+                else:
+                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
                     
+            else:
+                t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6idCounter = t6idCounter+1
+        
+            
+    return t6list, t6idCounter
+    
+
+
+## buildTextMonth(): Parses out all sutime entities that contain a month of the year written out in text form
+# @author Amy Olex
+# @param t6list The list of T6 objects we currently have.  Will add to these.
+# @param suList The list of SUtime entities to parse
+def buildTextMonthAndDay(t6list, t6idCounter, suList):
+    
+    ## Test out the identification of days
+    for s in suList :
+        boo, val, idxstart, idxend = SUTime_To_T6.hasTextMonth(s)
+        if val is not None: print("Has Text Month: " + val)
+        if boo:
+            ref_Sspan, ref_Espan = s.getSpan()
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            my_entity = t6.T6MonthOfYearEntity(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, month_type=val)
+            t6list.append(my_entity)
+            t6idCounter = t6idCounter+1
+            #check here to see if it has a modifier
+            hasMod, mod_type, mod_start, mod_end = SUTime_To_T6.hasModifier(s)
+            if(hasMod):
+                if mod_type == "This":
+                    t6list.append(t6.T6ThisOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
+                    
+                if mod_type == "Next":
+                    t6list.append(t6.T6NextOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
+                    
+                if mod_type == "Last":
+                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6idCounter = t6idCounter+1
                 else:
                     t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                     t6idCounter = t6idCounter+1
