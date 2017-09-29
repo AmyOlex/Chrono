@@ -27,15 +27,15 @@ def buildT6List(suTimeList, dct=None):
     t6list = []
     for s in suTimeList : 
         #Split each entity into seperate chunks for evaluation
-        eid = s.split()[0]
-        etext = s.split()[1]
-        espan = s.split()[2]
-        eBeginSpan = epsan.split(",")[0].strip("<") #not sure if this is the best way, gonna write a function soon
-        eEndSpan = epspan.split(",")[1].strip(">")
-        etype = s.split()[3]
-        evalue = s.split()[4]
+        #eid = s.split()[0]
+        #etext = s.split()[1]
+        #espan = s.split()[2]
+        #eBeginSpan = epsan.split(",")[0].strip("<") #not sure if this is the best way, gonna write a function soon
+        #eEndSpan = epspan.split(",")[1].strip(">")
+        #etype = s.split()[3]
+        #evalue = s.split()[4]
         
-        if "DATE" in etype:  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
+        if "DATE" in s.getType():  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
             #Parse out Year function
             t6list.append(buildT6Year(s))
             #Parse out Two-Digit Year (if applicable) #taking out for now until I figure out what I want to do
@@ -45,7 +45,7 @@ def buildT6List(suTimeList, dct=None):
             #Parse out Day-of-Month
             t6list.append(buildT6DayOfMonth(s))
             
-        if "TIME" in etype: #parse out all of Date data as well as Hour-of-Day, Minute-of-Hour, and Second-of-Minute  
+        if "TIME" in s.getType(): #parse out all of Date data as well as Hour-of-Day, Minute-of-Hour, and Second-of-Minute  
             #Parse out Year function
             t6list.append(buildT6Year(s))
             #Parse out Two-Digit Year (if applicable) #taking out for now until I figure out what I want to do
@@ -96,8 +96,13 @@ def buildT62DigitYear(s): #need to work on this one...
 # @output T6MonthOfYear Entity
 def buildT6MonthOfYear(s):
     #basing this off of the yyyy-mm-dd format of the value, might need to revisit later
-    month = calendar.month_name[int(s.suvalue.split("-")[1])] #should be a valid month number (1-12)
-    t6MonthOfYear = t6.T6MonthOfYearEntity(s.id,s.start_span + 5,s.end_span - 3,month) #might need to pull the proper spans from the reference tokens, this seems inadequete  
+    suval_split = s.suvalue.split("-")
+    if len(suval_split) == 3 :
+        month = calendar.month_name[int(suval_split[1])] #should be a valid month number (1-12)
+        t6MonthOfYear = t6.T6MonthOfYearEntity(s.id,s.start_span + 5,s.end_span - 3,month) #might need to pull the proper spans from the reference tokens, this seems inadequete  
+    else :
+        t6MonthOfYear = None
+        
     return t6MonthOfYear
 ####
 #END_MODULE
@@ -109,8 +114,13 @@ def buildT6MonthOfYear(s):
 # @output T6DayOfMonthEntity
 def buildT6DayOfMonth(s):
     #basing this off of the yyyy-mm-dd format of the value, might need to revisit later
-    t6DayOfMonth = t6.T6DayOfMonthEntity(s.id,s.start_span + 8,s.end_span,s.suvalue.split("-")[2]) #might need to pull the proper spans from the reference tokens
-    return t6DayOfMonth
+    suval_split = s.suvalue.split("-")
+    if len(suval_split) == 3 :
+        t6DayOfMonth = t6.T6DayOfMonthEntity(s.id,s.start_span + 8,s.end_span,suval_split[2]) #might need to pull the proper spans from the reference tokens
+        return t6DayOfMonth
+    else :
+        return None
+    
 ####
 #END_MODULE
 ####
@@ -157,7 +167,7 @@ def buildT6SecondOfMinute(s):
 
     if sTime.count(":") > 1: #Time string like 17:00:00
         sMinute = sTime.split("-")[0]
-        sSecond = SMinute.split(":")[2]
+        sSecond = sMinute.split(":")[2]
     t6SecondOfMinute = t6.T6SecondOfMinuteEntity(s.id,s.start_span+14,s.end_span-6,sSecond)  #might need to pull the proper spans from the reference tokens/not sure what we should do if there are no seconds defined...
     return t6SecondOfMinute
 ####
@@ -168,14 +178,19 @@ def buildT6SecondOfMinute(s):
 # @author Amy Olex
 # @param text The text to be parsed
 # @output value The normalized string value for the day of week, or None if no Day of week found.
-def hasDayOfWeek(text):
-    print("Before:" + text)
+# @ISSUE If there are multiple days of week in the temporal phrase it only captures one of them.
+def hasDayOfWeek(suentity):
+    
+    #print("Before:" + text)
     #convert to all lower
-    text_lower = text.lower()
+    text_lower = suentity.getText().lower()
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
     #print("After:" + text_norm)
+    #convert to list
+    text_list = text_norm.split(" ")
     
+    #define my day lists
     M = ["monday","mon","m"]
     T = ["tuesday","tue","tues","t"]
     W = ["wednesday","wed","w"]
@@ -183,24 +198,60 @@ def hasDayOfWeek(text):
     F = ["friday","fri","f"]
     S = ["saturday","sat","s"]
     SU = ["sunday","sun","su"]
+    days_of_week = M+T+W+TR+F+S+SU
     
-    #test if the text_norm matches any of our day lists.
-    if text_norm in M:
-        return "Monday"
-    elif text_norm in T:
-        return "Tuesday"
-    elif text_norm in W:
-        return "Wednesday"
-    elif text_norm in TR:
-        return "Thursday"
-    elif text_norm in F:
-        return "Friday"
-    elif text_norm in S:
-        return "Saturday"
-    elif text_norm in SU:
-        return "Sunday"
+    #figure out if any of the tokens in the text_list are also in the days of week list
+    intersect = list(set(text_list) & set(days_of_week))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    if len(intersect) >= 1 :
+        #test if the intersect list contains which days.
+        if len(list(set(intersect) & set (M))) == 1:
+            day_text = list(set(intersect) & set (M))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Monday", start_idx, end_idx
+            
+            
+        if len(list(set(intersect) & set (T))) == 1:
+            day_text = list(set(intersect) & set (T))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)  
+            return True, "Tuesday", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (W))) == 1:
+            day_text = list(set(intersect) & set (W))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Wednesday", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (TR))) == 1:
+            day_text = list(set(intersect) & set (TR))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Thursday", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (F))) == 1:
+            day_text = list(set(intersect) & set (F))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Friday", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (S))) == 1:
+            day_text = list(set(intersect) & set (S))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Saturday", start_idx, end_idx
+            
+        if len(list(set(intersect) & set (SU))) == 1:
+            day_text = list(set(intersect) & set (SU))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Sunday", start_idx, end_idx
+        else :
+            return False, None, None, None
     else :
-        return None
+        return False, None, None, None
     
 ####
 #END_MODULE
