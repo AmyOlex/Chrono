@@ -52,12 +52,12 @@ class sutimeEntity :
         
     ## Sets the entity's type
     #  @param sutype The type of SUTime temporal expression
-    def setPos(self, sutype) :
+    def setType(self, sutype) :
         self.sutype = sutype
         
     ## Sets the entity's SUTime normalized value
     #  @param suvalue The entities normalized SUTime value
-    def setTemporal(self, suvalue) :
+    def setValue(self, suvalue) :
         self.suvalue = suvalue
         
     #### Methods to GET properties ####
@@ -75,11 +75,11 @@ class sutimeEntity :
         return(self.start_span, self.end_span)
         
     ## Gets the entity's sutype
-    def getPos(self, sutype) :
+    def getType(self) :
         return(self.sutype)
         
     ## Gets the entity's suvalue
-    def isTemporal(self, suvalue) :
+    def getValue(self) :
         return(self.suvalue)
 
 ## Function to convert json output of sutime to a list of sutimeEntities
