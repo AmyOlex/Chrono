@@ -5,6 +5,7 @@
 ---
 ### Usage
 To use type:
+
 `python python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR} -a {ANAFORA DIR}`
 
 ### 1.  Introduction
@@ -26,4 +27,4 @@ Our task was to take text from the AQUINT and TimeBank corpora input and output 
 ---
 #### References
 
-1. Bethard, S. and Parker, J. (2016) A Semantically Compositional Annotation Scheme for Time Normalization. Proceedings of the Tenth International Conference on Language Resources and Evaluation (LREC 2016), Paris, France, 5 2016
+1. Bethard, S. and Parker, J. (2016) [A Semantically Compositional Annotation Scheme for Time Normalization](http://www.lrec-conf.org/proceedings/lrec2016/pdf/288_Paper.pdf). Proceedings of the Tenth International Conference on Language Resources and Evaluation (LREC 2016), Paris, France, 5 2016
