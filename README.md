@@ -5,7 +5,7 @@
 ---
 ### Usage
 To use type:
-`python python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR} -a {ANAFORA DIR}'
+`python python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR} -a {ANAFORA DIR}`
 
 ### 1.  Introduction
 
