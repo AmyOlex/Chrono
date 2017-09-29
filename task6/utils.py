@@ -209,6 +209,20 @@ def buildAMPM(t6list, t6idCounter, suList):
     return t6list, t6idCounter
     
 
+## markTemporalRefToks(): Marks all the reference tokens that show up in the SUTime entity list.
+# @author Amy Olex
+# @param refToks The list of reference Tokens
+# @param suList The list of SUtime entities to compare against
+def markTemporalRefToks(refToks, suList):
+    for ref in refToks:
+        for su in suList:
+            suStart, suEnd = su.getSpan()
+            if ref.spanOverlap(suStart, suEnd):
+                ref.setTemporal(True)
+        if ref.isTemporal() is None:
+            ref.setTemporal(False)
+    return refToks
+
     
     
     

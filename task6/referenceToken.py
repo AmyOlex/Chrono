@@ -97,6 +97,19 @@ class refToken :
     ## Gets the entity's t6list
     def getT6list(self) :
         return(self.t6list)
+        
+    ## Function to determine if the input span overlaps this objects span
+    # @author Amy Olex
+    # @param start
+    # @param end
+    # @output True or False
+    def spanOverlap(self, start, end) :
+        if self.start_span<=start and self.end_span >=start:
+            return True
+        elif self.end_span >=end and self.start_span <= end:
+            return True
+        else:
+            return False
 
 ## Function to convert a list of tokens into a list of refToken objects
 # @author Amy Olex
@@ -157,4 +170,5 @@ def removeStopWords(tok_list, stopwords_path="./stopwords_short") :
             
     return filtered_tokens
     
-    
+
+   

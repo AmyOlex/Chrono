@@ -94,6 +94,11 @@ if __name__ == "__main__":
             print("SUTIME ENTITIES:\n")
             for s in suList : print(s)
         
+        ## mark all reference tokens that overlap with the sutime spans
+        my_refToks = utils.markTemporalRefToks(my_refToks, suList)
+        for tok in my_refToks : print(tok)
+        
+        
         ## parse out the doctime
         docTime = utils.getDocTime(infiles[f] + ".dct")
         print(docTime) 
@@ -102,6 +107,7 @@ if __name__ == "__main__":
         my_t6entities, my_t6IDcounter = utils.buildDayOfWeek(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = utils.buildTextMonthAndDay(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = utils.buildAMPM(my_t6entities, my_t6IDcounter, suList)
+        
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
         ## need to pull out specific entities based on ID to link them to others if 
