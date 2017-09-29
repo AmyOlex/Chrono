@@ -13,7 +13,8 @@ from sutime import SUTime
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 
-file_path = "../../TrialData/TimeBank/wsj_0152/wsj_0152"
+#file_path = "../../TrialData/TimeBank/wsj_0152/wsj_0152"
+file_path = "SampleText.txt"
 stopwords_path = "../task6/stopwords_long"
 with open(stopwords_path) as raw:
     stopwords = raw.read().splitlines()
