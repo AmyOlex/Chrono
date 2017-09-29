@@ -34,6 +34,7 @@ from task6 import sutimeEntity
 from task6 import referenceToken
 from task6 import sutime_wrapper
 from task6 import SUTime_To_T6
+from task6 import t6Entities as t6
 
 debug=False
 # @description This is the driver method to run all of task6. 
@@ -69,12 +70,14 @@ if __name__ == "__main__":
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
     
-    ## Init the T6Entity list
-    my_t6entities = []
-    my_t6IDcounter = 1
+
    
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
+        ## Init the T6Entity list
+        my_t6entities = []
+        my_t6IDcounter = 1
+        
         ## parse out reference tokens
         text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans)
@@ -96,13 +99,8 @@ if __name__ == "__main__":
         print(docTime) 
         
         #t6MasterList=SUTime_To_T6.buildT6List(suList)
+        my_t6entities, my_t6IDcounter = utils.buildDayOfWeek(my_t6entities, my_t6IDcounter, suList)
         
-        ## Test out the identification of days
-        for s in suList :
-            val = SUTime_To_T6.hasDayOfWeek(s.getText())
-            if val is not None:
-                print("Normalized DatOfWeek:" + val)
-
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
         ## need to pull out specific entities based on ID to link them to others if 
@@ -111,14 +109,14 @@ if __name__ == "__main__":
         ########### Parse time data HERE ##############
         
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
-        #t6list = utils.manualT6AddEntities()
-        #utils.write_xml(t6list=t6list, outfile=outfiles[f])
-        print(len(t6MasterList))
-        utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
+        #t6list = utils.manualT6AddEntities(my_t6entities)
+        utils.write_xml(t6list=my_t6entities, outfile=outfiles[f])
+        #print(len(t6MasterList))
+        #utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
     
     
-    #os.chdir(args.a)
-    #os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o)
+    os.chdir(args.a)
+    os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o)
     
     
     
