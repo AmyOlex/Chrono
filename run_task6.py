@@ -100,8 +100,10 @@ if __name__ == "__main__":
         ########### Parse time data HERE ##############
         
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
-        t6list = utils.manualT6AddEntities()
-        utils.write_xml(t6list=t6list, outfile=outfiles[f])
+        #t6list = utils.manualT6AddEntities()
+        #utils.write_xml(t6list=t6list, outfile=outfiles[f])
+        print(len(t6MasterList))
+        utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
     
     
     #os.chdir(args.a)
