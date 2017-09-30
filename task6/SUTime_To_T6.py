@@ -546,6 +546,57 @@ def hasCalendarInterval(suentity):
 ####
 
 
+## hasPartOfDay(): Takes in a SUTime entity and identifies if it has any part of day terms, like "overnight" or "morning"
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+#############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
+def hasPartOfDay(suentity):
+    
+    #convert to all lower
+    #text_lower = suentity.getText().lower()
+    text = suentity.getText()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my period lists
+    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","today","nights","mornings","evening","afternoons"]
+    
+    #figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(partofday))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        
+        term = intersect[0]
+        start_idx, end_idx = getSpan(text_norm, term)
+        if term == "morning" or term == "dawn" or term == "mornings":
+            return True, "Morning", start_idx, end_idx
+        elif term == "evening" or term == "dusk" or term == "evenings":
+            return True, "Evening", start_idx, end_idx
+        elif term == "afternoon" or term == "afternoons":
+            return True, "Afternoon", start_idx, end_idx 
+        elif term == "nights":
+            return True, "Night", start_idx, end_idx  
+        elif term == "night" or term == "overnight" or term == "tonight":
+            m = re.search("night", text_norm)
+            sidx = m.span(0)[0]
+            eidx = m.span(0)[1]
+            return True, "Night", sidx, eidx  
+        elif term == "today":
+            return True, "Day", start_idx, end_idx
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
+
 #################### Start buildX() Methods #######################
 
 
@@ -740,6 +791,29 @@ def buildCalendarInterval(t6list, t6idCounter, suList):
 ####
 #END_MODULE
 ####
+
+## buildPartOfDay(): Parses out all sutime entities that contain a part of the day expression
+# @author Amy Olex
+# @param t6list The list of T6 objects we currently have.  Will add to these.
+# @param suList The list of SUtime entities to parse
+def buildPartOfDay(t6list, t6idCounter, suList):
+    
+    ## Test out the identification of days
+    for s in suList :
+        boo, val, idxstart, idxend = hasPartOfDay(s)
+        if boo:
+            ref_Sspan, ref_Espan = s.getSpan()
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            my_entity = t6.T6PartOfDayEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, part_of_day_type=val)
+            t6list.append(my_entity)
+            t6idCounter = t6idCounter+1
+            #check here to see if it has a modifier
+            
+    return t6list, t6idCounter
+####
+#END_MODULE
+####    
 
 
 
