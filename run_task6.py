@@ -107,6 +107,7 @@ if __name__ == "__main__":
         my_t6entities, my_t6IDcounter = SUTime_To_T6.buildDayOfWeek(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = SUTime_To_T6.buildTextMonthAndDay(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = SUTime_To_T6.buildAMPM(my_t6entities, my_t6IDcounter, suList)
+        my_t6entities, my_t6IDcounter = SUTime_To_T6.buildCalendarInterval(my_t6entities, my_t6IDcounter, suList)
         
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 

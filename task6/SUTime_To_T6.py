@@ -5,6 +5,7 @@
 #################################
 
 from task6 import t6Entities as t6
+from task6 import utils
 import calendar
 import string
 import re
@@ -174,6 +175,11 @@ def buildT6SecondOfMinute(s):
 ####
 #END_MODULE
 ####
+
+
+
+############# Start hasX() Methods ##################
+
 
 ## hasDayOfWeek(): Takes in a single text string and identifies if it is a day of week
 # @author Amy Olex
@@ -468,6 +474,81 @@ def hasAMPM(suentity):
 #END_MODULE
 ####
 
+## hasTimeZone(): Takes in a single sutime entity and determines if it has a time zone specified in the text.
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs the regex object or None 
+def hasTimeZone(suentity):
+    return re.search('(AST|EST|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
+
+####
+#END_MODULE
+####
+
+## hasCalendarInterval(): Takes in a SUTime entity and identifies if it has any calendar interval phrases like "week" or "days"
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean 
+def hasCalendarInterval(suentity):
+    
+    #convert to all lower
+    #text_lower = suentity.getText().lower()
+    text = suentity.getText()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my period lists
+    singular = ["day","week","month","year","daily","weekly","monthly","yearly"]
+    plural = ["days","weeks","months","years"]
+    
+    #figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(singular+plural))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        #test if the intersect list contains plural or singular period.
+        
+        if len(list(set(intersect) & set (singular))) == 1:
+            singTerm = list(set(intersect) & set (singular))[0]
+            start_idx, end_idx = getSpan(text_norm, singTerm)
+            if singTerm == "day" or singTerm == "daily":
+                return True, "Day", start_idx, end_idx, False
+            elif singTerm == "week" or singTerm == "weekly":
+                return True, "Week", start_idx, end_idx, False
+            elif singTerm == "month" or singTerm == "monthly":
+                return True, "Month", start_idx, end_idx, False
+            elif singTerm == "year" or singTerm == "yearly":
+                return True, "Year", start_idx, end_idx, False
+            
+            
+        if len(list(set(intersect) & set (plural))) == 1:
+            plurTerm = list(set(intersect) & set (plural))[0]
+            start_idx, end_idx = getSpan(text_norm, plurTerm)
+            if plurTerm == "days":
+                return True, "Days", start_idx, end_idx, True
+            elif plurTerm == "weeks":
+                return True, "Weeks", start_idx, end_idx, True
+            elif plurTerm == "months":
+                return True, "Months", start_idx, end_idx, True
+            elif plurTerm == "years":
+                return True, "Years", start_idx, end_idx, True
+              
+        else :
+            return False, None, None, None, None
+    else :
+        return False, None, None, None, None
+    
+####
+#END_MODULE
+####
+
+
+#################### Start buildX() Methods #######################
+
+
 ## buildDayOfWeek(): Parses out all sutime entities that contain a day of the week written out in text form
 # @author Amy Olex
 # @param t6list The list of T6 objects we currently have.  Will add to these.
@@ -606,22 +687,68 @@ def buildAMPM(t6list, t6idCounter, suList):
 #END_MODULE
 ####
 
-## hasTimeZone(): Takes in a single sutime entity and determines if it has a time zone specified in the text.
+## buildCalendarInterval(): Parses out all sutime entities that contain a calendar interval phrase
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
-# @output Outputs the regex object or None 
-def hasTimeZone(suentity):
-    return re.search('(AST|EST|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
+# @param t6list The list of T6 objects we currently have.  Will add to these.
+# @param t6idCounter The next t6ID free for use.
+# @param suList The list of SUtime entities to parse.
+###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning fo the string from sutime represents the number.  If this is not the case the spans may be off.
+def buildCalendarInterval(t6list, t6idCounter, suList):
+    
+    ## Identification of calendar intervals
+    for s in suList :
+        ref_Sspan, ref_Espan = s.getSpan()
 
+        boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
+        if boo:
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            my_interval_entity = t6.T6CalendarIntervalEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val)
+            t6idCounter = t6idCounter+1
+            
+            #check to see if it has a number associated with it.  We assume the number comes before the interval string
+            if idxstart > 0:
+                substr = s.getText()[0:idxstart]
+                m = re.search('([0-9]{1,2})', substr)
+                if m is not None :
+                    num_val = m.group(0)
+                    abs_Sspan = ref_Sspan + m.span(0)[0]
+                    abs_Espan = ref_Sspan + m.span(0)[1]
+                
+                    my_number_entity = t6.T6Number(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
+                    t6idCounter = t6idCounter+1
+                    
+                    #add the number entity to the list
+                    t6list.append(my_number_entity)
+                #else search for a text number
+                else:
+                    texNumVal = utils.getNumberFromText(substr)
+                    if texNumVal is not None:
+                        #create the number entity
+                        my_number_entity = t6.T6Number(entityID=str(t6idCounter)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal)
+                        t6idCounter = t6idCounter+1
+                        #append to list
+                        t6list.append(my_number_entity)
+                        #link to interval entity
+                        my_interval_entity.set_number(my_number_entity.get_id())
+                        
+            
+            t6list.append(my_interval_entity)             
+
+            
+    return t6list, t6idCounter
 ####
 #END_MODULE
 ####
+
+
 
 ## getSpan(): identifies the local span of the serach_text in the input "text"
 # @author Amy Olex
 # @param text The text to be searched
 # @param search_text The text to search for.
 # @output The start index and end index of the search_text string.
+######## ISSUE: This needs to be re-named here and in all the above usages.  Probably should also move this to the utils class.  Dont delete the s.getSpan() as those are from the sutime entity class.
 def getSpan(text, search_text):
     try:
         start_idx = text.index(search_text)

@@ -11,6 +11,7 @@ import dateutil.parser
 import datetime
 from task6 import SUTime_To_T6
 import re
+from word2number import w2n
 
 ## getWhitespaceTokens(): Pasrses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -95,7 +96,18 @@ def markTemporalRefToks(refToks, suList):
     return refToks
 
     
+## getNumberFromText(): takes in a text string and returns the numerical value
+# @author Amy Olex
+# @param text The string containing our number
+# @output value The numerical value of the text string, None is returned if there is no number
+def getNumberFromText(text):
+    try :
+        number = w2n.word_to_num(text)
+    except ValueError:
+        number = None
     
+    
+
     
     
     
