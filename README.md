@@ -25,12 +25,13 @@ We primarily used SUTime to tag relevant temporal data and then wrote our own me
 > 3. _Implicit temporal expressions_ refer to special kinds of named events...
 > 4. _Free-text temporal expressions_ refer to arbitrary kinds of named events or facts with temporal scopes that are merely given by a text phrase but have unique interpretations given the context and background knowledge...
 
+Each type of temporal expression presents unique challenges in handling.
 
 ### 4.  Analysis
 
 
 ### 5.  Conclusion
-This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream applications.  Improvements in correctly identifying free text, ambiguous temporal expressions will continue to be a challenge.
+This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream applications.  Improvements in correctly identifying free-text, ambiguous temporal expressions will continue to be a challenge.  We believe that advances in machine learning will improve correct identification of temporal expressions based on the context in which they are found.  Even the tense of a verb carries temporal information which may or may not be relevant thus complicating the task of tagging free-text temporal expressions. 
 
 
 ---
