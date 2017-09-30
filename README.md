@@ -6,7 +6,7 @@
 ### Usage
 To use type:
 
-`python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR} -a {ANAFORA DIR}`
+`python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR}(default is ./jars) -a {ANAFORA DIR}(default is ./anaforatools)`
 
 ---
 
@@ -15,18 +15,22 @@ Our task was to take text from the AQUINT and TimeBank corpora input and output 
 
 
 ### 2.  Background
-The intent of the this annotation scheme is to capture periods of time that are not well covered by currently existing schemes.  The most common scheme is the TIMEX3[<sup>3</sup>](#references) system used by TimeML[<sup>4</sup>](#references) developed out of the older TIMEX scheme which was created by DARPA in 1995[<sup>5,6</sup>](#references).  Ultimately, the annotations generated in this format can be used by other applications to automatically generate useful information such as a patient's medical timeline from doctor's notes which may not be in chronological order as written.
+The intent of the this annotation scheme is to capture periods of time that are not well covered by currently existing schemes.  The most common scheme is the TIMEX3[<sup>3</sup>](#references) system used by TimeML[<sup>4</sup>](#references) developed out of the older TIMEX scheme which was created by DARPA in 1995[<sup>5,6</sup>](#references).  Ultimately, the annotations generated in this format can be used by other applications to automatically generate useful information such as a patient's medical timeline from doctor's notes which may not be in chronological order as written.  
 
 
 ### 3.  Method
-We primarily used SUTime to tag relevant temporal data and then wrote our own methods in python to break those tagged phrases out into entities which were linked together as described by Bethard.  
+We primarily used SUTime to tag relevant temporal data and then wrote our own methods in python to break those tagged phrases out into entities which were linked together as described by Bethard.  Kuzey et al identified four types of expressions that need to be parsed[<sup>7</sup>](#references):
+> 1. _Explicit temporal expressions_ denote a precise time point or period...
+> 2. _Relative temporal expressions_ refer to dates that can be interpreted with respect to a reference date...
+> 3. _Implicit temporal expressions_ refer to special kinds of named events...
+> 4. _Free-text temporal expressions_ refer to arbitrary kinds of named events or facts with temporal scopes that are merely given by a text phrase but have unique interpretations given the context and background knowledge...
 
 
 ### 4.  Analysis
 
 
 ### 5.  Conclusion
-
+This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream applications.  Improvements in correctly identifying free text, ambiguous temporal expressions will continue to be a challenge.
 
 
 ---
@@ -43,3 +47,5 @@ We primarily used SUTime to tag relevant temporal data and then wrote our own me
 5. <http://timexportal.wikidot.com/timexmuc6>
 
 6. <http://www.cs.nyu.edu/cs/faculty/grishman/muc6.html>
+
+7. Kuzey, E., Setty, V, Strötgen, J, and Weikum, G. (2016) [As Time Goes By: Comprehensive Tagging of Textual Phrases with Temporal Scopes](https://dl.acm.org/citation.cfm?id=2883055). Proceedings of the 25th International Conference on World Wide Web (WWW '16), Montreal, Canada, 4 2016.
