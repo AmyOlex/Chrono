@@ -27,7 +27,8 @@ import re
 # @output List of T6 entities
 def buildT6List(suTimeList, t6ID , dct=None):
     t6List = []
-    for s in suTimeList :         
+    for s in suTimeList :   
+        '''    
         if "DATE" in s.getType():  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
             #Parse out Year function
             t6List, t6ID  = buildT6Year(s,t6ID, t6List)
@@ -58,7 +59,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
             t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)
 
             #call non-standard formatting temporal phrases, need to decide if we are going to read in one SUTime object at a time or pass the list to each function.
-            
+        '''    
         t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
         t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List)            
         t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
@@ -249,6 +250,7 @@ def buildDayOfWeek(s, t6ID, t6List):
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @output t6List, t6ID Returns the expanded t6List and the incremented t6ID.
+# ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 def buildTextMonthAndDay(s, t6ID, t6List):
     
     boo, val, idxstart, idxend = hasTextMonth(s)
@@ -262,18 +264,35 @@ def buildTextMonthAndDay(s, t6ID, t6List):
         #check to see if it has a day associated with it.  We assume the day comes after the month.
         #idx_end is the last index of the month.  If there are any characters after it the lenght of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
-            m = re.search('([0-9]{1,2})', s.getText()[idxend:len(s.getText())])
-            day_val = m.group(0)
-            day_startidx, day_endidx = getSpan(s.getText(), day_val)
-            abs_Sspan = ref_Sspan + day_startidx
-            abs_Espan = ref_Sspan + day_endidx
-            
-            my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
-            t6List.append(my_day_entity)
-            t6ID = t6ID+1
-            #now link the month to the day
-            my_month_entity.set_sub_interval(my_day_entity.get_id())
-        
+            substr = s.getText()[idxend:len(s.getText())]
+            m = re.search('([0-9]{1,2})', substr)
+            if m is not None :
+                day_val = m.group(0)
+                day_startidx, day_endidx = getSpan(s.getText(), day_val)
+                abs_Sspan = ref_Sspan + day_startidx
+                abs_Espan = ref_Sspan + day_endidx
+                
+                my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
+                t6List.append(my_day_entity)
+                t6ID = t6ID+1
+                #now link the month to the day
+                my_month_entity.set_sub_interval(my_day_entity.get_id())
+            #else test for a ordinal day of month
+            else:
+                texNumVal = utils.getNumberFromText(substr)
+                
+                if texNumVal is not None:
+                    day_startidx, day_endidx = getSpan(s.getText(), substr)
+                    abs_Sspan = ref_Sspan + day_startidx
+                    abs_Espan = ref_Sspan + day_endidx
+                    
+                    my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
+                    t6List.append(my_day_entity)
+                    t6ID = t6ID+1
+                    #now link the month to the day
+                    my_month_entity.set_sub_interval(my_day_entity.get_id())
+                
+                
         t6List.append(my_month_entity)
     
         
@@ -312,7 +331,8 @@ def buildAMPM(s, t6ID, t6List):
         #We could parse out the time from the sutime normalized value.  The problem is getting the correct span.
         #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
         if idxstart > 0:
-            m = re.search('([0-9]{1,2})', s.getText()[0:idxstart])
+            substr = s.getText()[0:idxstart]
+            m = re.search('([0-9]{1,2})', substr)
             if m is not None :
                 hour_val = m.group(0)
                 abs_Sspan = ref_Sspan + m.span(0)[0]
@@ -324,9 +344,22 @@ def buildAMPM(s, t6ID, t6List):
                  
                 if my_tz_entity is not None:
                     my_hour_entity.set_time_zone(my_tz_entity.get_id())
-                
+            
                 #add the hour entity to the list
                 t6List.append(my_hour_entity)
+            
+            #else search for a text number
+            else:
+                texNumVal = utils.getNumberFromText(substr)
+                
+                if texNumVal is not None:
+                    #create the hour entity
+                    my_hour_entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal, ampm=my_AMPM_entity.get_id())
+                    t6ID = t6ID+1
+                    if my_tz_entity is not None:
+                        my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                    #append to list
+                    t6List.append(my_hour_entity) 
                          
     return t6List, t6ID
     

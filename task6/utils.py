@@ -62,7 +62,11 @@ def manualT6AddEntities(t6list):
     t6list.append(t6.T6BetweenOperator(entityID=51, start_span=387, end_span=392, start_interval_type="DocTime", end_interval_type="Link", end_interval=48))
     
     return(t6list)
-    
+####
+#END_MODULE
+####
+
+  
 ## write_xml(): Writes out the full XML file for all T6entities in list.
 # @author Amy Olex
 # @param t6list The list of T6 objects needed to be written in the file.
@@ -75,11 +79,10 @@ def write_xml(t6list, outfile):
     
     fout.write("\n</annotations>\n</data>")
     fout.close()
-    
+ ####
+ #END_MODULE
+ ####   
 
-
-
-    
 
 ## markTemporalRefToks(): Marks all the reference tokens that show up in the SUTime entity list.
 # @author Amy Olex
@@ -94,7 +97,9 @@ def markTemporalRefToks(refToks, suList):
         if ref.isTemporal() is None:
             ref.setTemporal(False)
     return refToks
-
+####
+#END_MODULE
+####
     
 ## getNumberFromText(): takes in a text string and returns the numerical value
 # @author Amy Olex
@@ -104,14 +109,76 @@ def getNumberFromText(text):
     try :
         number = w2n.word_to_num(text)
     except ValueError:
-        number = None
-    
-    
+        text_lower = text.lower()
+        if(re.search('1st|first', text_lower) is not None):
+            number = 1
+        elif(re.search('2nd|second', text_lower) is not None):
+            number = 2
+        elif(re.search('3rd|third', text_lower) is not None):
+            number = 3
+        elif(re.search('4th|fourth', text_lower) is not None):
+            number = 4
+        elif(re.search('5th|fifth', text_lower) is not None):
+            number = 5
+        elif(re.search('6th|sixth', text_lower) is not None):
+            number = 6
+        elif(re.search('7th|seventh', text_lower) is not None):
+            number = 7
+        elif(re.search('8th|eighth', text_lower) is not None):
+            number = 8
+        elif(re.search('9th|ninth', text_lower) is not None):
+            number = 9
+        elif(re.search('10th|tenth', text_lower) is not None):
+            number = 10
+        elif(re.search('11th|eleventh', text_lower) is not None):
+            number = 11
+        elif(re.search('12th|twelfth', text_lower) is not None):
+            number = 12
+        elif(re.search('13th|thirteenth', text_lower) is not None):
+            number = 13
+        elif(re.search('14th|fourteenth', text_lower) is not None):
+            number = 14
+        elif(re.search('15th|fifteenth', text_lower) is not None):
+            number = 15
+        elif(re.search('16th|sixteenth', text_lower) is not None):
+            number = 16
+        elif(re.search('17th|seventeenth', text_lower) is not None):
+            number = 17
+        elif(re.search('18th|eighteenth', text_lower) is not None):
+            number = 18
+        elif(re.search('19th|nineteenth', text_lower) is not None):
+            number = 19
+        elif(re.search('20th|twentieth', text_lower) is not None):
+            number = 20
+        elif(re.search('21st|twenty-first', text_lower) is not None):
+            number = 21
+        elif(re.search('22nd|twenty-second', text_lower) is not None):
+            number = 22
+        elif(re.search('23rd|twenty-third', text_lower) is not None):
+            number = 23
+        elif(re.search('24th|twenty-fourth', text_lower) is not None):
+            number = 24
+        elif(re.search('25th|twenty-fifth', text_lower) is not None):
+            number = 25
+        elif(re.search('26th|twenty-sixth', text_lower) is not None):
+            number = 26
+        elif(re.search('27th|twenty-seventh', text_lower) is not None):
+            number = 27
+        elif(re.search('28th|twenty-eighth', text_lower) is not None):
+            number = 28
+        elif(re.search('29th|twenty-ninth', text_lower) is not None):
+            number = 29
+        elif(re.search('30th|thirtieth', text_lower) is not None):
+            number = 30
+        elif(re.search('31st|thirty-first', text_lower) is not None):
+            number = 31
+        else:
+            number = None                                                                                                                    
 
-    
-    
-    
-    
+    return number
+####
+#END_MODULE
+####      
     
     
     
