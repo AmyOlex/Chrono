@@ -250,6 +250,7 @@ def buildDayOfWeek(s, t6ID, t6List):
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @output t6List, t6ID Returns the expanded t6List and the incremented t6ID.
+# ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 def buildTextMonthAndDay(s, t6ID, t6List):
     
     boo, val, idxstart, idxend = hasTextMonth(s)
@@ -263,18 +264,35 @@ def buildTextMonthAndDay(s, t6ID, t6List):
         #check to see if it has a day associated with it.  We assume the day comes after the month.
         #idx_end is the last index of the month.  If there are any characters after it the lenght of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
-            m = re.search('([0-9]{1,2})', s.getText()[idxend:len(s.getText())])
-            day_val = m.group(0)
-            day_startidx, day_endidx = getSpan(s.getText(), day_val)
-            abs_Sspan = ref_Sspan + day_startidx
-            abs_Espan = ref_Sspan + day_endidx
-            
-            my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
-            t6List.append(my_day_entity)
-            t6ID = t6ID+1
-            #now link the month to the day
-            my_month_entity.set_sub_interval(my_day_entity.get_id())
-        
+            substr = s.getText()[idxend:len(s.getText())]
+            m = re.search('([0-9]{1,2})', substr)
+            if m is not None :
+                day_val = m.group(0)
+                day_startidx, day_endidx = getSpan(s.getText(), day_val)
+                abs_Sspan = ref_Sspan + day_startidx
+                abs_Espan = ref_Sspan + day_endidx
+                
+                my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
+                t6List.append(my_day_entity)
+                t6ID = t6ID+1
+                #now link the month to the day
+                my_month_entity.set_sub_interval(my_day_entity.get_id())
+            #else test for a ordinal day of month
+            else:
+                texNumVal = utils.getNumberFromText(substr)
+                
+                if texNumVal is not None:
+                    day_startidx, day_endidx = getSpan(s.getText(), substr)
+                    abs_Sspan = ref_Sspan + day_startidx
+                    abs_Espan = ref_Sspan + day_endidx
+                    
+                    my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
+                    t6List.append(my_day_entity)
+                    t6ID = t6ID+1
+                    #now link the month to the day
+                    my_month_entity.set_sub_interval(my_day_entity.get_id())
+                
+                
         t6List.append(my_month_entity)
     
         
@@ -315,7 +333,6 @@ def buildAMPM(s, t6ID, t6List):
         if idxstart > 0:
             substr = s.getText()[0:idxstart]
             m = re.search('([0-9]{1,2})', substr)
-            print(m)
             if m is not None :
                 hour_val = m.group(0)
                 abs_Sspan = ref_Sspan + m.span(0)[0]
