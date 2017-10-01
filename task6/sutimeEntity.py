@@ -17,18 +17,19 @@ import json
 class sutimeEntity :
     
     ## The constructor
-    def __init__(self, id, text, start_span, end_span, sutype, suvalue) :
+    def __init__(self, id, text, start_span, end_span, sutype, suvalue, doctime) :
         self.id = id
         self.text = text
         self.start_span = start_span
         self.end_span = end_span
         self.sutype = sutype
         self.suvalue = suvalue
+        self.doctime = doctime
       
     ## String representation    
     def __str__(self) :
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
-        return str(self.id) + " " + self.text + span_str + self.sutype  + " " + self.suvalue
+        return str(self.id) + " " + self.text + span_str + self.sutype  + " " + self.suvalue + " " + self.doctime
     
 
     #### Methods to SET properties ###
@@ -59,6 +60,9 @@ class sutimeEntity :
     #  @param suvalue The entities normalized SUTime value
     def setValue(self, suvalue) :
         self.suvalue = suvalue
+    
+    def setDoctime(self, doctime) :
+        self.doctime = doctime
         
     #### Methods to GET properties ####
     
@@ -81,16 +85,20 @@ class sutimeEntity :
     ## Gets the entity's suvalue
     def getValue(self) :
         return(self.suvalue)
+    
+    ## Gets the entity's doctime
+    def getDoctime(self):
+        return(self.doctime)
 
 ## Function to convert json output of sutime to a list of sutimeEntities
 # @author Amy Olex
 # @param sut_json The SUTime parsed json string (required)
 # @param id_counter The number the ID counter should start at. Default is 0.
 # @output A list of sutimeEntity objects in the same order as the input json list.
-def import_SUTime(sut_json, id_counter=0) :
+def import_SUTime(sut_json, doctime = None, id_counter=0) :
     su_list = []
     for j in sut_json:
-        su_list.append(sutimeEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], sutype=j['type'], suvalue=j['value']))
+        su_list.append(sutimeEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], sutype=j['type'], suvalue=j['value'], doctime=doctime))
         id_counter = id_counter +1
         
     return su_list
