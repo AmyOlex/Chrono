@@ -29,7 +29,7 @@ import datetime
 def buildT6List(suTimeList, t6ID , dct=None):
     t6List = []
     for s in suTimeList :   
-        '''    
+         
         if "DATE" in s.getType():  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
             #Parse out Year function
             t6List, t6ID  = buildT6Year(s,t6ID, t6List)
@@ -60,7 +60,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
             t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)
 
             #call non-standard formatting temporal phrases, need to decide if we are going to read in one SUTime object at a time or pass the list to each function.
-        '''    
+           
         t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
         t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
         t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
