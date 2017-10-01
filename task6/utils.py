@@ -105,7 +105,7 @@ def getNumberFromText(text):
         number = w2n.word_to_num(text)
     except ValueError:
         number = None
-    
+    return number
     
 
     
