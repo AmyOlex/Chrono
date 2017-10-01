@@ -8,7 +8,7 @@ Make sure you have python and Java installed.
 
 Download our tool:
 ```bash
->>git clone https://github.com/AmyOlex/CMSC516-SemEval2018-Task6.git
+>> git clone https://github.com/AmyOlex/CMSC516-SemEval2018-Task6.git
 ```
 
 Install SUTime (used for some back end tagging):
@@ -20,7 +20,7 @@ Install SUTime (used for some back end tagging):
   ```
 Install jar files required for SUTime (uses [maven](https://www.vultr.com/docs/how-to-install-apache-maven-on-ubuntu-16-04)):
 ```bash
->>mvn dependency:copy-dependencies -DoutputDirectory=./jars
+>> mvn dependency:copy-dependencies -DoutputDirectory=./jars
 ```
 
 Download the Stanford parsesr:
@@ -28,7 +28,7 @@ Download the Stanford parsesr:
 
 Download anafora tools (used for some text processing and evaluation of results):
 ```bash
-git clone https://github.com/weitechen/anafora.git
+>> git clone https://github.com/weitechen/anafora.git
 ```
 
 Download trial data:
@@ -39,7 +39,9 @@ Download trial data:
 ### Usage
 To use type:
 
-`python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR}(default is ./jars) -a {ANAFORA DIR}(default is ./anaforatools)`
+```bash
+>> python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR}(default is ./jars) -a {ANAFORA DIR}(default is ./anaforatools)
+```
 
 ---
 
