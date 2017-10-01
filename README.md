@@ -23,17 +23,16 @@ Install jar files required for SUTime (uses [maven](https://www.vultr.com/docs/h
 >> mvn dependency:copy-dependencies -DoutputDirectory=./jars
 ```
 
-Download the Stanford parsesr:
+Download the Stanford parser:
 <http://projects.csail.mit.edu/spatial/Stanford_Parser>
 
 Download anafora tools (used for some text processing and evaluation of results):
 ```bash
->> git clone https://github.com/weitechen/anafora.git
+>> git clone https://github.com/bethard/anaforatools.git
 ```
 
 Download trial data:
 <https://github.com/bethard/anafora-annotations/releases/tag/semeval2018-trial>
-
 
 
 ### Usage
