@@ -19,7 +19,7 @@ def callSUTimeParse(file_path, jar_files):
     file = open(file_path, "r")
     test_case = file.read()
     file.close()
-    print(jar_files)
+    #print(jar_files)
     sutime = SUTime(jars=jar_files, mark_time_ranges=True)
     #outputText = json.dumps(sutime.parse(test_case), sort_keys=True, indent=4)
     outputText = sutime.parse(test_case)

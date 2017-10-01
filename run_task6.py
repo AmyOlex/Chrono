@@ -87,7 +87,7 @@ if __name__ == "__main__":
         
         
         ## parse out SUTime entities
-        print(infiles[0])
+        #print(infiles[0])
         json_str = sutime_wrapper.callSUTimeParse(infiles[f], args.j)
         suList = sutimeEntity.import_SUTime(sut_json=json_str)
         if(debug) : 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         docTime = utils.getDocTime(infiles[f] + ".dct")
         print(docTime) 
         
-        #t6MasterList=SUTime_To_T6.buildT6List(suList)
+        t6MasterList, my_t6IDcounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,docTime)
         my_t6entities, my_t6IDcounter = SUTime_To_T6.buildDayOfWeek(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = SUTime_To_T6.buildTextMonthAndDay(my_t6entities, my_t6IDcounter, suList)
         my_t6entities, my_t6IDcounter = SUTime_To_T6.buildAMPM(my_t6entities, my_t6IDcounter, suList)
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         #t6list = utils.manualT6AddEntities(my_t6entities)
         utils.write_xml(t6list=my_t6entities, outfile=outfiles[f])
         #print(len(t6MasterList))
-        #utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
+        utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
     
     
     os.chdir(args.a)

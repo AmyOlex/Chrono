@@ -25,47 +25,54 @@ import re
 # @param list of SUTime Output
 # @param document creation time (optional)
 # @output List of T6 entities
-def buildT6List(suTimeList, dct=None):
-    t6list = []
-    for s in suTimeList : 
-        #Split each entity into seperate chunks for evaluation
-        #eid = s.split()[0]
-        #etext = s.split()[1]
-        #espan = s.split()[2]
-        #eBeginSpan = epsan.split(",")[0].strip("<") #not sure if this is the best way, gonna write a function soon
-        #eEndSpan = epspan.split(",")[1].strip(">")
-        #etype = s.split()[3]
-        #evalue = s.split()[4]
-        
+def buildT6List(suTimeList, t6ID , dct=None):
+    t6List = []
+    for s in suTimeList :         
         if "DATE" in s.getType():  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
             #Parse out Year function
-            t6list.append(buildT6Year(s))
+            t6List, t6ID  = buildT6Year(s,t6ID, t6List)
             #Parse out Two-Digit Year (if applicable) #taking out for now until I figure out what I want to do
             #t6list.append(buildT62DigitYear(s))
             #Parse out Month-of-Year
-            t6list.append(buildT6MonthOfYear(s))
+            t6List, t6ID  = buildT6MonthOfYear(s,t6ID, t6List)
             #Parse out Day-of-Month
-            t6list.append(buildT6DayOfMonth(s))
+            t6List, t6ID  = buildT6DayOfMonth(s,t6ID, t6List)           
+            
             
         if "TIME" in s.getType(): #parse out all of Date data as well as Hour-of-Day, Minute-of-Hour, and Second-of-Minute  
             #Parse out Year function
-            t6list.append(buildT6Year(s))
+            t6List, t6ID  = buildT6Year(s,t6ID, t6List)
             #Parse out Two-Digit Year (if applicable) #taking out for now until I figure out what I want to do
             #t6list.append(buildT62DigitYear(s))
             #Parse out Month-of-Year
-            t6list.append(buildT6MonthOfYear(s))
+            t6List, t6ID  = buildT6MonthOfYear(s,t6ID, t6List)
             #Parse out Day-of-Month
-            t6list.append(buildT6DayOfMonth(s))  
+            t6List, t6ID  = buildT6DayOfMonth(s,t6ID, t6List) 
 
             #Going to rewrite this function to be a little cleaner soon, just getting my ideas out          
             #Parse out HourOfDay
-            t6list.append(buildT6HourOfDay(s))
+            t6List, t6ID  = buildT6HourOfDay(s,t6ID, t6List)
             #Parse out MinuteOfHour
-            t6list.append(buildT6MinuteOfHour(s))    
+            t6List, t6ID  = buildT6MinuteOfHour(s,t6ID,t6List)   
             #Parse out SecondOfMinute
-            t6list.append(buildT6SecondOfMinute(s))
+            t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)
 
-    return t6list
+            #call non-standard formatting temporal phrases, need to decide if we are going to read in one SUTime object at a time or pass the list to each function.
+            
+            '''
+            if hasDayOfWeek(s):
+                t6List, t6ID  = buildDayOfWeek(t6List, t6ID , s)
+            if hasTextMonth(s):
+                t6List, t6ID  = buildTextMonth(t6List, t6ID , s)            
+            if hasAMPM(s):
+                t6List, t6ID  = buildAMPM(t6List, t6ID , s)                
+            if hasCalendarInterval(s):
+                t6List, t6ID  = buildCalendarInterval(t6List, t6ID , s)
+            if hasPartOfDay(s):
+                t6List, t6ID  = buildPartOfDay(t6List, t6ID , s)
+            '''
+
+    return t6List, t6ID
 ####
 #END_MODULE
 ####
@@ -74,9 +81,11 @@ def buildT6List(suTimeList, dct=None):
 # @author Nicholas Morton
 # @param SUTime 
 # @output T6Year Entity
-def buildT6Year(s):
-    t6YearEntity = t6.T6YearEntity(s.id,s.start_span,s.end_span-6,s.suvalue.split("-")[0])  #not sure if this is the best way to do this, it had the format it yyyy-mm-dd
-    return t6YearEntity
+def buildT6Year(s, t6ID, t6List):
+    t6YearEntity = t6.T6YearEntity(str(t6ID )+"entity",s.start_span,s.end_span-4,s.suvalue.split("-")[0])  
+    t6List.append(t6YearEntity)
+    t6ID =t6ID +1
+    return t6List,t6ID
 ####
 #END_MODULE
 ####
@@ -85,9 +94,10 @@ def buildT6Year(s):
 # @author Nicholas Morton
 # @param SUTime 
 # @output T6Year Entity
-def buildT62DigitYear(s): #need to work on this one...
-    t6YearEntity = t6.T6YearEntity(s.id,s.start_span,s.end_span-6,s.suvalue.split("-")[0])  #not sure if this is the best way to do this, it had the format it yyyy-mm-dd
-    return t6YearEntity
+def buildT62DigitYear(s, t6ID, t6List): #format 0203 -> February 2003?
+    if len(s.suvalue) == 4:            
+        t6YearEntity = t6.T6YearEntity(s.id,s.start_span+2,s.end_span,s.suvalue[-2:])  
+    return t6List, t6ID
 ####
 #END_MODULE
 ####
@@ -96,16 +106,18 @@ def buildT62DigitYear(s): #need to work on this one...
 # @author Nicholas Morton
 # @param SUTime 
 # @output T6MonthOfYear Entity
-def buildT6MonthOfYear(s):
+def buildT6MonthOfYear(s, t6ID, t6List):
     #basing this off of the yyyy-mm-dd format of the value, might need to revisit later
     suval_split = s.suvalue.split("-")
     if len(suval_split) == 3 :
         month = calendar.month_name[int(suval_split[1])] #should be a valid month number (1-12)
-        t6MonthOfYear = t6.T6MonthOfYearEntity(s.id,s.start_span + 5,s.end_span - 3,month) #might need to pull the proper spans from the reference tokens, this seems inadequete  
+        t6MonthOfYear = t6.T6MonthOfYearEntity(str(t6ID )+"entity",s.start_span + 5,s.end_span - 3,month) #might need to pull the proper spans from the reference tokens
+        t6List.append(t6MonthOfYear)
+        t6ID =t6ID +1
     else :
         t6MonthOfYear = None
         
-    return t6MonthOfYear
+    return t6List, t6ID
 ####
 #END_MODULE
 ####
@@ -114,14 +126,16 @@ def buildT6MonthOfYear(s):
 # @author Nicholas Morton
 # @param SUTime 
 # @output T6DayOfMonthEntity
-def buildT6DayOfMonth(s):
+def buildT6DayOfMonth(s, t6ID, t6List):
     #basing this off of the yyyy-mm-dd format of the value, might need to revisit later
     suval_split = s.suvalue.split("-")
     if len(suval_split) == 3 :
-        t6DayOfMonth = t6.T6DayOfMonthEntity(s.id,s.start_span + 8,s.end_span,suval_split[2]) #might need to pull the proper spans from the reference tokens
-        return t6DayOfMonth
+        t6DayOfMonth = t6.T6DayOfMonthEntity(str(t6ID )+"entity",s.start_span + 8,s.end_span,suval_split[2]) #might need to pull the proper spans from the reference tokens
+        t6List.append(t6DayOfMonth)
+        t6ID =t6ID +1
+        return t6List, t6ID
     else :
-        return None
+        return t6List, t6ID
     
 ####
 #END_MODULE
@@ -131,16 +145,19 @@ def buildT6DayOfMonth(s):
 # @author Nicholas Morton
 # @param SUTime Entity
 # @output T6HourOfDay Entity
-def buildT6HourOfDay(s):
-    sTime = s.suvalue.split("T")[1] #left with 17:00-0500
-    sHour = sTime.split(":")[0]
-    sSet = "AM"
-    if int(sHour) > 12: 
-        sHour=int(sHour)-12
-        sSet = "PM"
+def buildT6HourOfDay(s, t6ID, t6List):
+    if 'TNI' not in s.suvalue:       #had to account for TNI for the overnight one...
+        sTime = s.suvalue.split("T")[1] 
+        sHour = sTime.split(":")[0]        
+        sSet = "AM"
+        if int(sHour) > 12: 
+            sHour=int(sHour)-12
+            sSet = "PM"
 
-    t6HourOfDay = t6.T6HourOfDayEntity(s.id,s.start_span+10,s.end_span-8,sHour,sSet)  #might need to pull the proper spans from the reference tokens, also need to pull time zone from text maybe?
-    return t6HourOfDay
+        t6HourOfDay = t6.T6HourOfDayEntity(str(t6ID )+"entity",s.start_span+10,s.end_span-8,sHour,sSet)  #might need to pull the proper spans from the reference tokens
+        t6List.append(t6HourOfDay)
+        t6ID  = t6ID +1
+    return t6List, t6ID
 ####
 #END_MODULE
 ####
@@ -149,12 +166,16 @@ def buildT6HourOfDay(s):
 # @author Nicholas Morton
 # @param SUTime Entity
 # @output T6MinuteOfHour Entity
-def buildT6MinuteOfHour(s):
+def buildT6MinuteOfHour(s,t6ID, t6List):
     sTime = s.suvalue.split("T")[1] #left with 17:00-0500
     sMinute = sTime.split("-")[0]
-    sMinute = sMinute.split(":")[1] #should be a valid number between 00-59
-    t6MinuteOfHour = t6.T6MinuteOfHourEntity(s.id,s.start_span+14,s.end_span-6,sMinute)  #might need to pull the proper spans from the reference tokens
-    return t6MinuteOfHour
+    suval_split = s.suvalue.split(":")
+    if len(suval_split)==2:
+        sMinute = sMinute.split(":")[1] #should be a valid number between 00-59
+        t6MinuteOfHour = t6.T6MinuteOfHourEntity(str(t6ID )+"entity",s.start_span+14,s.end_span-6,sMinute)  #might need to pull the proper spans from the reference tokens
+        t6List.append(t6MinuteOfHour)
+        t6ID  = t6ID +1
+    return t6List, t6ID
 ####
 #END_MODULE
 ####
@@ -163,15 +184,17 @@ def buildT6MinuteOfHour(s):
 # @author Nicholas Morton
 # @param SUTime Entity
 # @output T6HourOfDay Entity
-def buildT6SecondOfMinute(s):
+def buildT6SecondOfMinute(s,t6ID, t6List):
     sTime = s.suvalue.split("T")[1] #left with 17:00-0500
     sSecond="00"
 
     if sTime.count(":") > 1: #Time string like 17:00:00
         sMinute = sTime.split("-")[0]
         sSecond = sMinute.split(":")[2]
-    t6SecondOfMinute = t6.T6SecondOfMinuteEntity(s.id,s.start_span+14,s.end_span-6,sSecond)  #might need to pull the proper spans from the reference tokens/not sure what we should do if there are no seconds defined...
-    return t6SecondOfMinute
+    t6SecondOfMinute = t6.T6SecondOfMinuteEntity(str(t6ID )+"entity",s.start_span+14,s.end_span-6,sSecond)  #might need to pull the proper spans from the reference tokens
+    t6List.append(t6SecondOfMinute)
+    t6ID  = t6ID +1
+    return t6List, t6ID
 ####
 #END_MODULE
 ####
@@ -604,7 +627,7 @@ def hasPartOfDay(suentity):
 # @author Amy Olex
 # @param t6list The list of T6 objects we currently have.  Will add to these.
 # @param suList The list of SUtime entities to parse
-def buildDayOfWeek(t6list, t6idCounter, suList):
+def buildDayOfWeek(t6list, t6IDCounter, suList):
     
     ## Test out the identification of days
     for s in suList :
@@ -613,33 +636,33 @@ def buildDayOfWeek(t6list, t6idCounter, suList):
             ref_Sspan, ref_Espan = s.getSpan()
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_entity = t6.T6DayOfWeekEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, day_type=val)
+            my_entity = t6.T6DayOfWeekEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, day_type=val)
             t6list.append(my_entity)
-            t6idCounter = t6idCounter+1
+            t6IDCounter = t6IDCounter+1
             #check here to see if it has a modifier
             hasMod, mod_type, mod_start, mod_end = hasModifier(s)
             if(hasMod):
                 if mod_type == "This":
-                    t6list.append(t6.T6ThisOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
+                    t6list.append(t6.T6ThisOperator(entityID=t6IDCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6IDCounter = t6IDCounter+1
                     
                 if mod_type == "Next":
-                    t6list.append(t6.T6NextOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
+                    t6list.append(t6.T6NextOperator(entityID=t6IDCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6IDCounter = t6IDCounter+1
                     
                 if mod_type == "Last":
-                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
+                    t6list.append(t6.T6LastOperator(entityID=t6IDCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6IDCounter = t6IDCounter+1
                 else:
-                    t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                    t6idCounter = t6idCounter+1
+                    t6list.append(t6.T6LastOperator(entityID=t6IDCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                    t6IDCounter = t6IDCounter+1
                     
             else:
-                t6list.append(t6.T6LastOperator(entityID=t6idCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                t6idCounter = t6idCounter+1
+                t6list.append(t6.T6LastOperator(entityID=t6IDCounter, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6IDCounter = t6IDCounter+1
         
             
-    return t6list, t6idCounter
+    return t6list, t6IDCounter
 ####
 #END_MODULE
 ####    
@@ -649,7 +672,7 @@ def buildDayOfWeek(t6list, t6idCounter, suList):
 # @author Amy Olex
 # @param t6list The list of T6 objects we currently have.  Will add to these.
 # @param suList The list of SUtime entities to parse
-def buildTextMonthAndDay(t6list, t6idCounter, suList):
+def buildTextMonthAndDay(t6list, t6IDCounter, suList):
     
     ## Test out the identification of days
     for s in suList :
@@ -658,8 +681,8 @@ def buildTextMonthAndDay(t6list, t6idCounter, suList):
             ref_Sspan, ref_Espan = s.getSpan()
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_month_entity = t6.T6MonthOfYearEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, month_type=val)
-            t6idCounter = t6idCounter+1
+            my_month_entity = t6.T6MonthOfYearEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, month_type=val)
+            t6IDCounter = t6IDCounter+1
             
             #check to see if it has a day associated with it.  We assume the day comes after the month.
             #idx_end is the last index of the month.  If there are any characters after it the lenght of the string will be greater than the endidx.
@@ -671,16 +694,16 @@ def buildTextMonthAndDay(t6list, t6idCounter, suList):
                 abs_Sspan = ref_Sspan + day_startidx
                 abs_Espan = ref_Sspan + day_endidx
                 
-                my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
+                my_day_entity = t6.T6DayOfMonthEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
                 t6list.append(my_day_entity)
-                t6idCounter = t6idCounter+1
+                t6IDCounter = t6IDCounter+1
                 #now link the month to the day
                 my_month_entity.set_sub_interval(my_day_entity.get_id())
             
             t6list.append(my_month_entity)
         
             
-    return t6list, t6idCounter
+    return t6list, t6IDCounter
 ####
 #END_MODULE
 ####
@@ -689,7 +712,7 @@ def buildTextMonthAndDay(t6list, t6idCounter, suList):
 # @author Amy Olex
 # @param t6list The list of T6 objects we currently have.  Will add to these.
 # @param suList The list of SUtime entities to parse
-def buildAMPM(t6list, t6idCounter, suList):
+def buildAMPM(t6list, t6IDCounter, suList):
     
     ## Test out the identification of days
     for s in suList :
@@ -697,9 +720,9 @@ def buildAMPM(t6list, t6idCounter, suList):
         ## Identify if a time zone string exists
         tz = hasTimeZone(s)
         if tz is not None:
-            my_tz_entity = t6.T6TimeZoneEntity(str(t6idCounter)+"entity", start_span = tz.span(0)[0]+ref_Sspan, end_span=tz.span(0)[1]+ref_Sspan)
+            my_tz_entity = t6.T6TimeZoneEntity(str(t6IDCounter)+"entity", start_span = tz.span(0)[0]+ref_Sspan, end_span=tz.span(0)[1]+ref_Sspan)
             t6list.append(my_tz_entity)
-            t6idCounter = t6idCounter+1
+            t6IDCounter = t6IDCounter+1
         else:
             my_tz_entity = None
          
@@ -707,8 +730,8 @@ def buildAMPM(t6list, t6idCounter, suList):
         if boo:
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_AMPM_entity = t6.T6AMPMOfDayEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, ampm_type=val)
-            t6idCounter = t6idCounter+1
+            my_AMPM_entity = t6.T6AMPMOfDayEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, ampm_type=val)
+            t6IDCounter = t6IDCounter+1
             t6list.append(my_AMPM_entity)
             
             #check to see if it has a time associated with it.  We assume the time comes before the AMPM string
@@ -721,9 +744,9 @@ def buildAMPM(t6list, t6idCounter, suList):
                     abs_Sspan = ref_Sspan + m.span(0)[0]
                     abs_Espan = ref_Sspan + m.span(0)[1]
                 
-                    my_hour_entity = t6.T6HourOfDayEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=hour_val, ampm=my_AMPM_entity.get_id())
+                    my_hour_entity = t6.T6HourOfDayEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=hour_val, ampm=my_AMPM_entity.get_id())
                      
-                    t6idCounter = t6idCounter+1
+                    t6IDCounter = t6IDCounter+1
                      
                     if my_tz_entity is not None:
                         my_hour_entity.set_time_zone(my_tz_entity.get_id())
@@ -733,7 +756,7 @@ def buildAMPM(t6list, t6idCounter, suList):
                          
 
             
-    return t6list, t6idCounter
+    return t6list, t6IDCounter
 ####
 #END_MODULE
 ####
@@ -741,10 +764,10 @@ def buildAMPM(t6list, t6idCounter, suList):
 ## buildCalendarInterval(): Parses out all sutime entities that contain a calendar interval phrase
 # @author Amy Olex
 # @param t6list The list of T6 objects we currently have.  Will add to these.
-# @param t6idCounter The next t6ID free for use.
+# @param t6IDCounter The next t6ID  free for use.
 # @param suList The list of SUtime entities to parse.
 ###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning fo the string from sutime represents the number.  If this is not the case the spans may be off.
-def buildCalendarInterval(t6list, t6idCounter, suList):
+def buildCalendarInterval(t6list, t6IDCounter, suList):
     
     ## Identification of calendar intervals
     for s in suList :
@@ -754,8 +777,8 @@ def buildCalendarInterval(t6list, t6idCounter, suList):
         if boo:
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_interval_entity = t6.T6CalendarIntervalEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val)
-            t6idCounter = t6idCounter+1
+            my_interval_entity = t6.T6CalendarIntervalEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val)
+            t6IDCounter = t6IDCounter+1
             
             #check to see if it has a number associated with it.  We assume the number comes before the interval string
             if idxstart > 0:
@@ -766,8 +789,8 @@ def buildCalendarInterval(t6list, t6idCounter, suList):
                     abs_Sspan = ref_Sspan + m.span(0)[0]
                     abs_Espan = ref_Sspan + m.span(0)[1]
                 
-                    my_number_entity = t6.T6Number(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
-                    t6idCounter = t6idCounter+1
+                    my_number_entity = t6.T6Number(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
+                    t6IDCounter = t6IDCounter+1
                     
                     #add the number entity to the list
                     t6list.append(my_number_entity)
@@ -776,8 +799,8 @@ def buildCalendarInterval(t6list, t6idCounter, suList):
                     texNumVal = utils.getNumberFromText(substr)
                     if texNumVal is not None:
                         #create the number entity
-                        my_number_entity = t6.T6Number(entityID=str(t6idCounter)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal)
-                        t6idCounter = t6idCounter+1
+                        my_number_entity = t6.T6Number(entityID=str(t6IDCounter)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal)
+                        t6IDCounter = t6IDCounter+1
                         #append to list
                         t6list.append(my_number_entity)
                         #link to interval entity
@@ -787,7 +810,7 @@ def buildCalendarInterval(t6list, t6idCounter, suList):
             t6list.append(my_interval_entity)             
 
             
-    return t6list, t6idCounter
+    return t6list, t6IDCounter
 ####
 #END_MODULE
 ####
@@ -796,7 +819,7 @@ def buildCalendarInterval(t6list, t6idCounter, suList):
 # @author Amy Olex
 # @param t6list The list of T6 objects we currently have.  Will add to these.
 # @param suList The list of SUtime entities to parse
-def buildPartOfDay(t6list, t6idCounter, suList):
+def buildPartOfDay(t6list, t6IDCounter, suList):
     
     ## Test out the identification of days
     for s in suList :
@@ -805,12 +828,12 @@ def buildPartOfDay(t6list, t6idCounter, suList):
             ref_Sspan, ref_Espan = s.getSpan()
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
-            my_entity = t6.T6PartOfDayEntity(entityID=str(t6idCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, part_of_day_type=val)
+            my_entity = t6.T6PartOfDayEntity(entityID=str(t6IDCounter)+"entity", start_span=abs_Sspan, end_span=abs_Espan, part_of_day_type=val)
             t6list.append(my_entity)
-            t6idCounter = t6idCounter+1
+            t6IDCounter = t6IDCounter+1
             #check here to see if it has a modifier
             
-    return t6list, t6idCounter
+    return t6list, t6IDCounter
 ####
 #END_MODULE
 ####    
