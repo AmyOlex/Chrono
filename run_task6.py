@@ -96,7 +96,8 @@ if __name__ == "__main__":
         
         ## mark all reference tokens that overlap with the sutime spans
         my_refToks = utils.markTemporalRefToks(my_refToks, suList)
-        for tok in my_refToks : print(tok)
+        if(debug) : 
+            for tok in my_refToks : print(tok)
         
         
         ## parse out the doctime
@@ -104,11 +105,6 @@ if __name__ == "__main__":
         print(docTime) 
         
         t6MasterList, my_t6IDcounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,docTime)
-        my_t6entities, my_t6IDcounter = SUTime_To_T6.buildDayOfWeek(my_t6entities, my_t6IDcounter, suList)
-        my_t6entities, my_t6IDcounter = SUTime_To_T6.buildTextMonthAndDay(my_t6entities, my_t6IDcounter, suList)
-        my_t6entities, my_t6IDcounter = SUTime_To_T6.buildAMPM(my_t6entities, my_t6IDcounter, suList)
-        my_t6entities, my_t6IDcounter = SUTime_To_T6.buildCalendarInterval(my_t6entities, my_t6IDcounter, suList)
-        my_t6entities, my_t6IDcounter = SUTime_To_T6.buildPartOfDay(my_t6entities, my_t6IDcounter, suList)
         
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
@@ -119,8 +115,8 @@ if __name__ == "__main__":
         
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
         #t6list = utils.manualT6AddEntities(my_t6entities)
-        utils.write_xml(t6list=my_t6entities, outfile=outfiles[f])
-        #print(len(t6MasterList))
+        #utils.write_xml(t6list=my_t6entities, outfile=outfiles[f])
+        print(len(t6MasterList))
         utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
     
     
