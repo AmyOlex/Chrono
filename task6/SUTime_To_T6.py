@@ -9,6 +9,7 @@ from task6 import utils
 import calendar
 import string
 import re
+import datetime
 
 #Example SUTime List
 #Wsj_0152
@@ -61,7 +62,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
             #call non-standard formatting temporal phrases, need to decide if we are going to read in one SUTime object at a time or pass the list to each function.
         '''    
         t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
-        t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List)            
+        t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
         t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
         t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
         t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
@@ -251,7 +252,7 @@ def buildDayOfWeek(s, t6ID, t6List):
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @output t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
-def buildTextMonthAndDay(s, t6ID, t6List):
+def buildTextMonthAndDay(s, t6ID, t6List, dct=None):
     
     boo, val, idxstart, idxend = hasTextMonth(s)
     if boo:
@@ -277,6 +278,21 @@ def buildTextMonthAndDay(s, t6ID, t6List):
                 t6ID = t6ID+1
                 #now link the month to the day
                 my_month_entity.set_sub_interval(my_day_entity.get_id())
+                
+                #now figure out if it is a NEXT or LAST
+                #create doctime
+                if dct is not None:
+                    mStart = my_month_entity.get_start_span()
+                    mEnd = my_month_entity.get_end_span()
+                    this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
+                    if this_dct > dct:
+                        t6List.append(t6.T6NextOperator(entityID=t6ID, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                        t6ID = t6ID+1
+                    elif this_dct < dct:
+                        t6List.append(t6.T6LastOperator(entityID=t6ID, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                        t6ID = t6ID+1
+                
+                
             #else test for a ordinal day of month
             else:
                 texNumVal = utils.getNumberFromText(substr)
@@ -291,6 +307,19 @@ def buildTextMonthAndDay(s, t6ID, t6List):
                     t6ID = t6ID+1
                     #now link the month to the day
                     my_month_entity.set_sub_interval(my_day_entity.get_id())
+                    
+                    #now figure out if it is a NEXT or LAST
+                    #create doctime
+                    if dct is not None:
+                        mStart = my_month_entity.get_start_span()
+                        mEnd = my_month_entity.get_end_span()
+                        this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
+                        if this_dct > dct:
+                            t6List.append(t6.T6NextOperator(entityID=t6ID, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                            t6ID = t6ID+1
+                        elif this_dct < dct:
+                            t6List.append(t6.T6LastOperator(entityID=t6ID, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                            t6ID = t6ID+1
                 
                 
         t6List.append(my_month_entity)

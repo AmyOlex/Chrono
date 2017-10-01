@@ -78,6 +78,10 @@ if __name__ == "__main__":
         my_t6entities = []
         my_t6IDcounter = 1
         
+        ## parse out the doctime
+        doctime = utils.getDocTime(infiles[f] + ".dct")
+        if(debug) : print(doctime)
+        
         ## parse out reference tokens
         text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans)
@@ -89,7 +93,7 @@ if __name__ == "__main__":
         ## parse out SUTime entities
         #print(infiles[0])
         json_str = sutime_wrapper.callSUTimeParse(infiles[f], args.j)
-        suList = sutimeEntity.import_SUTime(sut_json=json_str)
+        suList = sutimeEntity.import_SUTime(sut_json=json_str, doctime=doctime)
         if(debug) : 
             print("SUTIME ENTITIES:\n")
             for s in suList : print(s)
@@ -99,12 +103,7 @@ if __name__ == "__main__":
         if(debug) : 
             for tok in my_refToks : print(tok)
         
-        
-        ## parse out the doctime
-        docTime = utils.getDocTime(infiles[f] + ".dct")
-        print(docTime) 
-        
-        t6MasterList, my_t6IDcounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,docTime)
+        t6MasterList, my_t6IDcounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,doctime)
         
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
