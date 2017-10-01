@@ -27,7 +27,8 @@ import re
 # @output List of T6 entities
 def buildT6List(suTimeList, t6ID , dct=None):
     t6List = []
-    for s in suTimeList :         
+    for s in suTimeList :   
+        '''    
         if "DATE" in s.getType():  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
             #Parse out Year function
             t6List, t6ID  = buildT6Year(s,t6ID, t6List)
@@ -58,7 +59,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
             t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)
 
             #call non-standard formatting temporal phrases, need to decide if we are going to read in one SUTime object at a time or pass the list to each function.
-            
+        '''    
         t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
         t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List)            
         t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
@@ -312,7 +313,9 @@ def buildAMPM(s, t6ID, t6List):
         #We could parse out the time from the sutime normalized value.  The problem is getting the correct span.
         #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
         if idxstart > 0:
-            m = re.search('([0-9]{1,2})', s.getText()[0:idxstart])
+            substr = s.getText()[0:idxstart]
+            m = re.search('([0-9]{1,2})', substr)
+            print(m)
             if m is not None :
                 hour_val = m.group(0)
                 abs_Sspan = ref_Sspan + m.span(0)[0]
@@ -324,9 +327,22 @@ def buildAMPM(s, t6ID, t6List):
                  
                 if my_tz_entity is not None:
                     my_hour_entity.set_time_zone(my_tz_entity.get_id())
-                
+            
                 #add the hour entity to the list
                 t6List.append(my_hour_entity)
+            
+            #else search for a text number
+            else:
+                texNumVal = utils.getNumberFromText(substr)
+                
+                if texNumVal is not None:
+                    #create the hour entity
+                    my_hour_entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal, ampm=my_AMPM_entity.get_id())
+                    t6ID = t6ID+1
+                    if my_tz_entity is not None:
+                        my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                    #append to list
+                    t6List.append(my_hour_entity) 
                          
     return t6List, t6ID
     
