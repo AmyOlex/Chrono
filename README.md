@@ -7,16 +7,29 @@
 Make sure you have python and Java installed.
 
 Download our tool:
-`git clone https://github.com/AmyOlex/CMSC516-SemEval2018-Task6.git`
+```bash
+>>git clone https://github.com/AmyOlex/CMSC516-SemEval2018-Task6.git
+```
 
-Download SUTime (used for some back end tagging):
-<https://stanfordnlp.github.io/CoreNLP/>
+Install SUTime (used for some back end tagging):
+```bash
+>> sudo apt-get install -y python3-pip
+>> sudo apt-get install python3-jpype 
+>> sudo apt-get instll python3-dev
+>> pip install sutime #install sutime 
+  ```
+Install jar files required for SUTime (uses [maven](https://www.vultr.com/docs/how-to-install-apache-maven-on-ubuntu-16-04)):
+```bash
+>>mvn dependency:copy-dependencies -DoutputDirectory=./jars
+```
 
 Download the Stanford parsesr:
 <http://projects.csail.mit.edu/spatial/Stanford_Parser>
 
 Download anafora tools (used for some text processing and evaluation of results):
-`git clone https://github.com/weitechen/anafora.git`
+```bash
+git clone https://github.com/weitechen/anafora.git
+```
 
 Download trial data:
 <https://github.com/bethard/anafora-annotations/releases/tag/semeval2018-trial>
