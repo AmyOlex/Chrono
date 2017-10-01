@@ -16,7 +16,7 @@ Install SUTime (used for some back end tagging):
 >> sudo apt-get install -y python3-pip
 >> sudo apt-get install python3-jpype 
 >> sudo apt-get instll python3-dev
->> pip install sutime #install sutime 
+>> pip install sutime
   ```
 Install jar files required for SUTime (uses [maven](https://www.vultr.com/docs/how-to-install-apache-maven-on-ubuntu-16-04)):
 ```bash
