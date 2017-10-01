@@ -3,6 +3,26 @@
 ### Amy Olex, Nicholas Morton, Luke Maffey
 ### CMSC516 - Advanced Natural Language Processing Fall 2017
 ---
+### Installation
+Make sure you have python and Java installed.
+
+Download our tool:
+`git clone https://github.com/AmyOlex/CMSC516-SemEval2018-Task6.git`
+
+Download SUTime (used for some back end tagging):
+<https://stanfordnlp.github.io/CoreNLP/>
+
+Download the Stanford parsesr:
+<http://projects.csail.mit.edu/spatial/Stanford_Parser>
+
+Download anafora tools (used for some text processing and evaluation of results):
+`git clone https://github.com/weitechen/anafora.git`
+
+Download trial data:
+<https://github.com/bethard/anafora-annotations/releases/tag/semeval2018-trial>
+
+
+
 ### Usage
 To use type:
 
