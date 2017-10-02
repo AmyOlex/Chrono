@@ -49,9 +49,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
             #Parse out Month-of-Year
             t6List, t6ID  = buildT6MonthOfYear(s,t6ID, t6List)
             #Parse out Day-of-Month
-            t6List, t6ID  = buildT6DayOfMonth(s,t6ID, t6List) 
-
-            #Going to rewrite this function to be a little cleaner soon, just getting my ideas out          
+            t6List, t6ID  = buildT6DayOfMonth(s,t6ID, t6List)           
             #Parse out HourOfDay
             t6List, t6ID  = buildT6HourOfDay(s,t6ID, t6List)
             #Parse out MinuteOfHour
@@ -59,13 +57,19 @@ def buildT6List(suTimeList, t6ID , dct=None):
             #Parse out SecondOfMinute
             t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)
 
-            #call non-standard formatting temporal phrases, need to decide if we are going to read in one SUTime object at a time or pass the list to each function.
-           
-        t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
-        t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
-        t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
-        t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
-        t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
+            #call non-standard formatting temporal phrases, 
+            t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
+            t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
+            t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
+            t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
+            t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
+
+        if "DURATION" in s.getType():
+            t6List, t6ID = buildDuration(s, t6ID, t6List)
+            
+
+        if "SET" in s.getType():
+            t6List, t6ID = buildSet(s, t6ID, t6List)
             
 
     return t6List, t6ID
@@ -470,6 +474,41 @@ def buildPartOfDay(s, t6ID, t6List):
 #END_MODULE
 ####    
 
+
+## buildPartOfDay(): Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
+# @author Nicholas Morton
+# @param s The SUtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @output SUTime Duration Entity
+def buildDuration(s, t6ID, t6List): 
+
+    #if hasExactDuration(s):  #3 days -> P3D
+
+    #if hasInExactDuration(s): #a few years -> PXY
+
+    #if hasDurationRange(s): #2 to 3 months -> P2M/P3M
+
+    return t6List, t6ID
+ 
+####
+#END_MODULE
+#### 
+
+## buildPartOfDay(): Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
+# @author Nicholas Morton
+# @param s The SUtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @output SUTime Set Entity
+def buildSet(s, t6ID, t6List):
+
+    return t6List, t6ID
+
+
+####
+#END_MODULE
+#### 
 
 
 ############# Start hasX() Methods ##################
@@ -891,7 +930,19 @@ def hasPartOfDay(suentity):
 #END_MODULE
 ####
 
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag
+def hasExactDuration(suentity):
+    
+    if "P#D":
+        return True    
+    else:
+        return False
 
+####
+#END_MODULE
+####
 
 
 ## getSpan(): identifies the local span of the serach_text in the input "text"
