@@ -28,49 +28,34 @@ import datetime
 # @output List of T6 entities
 def buildT6List(suTimeList, t6ID , dct=None):
     t6List = []
-    for s in suTimeList :   
-         
-        if "DATE" in s.getType():  #parse out Year, Two-Digit Year, Month-of-Year, and Day-of-month
-            #Parse out Year function
-            t6List, t6ID  = buildT6Year(s,t6ID, t6List)
-            #Parse out Two-Digit Year (if applicable) #taking out for now until I figure out what I want to do
-            #t6List.append(buildT62DigitYear(s))
-            #Parse out Month-of-Year
-            t6List, t6ID  = buildT6MonthOfYear(s,t6ID, t6List)
-            #Parse out Day-of-Month
-            t6List, t6ID  = buildT6DayOfMonth(s,t6ID, t6List)           
-            
-            
-        if "TIME" in s.getType(): #parse out all of Date data as well as Hour-of-Day, Minute-of-Hour, and Second-of-Minute  
-            #Parse out Year function
-            t6List, t6ID  = buildT6Year(s,t6ID, t6List)
-            #Parse out Two-Digit Year (if applicable) #taking out for now until I figure out what I want to do
-            #t6List.append(buildT62DigitYear(s))
-            #Parse out Month-of-Year
-            t6List, t6ID  = buildT6MonthOfYear(s,t6ID, t6List)
-            #Parse out Day-of-Month
-            t6List, t6ID  = buildT6DayOfMonth(s,t6ID, t6List)           
-            #Parse out HourOfDay
-            t6List, t6ID  = buildT6HourOfDay(s,t6ID, t6List)
-            #Parse out MinuteOfHour
-            t6List, t6ID  = buildT6MinuteOfHour(s,t6ID,t6List)   
-            #Parse out SecondOfMinute
-            t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)
+    for s in suTimeList :                 
+        #Parse out Year function
+        t6List, t6ID  = buildT6Year(s,t6ID,t6List)
+        #Parse out Two-Digit Year 
+        t6List, t6ID  = buildT62DigitYear(s,t6ID,t6List)
+        #Parse out Month-of-Year
+        t6List, t6ID  = buildT6MonthOfYear(s,t6ID,t6List)
+        #Parse out Day-of-Month
+        t6List, t6ID  = buildT6DayOfMonth(s,t6ID,t6List) 
+        #Parse out HourOfDay
+        t6List, t6ID  = buildT6HourOfDay(s,t6ID,t6List)
+        #Parse out MinuteOfHour
+        t6List, t6ID  = buildT6MinuteOfHour(s,t6ID,t6List)   
+        #Parse out SecondOfMinute
+        t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)           
+        
 
-            #call non-standard formatting temporal phrases, 
-            t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
-            t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
-            t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
-            t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
-            t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
+        #call non-standard formatting temporal phrases, 
+        t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
+        t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
+        t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
+        t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
+        t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
 
-        if "DURATION" in s.getType():
-            t6List, t6ID = buildDuration(s, t6ID, t6List)
-            
-
-        if "SET" in s.getType():
-            t6List, t6ID = buildSet(s, t6ID, t6List)
-            
+        #Going to incorporate in future builds
+        #t6List, t6ID = buildDuration(s, t6ID, t6List)               
+        #t6List, t6ID = buildSet(s, t6ID, t6List) 
+                 
 
     return t6List, t6ID
 ####
@@ -86,9 +71,16 @@ def buildT6List(suTimeList, t6ID , dct=None):
 # @param SUTime 
 # @output T6Year Entity
 def buildT6Year(s, t6ID, t6List):
-    t6YearEntity = t6.T6YearEntity(str(t6ID )+"entity",s.start_span,s.end_span-4,s.suvalue.split("-")[0])  
-    t6List.append(t6YearEntity)
-    t6ID =t6ID +1
+
+    b, text, startSpan, endSpan = hasYear(s)
+    if b:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        t6Entity = t6.T6YearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6List.append(t6Entity)
+        t6ID =t6ID +1
+                
     return t6List,t6ID
 ####
 #END_MODULE
@@ -98,10 +90,36 @@ def buildT6Year(s, t6ID, t6List):
 # @author Nicholas Morton
 # @param SUTime 
 # @output T6Year Entity
-def buildT62DigitYear(s, t6ID, t6List): #format 0203 -> February 2003?
-    if len(s.suvalue) == 4:            
-        t6YearEntity = t6.T6YearEntity(s.id,s.start_span+2,s.end_span,s.suvalue[-2:])  
-    return t6List, t6ID
+def buildT62DigitYear(s, t6ID, t6List):           
+    b, text, startSpan, endSpan = has2DigitYear(s)
+    if b:
+        #In most cases this will be at the end of the Span
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        #abs_StartSpan = ref_StartSpan + startSpan
+        #abs_EndSpan = ref_EndSpan + endSpan
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        '''    
+        print(startSpan)
+        print(endSpan)
+        print(ref_StartSpan)
+        print(ref_EndSpan)
+        print(abs_StartSpan)
+        print(abs_EndSpan)
+
+        print(text)
+
+
+        input("Press Enter To Continue...")
+        '''            
+        
+                
+
+        t6Entity = t6.T6TwoDigitYearOperator(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text, sub_interval = "None")  
+        t6List.append(t6Entity)
+        t6ID =t6ID +1
+              
+    return t6List,t6ID
 ####
 #END_MODULE
 ####
@@ -110,17 +128,16 @@ def buildT62DigitYear(s, t6ID, t6List): #format 0203 -> February 2003?
 # @author Nicholas Morton
 # @param SUTime 
 # @output T6MonthOfYear Entity
-def buildT6MonthOfYear(s, t6ID, t6List):
-    #basing this off of the yyyy-mm-dd format of the value, might need to revisit later
-    suval_split = s.suvalue.split("-")
-    if len(suval_split) == 3 :
-        month = calendar.month_name[int(suval_split[1])] #should be a valid month number (1-12)
-        t6MonthOfYear = t6.T6MonthOfYearEntity(str(t6ID )+"entity",s.start_span + 5,s.end_span - 3,month) #might need to pull the proper spans from the reference tokens
-        t6List.append(t6MonthOfYear)
+def buildT6MonthOfYear(s, t6ID, t6List):    
+    b, text, startSpan, endSpan = hasMonthOfYear(s)
+    if b:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        t6Entity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[int(text)])  
+        t6List.append(t6Entity)
         t6ID =t6ID +1
-    else :
-        t6MonthOfYear = None
-        
+                         
     return t6List, t6ID
 ####
 #END_MODULE
@@ -131,15 +148,16 @@ def buildT6MonthOfYear(s, t6ID, t6List):
 # @param SUTime 
 # @output T6DayOfMonthEntity
 def buildT6DayOfMonth(s, t6ID, t6List):
-    #basing this off of the yyyy-mm-dd format of the value, might need to revisit later
-    suval_split = s.suvalue.split("-")
-    if len(suval_split) == 3 :
-        t6DayOfMonth = t6.T6DayOfMonthEntity(str(t6ID )+"entity",s.start_span + 8,s.end_span,suval_split[2]) #might need to pull the proper spans from the reference tokens
-        t6List.append(t6DayOfMonth)
+    b, text, startSpan, endSpan = hasDayOfMonth(s)
+    if b:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        t6Entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6List.append(t6Entity)
         t6ID =t6ID +1
-        return t6List, t6ID
-    else :
-        return t6List, t6ID
+                          
+    return t6List, t6ID
     
 ####
 #END_MODULE
@@ -150,17 +168,15 @@ def buildT6DayOfMonth(s, t6ID, t6List):
 # @param SUTime Entity
 # @output T6HourOfDay Entity
 def buildT6HourOfDay(s, t6ID, t6List):
-    if 'TNI' not in s.suvalue:       #had to account for TNI for the overnight one...
-        sTime = s.suvalue.split("T")[1] 
-        sHour = sTime.split(":")[0]        
-        sSet = "AM"
-        if int(sHour) > 12: 
-            sHour=int(sHour)-12
-            sSet = "PM"
-
-        t6HourOfDay = t6.T6HourOfDayEntity(str(t6ID )+"entity",s.start_span+10,s.end_span-8,sHour,sSet)  #might need to pull the proper spans from the reference tokens
-        t6List.append(t6HourOfDay)
-        t6ID  = t6ID +1
+    b, text, startSpan, endSpan = hasHourOfDay(s)
+    if b:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        t6Entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6List.append(t6Entity)
+        t6ID =t6ID +1
+                          
     return t6List, t6ID
 ####
 #END_MODULE
@@ -171,14 +187,15 @@ def buildT6HourOfDay(s, t6ID, t6List):
 # @param SUTime Entity
 # @output T6MinuteOfHour Entity
 def buildT6MinuteOfHour(s,t6ID, t6List):
-    sTime = s.suvalue.split("T")[1] #left with 17:00-0500
-    sMinute = sTime.split("-")[0]
-    suval_split = s.suvalue.split(":")
-    if len(suval_split)==2:
-        sMinute = sMinute.split(":")[1] #should be a valid number between 00-59
-        t6MinuteOfHour = t6.T6MinuteOfHourEntity(str(t6ID )+"entity",s.start_span+14,s.end_span-6,sMinute)  #might need to pull the proper spans from the reference tokens
-        t6List.append(t6MinuteOfHour)
-        t6ID  = t6ID +1
+    b, text, startSpan, endSpan = hasMinuteOfHour(s)
+    if b:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        t6Entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6List.append(t6Entity)
+        t6ID =t6ID +1
+                         
     return t6List, t6ID
 ####
 #END_MODULE
@@ -189,15 +206,15 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
 # @param SUTime Entity
 # @output T6HourOfDay Entity
 def buildT6SecondOfMinute(s,t6ID, t6List):
-    sTime = s.suvalue.split("T")[1] #left with 17:00-0500
-    sSecond="00"
-
-    if sTime.count(":") > 1: #Time string like 17:00:00
-        sMinute = sTime.split("-")[0]
-        sSecond = sMinute.split(":")[2]
-    t6SecondOfMinute = t6.T6SecondOfMinuteEntity(str(t6ID )+"entity",s.start_span+14,s.end_span-6,sSecond)  #might need to pull the proper spans from the reference tokens
-    t6List.append(t6SecondOfMinute)
-    t6ID  = t6ID +1
+    b, text, startSpan, endSpan = hasSecondOfMinute(s)
+    if b:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        t6Entity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6List.append(t6Entity)
+        t6ID =t6ID +1
+                          
     return t6List, t6ID
 ####
 #END_MODULE
@@ -926,6 +943,278 @@ def hasPartOfDay(suentity):
     else :
         return False, None, None, None
     
+####
+#END_MODULE
+####
+
+## hasYear(): Takes in a single text string and identifies if it has any 4 digit year phrases
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasYear(suentity):
+    
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a 4-digit year
+            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text)):
+                if  len(text.split("/")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
+                    return True, re.compile("/").split(text)[2], start_idx, end_idx
+                elif len(text.split("-")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
+                    return True, re.compile("-").split(text)[2], start_idx, end_idx
+                else:
+                   return False, None, None, None
+
+        return False, None, None, None #if no 4 digit year expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## has2DigitYear(): Takes in a single text string and identifies if it has any 2 digit year phrases
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def has2DigitYear(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a 2-digit year
+            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)) and len(text)==8:
+                #print(text)
+                if  len(text.split("/")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
+                    return True, re.compile("/").split(text)[2], start_idx, end_idx
+                elif len(text.split("-")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
+                    return True, re.compile("-").split(text)[2], start_idx, end_idx
+                else:
+                   return False, None, None, None
+
+        return False, None, None, None #if no 2 digit year expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## hasMonthOfYear(): Takes in a single text string and identifies if it has a month of year
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasMonthOfYear(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a 2-digit month
+            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)):
+                if  len(text.split("/")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
+                    return True, re.compile("/").split(text)[0], start_idx, end_idx
+                elif len(text.split("-")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[0])    
+                    return True, re.compile("-").split(text)[0], start_idx, end_idx
+                else:
+                   return False, None, None, None
+
+        return False, None, None, None #if no 2 digit month expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## hasDayOfMonth(): Takes in a single text string and identifies if it has a day of the month in numeric format
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasDayOfMonth(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a 2-digit day
+            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)):
+                #print(text)
+                if  len(text.split("/")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[1])    
+                    return True, re.compile("/").split(text)[1], start_idx, end_idx
+                elif len(text.split("-")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[1])    
+                    return True, re.compile("-").split(text)[1], start_idx, end_idx
+                else:
+                   return False, None, None, None
+
+        return False, None, None, None #if no 2 digit day expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## hasTimeString(): Takes in a single text string and identifies if it has a hh:mm:ss
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasTimeString(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a numeric hour
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                if len(text.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[0]) 
+                    return True, text, start_idx, end_idx
+                    
+                else:
+                    return False, None, None, None #if no 2 digit hour expressions were found return false            
+                
+
+        return False, None, None, None #if no 2 digit hour expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## hasHourOfDay(): Takes in a single text string and identifies if it has a hour of a day
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasHourOfDay(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a numeric hour
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                if len(text.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[0]) 
+                    return True, re.compile(":").split(text)[0], start_idx, end_idx                    
+                else:
+                    return False, None, None, None #if no 2 digit hour expressions were found return false  
+
+        return False, None, None, None #if no 2 digit hour expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## hasMinuteOfHour(): Takes in a single text string and identifies if it has a minute of an hour
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasMinuteOfHour(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a 2-digit minute
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                if len(text.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[1]) 
+                    return True, re.compile(":").split(text)[1], start_idx, end_idx                    
+                else:
+                    return False, None, None, None #if no 2 digit hour expressions were found return false
+
+        return False, None, None, None #if no 2 digit day expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+####
+#END_MODULE
+####
+
+## hasSecondOfMinute(): Takes in a single text string and identifies if it has a second of an minute
+# @author Nicholas Morton
+# @param suentity The SUTime entity object being parsed
+# @output Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasSecondOfMinute(suentity):
+
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            #define regular expression to find a 2-digit minute
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                if len(text.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[2]) 
+                    return True, re.compile(":").split(text)[2], start_idx, end_idx                    
+                else:
+                    return False, None, None, None #if no 2 digit hour expressions were found return false
+
+        return False, None, None, None #if no 2 digit day expressions were found return false            
+    else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
 ####
 #END_MODULE
 ####
