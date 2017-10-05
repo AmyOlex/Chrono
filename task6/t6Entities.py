@@ -28,8 +28,13 @@ class T6Entity:
 	def __str__(self):
 		return self.entityID + " " + self.type
 	
+	## Compares two t6Entities (ex. entity1 == entity2)
+	# @return Return True if they have the same span and type, false otherwise
 	def __eq__(self, other):
 		return self.start_span == other.start_span and self.end_span == other.end_span and self.type == other.type
+
+	def __hash__(self):
+		return hash(self.start_span) ^ hash(self.end_span) ^ hash(self.type)
 
 	##  @param entityID The ID to set it to
 	def set_id(self, entityID):
