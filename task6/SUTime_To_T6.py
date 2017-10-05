@@ -18,9 +18,6 @@ import datetime
 #2 5 p.m. EST Nov. 9 <393,410> TIME 2017-11-09T17:00-0500
 #3 Nov. 6 <536,542> DATE 2017-11-06
 
-#Need a way to handle sub-intervals, still thinking of the best way to do this...
-
-
 ## buildT6List(): Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
 # @param list of SUTime Output
@@ -56,7 +53,34 @@ def buildT6List(suTimeList, t6ID , dct=None):
         #t6List, t6ID = buildDuration(s, t6ID, t6List)               
         #t6List, t6ID = buildSet(s, t6ID, t6List) 
                  
+    #check list for duplicates
+    newT6List = []
+        
+    
+    #I feel like this method should work but it is not finding any duplicates when I run it...or it throws and indexing error
+    '''
+    print(len(t6List))
+    print("Old List: ", t6List)
+    newT6List = t6List
+    for t1 in range(len(t6List)):
+        for t2 in range (t1+1, len(t6List)):
+            print("t1,t2 ", t1,t2)
+            print("Items 1,2: ", t6List[t1], t6List[t2])
+            if(t6List[t1] == t6List[t2]):
+                newT6List.remove(t2)
+                print("Found duplicate: ", t6List[t1], t6List[t2])
 
+    print(len(newT6List))
+    print("New List: ", newT6List) 
+    input("Press Enter to Continue...")           
+    '''
+    #Removes some but not all of the duplicates...
+    for t6 in t6List:
+        if t6 not in newT6List:
+            newT6List.append(t6)    
+    
+    t6List = newT6List                      
+    
     return t6List, t6ID
 ####
 #END_MODULE
@@ -77,10 +101,63 @@ def buildT6Year(s, t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        t6Entity = t6.T6YearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
-        t6List.append(t6Entity)
+        t6YearEntity = t6.T6YearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6List.append(t6YearEntity)
         t6ID =t6ID +1
-                
+
+        #Check for Month in same element
+        bMonth, textMonth, startSpanMonth, endSpanMonth = hasMonthOfYear(s)
+        if bMonth:
+            abs_StartSpanMonth = ref_StartSpan + startSpanMonth
+            abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth) 
+            t6MonthEntity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])  
+            t6List.append(t6MonthEntity)
+            t6ID =t6ID +1
+            t6YearEntity.set_sub_interval(t6MonthEntity.get_id())
+
+            #Check for Day in same element
+            bDay, textDay, startSpanDay, endSpanDay = hasDayOfMonth(s)
+            if bDay:
+                abs_StartSpanDay = ref_StartSpan + startSpanDay
+                abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
+                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=textDay)  
+                t6List.append(t6DayEntity)
+                t6ID =t6ID +1
+                t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
+
+                #Check for Hour in same element
+                bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
+                if bHour:
+                    ref_StartSpan, ref_EndSpan = s.getSpan()
+                    abs_StartSpanHour = ref_StartSpan + startSpanHour
+                    abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
+                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=textHour)  
+                    t6List.append(t6HourEntity)
+                    t6ID =t6ID +1
+                    t6DayEntity.set_sub_interval(t6HourEntity.get_id())
+
+                    #Check for Minute in same element
+                    bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
+                    if bMinute:
+                        ref_StartSpan, ref_EndSpan = s.getSpan()
+                        abs_StartSpanMinute = ref_StartSpan + startSpan
+                        abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
+                        t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=textMinute)  
+                        t6List.append(t6MinuteEntity)
+                        t6ID =t6ID +1
+                        t6HourEntity.set_sub_interval(t6MinuteEntity.get_id())
+                        
+
+                        #Check for Second in same element
+                        bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
+                        if bSecond:
+                            ref_StartSpan, ref_EndSpan = s.getSpan()
+                            abs_StartSpanSecond = ref_StartSpan + startSpan
+                            abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
+                            t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=textSecond)  
+                            t6List.append(t6SecondEntity)
+                            t6ID =t6ID +1
+                            t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())                
     return t6List,t6ID
 ####
 #END_MODULE
@@ -95,29 +172,65 @@ def buildT62DigitYear(s, t6ID, t6List):
     if b:
         #In most cases this will be at the end of the Span
         ref_StartSpan, ref_EndSpan = s.getSpan()
-        #abs_StartSpan = ref_StartSpan + startSpan
-        #abs_EndSpan = ref_EndSpan + endSpan
         abs_StartSpan = ref_StartSpan + startSpan
-        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        '''    
-        print(startSpan)
-        print(endSpan)
-        print(ref_StartSpan)
-        print(ref_EndSpan)
-        print(abs_StartSpan)
-        print(abs_EndSpan)
-
-        print(text)
-
-
-        input("Press Enter To Continue...")
-        '''            
-        
-                
-
-        t6Entity = t6.T6TwoDigitYearOperator(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text, sub_interval = "None")  
-        t6List.append(t6Entity)
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)          
+        t62DigitYearEntity = t6.T6TwoDigitYearOperator(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text, sub_interval = "None")  
+        t6List.append(t62DigitYearEntity)
         t6ID =t6ID +1
+        
+        #Check for Month in same element
+        bMonth, textMonth, startSpanMonth, endSpanMonth = hasMonthOfYear(s)
+        if bMonth:
+            abs_StartSpanMonth = ref_StartSpan + startSpanMonth
+            abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth) 
+            t6MonthEntity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])  
+            t6List.append(t6MonthEntity)
+            t6ID =t6ID +1
+            t62DigitYearEntity.set_sub_interval(t6MonthEntity.get_id())
+
+            #Check for Day in same element
+            bDay, textDay, startSpanDay, endSpanDay = hasDayOfMonth(s)
+            if bDay:
+                abs_StartSpanDay = ref_StartSpan + startSpanDay
+                abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
+                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=textDay)  
+                t6List.append(t6DayEntity)
+                t6ID =t6ID +1
+                t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
+
+                #Check for Hour in same element
+                bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
+                if bHour:
+                    ref_StartSpan, ref_EndSpan = s.getSpan()
+                    abs_StartSpanHour = ref_StartSpan + startSpanHour
+                    abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
+                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=textHour)  
+                    t6List.append(t6HourEntity)
+                    t6ID =t6ID +1
+                    t6DayEntity.set_sub_interval(t6HourEntity.get_id())
+
+                    #Check for Minute in same element
+                    bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
+                    if bMinute:
+                        ref_StartSpan, ref_EndSpan = s.getSpan()
+                        abs_StartSpanMinute = ref_StartSpan + startSpan
+                        abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
+                        t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=textMinute)  
+                        t6List.append(t6MinuteEntity)
+                        t6ID =t6ID +1
+                        t6HourEntity.set_sub_interval(t6MinuteEntity.get_id())
+                        
+
+                        #Check for Second in same element
+                        bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
+                        if bSecond:
+                            ref_StartSpan, ref_EndSpan = s.getSpan()
+                            abs_StartSpanSecond = ref_StartSpan + startSpan
+                            abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
+                            t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=textSecond)  
+                            t6List.append(t6SecondEntity)
+                            t6ID =t6ID +1
+                            t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())   
               
     return t6List,t6ID
 ####
