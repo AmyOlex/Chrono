@@ -4,6 +4,12 @@
 ### CMSC516 - Advanced Natural Language Processing Fall 2017
 ---
 ### Installation
+
+#### Pre-Reqs
+- Java 8 or later
+- Python 3
+- Git
+
 Make sure you have python and Java installed.
 
 Download our tool:
