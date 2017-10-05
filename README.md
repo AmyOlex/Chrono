@@ -67,6 +67,7 @@ Each type of temporal expression presents unique challenges in handling.
 ### 5.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream applications.  Improvements in correctly identifying free-text, ambiguous temporal expressions will continue to be a challenge.  We believe that advances in machine learning will improve correct identification of temporal expressions based on the context in which they are found.  Even the tense of a verb carries temporal information which may or may not be relevant thus complicating the task of tagging free-text temporal expressions. 
 
+### 6. Future Work
 
 ---
 #### References
