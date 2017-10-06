@@ -9,6 +9,43 @@
 - Java 8 or later
 - Python 3
 - Git
+- jpype, installation instructions from http://jpype.readthedocs.io/en/latest/install.html
+
+------------------------- Need to format below
+Streamlined Steps:
+
+Checked for Java version: >> java -version
+Had 1.8.0, so ok on that.
+
+Checked python version: >> python
+Have 2.7.12, so may need to upgrade.  Trying with python 2.7.
+
+Installed pip: >> sudo apt-get install python-pip
+
+Installing jpype: 
+Had to first install python-dev: >> sudo apt-get install python-dev
+
+Then needed to download from github: >> git clone https://github.com/originell/jpype.git
+The run the install script: >> sudo python setup.py install
+
+Now install sutime: >>pip install sutime
+
+Ok, now install our task6 by unzipping the zip file.
+
+Also need nltk: >> pip install nltk
+
+Also needed python-dateutil: >> pip install python-dateutil
+
+Had to install word2number: >> pip install word2number
+
+Get python-sutime from Git: >> git clone https://github.com/FraBle/python-sutime.git
+Then cd into the directory: >> cd python-sutime
+The run maven: >> mvn dependency:copy-dependencies -DoutputDirectory=./jars
+Then copy the sutime and jars folder into our task6 directory.
+
+If you get a java.lang.RuntimeException: Class edu.stanford.nlp.python.SUTimeWrapper not found error, then jpype is pointing to the wrong Java JDK library.  Delete all except 1.8 and it should run.
+
+--------------------
 
 Make sure you have python and Java installed.
 
