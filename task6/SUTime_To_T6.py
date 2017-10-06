@@ -75,13 +75,15 @@ def buildT6List(suTimeList, t6ID , dct=None):
     input("Press Enter to Continue...")           
     '''
     #Removes some but not all of the duplicates...
+    '''
     for t6 in t6List:
         if t6 not in newT6List:
             newT6List.append(t6)    
     
     t6List = newT6List                      
-    
+    '''
     return t6List, t6ID
+    
 ####
 #END_MODULE
 ####
@@ -101,7 +103,7 @@ def buildT6Year(s, t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        t6YearEntity = t6.T6YearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6YearEntity = t6.T6YearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))  
         t6List.append(t6YearEntity)
         t6ID =t6ID +1
 
@@ -120,7 +122,7 @@ def buildT6Year(s, t6ID, t6List):
             if bDay:
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
-                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=textDay)  
+                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
                 t6List.append(t6DayEntity)
                 t6ID =t6ID +1
                 t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
@@ -131,7 +133,7 @@ def buildT6Year(s, t6ID, t6List):
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
-                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=textHour)  
+                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
                     t6List.append(t6HourEntity)
                     t6ID =t6ID +1
                     t6DayEntity.set_sub_interval(t6HourEntity.get_id())
@@ -142,7 +144,7 @@ def buildT6Year(s, t6ID, t6List):
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpan
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
-                        t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=textMinute)  
+                        t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=int(textMinute))  
                         t6List.append(t6MinuteEntity)
                         t6ID =t6ID +1
                         t6HourEntity.set_sub_interval(t6MinuteEntity.get_id())
@@ -154,7 +156,7 @@ def buildT6Year(s, t6ID, t6List):
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpan
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
-                            t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=textSecond)  
+                            t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=int(textSecond))  
                             t6List.append(t6SecondEntity)
                             t6ID =t6ID +1
                             t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())                
@@ -193,7 +195,7 @@ def buildT62DigitYear(s, t6ID, t6List):
             if bDay:
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
-                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=textDay)  
+                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
                 t6List.append(t6DayEntity)
                 t6ID =t6ID +1
                 t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
@@ -204,7 +206,7 @@ def buildT62DigitYear(s, t6ID, t6List):
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
-                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=textHour)  
+                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
                     t6List.append(t6HourEntity)
                     t6ID =t6ID +1
                     t6DayEntity.set_sub_interval(t6HourEntity.get_id())
@@ -215,7 +217,7 @@ def buildT62DigitYear(s, t6ID, t6List):
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpan
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
-                        t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=textMinute)  
+                        t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=int(textMinute))  
                         t6List.append(t6MinuteEntity)
                         t6ID =t6ID +1
                         t6HourEntity.set_sub_interval(t6MinuteEntity.get_id())
@@ -227,7 +229,7 @@ def buildT62DigitYear(s, t6ID, t6List):
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpan
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
-                            t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=textSecond)  
+                            t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=int(textSecond))  
                             t6List.append(t6SecondEntity)
                             t6ID =t6ID +1
                             t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())   
@@ -247,8 +249,6 @@ def buildT6MonthOfYear(s, t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        print("DEBUG in buildX TEXT:"+text+"\nDEBUG:")
-        print(s)
         t6Entity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[int(text)])  
         t6List.append(t6Entity)
         t6ID =t6ID +1
@@ -268,7 +268,7 @@ def buildT6DayOfMonth(s, t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        t6Entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6Entity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))  
         t6List.append(t6Entity)
         t6ID =t6ID +1
                           
@@ -288,7 +288,7 @@ def buildT6HourOfDay(s, t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        t6Entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6Entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))  
         t6List.append(t6Entity)
         t6ID =t6ID +1
                           
@@ -307,7 +307,7 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        t6Entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6Entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))  
         t6List.append(t6Entity)
         t6ID =t6ID +1
                          
@@ -326,7 +326,7 @@ def buildT6SecondOfMinute(s,t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        t6Entity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
+        t6Entity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))  
         t6List.append(t6Entity)
         t6ID =t6ID +1
                           
@@ -1144,13 +1144,10 @@ def hasMonthOfYear(suentity):
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
     text_list = text_norm.split(" ")
-    print("DEBUG in hasMonthOfYear:")
-    print(text_list)
 
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
-            print("DEBUG in for loop:"+text)
             #define regular expression to find a 2-digit month
             twodigitstart = re.search('(^[0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
             fourdigitstart = re.search('(^[0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
@@ -1172,7 +1169,6 @@ def hasMonthOfYear(suentity):
                     start_idx, end_idx = getSpan(text_norm,twodigitstart[2])
                     return True, twodigitstart[2], start_idx, end_idx
                 else:
-                    print("DEBUG in else:")
                     return False, None, None, None
 
         return False, None, None, None #if no 2 digit month expressions were found return false            
