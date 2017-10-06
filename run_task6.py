@@ -120,7 +120,7 @@ if __name__ == "__main__":
     
     
     os.chdir(args.a)
-    os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o)
+    os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o + " --exclude Event After Before Between Frequency Union Modifier Period This")
     
     
     
