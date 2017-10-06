@@ -247,6 +247,8 @@ def buildT6MonthOfYear(s, t6ID, t6List):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        print("DEBUG in buildX TEXT:"+text+"\nDEBUG:")
+        print(s)
         t6Entity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[int(text)])  
         t6List.append(t6Entity)
         t6ID =t6ID +1
@@ -1132,7 +1134,7 @@ def has2DigitYear(suentity):
 ####
 
 ## hasMonthOfYear(): Takes in a single text string and identifies if it has a month of year
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @output Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasMonthOfYear(suentity):
@@ -1142,20 +1144,36 @@ def hasMonthOfYear(suentity):
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
     text_list = text_norm.split(" ")
+    print("DEBUG in hasMonthOfYear:")
+    print(text_list)
 
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
+            print("DEBUG in for loop:"+text)
             #define regular expression to find a 2-digit month
-            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)):
-                if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
-                    return True, re.compile("/").split(text)[0], start_idx, end_idx
-                elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[0])    
-                    return True, re.compile("-").split(text)[0], start_idx, end_idx
+            twodigitstart = re.search('(^[0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('(^[0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            
+            if(fourdigitstart):
+                #If start with 4 digits then assum the format yyyy/mm/dd
+                start_idx, end_idx = getSpan(text_norm,fourdigitstart[2])
+                return True, fourdigitstart[2], start_idx, end_idx
+            elif(twodigitstart):
+                #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
+                #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
+                if int(twodigitstart[1]) <= 12:
+                    # assume mm/dd/yy
+                    start_idx, end_idx = getSpan(text_norm,twodigitstart[1])
+                    return True, twodigitstart[1], start_idx, end_idx
+                elif int(twodigitstart[1]) > 12:
+                    # assume yy/mm/dd
+                    start_idx, end_idx = getSpan(text_norm,twodigitstart[2])
+                    return True, twodigitstart[2], start_idx, end_idx
                 else:
-                   return False, None, None, None
+                    print("DEBUG in else:")
+                    return False, None, None, None
 
         return False, None, None, None #if no 2 digit month expressions were found return false            
     else:
