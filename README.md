@@ -8,8 +8,13 @@
 To use type:
 
 ```bash
->> python run_task6.py -i {INPUT DIR} -o {OUTPUT DIR} -r {REFERENCE DIR} -j {JAR DIR}(default is ./jars) -a {ANAFORA DIR}(default is ./anaforatools)
+>> source runit.sh
 ```
+
+### Roles and Contributions
+ - *Amy Olex:* Team lead, workflow development lead, framework implementation, run_task6.py author, sutimeEntity.py author, SUTime_To-T6.py method contributer, utils.py author, referenceToken.py author, presentation preperation, README co-author, installation co-author and tester, literature review.
+ - *Luke Maffey:* Doxygen code documentation lead, t6Entities.py author, stopword identification/editing and method implementation, presentation preparation, README co-author, installation co-author and tester, literature review.
+ - *Nicholas Morton:* SUTime installation and implementation lead, workflow development, SUTime_To-T6.py author, README co-author, installation co-author and tester, literature review. 
 
 ---
 
