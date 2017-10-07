@@ -41,9 +41,13 @@ applications to automatically generate useful information, such as a patient's m
 
 ### 3.  Method
 We primarily used SUTime to tag relevant temporal data and then wrote our own methods in python to break those tagged 
-phrases out into entities which were linked together as described by Bethard.  Our implementation uses a class called 
-t6Entity which stores all of the information for each entity and is able to print it in the correct format.  It also 
-allows t6Entities to be compared by their location in the text and type of entity to ensure we do not generate duplicates.  
+phrases out into entities which were linked together as described by Bethard.
+
+Our implementation uses a class called t6Entity which stores all of the information for each entity and is able to print 
+it in the correct format.  It also allows t6Entities to be compared by their location in the text and type of entity to 
+ensure we do not generate duplicates.  There are 29 types of entities with 5 parent types described by Bethard.  These 
+entities may be linked by id thus allowing them to work together to form a complete understanding of the temporal 
+concept in the text.
 
 Kuzey et al identified four types of expressions that need to be parsed[<sup>7</sup>](#references):
 > 1. _Explicit temporal expressions_ denote a precise time point or period...

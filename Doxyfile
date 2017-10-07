@@ -863,7 +863,19 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = 
+EXCLUDE                = anaforatools \
+                         build \
+                         data \
+                         dist \
+                         documentation \
+                         jars \
+                         results \
+                         sutime \
+                         task6.egg-info \
+                         test \
+                         sutime \
+                         task6/java \
+                         task6/java
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
