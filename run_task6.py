@@ -49,7 +49,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse a directory of files to identify and normalize temporal information.')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
-    parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
+    parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.')#, required=True)
     parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
     
@@ -119,8 +119,8 @@ if __name__ == "__main__":
         utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
     
     
-    os.chdir(args.a)
-    os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o + " --exclude Event After Before Between Frequency Union Modifier Period This")
+    #os.chdir(args.a)
+    #os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o + " --exclude Event After Before Between Frequency Union Modifier Period This")
     
     
     
