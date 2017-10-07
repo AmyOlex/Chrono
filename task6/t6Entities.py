@@ -33,37 +33,58 @@ class T6Entity:
 	def __eq__(self, other):
 		return self.start_span == other.start_span and self.end_span == other.end_span and self.type == other.type
 
+	## Hashes an entity based on the span and type
+	# @return Return true if hashes are the same
 	def __hash__(self):
 		return hash(self.start_span) ^ hash(self.end_span) ^ hash(self.type)
 
-	##  @param entityID The ID to set it to
+	## Sets the entity's id
+    # @param entityID The ID to set it to
 	def set_id(self, entityID):
 		self.entityID = entityID
 
+    ## Returns the entity's id
+    # @return The entity's id
 	def get_id(self):
 		return self.entityID
-	
+
+    ## Sets the entity's start span
+    # @param start_span Where in the text the entity starts
 	def set_start_span(self, start_span):
 		self.start_span = start_span
-	
+
+	## Returns the entity's start span
+    # @return Returns where the entity starts in the text
 	def get_start_span(self):
 		return self.start_span
-	
+
+    ## Sets the entity's end span
+    # @param start_span Where in the text the entity ends
 	def set_end_span(self, end_span):
 		self.end_span = end_span
-	
+
+    ## Returns the entity's end span
+    # @return Returns where the entity ends in the text
 	def get_end_span(self):
 		return self.end_span
-	
+
+	## Sets the entity's type
+    # @param type The type of entity
 	def set_type(self, type):
 		self.type = type
-		
+
+	## Returns the entity's type
+    # @return The entity's type as a string
 	def get_type(self):
 		return self.type
 
+    ## Sets the entity's parent type
+    # @param parent_type The parent type
 	def set_parent_type(self, parent_type):
 		self.parent_type = parent_type
 
+    ## Returns the entity's parent type
+    # @return The parent type as a string
 	def get_parent_type(self):
 		return self.parent_type
 

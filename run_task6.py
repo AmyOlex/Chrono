@@ -37,12 +37,12 @@ from task6 import SUTime_To_T6
 from task6 import t6Entities as t6
 
 debug=False
-# @description This is the driver method to run all of task6. 
+## This is the driver method to run all of task6.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
 # @param REFDIR The location of the gold standard XML files for evaluation.
-# @output Anafora formatted XML files, one directory per file with one XML file in each directory.
-# @output The precision and recall from comparing output results to the gold standard.
+# @return Anafora formatted XML files, one directory per file with one XML file in each directory.
+# @return The precision and recall from comparing output results to the gold standard.
 if __name__ == "__main__":
     
     ## Parse input arguments
