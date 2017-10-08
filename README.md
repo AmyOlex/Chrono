@@ -19,7 +19,7 @@ To use type:
 ---
 
 ### 1.  Introduction
-Our task was to take text from the AQUINT and TimeBank corpora input and output an xml file for each input file with temporal expressions identified and normalized according to the framework laid out in "A Semantically Compositional Annotation Scheme for Time Normalization"[<sup>1</sup>](#references).  We developed a package using python which uses the SUTime[<sup>2</sup>](#references) tagger to identify and mark temporal expressions in documents for processing.
+Our task was to take text from the AQUAINT and TimeBank corpora input and output an xml file for each input file with temporal expressions identified and normalized according to the framework laid out in "A Semantically Compositional Annotation Scheme for Time Normalization"[<sup>1</sup>](#references).  We developed a package using python which uses the SUTime[<sup>2</sup>](#references) tagger to identify and mark temporal expressions in documents for processing.
 
 
 ### 2.  Background
