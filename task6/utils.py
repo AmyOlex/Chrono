@@ -1,8 +1,8 @@
-###############################
+## Provides all helper functions for task6 project.  These can be seperated into files later if needed.
+#
 # Programmer Name: Amy Olex
+#
 # Date: 9/16/17
-# Module Purpose: Provides all helper functions for task6 project.  These can be seperated into files later if needed.
-#################################
 
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
@@ -13,12 +13,12 @@ from task6 import SUTime_To_T6
 import re
 from word2number import w2n
 
-## getWhitespaceTokens(): Pasrses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
+## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
 # @param file_path The path and file name of the text file to be parsed.
-# @output text String containing the raw text blob from reading in the file.
-# @output tokenized_text A list containing each token that was seperated by white space.
-# @output spans The coordinates for each token.
+# @return text String containing the raw text blob from reading in the file.
+# @return tokenized_text A list containing each token that was seperated by white space.
+# @return spans The coordinates for each token.
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
@@ -27,18 +27,18 @@ def getWhitespaceTokens(file_path):
     tokenized_text = WhitespaceTokenizer().tokenize(text)
     return text, tokenized_text, spans
 
-## getDocTime(): Reads in the dct file and converts it to a datetime object.
+## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
 # @param file_path The path and file name of the dct file.
-# @output A datetime object
+# @return A datetime object
 def getDocTime(file_path):
     file = open(file_path, "r")
     text = file.read()
     return(dateutil.parser.parse(text))
 
-## manualT6AddEntities(): Manually creates the wsj_0152 t6Entity data
+## Manually creates the wsj_0152 t6Entity data
 # @author Amy Olex
-# @output A list of t6 entity objects
+# @return A list of t6 entity objects
 def manualT6AddEntities(t6list):
     t6list.append(t6.T6HourOfDayEntity(entityID=32, start_span=393, end_span=394, value=5, ampm=40, time_zone=35,sub_interval=None, number=None, modifier=None))
     t6list.append(t6.T6MonthOfYearEntity(entityID=33, start_span=12, end_span=14, month_type="November",sub_interval=41, number=None, modifier=None))
@@ -67,7 +67,7 @@ def manualT6AddEntities(t6list):
 ####
 
   
-## write_xml(): Writes out the full XML file for all T6entities in list.
+## Writes out the full XML file for all T6entities in list.
 # @author Amy Olex
 # @param t6list The list of T6 objects needed to be written in the file.
 # @param outfile A string containing the output file location and name.
@@ -84,7 +84,7 @@ def write_xml(t6list, outfile):
  ####   
 
 
-## markTemporalRefToks(): Marks all the reference tokens that show up in the SUTime entity list.
+## Marks all the reference tokens that show up in the SUTime entity list.
 # @author Amy Olex
 # @param refToks The list of reference Tokens
 # @param suList The list of SUtime entities to compare against
@@ -101,10 +101,10 @@ def markTemporalRefToks(refToks, suList):
 #END_MODULE
 ####
     
-## getNumberFromText(): takes in a text string and returns the numerical value
+## Takes in a text string and returns the numerical value
 # @author Amy Olex
 # @param text The string containing our number
-# @output value The numerical value of the text string, None is returned if there is no number
+# @return value The numerical value of the text string, None is returned if there is no number
 def getNumberFromText(text):
     try :
         number = w2n.word_to_num(text)

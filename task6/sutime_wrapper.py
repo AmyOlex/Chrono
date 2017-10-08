@@ -1,8 +1,8 @@
-###############################
+## Wrapper function for SUTime.py
+#
 # Programmer Name: Nicholas Morton
+#
 # Date: 9/17/17
-# Module Purpose: Wrapper function for SUTime.py
-#################################
 
 import os
 import json
@@ -10,11 +10,11 @@ from task6.sutime import SUTime
 from task6 import t6Entities as t6
 
 
-## callSUTIMEParse(): Takes in raw text file and performs SUTime's algorithm on #it and returns it in JSON format.
+## Takes in raw text file and performs SUTime's algorithm on #it and returns it in JSON format.
 # @author Nicholas Morton
 # @param file_path Path and file name of text file to be parsed.
 # @param jar_files Path to the location of the jar files.
-# @output A json strong of the parsed time information.
+# @return A json strong of the parsed time information.
 def callSUTimeParse(file_path, jar_files):
     file = open(file_path, "r")
     test_case = file.read()

@@ -4,7 +4,7 @@
 # Description: 	This bash script executes the SemEval 2018 Task6 Time Normalizations project, then evaluates the results.
 # 		You must be in the top level of the CMSC516-SemEval2018-Task6 folder to run this project.
 #
-# Usage: >> source run_task6.sh
+# Usage: >> source runit.sh
 
 ## Run the program and save results in ./results folder
 python run_task6.py -i ./data/SemEval-Task6_TestData/ -o ./results/ -j ./jars/

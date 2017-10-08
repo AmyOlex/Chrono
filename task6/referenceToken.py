@@ -23,7 +23,8 @@ class refToken :
         self.pos = pos
         self.temporal = temporal
         self.t6list = t6list
-        
+
+    ## Defines how to convert a refToken to string
     def __str__(self) :
         #return str(self.id) + " " + self.text
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
@@ -32,7 +33,7 @@ class refToken :
         t6_str = "" if self.t6list is None else (" T6List: " + str(self.t6list))
         #return str(self.id) + " " + self.text
         return str(self.id) + " " + self.text + span_str + pos_str  + temp_str + t6_str
-        
+
     #### Methods to SET properties ###
     
     ## Sets the entity's ID
@@ -71,7 +72,7 @@ class refToken :
         else :
             self.t6list.append(t6id)
 
-        
+
     #### Methods to GET properties ####
     
     ## Gets the entity's ID
@@ -119,7 +120,7 @@ class refToken :
 # @param pos A list of part-of-speech tags for each token in the tok_list. list. Must be the same length as tok_list. Assumes it is a one-to-one relationship in the same order as tok_list.
 # @param temporal A boolean list of 0's and 1' indicating which token contains temporal information. Must be the same length as tok_list. Assumes it is a one-to-one relationship in the same order as tok_list.
 # @param remove_stopwords A boolean that, if true, removes tokens in the stopword list.  Defaults to False.
-# @output A list of refToken objects in the same order as the input tok_list.
+# @return A list of refToken objects in the same order as the input tok_list.
 def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=False) :
     ref_list = list()
     tok_len = len(tok_list)
@@ -157,7 +158,7 @@ def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=Non
 # @author Luke Maffey
 # @param tok_list The list of tokens (required)
 # @param stopwords_path The file with stopwords, defaults to "./stopwords_short"
-# @output A list of refTokens in the same order as the input tok_list with stopwords removed
+# @return A list of refTokens in the same order as the input tok_list with stopwords removed
 
 def removeStopWords(tok_list, stopwords_path="./stopwords_short") :
     with open(stopwords_path) as raw:
