@@ -9,23 +9,13 @@ Similar to how SUTime was used, we generated T6 Entities from the list of Heidel
 Based on the results SUTime performed better in generating the best Anafora output, when comparing the outputs of the anaforatools evaluation script.  However, this is really not a good baseline comparision.  Given that Heidel Time does not return the SPANS like SUTime does, the precision and recall values were much worse. There really is not a good 'baseline' to compare our results too, however, in the future a better baseline could be used to truly compare to our system. 
 
 ---Put your results and the baseline results in a table---
-<PICTURE OF RESULTS TABLE>
 
-Our Implementation: <SPANS> 
-Precision: 0.696
-Recall: 0.736
-
-Using Heidel Time:
-Precision: 0.161
-Recall: 0.033
-
-Our Implementation: 100% Correct Entities
-Precision: 0.364
-Recall: 0.414
-
-Using Heidel Time:
-Precision: 0.010
-Recall: 0.038
+| Implementation                   | Precision | Recall |
+| -------------------------------- | --------- | ------ |
+| SUTime - SPANS                   |  0.696    | 0.736  |    
+| HeidelTime - SPANS               |  0.161    | 0.033  |
+| SUTime - 100% Entity Correct     |  0.364    | 0.414  |
+| HeidelTime - 100% Entity Correct |  0.038    | 0.010  |
 
 ---Explain your table---
 Based on the results, our implementation was significantly better than our baseline.  However, this is to be expected given that there really was not another available program to perform our task the same way we implemented it.  As stated earlier in the future, we hope to develop a better comparison method to truly test our system.
