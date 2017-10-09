@@ -16,14 +16,16 @@ Precision: 0.696
 Recall: 0.736
 
 Using Heidel Time:
-Precision: 0.008
-Recall: 0.004
+Precision: 0.161
+Recall: 0.033
 
 Our Implementation: 100% Correct Entities
 Precision: 0.364
 Recall: 0.414
+
 Using Heidel Time:
-Precision: 0.002
-Recall: 0.001
+Precision: 0.010
+Recall: 0.038
+
 ---Explain your table---
 Based on the results, our implementation was significantly better than our baseline.  However, this is to be expected given that there really was not another available program to perform our task the same way we implemented it.  As stated earlier in the future, we hope to develop a better comparison method to truly test our system.
