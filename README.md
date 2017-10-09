@@ -114,6 +114,13 @@ was searched for in the upstream text.
 were removed.  Thus the text search for would be "november" or "nov.". Periods were kept here because that period need 
 to be included in the reported span. Once a month was identified it was assumed any associated day would be mentioned 
 downstream of the month mention.
+* TwoDigitYear: Two digit years were identified looking for specific patterns (regular expressions) in the form date strings such as mm/dd/yy, if a string contained a two-digit year, it would see if there were any number of other temporal entites that could be a subinterval associated with this year. 
+* Year: Four digit years were identified by looking for specific patterns (regular expressions), specifically mm/dd/yyyy, similar to the TwoDigitYear method mentioned above, if a four digit year was found it would see if there were any number of other temporal entites that could be a subinterval associated with this year.
+* Month of Year:  2 digit months were identified by looking for three specific formats: yyyy/mm/dd, yy/mm/dd, mm/dd/yy.  If one of these conditions were met it would convert the two-digit month into it's proper nomenclature (11 = November)
+* Day of Month: 2 digit days were identified looking for a specific format: mm/dd/yy. If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+* Hour of Day:  2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+* Minute of Hour: 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+* Second of Minute: 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
 
 For example, when identifying T6 entities of the type DayOfWeek we simply search for days of the week. The parsing methods in this file 
 are all rule-based, and parse the SUTime entity's string. There are several base methods that look for typical temporal 
