@@ -13,6 +13,8 @@ To use type:
 >> source runit.sh
 ```
 
+Full documentation available at documentation/index.html
+
 ### Roles and Contributions
  - *Amy Olex:* Team lead, workflow development lead, framework implementation, run_task6.py author, sutimeEntity.py 
  author, SUTime_To-T6.py method contributer, utils.py author, referenceToken.py author, presentation preperation, 
@@ -123,7 +125,6 @@ further processing.
 
 ### 4.  Evaluation and Results
 
-
 ### 5.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
 applications.  Improvements in correctly identifying free-text, ambiguous temporal expressions will continue to be a 
@@ -132,6 +133,15 @@ based on the context in which they are found.  Even the tense of a verb carries 
 not be relevant thus complicating the task of tagging free-text temporal expressions. 
 
 ### 6. Future Work
+Through the course of implementing our parser, we identified that rule-based parsing alone does not capture all of the 
+temporal information in most documents.  Therefore, we think it would be useful to implement a machine learning algorithm 
+to identify more complex temporal expressions missed by SUTime utilizing contextual information (i.e. differentiating 
+between a “Calendar-Interval” and a “Period”).  Such a system would use surrounding words, parts of speech, and other 
+flagged temporal tokens to learn what a word with temporal information is and thus be able to identify it for parsing.  
+Also, we can improve our rule-based parsing to capture more sub-intervals from uncommon formats of dates and times.  Finally, 
+we plan to adjust our SUTime model to improve the quality of the underlying parser.  Once we implement these improvements,
+we will be able to compare our new results to our current results to ensure we are capturing all of the temporal information 
+that our current implementation misses.
 
 ---
 #### References
