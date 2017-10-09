@@ -156,13 +156,13 @@ that our current implementation misses.
 
 5. UzZaman, N., Llorens, H., Derczynski, L., Verhagen, M., Allen, J., and Pustejovsky, J., (2013) [SemEval-2013 Task 1: TempEval-3: Evaluating Time Expressions, Events, and Temporal Relations](http://www.aclweb.org/anthology/S/S13/S13-2001.pdf), Second Joint Conference on Lexical and Computational Semantics (*SEM), Volume 2: Seventh International Workshop on Semantic Evaluation (SemEval 2013), pages 1–9, Atlanta, Georgia, June 14-15, 2013
 
-6. [SemEval-2015 Task 5: QA TempEval](http://alt.qcri.org/semeval2015/task5/)
+6. Llorens, H., Chambers, N., UzZaman, N., Mostafazadeh, N., Allen, J., and Pustejovsky, J., (2015) [QA TempEval: Evaluating Temporal Information Understanding with QA](http://alt.qcri.org/semeval2015/task5/data/uploads/qatempeval-taskdescription.pdf)
 
 7. [SemEval-2015 Task 6: Clinical TempEval](http://alt.qcri.org/semeval2015/task6/)
 
 8. TimeML Working Group (2009)[Guidelines for Temporal Expression Annotation for English for TempEval 2010](http://www.timeml.org/tempeval2/tempeval2-trial/guidelines/timex3guidelines-072009.pdf)
 
-9. [TimeML](http://www.timeml.org/)
+9. Pustejovsky, J., Castaño, J., Ingria, R., Sauri, R., Gaizauskas, R., Setzer, A., and Katz, G. (2003) [TimeML: Robust Specification of Event and Temporal Expressions in Text](http://www.timeml.org/publications/timeMLpubs/IWCS-v4.pdf), IWCS-5, Fifth International Workshop on Computational Semantics.
 
 10. [TimeX Portal](http://timexportal.wikidot.com/timexmuc6)
 
@@ -174,4 +174,4 @@ that our current implementation misses.
 
 14. [Python-SUTime](https://github.com/FraBle/python-sutime)
 
-15. [SUTime](https://nlp.stanford.edu/software/sutime.html)
+15. Chang, A., and Manning, C. (2012) [SUTime: A Library for Recognizing and Normalizing Time Expressions](http://nlp.stanford.edu/pubs/lrec2012-sutime.pdf), 8th International Conference on Language Resources and Evaluation (LREC 2012)
