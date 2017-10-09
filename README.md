@@ -131,6 +131,8 @@ SUTime objects have been parsed into their respective T6 entities, the master li
 further processing.
 
 ### 4.  Evaluation and Results
+Baseline - The baseline used for this projects was to use a different temporal extractor, HeidelTime in this case, and compare how well it performs against the AnaforaTools evaluation script.  Using similar methods to our main implemetation of taking raw text and parsing out temporal expressions using HeidelTimes stand alone function, then we generated a HeidTimeList (similar to our SUTime List) which was parsed out into specific T6 Entities, finally, the results were checked using AnaforaTools evauluation script.
+
 
 ### 5.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
