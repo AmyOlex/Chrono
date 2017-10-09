@@ -18,4 +18,5 @@ Based on the results SUTime performed better in generating the best Anafora outp
 | HeidelTime - 100% Entity Correct |  0.038    | 0.010  |
 
 ---Explain your table---
+
 Based on the results, our implementation was significantly better than our baseline.  However, this is to be expected given that there really was not another available program to perform our task the same way we implemented it.  As stated earlier in the future, we hope to develop a better comparison method to truly test our system.
