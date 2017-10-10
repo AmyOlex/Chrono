@@ -1,3 +1,5 @@
+Author: Nicholas Morton
+
 ---Explain your baseline in words---
 
 The baseline chosen for this project was to compare the TIMEX3 and T6 entities produced by a different system (HeidelTime) than the one used in our project (SUTime).  Heidel time was developed at Heidelberg University, like SUTime it extracts temporal expressions into the TIMEX3 format.  
