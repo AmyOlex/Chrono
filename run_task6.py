@@ -74,6 +74,7 @@ if __name__ == "__main__":
    
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
+        print("Parsing "+ infiles[f] +" ...")
         ## Init the T6Entity list
         my_t6entities = []
         my_t6IDcounter = 1
