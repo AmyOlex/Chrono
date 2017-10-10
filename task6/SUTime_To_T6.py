@@ -22,7 +22,7 @@ import datetime
 # @author Nicholas Morton
 # @param list of SUTime Output
 # @param document creation time (optional)
-# @return List of T6 entities
+# @return List of T6 entities and the T6ID
 def buildT6List(suTimeList, t6ID , dct=None):
     t6List = []
     for s in suTimeList :                 
@@ -94,8 +94,10 @@ def buildT6List(suTimeList, t6ID , dct=None):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
-# @output T6Year Entity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6Year(s, t6ID, t6List):
 
     b, text, startSpan, endSpan = hasYear(s)
@@ -167,8 +169,10 @@ def buildT6Year(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
-# @output T6Year Entity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT62DigitYear(s, t6ID, t6List):           
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b:
@@ -241,8 +245,10 @@ def buildT62DigitYear(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
-# @return T6MonthOfYear Entity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6MonthOfYear(s, t6ID, t6List):    
     b, text, startSpan, endSpan = hasMonthOfYear(s)
     if b:
@@ -260,8 +266,10 @@ def buildT6MonthOfYear(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
-# @return T6DayOfMonthEntity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6DayOfMonth(s, t6ID, t6List):
     b, text, startSpan, endSpan = hasDayOfMonth(s)
     if b:
@@ -280,8 +288,10 @@ def buildT6DayOfMonth(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime Entity
-# @return T6HourOfDay Entity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6HourOfDay(s, t6ID, t6List):
     b, text, startSpan, endSpan = hasHourOfDay(s)
     if b:
@@ -299,8 +309,10 @@ def buildT6HourOfDay(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime Entity
-# @return T6MinuteOfHour Entity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6MinuteOfHour(s,t6ID, t6List):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
     if b:
@@ -318,8 +330,10 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime Entity
-# @return T6HourOfDay Entity
+# @param s The heidtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6SecondOfMinute(s,t6ID, t6List):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
     if b:
