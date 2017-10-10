@@ -4,7 +4,7 @@
 # Date: 9/19/17
 #
 # Programmer Name: Luke Maffey
-#
+# Date: 10/10/17 - DID NOT MAKE ANY CHANGES TO THIS CODE BUT INCORPORATED INTO BASELINE CODE
 
 ## Superclass for all entities
 #
