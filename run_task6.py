@@ -104,8 +104,13 @@ if __name__ == "__main__":
         if(debug) : 
             for tok in my_refToks : print(tok)
         
-        t6MasterList, my_t6IDcounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,doctime)
-        
+        try :
+            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,doctime)
+        except ValueError:
+            print("Value ERROR on "+infiles[f])
+        else :
+            t6MasterList = tmpList
+            my_t6IDcounter = tmpCounter
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
         ## need to pull out specific entities based on ID to link them to others if 
