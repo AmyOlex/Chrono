@@ -1,3 +1,17 @@
+## Class definitions to represent a HeidTime entity
+#
+# Date: 10/10/17
+#
+# Programmer Name: Amy Olex and Nick Morton
+
+## Class to define a SUTime entity parsed from the json output of SUTime
+# @author Amy Olex and Nick Morton
+# @param id Unique numerical ID
+# @param text The text parsed out by SUTime
+# @param start_span The location of the first character
+# @param end_span The location of the last character
+# @param type The type of temporal entity parsed by SUTime.  Can be one of DATE, TIME, SET, DURATION, RANGE
+# @param value The normalized date/time value from SUTime.
 class HeidEntity :
     
     ## The constructor
