@@ -5,3 +5,12 @@ When implementing a baseline, it became apperant that there wasn't a good tool t
 Several methods were modified/reused from the main implmentation so the authorship will be similar to that of the main code files.
 
 Two 3rd party applications which were required: (1) HeidelTime and (2) TreeTagger are not provided but were used in this implementation.  Links to both can be found in the sources section below.
+
+---
+#### References
+
+1. “a part-Of-Speech tagger for many languages.” TreeTagger, www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/.
+
+2. Strötgen, J. & Gertz, M. Lang Resources & Evaluation (2013) 47: 269. https://doi.org/10.1007/s10579-012-9179-y
+
+3. HeidelTime. “HeidelTime/Heideltime.” GitHub, 19 Oct. 2016, github.com/HeidelTime/heideltime.
