@@ -1,3 +1,9 @@
+## This is the Task6 Baseline HeidelTime main method.  The parsing of a full directory will be done from running this program.
+#
+# Date: 10/10/2017
+#
+# Programmer Name: Amy Olex / Nick Morton
+
 import sys
 import os
 import argparse
@@ -7,7 +13,7 @@ import HeidTime_Wrapper as htw
 
 #commands to run in terminal
 #python task_6_baseline.py -i ./data/Raw/ -o ./resultsHeidel/ 
-#python -m anafora.evaluate -r /home/nick/environments/my_env/CMSC516-SemEval2018-Task6/data/SemEval-Task6-Baseline -p /home/nick/environments/my_env/Heidel/heideltime-standalone/resultsHeidel
+#python -m anafora.evaluate -r ./data/SemEval-Task6-Baseline -p ./resultsHeidel
 debug=False
 if __name__ == "__main__":
     
@@ -15,7 +21,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse a directory of files to identify and normalize temporal information.')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
-    
     args = parser.parse_args()
     
     ## Get list of folder names in the input directory
@@ -35,35 +40,16 @@ if __name__ == "__main__":
    
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
-        my_heidcounter = 1
-        heidList = []
+        my_heidcounter = 1 #initialize counter
+        heidList = [] #intialize heidelTime List
         doctime=''      
-        print("Current File: ", infiles[f])        
-        heidList = htw.runHeidTime(infiles[f])         
-        t6HeidList, my_heidcounter = heid.buildT6List(heidList,my_heidcounter,doctime)
+        print("Current File: ", infiles[f])     #Prints the current file to display directory parsing progress   
+        heidList = htw.runHeidTime(infiles[f])  #Runs HeidelTime Standalone Jar for selected file        
+        t6HeidList, my_heidcounter = heid.buildT6List(heidList,my_heidcounter,doctime) #Build final T6HeidList
+        #Write output to output file
         fout = open(outfiles[f] + ".completed.xml", "w")
-        fout.write("<data>\n<annotations>\n")
+        fout.write("<data>\n<annotations>\n") 
         for t6 in t6HeidList :
             fout.write(str(t6.print_xml()))
         fout.write("\n</annotations>\n</data>")
-        fout.close()
-        
-
-
-
-    
-
-    
-       
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        fout.close()    
