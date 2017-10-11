@@ -82,6 +82,9 @@ corpus; however, as the THYME corpus is currently unavailable we utilized the Ti
 To address this challenge we developed T6, a rule-based Python package that normalizes temporal expressions from the the 
 TimeBank/AQUAINT corpus into the Semantically Compositional Annotation Scheme of Bethard and Parker.
 
+### 2. Datasets
+
+
 ### 3.  Method
 Our approach is to utilize an already proven temporal annotator to identify the majority of temporal phrases in the text, 
 then build from there to incorporate more complex temporal relations.  We chose SUTime for initial phrase tagging, and 
@@ -134,9 +137,28 @@ such as "3 weeks". After identifying the interval it is assumed that any number 
 * *Second of Minute:* 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
 
 
-### 4.  Evaluation and Results
-Baseline - The baseline used for this projects was to use a different temporal extractor, HeidelTime in this case, and compare how well it performs against the AnaforaTools evaluation script.  Using similar methods to our main implemetation of taking raw text and parsing out temporal expressions using HeidelTimes stand alone function, then we generated a HeidTimeList (similar to our SUTime List) which was parsed out into specific T6 Entities, finally, the results were checked using AnaforaTools evauluation script.
+### 4.  Evaluation, Baseline, and Results
 
+#### Evaluation
+Evaluation was done by calculating the Precision, Recall, and F1 measure using all XML entities, types, properties, and spans output by our program and compared to the provided gold standard.  The AnaforaTools Python package contains a tool to calculate these metrics by comparing two XML files.  
+
+#### Baseline
+The goal of this SemEval task is to obtain a fine-grained parsing of temporal information from text using the Semantically Compositional Annotation Scheme by Bethard and Parker.  There currently is no published system for parsing temporal information into this scheme for use as a baseline.  Therefore, we decided to naively parse the TIMEX3 temporal phrases identified by HeidelTime into our T6entity structure for comparison. HeidelTime was developed at Heidelberg University and was used as a baseline for SUTime in the task of identifying temporal phrases.  
+
+Similar to how SUTime was utilized, we generated T6 Entities from the list of HeidelTime Entities and computed results from the AnaforaTools. Each input file was ran with HeidelTime's standalone system and the results were parsed into a HeidelTime list.  Once the HeidelTime List was generated, using similar methods from SUTime_To_T6.py, T6 Entites were generated only for the Year, Month, Day, Hour, Second, and Minute.  This naive parsing omits many relationships such as event-time relations.  HeidelTime was not built for parsing data into such a fine-grainined structure, so it may not be the best choice for base line moving forward.
+
+#### Results
+
+
+| Implementation                   | Precision | Recall |
+| -------------------------------- | --------- | ------ |
+| SUTime - SPANS                   |  0.696    | 0.736  |    
+| HeidelTime - SPANS               |  0.161    | 0.033  |
+| SUTime - 100% Entity Correct     |  0.364    | 0.414  |
+| HeidelTime - 100% Entity Correct |  0.038    | 0.010  |
+
+
+Based on the results, our implementation was significantly better than our baseline.  However, this is to be expected given that there really was not another available program to perform our task the same way we implemented it.  As stated earlier in the future, we hope to develop a better comparison method to truly test our system.
 
 ### 5.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
