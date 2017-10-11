@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 # SemEval-2018 Task 6 - Parsing Time Normalizations
 
 ### Amy Olex, Nicholas Morton, Luke Maffey
@@ -21,8 +26,7 @@ Full documentation available at documentation/index.html
  README co-author, installation co-author and tester, literature review.
  - *Luke Maffey:* Doxygen code documentation lead, t6Entities.py author, stopword identification/editing and method 
  implementation, presentation preparation, README co-author, installation co-author and tester, literature review, GUTime testing.
- - *Nicholas Morton:* SUTime installation and implementation lead, workflow development, SUTime_To-T6.py author, 
- README co-author, installation co-author and tester, literature review, HeidelTime testing. 
+ - *Nicholas Morton:* SUTime installation and implementation lead, HeidelTime baseline implementation lead, SUTime python wrapper author, workflow development, SUTime_To-T6.py author, README co-author, installation co-author and tester, literature review.
 
 ---
 
@@ -88,39 +92,18 @@ values as a json string.  These json strings are then parsed into Bethard's sche
 Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#references) for a detailed description of the annotation scheme).
 
 #### T6 Program Structure
-Our program has 4 main components: "run_T6.py" is the drive script that imports the data files and controls the the main 
-program flow; "sutimeEntity.py" is the class file that defines a SUTime enetity object; "t6entity.py" is the class file 
+Our program has 4 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
+program flow; "sutimeEntity.py" is the class file that defines a SUTime entity object; "t6entity.py" is the class file 
 that defines all possible annotation types described by Bethard and Parker; and "SUTime_To_T6.py" is the primary method 
 and list of functions that parse a SUTime entity object to the appropriate set of T6 entities.
 
-__run_T6.py:__ This is the main method for the T6 program.  It handles all input arguments, identifies the list of files to be annotated, loops through each file to 1) run SUTime on it, 2) convert the returned json string to SUTime entities, 3) call SUTime_To_T6 to convert the SUTime entities to T6 entities, and 4) writes the T6 entities to an XML file.
+__run_T6.py:__ This is the main method for the T6 program.  It handles all input arguments, identifies the list of files to be annotated, loops through each file to 1) parse out temporal expreessions with SUTime, 2) convert the returned json string to SUTime entities, 3) call SUTime_To_T6 to convert the SUTime entities to T6 entities, and 4) writes the T6 entities to an XML file.
 
 __sutimeEntities.py:__ This file defines the "sutimeEntity" object. SUTime parses raw text files and returns the following as a JSON string: the parsed temporal phrase, the beginning and end spans of the parsed phrase, the type of temporal entity (DATE, TIME, DURATION, SET), and finally the normalized temporal value. The sutimeEntities.py file contains a method to import SUTime's JSON string into the sutimeEntity object.  The SUTime entities are then stored in a Python List structure in the run_T6.py main method.
 
-__t6entity.py:__ This file defines the t6entity class that stores all of the information for each annotation type. For example, the phrase "May 20, 2017" would be represented as the following three t6entities: Year, MonthOfYear, and DayOfMonth. Each entity has several properties that must be identified and set correctly, including the type or value, span indicies, and a sub-interval. In the given example "year" would have the value "2017" and would point to its sub-interval MonthOfYear. MonthOfYear would be of the type "May" and have a sub-interval that points to DayOfMonth. DayOfMonth would have the value 20 and would not point to any sub-interval. Each object would also have it's span specified, which is the original coordinates of the phrase in the input text file. There are 29 types of entities with 5 parent types described by Bethard and Parker that we have included in our program. The t6entity class also has several methods to perform operations on each object.  This includes a method to print each entity in the required Anafora XML format and a method to compare 2 entities by their location in the text and type of entity.    
+__t6entity.py:__ This file defines the t6entity class that stores all of the information for each annotation type. For example, the phrase "May 20, 2017" would be represented as the following three t6entities: Year, MonthOfYear, and DayOfMonth. Each entity has several properties that must be identified and set correctly, including the type or value, span indicies, and a sub-interval. In the given example "year" would have the value "2017" and would point to its sub-interval MonthOfYear. MonthOfYear would be of the type "May" and have a sub-interval that points to DayOfMonth. DayOfMonth would have the value 20 and would not point to any sub-interval. Each object would also have it's span specified, which is the original coordinates of the phrase in the input text file. There are 29 types of entities with 5 parent types described by Bethard and Parker that we have included in our program. The t6entity class also has several methods to perform operations on each object.  This includes a method to print each entity in the required Anafora XML format and a method to compare 2 entities using their location in the text and entity type.    
 
-__SUTime_To_T6.py:__ This file contains all methods needed to convert a list of SUTime entities to a set of T6 Entities. For example, the raw string "11/02/89" has three T6 Entities: a T6 twoDigitYear, '89'; a T6 MonthOfYear 'November', where November is a sub-interval of the twoDigitYear entity, and a DayOfMonth, '02', which is a sub-interval of the MonthOfYear entity. SUTime does noramlize all of it's parse phrases; however, this normalization can be flawed depending on the phrase.  For example, a phrase without a year such as "Nov. 6" is automatically given a the current year.  This is not correct according to the new annotation scheme.  Therefore, all of our methods parse the identified text of the SUTime entity and not the normalized value. Parsing out the temporal patterns is done using rule-based logic and regular expressions.  Prior to any parsing the temporal phrase is normalized by converting everything to lowercase and removing all punctuation (except for a few specific cases as mentioned below).  
-
-Here is a list of T6Entity types and our parsing strategy:
-
-* DayOfWeek: Days of the week were identified by looking for specific sub-strings such as "monday" or "mon". All puntuation 
-was removed prior to parsing out these strings.
-* Calendar Interval: These are defined as days, weeks, months, or years that align to a calendar interval such a Sunday 
-to Saturday, or the 1st of the month to the 31st. These intervals were identified by searching for the strings "day", 
-"week", "month", and "year", and their plural forms. Some calendar intervals have a number specifying the amount, 
-such as "3 weeks". After identifying the interval it was assumed the number would come before, so a number (numeric or text) 
-was searched for in the upstream text. 
-* Text MonthOfYear: A similar strategy as above was implemented for identifying a spelled out month, except only comma 
-were removed.  Thus the text search for would be "november" or "nov.". Periods were kept here because that period need 
-to be included in the reported span. Once a month was identified it was assumed any associated day would be mentioned 
-downstream of the month mention.
-* TwoDigitYear: Two digit years were identified looking for specific patterns (regular expressions) in the form date strings such as mm/dd/yy, if a string contained a two-digit year, it would see if there were any number of other temporal entites that could be a subinterval associated with this year. 
-* Year: Four digit years were identified by looking for specific patterns (regular expressions), specifically mm/dd/yyyy, similar to the TwoDigitYear method mentioned above, if a four digit year was found it would see if there were any number of other temporal entites that could be a subinterval associated with this year.
-* Month of Year:  2 digit months were identified by looking for three specific formats: yyyy/mm/dd, yy/mm/dd, mm/dd/yy.  If one of these conditions were met it would convert the two-digit month into it's proper nomenclature (11 = November)
-* Day of Month: 2 digit days were identified looking for a specific format: mm/dd/yy. If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
-* Hour of Day:  2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
-* Minute of Hour: 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
-* Second of Minute: 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+__SUTime_To_T6.py:__ This file contains all methods needed to convert a list of SUTime entities to a set of T6 Entities. For example, the raw string "11/02/89" has three T6 Entities: a T6 twoDigitYear, '89'; a T6 MonthOfYear 'November', where November is a sub-interval of the twoDigitYear entity, and a DayOfMonth, '02', which is a sub-interval of the MonthOfYear entity. SUTime does noramlize all of it's parsed phrases; however, this normalization can be flawed depending on the phrase.  For example, a phrase without a year such as "Nov. 6" is automatically given the current year.  This is not correct according to the new annotation scheme.  Therefore, all of our methods parse the identified text of the SUTime entity and not the normalized value. Parsing out the temporal patterns is done using rule-based logic and regular expressions.  Prior to any parsing the temporal phrase is normalized by converting everything to lowercase and removing all punctuation (except for a few specific cases as mentioned below).  
 
 For example, when identifying T6 entities of the type DayOfWeek we simply search for days of the week. The parsing methods in this file 
 are all rule-based, and parse the SUTime entity's string. There are several base methods that look for typical temporal 
@@ -129,6 +112,27 @@ day of the week ('Tuesday' for example) or if the SUTime entity contains a Calen
 it is appended to a master T6 list, also a specific T6 id is assigned to each found T6 Entity.  Finally, once all of the 
 SUTime objects have been parsed into their respective T6 entities, the master list is passed back to the main function for 
 further processing.
+
+Here is a list of T6Entity types and our parsing strategy:
+
+* *Day of Week:* Days of the week were identified by looking for specific sub-strings such as "monday" or "mon". All puntuation 
+was removed prior to parsing out these strings.
+* *Calendar Interval:* Calendar Intervals are defined as days, weeks, months, or years that align to a calendar interval such a Sunday 
+to Saturday, or the 1st of the month to the 31st. These intervals were identified by searching for the strings "day", 
+"week", "month", and "year", and their plural forms. Some calendar intervals have a number specifying the amount, 
+such as "3 weeks". After identifying the interval it is assumed that any number specification will appear before the interval, so a number (numeric or text) is then searched for in the upstream text. 
+* *Text Month and Day:* A "Text Month and Day" refers to a non-numeric month reference, such as "Nov. 6". Each temporal phrase string was normalized to all lowercase, and only commas were removed.  Phrase text was then searched for each month, such as "november" or "nov.". Periods were kept because they needed to be included in the reported span. Once a month was identified it was assumed any associated day would be mentioned downstream of the month mention; thus, an interger or number word was searched for in downstream text from the identified month.
+* *AM or PM:* Due to possible ambiguity of "AM" when converted to lowercase, and the potential inclusion of punctuation into the temporal phrase (e.g. a.m.) that needed to be accounted for when calculating the span, no text normalization was done when searching for AMPM annotations.  Phrases were instead directly search for inclusion of one of the following: "AM","am","A.M.","AM.","a.m.","am.","PM","pm","P.M.","p.m.","pm.","PM."
+* *Part of Day:* Temporal phrases were normalized by converting to lowercase and removing all punctuation.  Then the following terms were searched for in the temporal phrase: "morning","evening","afternoon","night","dawn","dusk","tonight","overnight","today","nights","mornings","evening","afternoons".
+* *Time Zone:* Time zones were identified using a regular expression to search for one of the following abbreviations representing a time zone: AST, EST, CST, MST, PST, AKST, HST, UTC-11, UTC+10.  When searching for time zones, the text was not normalized.
+* *TwoDigitYear:* Two digit years were identified looking for specific patterns (regular expressions) in the form date strings such as mm/dd/yy, if a string contained a two-digit year, it would see if there were any number of other temporal entites that could be a subinterval associated with this year. 
+* *Year:* Four digit years were identified by looking for specific patterns (regular expressions), specifically mm/dd/yyyy, similar to the TwoDigitYear method mentioned above, if a four digit year was found it would see if there were any number of other temporal entites that could be a subinterval associated with this year.
+* *Month of Year:*  2 digit months were identified by looking for three specific formats: yyyy/mm/dd, yy/mm/dd, mm/dd/yy.  If one of these conditions were met it would convert the two-digit month into it's proper nomenclature (11 = November)
+* *Day of Month:* 2 digit days were identified looking for a specific format: mm/dd/yy. If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+* *Hour of Day:*  2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+* *Minute of Hour:* 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+* *Second of Minute:* 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+
 
 ### 4.  Evaluation and Results
 Baseline - The baseline used for this projects was to use a different temporal extractor, HeidelTime in this case, and compare how well it performs against the AnaforaTools evaluation script.  Using similar methods to our main implemetation of taking raw text and parsing out temporal expressions using HeidelTimes stand alone function, then we generated a HeidTimeList (similar to our SUTime List) which was parsed out into specific T6 Entities, finally, the results were checked using AnaforaTools evauluation script.
