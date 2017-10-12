@@ -79,5 +79,7 @@ Install sutime via pip as well:
 ```
 
 #### 8. Debugging
-If you get a java.lang.RuntimeException: Class edu.stanford.nlp.python.SUTimeWrapper not found error, then jpype is
+
+* If you get a java.lang.RuntimeException: Class edu.stanford.nlp.python.SUTimeWrapper not found error, then jpype is
 pointing to the wrong Java JDK library.  Delete all except 1.8 and it should run.
+
