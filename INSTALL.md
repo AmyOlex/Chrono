@@ -4,75 +4,80 @@
 
 ### Pre-Reqs
 - Java 8 or later
-- Python 3
+- Python 2.7 or 3
 - Git
 - jpype, installation instructions from <http://jpype.readthedocs.io/en/latest/install.html>
+- Maven, installation instructions for Ubuntu from <https://www.mkyong.com/maven/how-to-install-maven-in-ubuntu/>
+- Maven, installation for MacOSX from <https://www.mkyong.com/maven/install-maven-on-mac-osx/>
 
 
 ### Streamlined Steps:
 
-Checked for Java version:
+#### 1. Check versions
+Java version:
 ``` bash
 >> java -version
 ```
-Had 1.8.0, so ok on that.
 
-Checked python version:
+Python version:
 ``` bash
 >> python
 ```
-Have 2.7.12, so may need to upgrade.  Trying with python 2.7.
 
-Installed pip:
+#### 3. Download and unzip project zip file.
+
+#### 4. Install pip:
 ``` bash
 >> sudo apt-get install python-pip
 ```
 
-Installing jpype:
-Had to first install python-dev:
+#### 5. Install jpype:
+Have to first install python-dev:
 ``` bash
 >> sudo apt-get install python-dev
 ```
 
-Then needed to download from github:
+Download jpype from github:
 ``` bash
 >> git clone https://github.com/originell/jpype.git
 ```
 
 The run the install script:
 ``` bash
+>> cd jpype
 >> sudo python setup.py install
 ```
 
-Now install sutime:
-``` bash
->>pip install sutime
-```
-
-Ok, now install our task6 by unzipping the zip file.
-
-Also need nltk:
+#### 6. Install additional python modules
+Install nltk:
 ``` bash
 >> pip install nltk
 ```
 
-Also needed python-dateutil:
+Install python-dateutil:
 ``` bash
 >> pip install python-dateutil
 ```
 
-Had to install word2number:
+Install word2number:
 ``` bash
 >> pip install word2number
 ```
 
+#### 7. Install SUTime
 Get python-sutime from Git, cd into the directory, then run maven:
 ``` bash
 >> git clone https://github.com/FraBle/python-sutime.git
 >> cd python-sutime
 >> mvn dependency:copy-dependencies -DoutputDirectory=./jars
 ```
-Then copy the sutime and jars folder into our task6 directory.
+Then copy the sutime and jars folder into the top level project directory.
 
+Install sutime via pip as well:
+``` bash
+>>pip install sutime
+```
+
+#### 8. Debugging
 If you get a java.lang.RuntimeException: Class edu.stanford.nlp.python.SUTimeWrapper not found error, then jpype is
 pointing to the wrong Java JDK library.  Delete all except 1.8 and it should run.
