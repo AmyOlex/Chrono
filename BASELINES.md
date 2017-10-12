@@ -12,12 +12,13 @@ Based on the results SUTime performed better in generating the best Anafora outp
 
 ---Put your results and the baseline results in a table---
 
-| Implementation                   | Precision | Recall |
-| -------------------------------- | --------- | ------ |
-| SUTime - SPANS                   |  0.696    | 0.736  |    
-| HeidelTime - SPANS               |  0.161    | 0.033  |
-| SUTime - 100% Entity Correct     |  0.364    | 0.414  |
-| HeidelTime - 100% Entity Correct |  0.038    | 0.010  |
+| Implementation                   | Precision | Recall |   F1  |
+| -------------------------------- | --------- | ------ | ----- |
+| T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
+| HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
+| -------------------------------- | --------- | ------ | ----- |
+| T6 - Corrent Spans               |  0.606    | 0.522  | 0.561 |   
+| HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
 
 ---Explain your table---
 
