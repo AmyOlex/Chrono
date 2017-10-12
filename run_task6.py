@@ -121,7 +121,7 @@ if __name__ == "__main__":
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
         #t6list = utils.manualT6AddEntities(my_t6entities)
         #utils.write_xml(t6list=my_t6entities, outfile=outfiles[f])
-        print(len(t6MasterList))
+        print("Number of T6 Entities: "+str(len(t6MasterList)))
         utils.write_xml(t6list=t6MasterList, outfile=outfiles[f])
     
     
