@@ -152,6 +152,7 @@ HeidelTime phrases were converted to T6 entities and evaluated against the gold 
 Our rule-based parsing of SUTime temporal phrases achieves higher precision and recall than the baseline (Table 1). The T6 application performs better when only text spans are considered (exact coordinates of temporal entities in the original text). This indicates that T6 is identifying a lot of the correct entities and locations, but is missing some of the properties, or assigning incorrect properties.  Upon further investigation we found that T6 was missing many of the correct sub-intervals when parsing dates and times. Other issues that will need fine tuning include the over-predicting of "Calendar-Interval", "Minute-Of-Hour", "Second-Of-Day", and "Part-Of-Day" entity types.    
 
 Table 1 - T6 and baseline results.
+
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
 | T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
