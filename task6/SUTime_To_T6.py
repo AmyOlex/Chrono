@@ -94,7 +94,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -169,7 +169,7 @@ def buildT6Year(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -245,7 +245,7 @@ def buildT62DigitYear(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -266,7 +266,7 @@ def buildT6MonthOfYear(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -288,7 +288,7 @@ def buildT6DayOfMonth(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -309,7 +309,7 @@ def buildT6HourOfDay(s, t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -330,7 +330,7 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param s The heidtime entity to parse 
+# @param s The sutime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
