@@ -82,10 +82,7 @@ corpus; however, as the THYME corpus is currently unavailable we utilized the Ti
 To address this challenge we developed T6, a rule-based Python package that normalizes temporal expressions from the the 
 TimeBank/AQUAINT corpus into the Semantically Compositional Annotation Scheme of Bethard and Parker.
 
-### 2. Datasets
-
-
-### 3.  Method
+### 2.  Method
 Our approach is to utilize an already proven temporal annotator to identify the majority of temporal phrases in the text, 
 then build from there to incorporate more complex temporal relations.  We chose SUTime for initial phrase tagging, and 
 while written in java, has a python wrapper written by Frank Blechschmidt[<sup>14</sup>](#references).  
@@ -137,7 +134,7 @@ such as "3 weeks". After identifying the interval it is assumed that any number 
 * *Second of Minute:* 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
 
 
-### 4.  Evaluation, Baseline, and Results
+### 3.  Evaluation, Baseline, and Results
 
 #### Evaluation
 The AnaforaTools Pythons package was used to calculate the Precision, Recall, and F1 measures using selected XML entities, types, properties, and spans output by our program compared to the provided gold standard.  The gold standard was provided by Bethard and Parker, and was manually annotated using the AnaforaTools annotator with an inter-annotator agreement of F1 = 0.917. The entity types not included in the current evaluation are "After", "Before", "Union", "Event", "Between", "Frequency", "Modifier", "Period", and "This". These entity types are cueently not being parsed from the SUTime temporal phrases, so were not included in the evaluation.     
@@ -151,8 +148,6 @@ HeidelTime phrases were converted to T6 entities and evaluated against the gold 
 
 Our rule-based parsing of SUTime temporal phrases achieves higher precision and recall than the baseline (Table 1). The T6 application performs better when only text spans are considered (exact coordinates of temporal entities in the original text). This indicates that T6 is identifying a lot of the correct entities and locations, but is missing some of the properties, or assigning incorrect properties.  Upon further investigation we found that T6 was missing many of the correct sub-intervals when parsing dates and times. Other issues that will need fine tuning include the over-predicting of "Calendar-Interval", "Minute-Of-Hour", "Second-Of-Day", and "Part-Of-Day" entity types.    
 
-Table 1 - T6 and baseline results.
-
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
 | T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
@@ -161,12 +156,14 @@ Table 1 - T6 and baseline results.
 | T6 - Corrent Spans               |  0.606    | 0.522  | 0.561 |   
 | HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
 
-### 5. Future Work
+Table 1 - T6 and baseline results.
+
+### 4. Future Work
 Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Therefore, we think it would be useful to implement a machine learning algorithm to identify more complex temporal expressions missed by SUTime utilizing contextual information.  One such example is differentiating between a “Calendar-Interval” and a “Period”. Currently, all phrases that include terms such as "day", "week", "month", "year", or their plurals are classified as Calendar-Intervals; however, depending on the context of the sentence they could be refering to a Period. For example, "we will meet a week from now" versus "there are 5 flights a week".  SUTime will identify "a week" as the temporal phrase in both cases, however, the first example should be annotated as a Period because it does not refer to a calendar week but rather 7 days from now, and the second should be annotated as a Calendar-Interval because it refers to the calendar week of Sunday to Saturday.  Another use of machine learning can help identify relations such as "Between" using surrounding contextual information. Feature vectors for input into both of these systems would include the surrounding words, their parts of speech, verb tense, and if there are other temporal tokens nearby.
 
 Other improvements to our rule-based parsing system would be to capture more sub-intervals from uncommon formats of dates and times. We also aim to adjust the SUTime model implementation to improve the quality of the underlying parser in identifying temporal phrases.  Once we implement these improvements, we will be able to compare our new results to our current results to ensure the modifications are improving the overall result.
 
-### 6.  Conclusion
+### 5.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
 applications.  Improvements in correctly identifying free-text, ambiguous temporal expressions will continue to be a 
 challenge.  We believe that advances in machine learning will improve correct identification of temporal expressions 
