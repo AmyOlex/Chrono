@@ -140,43 +140,39 @@ such as "3 weeks". After identifying the interval it is assumed that any number 
 ### 4.  Evaluation, Baseline, and Results
 
 #### Evaluation
-Evaluation was done by calculating the Precision, Recall, and F1 measure using all XML entities, types, properties, and spans output by our program and compared to the provided gold standard.  The AnaforaTools Python package contains a tool to calculate these metrics by comparing two XML files.  
+The AnaforaTools Pythons package was used to calculate the Precision, Recall, and F1 measures using selected XML entities, types, properties, and spans output by our program compared to the provided gold standard.  The gold standard was provided by Bethard and Parker, and was manually annotated using the AnaforaTools annotator with an inter-annotator agreement of F1 = 0.917. The entity types not included in the current evaluation are "After", "Before", "Union", "Event", "Between", "Frequency", "Modifier", "Period", and "This". These entity types are cueently not being parsed from the SUTime temporal phrases, so were not included in the evaluation.     
 
 #### Baseline
 The goal of this SemEval task is to obtain a fine-grained parsing of temporal information from text using the Semantically Compositional Annotation Scheme by Bethard and Parker.  There currently is no published system for parsing temporal information into this scheme for use as a baseline.  Therefore, we decided to naively parse the TIMEX3 temporal phrases identified by HeidelTime into our T6entity structure for comparison. HeidelTime was developed at Heidelberg University and was used as a baseline for SUTime in the task of identifying temporal phrases.  
 
-Similar to how SUTime was utilized, we generated T6 Entities from the list of HeidelTime Entities and computed results from the AnaforaTools. Each input file was ran with HeidelTime's standalone system and the results were parsed into a HeidelTime list.  Once the HeidelTime List was generated, using similar methods from SUTime_To_T6.py, T6 Entites were generated only for the Year, Month, Day, Hour, Second, and Minute.  This naive parsing omits many relationships such as event-time relations.  HeidelTime was not built for parsing data into such a fine-grainined structure, so it may not be the best choice for base line moving forward.
+HeidelTime phrases were converted to T6 entities and evaluated against the gold standard using the AnaforaTools package. Each input file was run with HeidelTime's standalone system and the results were parsed into a HeidelTime list.  Once the HeidelTime List was generated, using similar methods from SUTime_To_T6.py, T6 Entites were generated only for the Year, Month, Day, Hour, Second, and Minute.  This naive parsing omits many relationships such as event-time relations.  HeidelTime was not built for parsing data into such a fine-grainined structure, so it may not be the best choice for base line moving forward.
 
 #### Results
 
+Our rule-based parsing of SUTime temporal phrases achieves higher precision and recall than the baseline (Table 1). The T6 application performs better when only text spans are considered (exact coordinates of temporal entities in the original text). This indicates that T6 is identifying a lot of the correct entities and locations, but is missing some of the properties, or assigning incorrect properties.  Upon further investigation we found that T6 was missing many of the correct sub-intervals when parsing dates and times. Other issues that will need fine tuning include the over-predicting of "Calendar-Interval", "Minute-Of-Hour", "Second-Of-Day", and "Part-Of-Day" entity types.    
 
-| Implementation                   | Precision | Recall |
-| -------------------------------- | --------- | ------ |
-| SUTime - SPANS                   |  0.696    | 0.736  |    
-| HeidelTime - SPANS               |  0.161    | 0.033  |
-| SUTime - 100% Entity Correct     |  0.364    | 0.414  |
-| HeidelTime - 100% Entity Correct |  0.038    | 0.010  |
+Table 1 - T6 and baseline results.
+| Implementation                   | Precision | Recall |   F1  |
+| -------------------------------- | --------- | ------ | ----- |
+| T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
+| HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
+| -------------------------------- | --------- | ------ | ----- |
+| T6 - Corrent Spans               |  0.606    | 0.522  | 0.561 |   
+| HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
 
+### 5. Future Work
+Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Therefore, we think it would be useful to implement a machine learning algorithm to identify more complex temporal expressions missed by SUTime utilizing contextual information.  One such example is differentiating between a “Calendar-Interval” and a “Period”. Currently, all phrases that include terms such as "day", "week", "month", "year", or their plurals are classified as Calendar-Intervals; however, depending on the context of the sentence they could be refering to a Period. For example, "we will meet a week from now" versus "there are 5 flights a week".  SUTime will identify "a week" as the temporal phrase in both cases, however, the first example should be annotated as a Period because it does not refer to a calendar week but rather 7 days from now, and the second should be annotated as a Calendar-Interval because it refers to the calendar week of Sunday to Saturday.  Another use of machine learning can help identify relations such as "Between" using surrounding contextual information. Feature vectors for input into both of these systems would include the surrounding words, their parts of speech, verb tense, and if there are other temporal tokens nearby.
 
-Based on the results, our implementation was significantly better than our baseline.  However, this is to be expected given that there really was not another available program to perform our task the same way we implemented it.  As stated earlier in the future, we hope to develop a better comparison method to truly test our system.
+Other improvements to our rule-based parsing system would be to capture more sub-intervals from uncommon formats of dates and times. We also aim to adjust the SUTime model implementation to improve the quality of the underlying parser in identifying temporal phrases.  Once we implement these improvements, we will be able to compare our new results to our current results to ensure the modifications are improving the overall result.
 
-### 5.  Conclusion
+### 6.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
 applications.  Improvements in correctly identifying free-text, ambiguous temporal expressions will continue to be a 
 challenge.  We believe that advances in machine learning will improve correct identification of temporal expressions 
 based on the context in which they are found.  Even the tense of a verb carries temporal information which may or may 
 not be relevant thus complicating the task of tagging free-text temporal expressions. 
 
-### 6. Future Work
-Through the course of implementing our parser, we identified that rule-based parsing alone does not capture all of the 
-temporal information in most documents.  Therefore, we think it would be useful to implement a machine learning algorithm 
-to identify more complex temporal expressions missed by SUTime utilizing contextual information (i.e. differentiating 
-between a “Calendar-Interval” and a “Period”).  Such a system would use surrounding words, parts of speech, and other 
-flagged temporal tokens to learn what a word with temporal information is and thus be able to identify it for parsing.  
-Also, we can improve our rule-based parsing to capture more sub-intervals from uncommon formats of dates and times.  Finally, 
-we plan to adjust our SUTime model to improve the quality of the underlying parser.  Once we implement these improvements,
-we will be able to compare our new results to our current results to ensure we are capturing all of the temporal information 
-that our current implementation misses.
+
 
 ---
 #### References
