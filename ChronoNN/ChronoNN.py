@@ -6,16 +6,6 @@
 # Date: 9/19/17
 #
 # Programmer Name: Luke Maffey
-#
-
-## Superclass for all entities
-#
-# Entities are either an Interval, Period, Repeating-Interval, or Operator
-# @param entityID Assigned ID number
-# @param start_span The location of the first character
-# @param end_span The location of the last character
-# @param type The type of the entity
-# @param parent_type The parent type of the entity
 
 from __future__ import absolute_import
 from __future__ import division
@@ -27,19 +17,16 @@ import sys
 import numpy as np
 import tensorflow as tf
 
-# Data sets
-TRAINING_DATA = "chrono_training_binary.csv"
-LOGDIR = "/tmp/ChronoNN/"
-TEST_DATA = "chrono_test_binary.csv"
-
-def main():
+## Trains a classifier with the training data passed.  Once trained, you must delete the LOGDIR or specify a new one
+# if you want to train it again or it will break when it sees there's already something in the folder
+# @param TRAINING_DATA The .csv file to use for training
+# @param LOGDIR Where to store the neural network's configuration
+# @param numFeatures How many features your data uses
+# @return Returns a classifier
+def build_model(TRAINING_DATA = "chrono_training_binary.csv",LOGDIR="/tmp/ChronoNN/", numFeatures=4):
     # If the training and test sets aren't stored locally, exit
     if not os.path.exists(TRAINING_DATA):
         print("File not found: {}".format(TRAINING_DATA))
-        sys.exit()
-
-    if not os.path.exists(TEST_DATA):
-        print("File not found: {}".format(TEST_DATA))
         sys.exit()
 
     # Load datasets.
@@ -47,19 +34,17 @@ def main():
         filename=TRAINING_DATA,
         target_dtype=np.int,
         features_dtype=np.int)
-    test_set = tf.contrib.learn.datasets.base.load_csv_with_header(
-        filename=TEST_DATA,
-        target_dtype=np.int,
-        features_dtype=np.int)
+
+    print("Training set: {}".format(training_set.enumerate()))
 
     # Specify that all features have real-value data
-    feature_columns = [tf.feature_column.numeric_column("x", shape=[4])]
+    feature_columns = [tf.feature_column.numeric_column("x", shape=[numFeatures])]
 
-    # Build 3 layer DNN with 10, 20, 10 units respectively.
+    # Build DNN with "hidden_units" layers and nodes.
     classifier = tf.estimator.DNNClassifier(feature_columns=feature_columns,
-                                            hidden_units=[10,20,10],
+                                            hidden_units=[5],
                                             n_classes=2,
-                                            model_dir="/tmp/chrono_model")
+                                            model_dir=LOGDIR)
     # Define the training inputs
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": np.array(training_set.data)},
@@ -70,33 +55,41 @@ def main():
     # Train model.
     classifier.train(input_fn=train_input_fn, steps=2000)
 
+    return classifier
+
+## Prints the accuracy of your classifier on a test set
+# @param classifier A tensorflow classifier
+# @param TEST_DATA The filename where the data is found
+def test_model(classifier, TEST_DATA = "chrono_test_binary.csv"):
+    if not os.path.exists(TEST_DATA):
+        print("File not found: {}".format(TEST_DATA))
+        sys.exit()
+
+    test_set = tf.contrib.learn.datasets.base.load_csv_with_header(
+        filename=TEST_DATA,
+        target_dtype=np.int,
+        features_dtype=np.int)
     # Define the test inputs
     test_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": np.array(test_set.data)},
         y=np.array(test_set.target),
         num_epochs=1,
         shuffle=False)
-
     # Evaluate accuracy.
     accuracy_score = classifier.evaluate(input_fn=test_input_fn)["accuracy"]
 
     print("\nTest Accuracy: {0:f}\n".format(accuracy_score))
 
-    # Classify two new samples.
-    new_samples = np.array(
-        [[0,1,1,1],
-         [1,0,0,0]], dtype=np.int)
+
+## Classifies the samples passed with the classifier passed
+# @param classifier A tensorflow classifier
+# @param samples A numpy array of features
+# @return A numpy array of predicted classes
+def classify(classifier, samples):
     predict_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": new_samples},
+        x={"x": samples},
         num_epochs=1,
         shuffle=False)
 
-    predictions = list(classifier.predict(input_fn=predict_input_fn))
-    predicted_classes = [p["classes"] for p in predictions]
-
-    print(
-        "New Samples, Class Predictions:    {}\n"
-            .format(predictions))
-
-if __name__ == "__main__":
-    main()
+    predictions = classifier.predict(input_fn=predict_input_fn)
+    return predictions
