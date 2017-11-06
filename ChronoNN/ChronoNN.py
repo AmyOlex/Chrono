@@ -21,9 +21,9 @@ import tensorflow as tf
 # if you want to train it again or it will break when it sees there's already something in the folder
 # @param TRAINING_DATA The .csv file to use for training
 # @param LOGDIR Where to store the neural network's configuration
-# @param numFeatures How many features your data uses
+# @param layers An array of the hidden layers of the neural network
 # @return Returns a classifier
-def build_model(TRAINING_DATA = "chrono_training_binary.csv",LOGDIR="/tmp/ChronoNN/", numFeatures=4):
+def build_model(TRAINING_DATA = "chrono_training_binary.csv",LOGDIR="/tmp/ChronoNN/", layers=[5]):
     # If the training and test sets aren't stored locally, exit
     if not os.path.exists(TRAINING_DATA):
         print("File not found: {}".format(TRAINING_DATA))
@@ -35,14 +35,14 @@ def build_model(TRAINING_DATA = "chrono_training_binary.csv",LOGDIR="/tmp/Chrono
         target_dtype=np.int,
         features_dtype=np.int)
 
-    print("Training set: {}".format(training_set.enumerate()))
+    num_features = np.array(training_set.data).shape[1]
 
     # Specify that all features have real-value data
-    feature_columns = [tf.feature_column.numeric_column("x", shape=[numFeatures])]
+    feature_columns = [tf.feature_column.numeric_column("x", shape=[num_features])]
 
     # Build DNN with "hidden_units" layers and nodes.
     classifier = tf.estimator.DNNClassifier(feature_columns=feature_columns,
-                                            hidden_units=[5],
+                                            hidden_units=layers,
                                             n_classes=2,
                                             model_dir=LOGDIR)
     # Define the training inputs
