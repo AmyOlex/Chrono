@@ -16,3 +16,4 @@ results
 
 *.ipynb
 .Rhistory
+gold-standard-parsing.txt
