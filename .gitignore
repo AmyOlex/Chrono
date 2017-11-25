@@ -14,3 +14,5 @@ jars/stanford-corenlp-3.6.0-models.jar
 jars/stanford-corenlp-3.8.0-models.jar
 results
 
+*.ipynb
+.Rhistory
