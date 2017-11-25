@@ -35,6 +35,7 @@ from task6 import referenceToken
 from task6 import sutime_wrapper
 from task6 import SUTime_To_T6
 from task6 import t6Entities as t6
+from task6 import createMLTrainingMatrix
 
 debug=False
 ## This is the driver method to run all of task6.
@@ -49,7 +50,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse a directory of files to identify and normalize temporal information.')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
-    parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.')#, required=True)
+    parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
+    parser.add_argument('-t', metavar='trainML', type=str, help='Boolean to require the training data file to be generated', required=False, default=False)
     parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
     
@@ -61,16 +63,24 @@ if __name__ == "__main__":
     infiles = []
     outfiles = []
     outdirs = []
+    goldfiles = []
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
           indirs.append(os.path.join(root, name))
           infiles.append(os.path.join(root, name,name))
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
+          goldfiles.append(os.path.join(args.r,name,"period-interval.gold.csv"))
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
     
-
+    ## Create the training data matrix and write to a file
+    if(args.t):
+        train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.j, False)
+    ## Get training data for ML methods by importing pre-made boolean matrix
+    ## Train ML methods on training data
+    ## Pick ML method to train based on input argument
+    ## Pass the ML classifier through to the parse SUTime entities method.
    
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
@@ -128,7 +138,7 @@ if __name__ == "__main__":
     #os.chdir(args.a)
     #os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o + " --exclude Event After Before Between Frequency Union Modifier Period This")
     
-    
+
     
     
     
