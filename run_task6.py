@@ -51,7 +51,8 @@ if __name__ == "__main__":
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
     parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
-    parser.add_argument('-t', metavar='trainML', type=str, help='Boolean to require the training data file to be generated', required=False, default=False)
+    parser.add_argument('-t', metavar='trainML', type=str, help='Boolean to require the training data file to be generated', required=False, default=0)
+    parser.add_argument('-m', metavar='MLmethod', type=str, help='The machine learning method to use. Must be one of NN (neural network), DT (decision tree), NB (naive bayes, default). If option is not provided, or is not NN or DT, the default is NB is used.', required=False, default='NB')
     parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
     
@@ -75,10 +76,20 @@ if __name__ == "__main__":
               os.makedirs(os.path.join(args.o,name))
     
     ## Create the training data matrix and write to a file
-    if(args.t):
+    if(int(args.t)):
         train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.j, False)
     ## Get training data for ML methods by importing pre-made boolean matrix
     ## Train ML methods on training data
+    if(args.m == "DT"):
+        ## Train the decision tree classifier and save in the classifier variable
+        #classifier = ....
+    elif(args.m == "NN"):
+        ## Train the neural network classifier and save in the classifier variable
+        #classifier = ....
+    else:
+        ## Train the naive bayes classifier and save in the classifier variable
+        #classifier = ....
+        
     ## Pick ML method to train based on input argument
     ## Pass the ML classifier through to the parse SUTime entities method.
    

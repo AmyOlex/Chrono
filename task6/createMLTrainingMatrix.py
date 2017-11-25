@@ -68,7 +68,7 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
  
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
-        print("Parsing "+ infiles[f] +" ...")
+        print("ML Parsing "+ infiles[f] +" ...")
         
         ## parse out the doctime
         doctime = utils.getDocTime(infiles[f] + ".dct")
