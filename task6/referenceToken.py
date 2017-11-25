@@ -4,6 +4,8 @@
 #
 # Programmer Name: Amy Olex
 
+import string
+
 ## Class to define a whitespace-parsed token from raw text.
 # @author Amy Olex
 # @param id Unique numerical ID
@@ -121,7 +123,7 @@ class refToken :
 # @param temporal A boolean list of 0's and 1' indicating which token contains temporal information. Must be the same length as tok_list. Assumes it is a one-to-one relationship in the same order as tok_list.
 # @param remove_stopwords A boolean that, if true, removes tokens in the stopword list.  Defaults to False.
 # @return A list of refToken objects in the same order as the input tok_list.
-def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=False) :
+def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=None) :
     ref_list = list()
     tok_len = len(tok_list)
     ## figure out which lists were sent in
@@ -149,8 +151,8 @@ def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=Non
         ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, end_span=span[idx][1] if include[1] else None, pos=pos[idx] if include[2] else None, temporal=temporal[idx] if include[3] else None))
         id_counter = id_counter +1
         
-    if remove_stopwords :
-        ref_list = removeStopWords(ref_list)
+    if remove_stopwords is not None:
+        ref_list = removeStopWords(ref_list, remove_stopwords)
         
     return ref_list
 
@@ -166,10 +168,31 @@ def removeStopWords(tok_list, stopwords_path="./stopwords_short") :
     
     filtered_tokens = []
     for tok in tok_list :
-        if tok.getText() not in stopwords :
+        if tok.getText().lower() not in stopwords :
             filtered_tokens.append(tok) 
             
     return filtered_tokens
     
+## Function to remove all punctuation from a list of refToken objects
+# @author Amy Olex
+# @param tok_list The list of tokens (required)
+# @return A list of refTokens in the same order as the input tok_list with punctuation removed
 
-   
+def replacePunctuation(tok_list) :
+    
+    for t in range(0,len(tok_list)):
+        tok_list[t].setText(tok_list[t].getText().translate(str.maketrans("", "", string.punctuation))) 
+            
+    return tok_list
+
+## Function to convert all refToken objects to lowercase
+# @author Amy Olex
+# @param tok_list The list of tokens (required)
+# @return A list of refTokens in the same order as the input tok_list converted to lowercase
+
+def lowercase(tok_list) :
+    
+    for t in range(0,len(tok_list)):
+        tok_list[t].setText(tok_list[t].getText().lower()) 
+            
+    return tok_list  
