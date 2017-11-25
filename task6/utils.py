@@ -184,6 +184,18 @@ def getNumberFromText(text):
 def getMonthNumber(text):
     month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12}
     return month_dict[text]
-    
+   
+## Function to determine if the input span overlaps this objects span
+# @author Amy Olex
+# @param sp1 a 2-tuple with the first start and end span
+# @param sp2 a 2-tuple with the second start and end span
+# @output True or False
+def overlap(sp1, sp2) :
+    x=set(range(int(sp1[0]), int(sp1[1])))
+    y=set(range(int(sp2[0]), int(sp2[1])))
+    if list(set(x) & set(y)) != []:
+        return True
+    else:
+        return False 
     
     
