@@ -90,7 +90,6 @@ if __name__ == "__main__":
         ## Train the naive bayes classifier and save in the classifier variable
         #classifier = ....
         
-    ## Pick ML method to train based on input argument
     ## Pass the ML classifier through to the parse SUTime entities method.
    
     ## Loop through each file and parse
