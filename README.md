@@ -151,9 +151,11 @@ Our rule-based parsing of SUTime temporal phrases achieves higher precision and 
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
 | T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
+| GUTime - 100% Entity Correct     |  0.088    | 0.020  | 0.033 |
 | HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
 | -------------------------------- | --------- | ------ | ----- |
 | T6 - Corrent Spans               |  0.606    | 0.522  | 0.561 |   
+| GUTime - Correct Spans           |  0.735    | 0.136  | 0.230 |
 | HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
 
 Table 1 - T6 and baseline results.
