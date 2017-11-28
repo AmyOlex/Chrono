@@ -215,3 +215,5 @@ not be relevant thus complicating the task of tagging free-text temporal express
 14. [Python-SUTime](https://github.com/FraBle/python-sutime)
 
 15. Chang, A., and Manning, C. (2012) [SUTime: A Library for Recognizing and Normalizing Time Expressions](http://nlp.stanford.edu/pubs/lrec2012-sutime.pdf), 8th International Conference on Language Resources and Evaluation (LREC 2012)
+
+16. [Implement Decision Tree Algorithm Scratch Python] (https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/)
