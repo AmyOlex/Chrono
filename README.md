@@ -91,6 +91,14 @@ TempEval3 challenge utilizing the TimeBank/AQUAINT corpus. SUTime outputs its pa
 values as a json string.  These json strings are then parsed into Bethard's scheme and output into the required 
 Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#references) for a detailed description of the annotation scheme).
 
+#### Machine Learning Methods
+
+##### NB:
+
+##### NN:
+
+##### DT:
+
 #### T6 Program Structure
 Our program has 4 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
 program flow; "sutimeEntity.py" is the class file that defines a SUTime entity object; "t6entity.py" is the class file 
