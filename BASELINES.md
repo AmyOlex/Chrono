@@ -18,6 +18,18 @@ See the table below for more details.
 
 ---Put your results and the baseline results in a table---
 
+STAGE 1 RESULTS:
+
+| Implementation                   | Precision | Recall |   F1  |
+| -------------------------------- | --------- | ------ | ----- |
+| T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
+| HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
+| -------------------------------- | --------- | ------ | ----- |
+| T6 - Corrent Spans               |  0.606    | 0.522  | 0.561 |
+| HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
+
+STAGE 2 RESULTS:
+
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
 | T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
