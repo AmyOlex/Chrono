@@ -37,6 +37,7 @@ from task6 import SUTime_To_T6
 from task6 import t6Entities as t6
 from task6 import createMLTrainingMatrix
 from ChronoNN import ChronoNN
+from DT import DecisionTree as DTree
 
 debug=False
 ## This is the driver method to run all of task6.
@@ -82,9 +83,8 @@ if __name__ == "__main__":
     ## Get training data for ML methods by importing pre-made boolean matrix
     ## Train ML methods on training data
     if(args.m == "DT"):
-        classifier = 0
         ## Train the decision tree classifier and save in the classifier variable
-        #classifier = ....
+        classifier = DTree.get_classifier("data/aquaint_train_data.csv", 5, 5, 10)
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
         classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
