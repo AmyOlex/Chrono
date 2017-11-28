@@ -25,7 +25,9 @@ import datetime
 # @return List of T6 entities and the T6ID
 def buildT6List(suTimeList, t6ID , dct=None):
     t6List = []
-    for s in suTimeList :                 
+    for s in suTimeList :
+        t6MinuteFlag = False
+        t6SecondFlag = False
         #Parse out Year function
         t6List, t6ID  = buildT6Year(s,t6ID,t6List)
         #Parse out Two-Digit Year 
@@ -52,36 +54,9 @@ def buildT6List(suTimeList, t6ID , dct=None):
         #Going to incorporate in future builds
         #t6List, t6ID = buildDuration(s, t6ID, t6List)               
         #t6List, t6ID = buildSet(s, t6ID, t6List) 
-                 
-    #check list for duplicates
-    newT6List = []
+              
         
     
-    #I feel like this method should work but it is not finding any duplicates when I run it...or it throws and indexing error
-    '''
-    print(len(t6List))
-    print("Old List: ", t6List)
-    newT6List = t6List
-    for t1 in range(len(t6List)):
-        for t2 in range (t1+1, len(t6List)):
-            print("t1,t2 ", t1,t2)
-            print("Items 1,2: ", t6List[t1], t6List[t2])
-            if(t6List[t1] == t6List[t2]):
-                newT6List.remove(t2)
-                print("Found duplicate: ", t6List[t1], t6List[t2])
-
-    print(len(newT6List))
-    print("New List: ", newT6List) 
-    input("Press Enter to Continue...")           
-    '''
-    #Removes some but not all of the duplicates...
-    '''
-    for t6 in t6List:
-        if t6 not in newT6List:
-            newT6List.append(t6)    
-    
-    t6List = newT6List                      
-    '''
     return t6List, t6ID
     
 ####
@@ -143,6 +118,7 @@ def buildT6Year(s, t6ID, t6List):
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
                     if bMinute:
+                        t6MinuteFlag=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpan
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
@@ -155,6 +131,7 @@ def buildT6Year(s, t6ID, t6List):
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
                         if bSecond:
+                            t6SecondFlag=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpan
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
@@ -218,6 +195,7 @@ def buildT62DigitYear(s, t6ID, t6List):
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
                     if bMinute:
+                        t6MinuteFlag=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpan
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
@@ -230,6 +208,7 @@ def buildT62DigitYear(s, t6ID, t6List):
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
                         if bSecond:
+                            t6SecondFlag=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpan
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
@@ -315,7 +294,7 @@ def buildT6HourOfDay(s, t6ID, t6List):
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6MinuteOfHour(s,t6ID, t6List):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
-    if b:
+    if b and not t6MinuteFlag:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -336,7 +315,7 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6SecondOfMinute(s,t6ID, t6List):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
-    if b:
+    if b and not t6SecondFlag:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
