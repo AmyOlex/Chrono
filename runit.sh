@@ -23,7 +23,7 @@ cd ../
 ## run GUTime Baseline Code
 echo "Running GUTime on input files..."
 cd BaselineCode/GUTime
-python run_baseline_code.py -i ../../data/SemEval-Task6-GUTime-Data/ -o ../../data/SemEval-Task6-GUTime-Results/
+python run_baseline_code.py -i ../../data/SemEval-Task6_GUTime-Data/ -o ../../data/SemEval-Task6-GUTime-Results/
 
 ## go to anaforatools directory
 cd ../../
