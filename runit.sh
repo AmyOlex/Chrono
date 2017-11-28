@@ -17,9 +17,20 @@ cd anaforatools
 echo "Evaluating T6 Results..."
 python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../results/ --exclude Event After Before Between Frequency Union Modifier Period This
 
+## go to baselinecode Directory
+cd ../
+
+## run GUTime Baseline Code
+echo "Running GUTime on input files..."
+cd BaselineCode/GUTime
+python run_baseline_code.py -i ../../data/SemEval-Task6-GUTime-Data/ -o ../../data/SemEval-Task6-GUTime-Results/
+
+## go to anaforatools directory
+cd ../../
+cd anaforatools
 
 echo "Evaluating Baseline Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../data/SemEval-Task6-Baseline-HeidelTime/ --exclude Event After Before Between Frequency Union Modifier Period This --overlap
+python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../data/SemEval-Task6-GUTime-Results/ --exclude Event After Before Between Frequency Union Modifier Period This --overlap
 
 ## change back to main directory
 cd ../
