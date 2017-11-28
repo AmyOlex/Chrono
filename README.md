@@ -98,6 +98,7 @@ Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#refere
 ##### NN:
 
 ##### DT:
+The decision tree algorithm was based off of a model built from: https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/ It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  Updates were made to the source code to work for our program.
 
 #### T6 Program Structure
 Our program has 4 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
