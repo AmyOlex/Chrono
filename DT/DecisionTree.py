@@ -1,5 +1,5 @@
 #Python file for Decision Tree Classifier
-# Most of this code is from //machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
+# Most of this code is from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 # I just tweaked it to meet our needs, my original Decision Tree was not working with the test data so this
 # is what I came up with in the short term...
 from random import seed
