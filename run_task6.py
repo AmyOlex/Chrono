@@ -88,11 +88,10 @@ if __name__ == "__main__":
         classifier = DTree.get_classifier("data/aquaint_train_data.csv", 5, 5, 10)
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        #classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
+        classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
     else:
         ## Train the naive bayes classifier and save in the classifier variable
         classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
-        print(feats)
         
     ## Pass the ML classifier through to the parse SUTime entities method.
   
@@ -109,7 +108,7 @@ if __name__ == "__main__":
         
         ## parse out reference tokens
         text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/task6/stopwords_short2.txt")
         if(debug) :
             print("REFERENCE TOKENS:\n")
             for tok in my_refToks : print(tok)
@@ -129,7 +128,7 @@ if __name__ == "__main__":
             for tok in my_refToks : print(tok)
         
         try :
-            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,doctime)
+            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,my_refToks, classifier, feats, doctime)
         except ValueError:
             print("Value ERROR on "+infiles[f])
         else :
@@ -152,7 +151,7 @@ if __name__ == "__main__":
     #os.chdir(args.a)
     #os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o + " --exclude Event After Before Between Frequency Union Modifier Period This")
 
-    
+ 
     
     
     

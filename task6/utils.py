@@ -6,6 +6,7 @@
 
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
+from nltk.stem.snowball import SnowballStemmer
 from task6 import t6Entities as t6
 import dateutil.parser
 import datetime
@@ -197,5 +198,69 @@ def overlap(sp1, sp2) :
         return True
     else:
         return False 
+        
+        
+        
+## Function to extract prediction features
+# @author Amy Olex
+
+def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
+
+    reftok = reftok_list[reftok_idx]
+    window = 3
+    
+    ### Extract the stem feature
+    my_str = reftok.getText()
+    stemmer = SnowballStemmer("english")
+    my_stem = stemmer.stem(reftok.getText().lower())
+    if(my_stem in feature_dict.keys()):
+        feature_dict[my_stem] = 1
+    
+    
+    ### identify the numeric feature
+    before = max(reftok_idx-1,0)
+    after = min(reftok_idx+1,len(reftok_list)-1)
+    
+    if(before != reftok_idx and isinstance(getNumberFromText(reftok_list[before].getText()), (int))):
+        feature_dict['feat_numeric'] = 1
+    elif(after != reftok_idx and isinstance(getNumberFromText(reftok_list[after].getText()), (int))):
+        feature_dict['feat_numeric'] = 1
+    else:
+        feature_dict['feat_numeric'] = 0
+
+
+    ## identify bow feature
+    start = max(reftok_idx-window,0)
+    end = min(reftok_idx+(window+1),len(reftok_list)-1)
+    
+    for r in range(start, end):
+        if r != reftok_idx:
+            num_check = getNumberFromText(reftok_list[r].getText())
+            if(isinstance(num_check, (int))):
+                if(num_check in feature_dict.keys()):
+                    feature_dict[num_check] = 1
+            else:
+                txt = reftok_list[r].getText()
+                if(txt in feature_dict.keys()):
+                    feature_dict[txt] = 1
+
+    ## identify temp_self feature    
+    if reftok.isTemporal():
+        feature_dict['feat_temp_self'] = 1
+    
+    ## identify temp_context within 3 words to either side of the target.
+    start = max(reftok_idx-window,0)
+    end = min(reftok_idx+(window+1),len(reftok_list)-1)
+    for r in range(start, end):
+        if r != reftok_idx:
+            if reftok_list[r].isTemporal():
+                feature_dict['feat_temp_context'] = 1
+                break
+
+    return(feature_dict)
+######
+## END Function
+######   
+        
     
     

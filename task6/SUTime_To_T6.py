@@ -6,6 +6,7 @@
 
 from task6 import t6Entities as t6
 from task6 import utils
+from task6 import referenceToken
 import calendar
 import string
 import re
@@ -23,10 +24,17 @@ import datetime
 # @param list of SUTime Output
 # @param document creation time (optional)
 # @return List of T6 entities and the T6ID
-def buildT6List(suTimeList, t6ID , dct=None):
+def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None):
     t6List = []
+    
+    ## Do some further pre-processing on the ref token list
+    ## Replace all punctuation with spaces
+    ref_list = referenceToken.replacePunctuation(ref_list)
+    ## Convert to lowercase
+    ref_list = referenceToken.lowercase(ref_list)
+    
     for s in suTimeList :
-        t6MinuteFlag = False
+        '''' t6MinuteFlag = False
         t6SecondFlag = False
         #Parse out Year function
         t6List, t6ID  = buildT6Year(s,t6ID,t6List)
@@ -48,9 +56,12 @@ def buildT6List(suTimeList, t6ID , dct=None):
         t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
         t6List, t6ID  = buildTextMonthAndDay(s,t6ID,t6List,dct)            
         t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
-        t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
+        #t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
         t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
-
+        '''
+        t6List, t6ID  = buildPeriodInterval(s, t6ID,t6List, ref_list, PIclassifier, PIfeatures)
+     
+        
         #Going to incorporate in future builds
         #t6List, t6ID = buildDuration(s, t6ID, t6List)               
         #t6List, t6ID = buildSet(s, t6ID, t6List) 
@@ -576,6 +587,85 @@ def buildCalendarInterval(s, t6ID, t6List):
 #END_MODULE
 ####
 
+## Parses a sutime entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated t6entity list
+# @author Amy Olex
+# @param s The SUtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
+###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning of the string from sutime represents the number.  If this is not the case the spans may be off.
+###### More Issues: I created the training data incorrectly to remove the SUTime entity from consideration.  In order to classify from scratch we would need multiple classes: period, interval, everything else.  I only have a binary classifier here, so I need to narrow it down before trying to classify.
+def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
+    
+    ## If the Sutime entity has a "CalendarInterval":
+        ## find the index of this same entity in the ref_list
+        ## extract the features for that ref_list entity
+        ## classify into a period or interval
+        ## create the appropriate T6 entity
+        ## Proceed to identify any numbers before the entity.
+    
+    ref_Sspan, ref_Espan = s.getSpan()
+    boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
+    if boo:
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        
+        # get index of overlapping reference token
+        ref_idx = -1
+        for i in range(0,len(ref_list)):
+            if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
+                ref_idx = i
+                break
+        print("Ref Idx: "+ str(ref_idx))
+        
+        # extract ML features
+        my_features = utils.extract_prediction_features(ref_list, ref_idx, features)
+        
+        # classify into period or interval
+        my_class = classifier.classify(my_features)
+        
+        # if 1 then it is a period, if 0 then it is an interval  
+        if(my_class):
+            my_entity = t6.T6PeriodEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=val, number=None)
+            t6ID = t6ID+1
+        else:
+            my_entity = t6.T6CalendarIntervalEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val)
+            t6ID = t6ID+1
+        
+        #check to see if it has a number associated with it.  We assume the number comes before the interval string
+        if idxstart > 0:
+            substr = s.getText()[0:idxstart]
+            m = re.search('([0-9]{1,2})', substr)
+            if m is not None :
+                num_val = m.group(0)
+                abs_Sspan = ref_Sspan + m.span(0)[0]
+                abs_Espan = ref_Sspan + m.span(0)[1]
+            
+                my_number_entity = t6.T6Number(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
+                t6ID = t6ID+1
+                
+                #add the number entity to the list
+                t6List.append(my_number_entity)
+            #else search for a text number
+            else:
+                texNumVal = utils.getNumberFromText(substr)
+                if texNumVal is not None:
+                    #create the number entity
+                    my_number_entity = t6.T6Number(entityID=str(t6ID)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal)
+                    t6ID = t6ID+1
+                    #append to list
+                    t6List.append(my_number_entity)
+                    #link to interval entity
+                    my_entity.set_number(my_number_entity.get_id())
+                    
+        
+        t6List.append(my_entity)             
+            
+    return t6List, t6ID
+####
+#END_MODULE
+####
+
 ## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
 # @author Amy Olex
 # @param s The SUtime entity to parse 
@@ -958,41 +1048,35 @@ def hasCalendarInterval(suentity):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    singular = ["day","week","month","year","daily","weekly","monthly","yearly"]
-    plural = ["days","weeks","months","years"]
+    terms = ["day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
     
-    #figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(singular+plural))
+    #figure out if any of the tokens in the text_list are also in the interval list
+    intersect = list(set(text_list) & set(terms))
     
     #only proceed if the intersect list has a length of 1 or more.
     #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
     if len(intersect) == 1 :
         #test if the intersect list contains plural or singular period.
         
-        if len(list(set(intersect) & set (singular))) == 1:
-            singTerm = list(set(intersect) & set (singular))[0]
-            start_idx, end_idx = getSpan(text_norm, singTerm)
-            if singTerm == "day" or singTerm == "daily":
+        if len(list(set(intersect) & set (terms))) == 1:
+            this_term = list(set(intersect) & set (terms))[0]
+            start_idx, end_idx = getSpan(text_norm, this_term)
+            if this_term == "day" or this_term == "daily" or this_term == "days":
                 return True, "Day", start_idx, end_idx, False
-            elif singTerm == "week" or singTerm == "weekly":
+            elif this_term == "week" or this_term == "weekly" or this_term == "weeks":
                 return True, "Week", start_idx, end_idx, False
-            elif singTerm == "month" or singTerm == "monthly":
+            elif this_term == "month" or this_term == "monthly" or this_term == "months":
                 return True, "Month", start_idx, end_idx, False
-            elif singTerm == "year" or singTerm == "yearly":
+            elif this_term == "year" or this_term == "yearly" or this_term == "years":
                 return True, "Year", start_idx, end_idx, False
-            
-            
-        if len(list(set(intersect) & set (plural))) == 1:
-            plurTerm = list(set(intersect) & set (plural))[0]
-            start_idx, end_idx = getSpan(text_norm, plurTerm)
-            if plurTerm == "days":
-                return True, "Days", start_idx, end_idx, True
-            elif plurTerm == "weeks":
-                return True, "Weeks", start_idx, end_idx, True
-            elif plurTerm == "months":
-                return True, "Months", start_idx, end_idx, True
-            elif plurTerm == "years":
-                return True, "Years", start_idx, end_idx, True
+            elif this_term == "century" or this_term == "centuries":
+                return True, "Century", start_idx, end_idx, False
+            elif this_term == "minute" or this_term == "minutes":
+                return True, "Minute", start_idx, end_idx, False
+            elif this_term == "second" or this_term == "seconds":
+                return True, "Second", start_idx, end_idx, False
+            elif this_term == "hour" or this_term == "hourly" or this_term == "hours":
+                return True, "Hour", start_idx, end_idx, False
               
         else :
             return False, None, None, None, None

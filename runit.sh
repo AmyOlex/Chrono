@@ -8,29 +8,29 @@
 
 ## Run the program and save results in ./results folder
 echo "Running T6 on input files....."
-python run_task6.py -i ./data/SemEval-Task6_TrainData/ -o ./results/ -j ./jars/
+python run_task6.py -i ./data/TrainDataMatching/ -r ./data/SemEval-Task6-Gold/ -o ./results/ -t 0 -m NB
 
 ## go to the anaforatools directory
 cd anaforatools
 
 ## run the evaluation script
 echo "Evaluating T6 Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../results/ --exclude Event After Before Between Frequency Union Modifier Period This
+python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../results/ --exclude Event After Before Between Frequency Union Modifier This
 
 ## go to baselinecode Directory
-cd ../
+#cd ../
 
 ## run GUTime Baseline Code
-echo "Running GUTime on input files..."
-cd BaselineCode/GUTime
-python run_baseline_code.py -i ../../data/SemEval-Task6_GUTime-Data/ -o ../../data/SemEval-Task6-GUTime-Results/
+#echo "Running GUTime on input files..."
+#cd BaselineCode/GUTime
+#python run_baseline_code.py -i ../../data/SemEval-Task6_GUTime-Data/ -o ../../data/SemEval-Task6-GUTime-Results/
 
 ## go to anaforatools directory
-cd ../../
-cd anaforatools
+#cd ../../
+#cd anaforatools
 
-echo "Evaluating Baseline Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../data/SemEval-Task6-GUTime-Results/ --exclude Event After Before Between Frequency Union Modifier Period This --overlap
+#echo "Evaluating Baseline Results..."
+#python -m anafora.evaluate -r ../data/SemEval-Task6-Gold -p ../data/SemEval-Task6-GUTime-Results/ --exclude Event After Before Between Frequency Union Modifier Period This --overlap
 
 ## change back to main directory
-cd ../
+#cd ../
