@@ -37,6 +37,7 @@ from task6 import SUTime_To_T6
 from task6 import t6Entities as t6
 from task6 import createMLTrainingMatrix
 from ChronoNN import ChronoNN
+from chronoML import NB_nltk_classifier as NBclass
 
 debug=False
 ## This is the driver method to run all of task6.
@@ -87,13 +88,14 @@ if __name__ == "__main__":
         #classifier = ....
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
-    # else:
+        #classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
+    else:
         ## Train the naive bayes classifier and save in the classifier variable
-        #classifier = ....
+        classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        print(feats)
         
     ## Pass the ML classifier through to the parse SUTime entities method.
-   
+  
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
         print("Parsing "+ infiles[f] +" ...")
@@ -149,7 +151,6 @@ if __name__ == "__main__":
     
     #os.chdir(args.a)
     #os.system("python -m anafora.evaluate -r" + args.r + " -p " + args.o + " --exclude Event After Before Between Frequency Union Modifier Period This")
-    
 
     
     
