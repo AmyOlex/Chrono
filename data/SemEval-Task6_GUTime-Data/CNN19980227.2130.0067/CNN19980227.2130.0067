@@ -1,0 +1,904 @@
+<ttk>
+<text>
+
+CNN19980227.2130.0067
+
+19980227
+
+
+CNN19980227.2130.0067 NEWS STORY
+
+
+
+Live from Atalanta, good evening Lynne Russell, CNN headline news. New evidence is suggesting that a series of bombings in Atalanta and last month's explosion at an Alabama women's clinic might be related. Pierre Thomas has the latest.
+
+Atlanta nineteen ninety-six. A bomb blast shocks the Olympic games. One person is killed.
+
+January nineteen ninety-seven. Atlanta again. This time a bomb at an abortion clinic. More people are hurt. And just last month, an off duty policeman is killed when a bomb explodes at another abortion clinic. Location, Birmingham, Alabama.
+
+This man, Eric Rudolph has already been charged in the Birmingham bombing. Now officials are investigating whether, Rudolph, who remains at large, is linked to all three attacks. The reason, authorities have discovered tantalizing new evidence.
+
+Steel plates recovered at the Olympic park bombing appear to match those found at the abortion clinic bombing in Atlanta. Those plates may have come from a machine shop in north Carolina, where a friend of Rudolph worked.
+
+And nails found in the Atlanta abortion clinic bombing are identical to those discovered at Rudolph's storage shed in north Carolina. A senior law enforcement source tells CNN, there is a lot of circumstantial evidence and it would be extraordinary to have all these bits and pieces and there not be a connection.
+
+And law enforcement sources say they can't ignore letters penned under the name army of god. Army of god is a secret organization that hates abortion providers, homosexuals and the US government.
+
+Army of god letters claim responsibility for the Atlanta abortion clinic bombing, a nineteen ninety-seven attack on a gay lounge and the Birmingham assault.
+
+An intense manhunt conducted by the FBI and the bureau of alcohol, tobacco and firearms continues for Rudolph in the wilderness of western north Carolina. And this week, FBI director Louie Freeh assigned more agents to the search.
+
+Freeh also ordered the investigation consolidate information under the Atlanta task force, another indication officials suspect a link between all the bombings. Privately, authorities say Rudolph has become a focus of their investigation. Publicly, they are unwilling to make any sweeping assertion. The reason, they remember Richard Jewell. pierre thomas, CNN, Washington.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</text>
+<metadata>
+  <dct value="20171126"/>
+</metadata>
+<source_tags>
+</source_tags>
+<tarsqi_tags>
+  <docelement begin="2" end="23" id="d1" origin="DOCSTRUCTURE" type="paragraph" />
+  <lex begin="2" end="23" id="l1" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="JJ" text="CNN19980227.2130.0067" />
+  <s begin="2" end="23" id="s1" origin="PREPROCESSOR" />
+  <docelement begin="25" end="33" id="d2" origin="DOCSTRUCTURE" type="paragraph" />
+  <lex begin="25" end="33" id="l2" lemma="@card@" origin="PREPROCESSOR" pos="LS" text="19980227" />
+  <s begin="25" end="33" id="s2" origin="PREPROCESSOR" />
+  <docelement begin="36" end="68" id="d3" origin="DOCSTRUCTURE" type="paragraph" />
+  <ng begin="36" end="68" id="c1" origin="PREPROCESSOR" />
+  <s begin="36" end="68" id="s3" origin="PREPROCESSOR" />
+  <lex begin="36" end="57" id="l3" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="JJ" text="CNN19980227.2130.0067" />
+  <lex begin="58" end="62" id="l4" lemma="News" origin="PREPROCESSOR" pos="NNP" text="NEWS" />
+  <lex begin="63" end="68" id="l5" lemma="Story" origin="PREPROCESSOR" pos="NNP" text="STORY" />
+  <docelement begin="72" end="307" id="d4" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="72" end="138" id="s4" origin="PREPROCESSOR" />
+  <lex begin="72" end="76" id="l6" lemma="live" origin="PREPROCESSOR" pos="JJ" text="Live" />
+  <lex begin="77" end="81" id="l7" lemma="from" origin="PREPROCESSOR" pos="IN" text="from" />
+  <lex begin="82" end="90" id="l8" lemma="Atalanta" origin="PREPROCESSOR" pos="NNP" text="Atalanta" />
+  <ng begin="82" end="90" id="c2" origin="PREPROCESSOR" />
+  <lex begin="90" end="91" id="l9" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="92" end="118" id="c3" origin="PREPROCESSOR" />
+  <lex begin="92" end="96" id="l10" lemma="good" origin="PREPROCESSOR" pos="JJ" text="good" />
+  <lex begin="97" end="104" id="l11" lemma="evening" origin="PREPROCESSOR" pos="NN" text="evening" />
+  <lex begin="105" end="110" id="l12" lemma="Lynne" origin="PREPROCESSOR" pos="NNP" text="Lynne" />
+  <lex begin="111" end="118" id="l13" lemma="Russell" origin="PREPROCESSOR" pos="NNP" text="Russell" />
+  <lex begin="118" end="119" id="l14" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="120" end="137" id="c4" origin="PREPROCESSOR" />
+  <lex begin="120" end="123" id="l15" lemma="CNN" origin="PREPROCESSOR" pos="NNP" text="CNN" />
+  <lex begin="124" end="132" id="l16" lemma="headline" origin="PREPROCESSOR" pos="NN" text="headline" />
+  <lex begin="133" end="137" id="l17" lemma="news" origin="PREPROCESSOR" pos="NN" text="news" />
+  <lex begin="137" end="138" id="l18" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="139" end="277" id="s5" origin="PREPROCESSOR" />
+  <ng begin="139" end="151" id="c5" origin="PREPROCESSOR" />
+  <lex begin="139" end="142" id="l19" lemma="new" origin="PREPROCESSOR" pos="JJ" text="New" />
+  <lex begin="143" end="151" id="l20" lemma="evidence" origin="PREPROCESSOR" pos="NN" text="evidence" />
+  <vg begin="152" end="165" id="c6" origin="PREPROCESSOR" />
+  <lex begin="152" end="154" id="l21" lemma="be" origin="PREPROCESSOR" pos="VBZ" text="is" />
+  <lex begin="155" end="165" id="l22" lemma="suggest" origin="PREPROCESSOR" pos="VBG" text="suggesting" />
+  <EVENT begin="155" end="165" aspect="PROGRESSIVE" class="OCCURRENCE" eid="e1" eiid="ei1" epos="VERB" form="suggesting" origin="EVITA" pos="VBG" tense="PRESENT" />
+  <lex begin="166" end="170" id="l23" lemma="that" origin="PREPROCESSOR" pos="IN" text="that" />
+  <ng begin="171" end="179" id="c7" origin="PREPROCESSOR" />
+  <lex begin="171" end="172" id="l24" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="173" end="179" id="l25" lemma="series" origin="PREPROCESSOR" pos="NN" text="series" />
+  <lex begin="180" end="182" id="l26" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <lex begin="183" end="191" id="l27" lemma="bombing" origin="PREPROCESSOR" pos="NNS" text="bombings" />
+  <ng begin="183" end="191" id="c8" origin="PREPROCESSOR" />
+  <EVENT begin="183" end="191" aspect="NONE" class="OCCURRENCE" eid="e2" eiid="ei2" epos="NOUN" form="bombings" origin="EVITA" pos="NNS" tense="NONE" />
+  <lex begin="192" end="194" id="l28" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <lex begin="195" end="203" id="l29" lemma="Atalanta" origin="PREPROCESSOR" pos="NNP" text="Atalanta" />
+  <ng begin="195" end="203" id="c9" origin="PREPROCESSOR" />
+  <lex begin="204" end="207" id="l30" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <ng begin="208" end="218" id="c10" origin="PREPROCESSOR" />
+  <TIMEX3 begin="208" end="218" origin="GUTIME" tid="t1" type="DATE" value="201710" />
+  <lex begin="208" end="212" id="l31" lemma="last" origin="PREPROCESSOR" pos="JJ" text="last" />
+  <lex begin="213" end="218" id="l32" lemma="month" origin="PREPROCESSOR" pos="NN" text="month" />
+  <lex begin="218" end="220" id="l33" lemma="'s" origin="PREPROCESSOR" pos="POS" text="'s" />
+  <lex begin="221" end="230" id="l34" lemma="explosion" origin="PREPROCESSOR" pos="NN" text="explosion" />
+  <ng begin="221" end="230" id="c11" origin="PREPROCESSOR" />
+  <EVENT begin="221" end="230" aspect="NONE" class="OCCURRENCE" eid="e3" eiid="ei3" epos="NOUN" form="explosion" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="231" end="233" id="l35" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <ng begin="234" end="250" id="c12" origin="PREPROCESSOR" />
+  <lex begin="234" end="236" id="l36" lemma="an" origin="PREPROCESSOR" pos="DT" text="an" />
+  <lex begin="237" end="244" id="l37" lemma="Alabama" origin="PREPROCESSOR" pos="NNP" text="Alabama" />
+  <lex begin="245" end="250" id="l38" lemma="woman" origin="PREPROCESSOR" pos="NNS" text="women" />
+  <lex begin="250" end="252" id="l39" lemma="'s" origin="PREPROCESSOR" pos="POS" text="'s" />
+  <lex begin="253" end="259" id="l40" lemma="clinic" origin="PREPROCESSOR" pos="NN" text="clinic" />
+  <ng begin="253" end="259" id="c13" origin="PREPROCESSOR" />
+  <vg begin="260" end="276" id="c14" origin="PREPROCESSOR" />
+  <lex begin="260" end="265" id="l41" lemma="might" origin="PREPROCESSOR" pos="MD" text="might" />
+  <lex begin="266" end="268" id="l42" lemma="be" origin="PREPROCESSOR" pos="VB" text="be" />
+  <lex begin="269" end="276" id="l43" lemma="relate" origin="PREPROCESSOR" pos="VBN" text="related" />
+  <EVENT begin="269" end="276" aspect="NONE" class="OCCURRENCE" eid="e4" eiid="ei4" epos="VERB" form="related" modality="might" origin="EVITA" pos="VBN" tense="NONE" />
+  <lex begin="276" end="277" id="l44" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="278" end="307" id="s6" origin="PREPROCESSOR" />
+  <ng begin="278" end="291" id="c15" origin="PREPROCESSOR" />
+  <lex begin="278" end="284" id="l45" lemma="Pierre" origin="PREPROCESSOR" pos="NNP" text="Pierre" />
+  <lex begin="285" end="291" id="l46" lemma="Thomas" origin="PREPROCESSOR" pos="NNP" text="Thomas" />
+  <lex begin="292" end="295" id="l47" lemma="have" origin="PREPROCESSOR" pos="VBZ" text="has" />
+  <vg begin="292" end="295" id="c16" origin="PREPROCESSOR" />
+  <EVENT begin="292" end="295" aspect="NONE" class="OCCURRENCE" eid="e5" eiid="ei5" epos="VERB" form="has" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <lex begin="296" end="299" id="l48" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="300" end="306" id="l49" lemma="late" origin="PREPROCESSOR" pos="JJS" text="latest" />
+  <lex begin="306" end="307" id="l50" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="309" end="398" id="d5" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="309" end="337" id="s7" origin="PREPROCESSOR" />
+  <ng begin="309" end="336" id="c17" origin="PREPROCESSOR" />
+  <lex begin="309" end="316" id="l51" lemma="Atlanta" origin="PREPROCESSOR" pos="NNP" text="Atlanta" />
+  <lex begin="317" end="325" id="l52" lemma="nineteen" origin="PREPROCESSOR" pos="CD" text="nineteen" />
+  <lex begin="326" end="336" id="l53" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="NN" text="ninety-six" />
+  <lex begin="336" end="337" id="l54" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="338" end="376" id="s8" origin="PREPROCESSOR" />
+  <ng begin="338" end="350" id="c18" origin="PREPROCESSOR" />
+  <lex begin="338" end="339" id="l55" lemma="a" origin="PREPROCESSOR" pos="DT" text="A" />
+  <lex begin="340" end="344" id="l56" lemma="bomb" origin="PREPROCESSOR" pos="NN" text="bomb" />
+  <lex begin="345" end="350" id="l57" lemma="blast" origin="PREPROCESSOR" pos="NN" text="blast" />
+  <EVENT begin="345" end="350" aspect="NONE" class="OCCURRENCE" eid="e6" eiid="ei6" epos="NOUN" form="blast" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="351" end="357" id="l58" lemma="shock" origin="PREPROCESSOR" pos="VBZ" text="shocks" />
+  <vg begin="351" end="357" id="c19" origin="PREPROCESSOR" />
+  <EVENT begin="351" end="357" aspect="NONE" class="OCCURRENCE" eid="e7" eiid="ei7" epos="VERB" form="shocks" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <ng begin="358" end="375" id="c20" origin="PREPROCESSOR" />
+  <lex begin="358" end="361" id="l59" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="362" end="369" id="l60" lemma="Olympic" origin="PREPROCESSOR" pos="JJ" text="Olympic" />
+  <lex begin="370" end="375" id="l61" lemma="game" origin="PREPROCESSOR" pos="NNS" text="games" />
+  <EVENT begin="370" end="375" aspect="NONE" class="OCCURRENCE" eid="e8" eiid="ei8" epos="NOUN" form="games" origin="EVITA" pos="NNS" tense="NONE" />
+  <lex begin="375" end="376" id="l62" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="377" end="398" id="s9" origin="PREPROCESSOR" />
+  <ng begin="377" end="387" id="c21" origin="PREPROCESSOR" />
+  <lex begin="377" end="380" id="l63" lemma="one" origin="PREPROCESSOR" pos="CD" text="One" />
+  <lex begin="381" end="387" id="l64" lemma="person" origin="PREPROCESSOR" pos="NN" text="person" />
+  <vg begin="388" end="397" id="c22" origin="PREPROCESSOR" />
+  <lex begin="388" end="390" id="l65" lemma="be" origin="PREPROCESSOR" pos="VBZ" text="is" />
+  <lex begin="391" end="397" id="l66" lemma="kill" origin="PREPROCESSOR" pos="VBN" text="killed" />
+  <EVENT begin="391" end="397" aspect="NONE" class="OCCURRENCE" eid="e9" eiid="ei9" epos="VERB" form="killed" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <lex begin="397" end="398" id="l67" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="400" end="640" id="d6" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="400" end="430" id="s10" origin="PREPROCESSOR" />
+  <ng begin="400" end="429" id="c23" origin="PREPROCESSOR" />
+  <lex begin="400" end="407" id="l68" lemma="January" origin="PREPROCESSOR" pos="NNP" text="January" />
+  <TIMEX3 begin="400" end="407" origin="GUTIME" tid="t2" type="DATE" value="" />
+  <lex begin="408" end="416" id="l69" lemma="nineteen" origin="PREPROCESSOR" pos="CD" text="nineteen" />
+  <lex begin="417" end="429" id="l70" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="NN" text="ninety-seven" />
+  <lex begin="429" end="430" id="l71" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="431" end="445" id="s11" origin="PREPROCESSOR" />
+  <lex begin="431" end="438" id="l72" lemma="Atlanta" origin="PREPROCESSOR" pos="NNP" text="Atlanta" />
+  <ng begin="431" end="438" id="c24" origin="PREPROCESSOR" />
+  <lex begin="439" end="444" id="l73" lemma="again" origin="PREPROCESSOR" pos="RB" text="again" />
+  <lex begin="444" end="445" id="l74" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="446" end="485" id="s12" origin="PREPROCESSOR" />
+  <ng begin="446" end="455" id="c25" origin="PREPROCESSOR" />
+  <lex begin="446" end="450" id="l75" lemma="this" origin="PREPROCESSOR" pos="DT" text="This" />
+  <lex begin="451" end="455" id="l76" lemma="time" origin="PREPROCESSOR" pos="NN" text="time" />
+  <ng begin="456" end="462" id="c26" origin="PREPROCESSOR" />
+  <lex begin="456" end="457" id="l77" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="458" end="462" id="l78" lemma="bomb" origin="PREPROCESSOR" pos="NN" text="bomb" />
+  <lex begin="463" end="465" id="l79" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <ng begin="466" end="484" id="c27" origin="PREPROCESSOR" />
+  <lex begin="466" end="468" id="l80" lemma="an" origin="PREPROCESSOR" pos="DT" text="an" />
+  <lex begin="469" end="477" id="l81" lemma="abortion" origin="PREPROCESSOR" pos="NN" text="abortion" />
+  <lex begin="478" end="484" id="l82" lemma="clinic" origin="PREPROCESSOR" pos="NN" text="clinic" />
+  <lex begin="484" end="485" id="l83" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="486" end="507" id="s13" origin="PREPROCESSOR" />
+  <ng begin="486" end="497" id="c28" origin="PREPROCESSOR" />
+  <lex begin="486" end="490" id="l84" lemma="more" origin="PREPROCESSOR" pos="JJR" text="More" />
+  <lex begin="491" end="497" id="l85" lemma="people" origin="PREPROCESSOR" pos="NNS" text="people" />
+  <vg begin="498" end="506" id="c29" origin="PREPROCESSOR" />
+  <lex begin="498" end="501" id="l86" lemma="be" origin="PREPROCESSOR" pos="VBP" text="are" />
+  <lex begin="502" end="506" id="l87" lemma="hurt" origin="PREPROCESSOR" pos="VBN" text="hurt" />
+  <EVENT begin="502" end="506" aspect="NONE" class="OCCURRENCE" eid="e10" eiid="ei10" epos="VERB" form="hurt" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <lex begin="506" end="507" id="l88" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="508" end="609" id="s14" origin="PREPROCESSOR" />
+  <lex begin="508" end="511" id="l89" lemma="and" origin="PREPROCESSOR" pos="CC" text="And" />
+  <lex begin="512" end="516" id="l90" lemma="just" origin="PREPROCESSOR" pos="RB" text="just" />
+  <ng begin="517" end="527" id="c30" origin="PREPROCESSOR" />
+  <TIMEX3 begin="517" end="527" origin="GUTIME" tid="t3" type="DATE" value="201710" />
+  <lex begin="517" end="521" id="l91" lemma="last" origin="PREPROCESSOR" pos="JJ" text="last" />
+  <lex begin="522" end="527" id="l92" lemma="month" origin="PREPROCESSOR" pos="NN" text="month" />
+  <lex begin="527" end="528" id="l93" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="529" end="550" id="c31" origin="PREPROCESSOR" />
+  <lex begin="529" end="531" id="l94" lemma="an" origin="PREPROCESSOR" pos="DT" text="an" />
+  <lex begin="532" end="535" id="l95" lemma="off" origin="PREPROCESSOR" pos="JJ" text="off" />
+  <lex begin="536" end="540" id="l96" lemma="duty" origin="PREPROCESSOR" pos="NN" text="duty" />
+  <lex begin="541" end="550" id="l97" lemma="policeman" origin="PREPROCESSOR" pos="NN" text="policeman" />
+  <vg begin="551" end="560" id="c32" origin="PREPROCESSOR" />
+  <lex begin="551" end="553" id="l98" lemma="be" origin="PREPROCESSOR" pos="VBZ" text="is" />
+  <lex begin="554" end="560" id="l99" lemma="kill" origin="PREPROCESSOR" pos="VBN" text="killed" />
+  <EVENT begin="554" end="560" aspect="NONE" class="OCCURRENCE" eid="e11" eiid="ei11" epos="VERB" form="killed" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <lex begin="561" end="565" id="l100" lemma="when" origin="PREPROCESSOR" pos="WRB" text="when" />
+  <ng begin="566" end="572" id="c33" origin="PREPROCESSOR" />
+  <lex begin="566" end="567" id="l101" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="568" end="572" id="l102" lemma="bomb" origin="PREPROCESSOR" pos="NN" text="bomb" />
+  <lex begin="573" end="581" id="l103" lemma="explode" origin="PREPROCESSOR" pos="VBZ" text="explodes" />
+  <vg begin="573" end="581" id="c34" origin="PREPROCESSOR" />
+  <EVENT begin="573" end="581" aspect="NONE" class="OCCURRENCE" eid="e12" eiid="ei12" epos="VERB" form="explodes" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <lex begin="582" end="584" id="l104" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <ng begin="585" end="608" id="c35" origin="PREPROCESSOR" />
+  <lex begin="585" end="592" id="l105" lemma="another" origin="PREPROCESSOR" pos="DT" text="another" />
+  <lex begin="593" end="601" id="l106" lemma="abortion" origin="PREPROCESSOR" pos="NN" text="abortion" />
+  <lex begin="602" end="608" id="l107" lemma="clinic" origin="PREPROCESSOR" pos="NN" text="clinic" />
+  <lex begin="608" end="609" id="l108" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="610" end="640" id="s15" origin="PREPROCESSOR" />
+  <lex begin="610" end="618" id="l109" lemma="location" origin="PREPROCESSOR" pos="NN" text="Location" />
+  <ng begin="610" end="618" id="c36" origin="PREPROCESSOR" />
+  <lex begin="618" end="619" id="l110" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="620" end="630" id="l111" lemma="Birmingham" origin="PREPROCESSOR" pos="NNP" text="Birmingham" />
+  <ng begin="620" end="630" id="c37" origin="PREPROCESSOR" />
+  <lex begin="630" end="631" id="l112" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="632" end="639" id="l113" lemma="Alabama" origin="PREPROCESSOR" pos="NNP" text="Alabama" />
+  <ng begin="632" end="639" id="c38" origin="PREPROCESSOR" />
+  <lex begin="639" end="640" id="l114" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="642" end="886" id="d7" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="642" end="716" id="s16" origin="PREPROCESSOR" />
+  <ng begin="642" end="650" id="c39" origin="PREPROCESSOR" />
+  <lex begin="642" end="646" id="l115" lemma="this" origin="PREPROCESSOR" pos="DT" text="This" />
+  <lex begin="647" end="650" id="l116" lemma="man" origin="PREPROCESSOR" pos="NN" text="man" />
+  <lex begin="650" end="651" id="l117" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="652" end="664" id="c40" origin="PREPROCESSOR" />
+  <lex begin="652" end="656" id="l118" lemma="Eric" origin="PREPROCESSOR" pos="NNP" text="Eric" />
+  <lex begin="657" end="664" id="l119" lemma="Rudolph" origin="PREPROCESSOR" pos="NNP" text="Rudolph" />
+  <vg begin="665" end="689" id="c41" origin="PREPROCESSOR" />
+  <lex begin="665" end="668" id="l120" lemma="have" origin="PREPROCESSOR" pos="VBZ" text="has" />
+  <lex begin="669" end="676" id="l121" lemma="already" origin="PREPROCESSOR" pos="RB" text="already" />
+  <lex begin="677" end="681" id="l122" lemma="be" origin="PREPROCESSOR" pos="VBN" text="been" />
+  <lex begin="682" end="689" id="l123" lemma="charge" origin="PREPROCESSOR" pos="VBN" text="charged" />
+  <EVENT begin="682" end="689" aspect="PERFECTIVE" class="OCCURRENCE" eid="e13" eiid="ei13" epos="VERB" form="charged" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <lex begin="690" end="692" id="l124" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <ng begin="693" end="715" id="c42" origin="PREPROCESSOR" />
+  <lex begin="693" end="696" id="l125" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="697" end="707" id="l126" lemma="Birmingham" origin="PREPROCESSOR" pos="NNP" text="Birmingham" />
+  <lex begin="708" end="715" id="l127" lemma="bombing" origin="PREPROCESSOR" pos="NN" text="bombing" />
+  <EVENT begin="708" end="715" aspect="NONE" class="OCCURRENCE" eid="e14" eiid="ei14" epos="NOUN" form="bombing" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="715" end="716" id="l128" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="717" end="820" id="s17" origin="PREPROCESSOR" />
+  <lex begin="717" end="720" id="l129" lemma="now" origin="PREPROCESSOR" pos="RB" text="Now" />
+  <TIMEX3 begin="717" end="720" origin="GUTIME" tid="t4" type="DATE" value="PRESENT_REF" />
+  <ng begin="717" end="720" origin="GUTIME" />
+  <lex begin="721" end="730" id="l130" lemma="official" origin="PREPROCESSOR" pos="NNS" text="officials" />
+  <ng begin="721" end="730" id="c43" origin="PREPROCESSOR" />
+  <vg begin="731" end="748" id="c44" origin="PREPROCESSOR" />
+  <lex begin="731" end="734" id="l131" lemma="be" origin="PREPROCESSOR" pos="VBP" text="are" />
+  <lex begin="735" end="748" id="l132" lemma="investigate" origin="PREPROCESSOR" pos="VBG" text="investigating" />
+  <EVENT begin="735" end="748" aspect="PROGRESSIVE" class="I_ACTION" eid="e15" eiid="ei15" epos="VERB" form="investigating" origin="EVITA" pos="VBG" tense="PRESENT" />
+  <lex begin="749" end="756" id="l133" lemma="whether" origin="PREPROCESSOR" pos="IN" text="whether" />
+  <lex begin="756" end="757" id="l134" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="758" end="765" id="l135" lemma="Rudolph" origin="PREPROCESSOR" pos="NNP" text="Rudolph" />
+  <ng begin="758" end="765" id="c45" origin="PREPROCESSOR" />
+  <lex begin="765" end="766" id="l136" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="767" end="770" id="l137" lemma="who" origin="PREPROCESSOR" pos="WP" text="who" />
+  <lex begin="771" end="778" id="l138" lemma="remain" origin="PREPROCESSOR" pos="VBZ" text="remains" />
+  <vg begin="771" end="778" id="c46" origin="PREPROCESSOR" />
+  <EVENT begin="771" end="778" aspect="NONE" class="STATE" eid="e16" eiid="ei16" epos="VERB" form="remains" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <lex begin="779" end="781" id="l139" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <lex begin="782" end="787" id="l140" lemma="large" origin="PREPROCESSOR" pos="JJ" text="large" />
+  <lex begin="787" end="788" id="l141" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <vg begin="789" end="798" id="c47" origin="PREPROCESSOR" />
+  <lex begin="789" end="791" id="l142" lemma="be" origin="PREPROCESSOR" pos="VBZ" text="is" />
+  <lex begin="792" end="798" id="l143" lemma="link" origin="PREPROCESSOR" pos="VBN" text="linked" />
+  <EVENT begin="792" end="798" aspect="NONE" class="OCCURRENCE" eid="e17" eiid="ei17" epos="VERB" form="linked" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <lex begin="799" end="801" id="l144" lemma="to" origin="PREPROCESSOR" pos="TO" text="to" />
+  <ng begin="802" end="819" id="c48" origin="PREPROCESSOR" />
+  <lex begin="802" end="805" id="l145" lemma="all" origin="PREPROCESSOR" pos="DT" text="all" />
+  <lex begin="806" end="811" id="l146" lemma="three" origin="PREPROCESSOR" pos="CD" text="three" />
+  <lex begin="812" end="819" id="l147" lemma="attack" origin="PREPROCESSOR" pos="NNS" text="attacks" />
+  <EVENT begin="812" end="819" aspect="NONE" class="OCCURRENCE" eid="e18" eiid="ei18" epos="NOUN" form="attacks" origin="EVITA" pos="NNS" tense="NONE" />
+  <lex begin="819" end="820" id="l148" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="821" end="886" id="s18" origin="PREPROCESSOR" />
+  <ng begin="821" end="831" id="c49" origin="PREPROCESSOR" />
+  <lex begin="821" end="824" id="l149" lemma="the" origin="PREPROCESSOR" pos="DT" text="The" />
+  <lex begin="825" end="831" id="l150" lemma="reason" origin="PREPROCESSOR" pos="NN" text="reason" />
+  <lex begin="831" end="832" id="l151" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="833" end="844" id="l152" lemma="authority" origin="PREPROCESSOR" pos="NNS" text="authorities" />
+  <ng begin="833" end="844" id="c50" origin="PREPROCESSOR" />
+  <vg begin="845" end="872" id="c51" origin="PREPROCESSOR" />
+  <lex begin="845" end="849" id="l153" lemma="have" origin="PREPROCESSOR" pos="VBP" text="have" />
+  <lex begin="850" end="860" id="l154" lemma="discover" origin="PREPROCESSOR" pos="VBN" text="discovered" />
+  <EVENT begin="850" end="860" aspect="PERFECTIVE" class="OCCURRENCE" eid="e19" eiid="ei19" epos="VERB" form="discovered" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <lex begin="861" end="872" id="l155" lemma="tantalize" origin="PREPROCESSOR" pos="VBG" text="tantalizing" />
+  <EVENT begin="861" end="872" aspect="NONE" class="OCCURRENCE" eid="e20" eiid="ei20" epos="VERB" form="tantalizing" origin="EVITA" pos="VBG" tense="PRESPART" />
+  <ng begin="873" end="885" id="c52" origin="PREPROCESSOR" />
+  <lex begin="873" end="876" id="l156" lemma="new" origin="PREPROCESSOR" pos="JJ" text="new" />
+  <lex begin="877" end="885" id="l157" lemma="evidence" origin="PREPROCESSOR" pos="NN" text="evidence" />
+  <lex begin="885" end="886" id="l158" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="888" end="1109" id="d8" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="888" end="1009" id="s19" origin="PREPROCESSOR" />
+  <ng begin="888" end="900" id="c53" origin="PREPROCESSOR" />
+  <lex begin="888" end="893" id="l159" lemma="steel" origin="PREPROCESSOR" pos="NN" text="Steel" />
+  <lex begin="894" end="900" id="l160" lemma="plate" origin="PREPROCESSOR" pos="NNS" text="plates" />
+  <lex begin="901" end="910" id="l161" lemma="recover" origin="PREPROCESSOR" pos="VBD" text="recovered" />
+  <vg begin="901" end="910" id="c54" origin="PREPROCESSOR" />
+  <EVENT begin="901" end="910" aspect="NONE" class="OCCURRENCE" eid="e21" eiid="ei21" epos="VERB" form="recovered" origin="EVITA" pos="VBD" tense="PAST" />
+  <lex begin="911" end="913" id="l162" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <ng begin="914" end="938" id="c55" origin="PREPROCESSOR" />
+  <lex begin="914" end="917" id="l163" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="918" end="925" id="l164" lemma="Olympic" origin="PREPROCESSOR" pos="JJ" text="Olympic" />
+  <lex begin="926" end="930" id="l165" lemma="park" origin="PREPROCESSOR" pos="NN" text="park" />
+  <lex begin="931" end="938" id="l166" lemma="bombing" origin="PREPROCESSOR" pos="NN" text="bombing" />
+  <EVENT begin="931" end="938" aspect="NONE" class="OCCURRENCE" eid="e22" eiid="ei22" epos="NOUN" form="bombing" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="939" end="945" id="l167" lemma="appear" origin="PREPROCESSOR" pos="VBP" text="appear" />
+  <vg begin="939" end="945" id="c56" origin="PREPROCESSOR" />
+  <EVENT begin="939" end="945" aspect="NONE" class="OCCURRENCE" eid="e23" eiid="ei23" epos="VERB" form="appear" origin="EVITA" pos="VBP" tense="PRESENT" />
+  <vg begin="946" end="954" id="c57" origin="PREPROCESSOR" />
+  <lex begin="946" end="948" id="l168" lemma="to" origin="PREPROCESSOR" pos="TO" text="to" />
+  <lex begin="949" end="954" id="l169" lemma="match" origin="PREPROCESSOR" pos="VB" text="match" />
+  <EVENT begin="949" end="954" aspect="NONE" class="OCCURRENCE" eid="e24" eiid="ei24" epos="VERB" form="match" origin="EVITA" pos="VB" tense="INFINITIVE" />
+  <lex begin="955" end="960" id="l170" lemma="those" origin="PREPROCESSOR" pos="DT" text="those" />
+  <lex begin="961" end="966" id="l171" lemma="find" origin="PREPROCESSOR" pos="VBN" text="found" />
+  <vg begin="961" end="966" id="c58" origin="PREPROCESSOR" />
+  <EVENT begin="961" end="966" aspect="NONE" class="OCCURRENCE" eid="e25" eiid="ei25" epos="VERB" form="found" origin="EVITA" pos="VBN" tense="PASTPART" />
+  <lex begin="967" end="969" id="l172" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <ng begin="970" end="997" id="c59" origin="PREPROCESSOR" />
+  <lex begin="970" end="973" id="l173" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="974" end="982" id="l174" lemma="abortion" origin="PREPROCESSOR" pos="NN" text="abortion" />
+  <lex begin="983" end="989" id="l175" lemma="clinic" origin="PREPROCESSOR" pos="NN" text="clinic" />
+  <lex begin="990" end="997" id="l176" lemma="bombing" origin="PREPROCESSOR" pos="NN" text="bombing" />
+  <EVENT begin="990" end="997" aspect="NONE" class="OCCURRENCE" eid="e26" eiid="ei26" epos="NOUN" form="bombing" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="998" end="1000" id="l177" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <lex begin="1001" end="1008" id="l178" lemma="Atlanta" origin="PREPROCESSOR" pos="NNP" text="Atlanta" />
+  <ng begin="1001" end="1008" id="c60" origin="PREPROCESSOR" />
+  <lex begin="1008" end="1009" id="l179" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="1010" end="1109" id="s20" origin="PREPROCESSOR" />
+  <ng begin="1010" end="1022" id="c61" origin="PREPROCESSOR" />
+  <lex begin="1010" end="1015" id="l180" lemma="those" origin="PREPROCESSOR" pos="DT" text="Those" />
+  <lex begin="1016" end="1022" id="l181" lemma="plate" origin="PREPROCESSOR" pos="NNS" text="plates" />
+  <vg begin="1023" end="1036" id="c62" origin="PREPROCESSOR" />
+  <lex begin="1023" end="1026" id="l182" lemma="may" origin="PREPROCESSOR" pos="MD" text="may" />
+  <lex begin="1027" end="1031" id="l183" lemma="have" origin="PREPROCESSOR" pos="VB" text="have" />
+  <lex begin="1032" end="1036" id="l184" lemma="come" origin="PREPROCESSOR" pos="VBN" text="come" />
+  <EVENT begin="1032" end="1036" aspect="PERFECTIVE" class="OCCURRENCE" eid="e27" eiid="ei27" epos="VERB" form="come" modality="may" origin="EVITA" pos="VBN" tense="NONE" />
+  <lex begin="1037" end="1041" id="l185" lemma="from" origin="PREPROCESSOR" pos="IN" text="from" />
+  <ng begin="1042" end="1056" id="c63" origin="PREPROCESSOR" />
+  <lex begin="1042" end="1043" id="l186" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1044" end="1051" id="l187" lemma="machine" origin="PREPROCESSOR" pos="NN" text="machine" />
+  <lex begin="1052" end="1056" id="l188" lemma="shop" origin="PREPROCESSOR" pos="NN" text="shop" />
+  <lex begin="1057" end="1059" id="l189" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <ng begin="1060" end="1074" id="c64" origin="PREPROCESSOR" />
+  <lex begin="1060" end="1065" id="l190" lemma="north" origin="PREPROCESSOR" pos="JJ" text="north" />
+  <lex begin="1066" end="1074" id="l191" lemma="Carolina" origin="PREPROCESSOR" pos="NNP" text="Carolina" />
+  <lex begin="1074" end="1075" id="l192" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="1076" end="1081" id="l193" lemma="where" origin="PREPROCESSOR" pos="WRB" text="where" />
+  <ng begin="1082" end="1090" id="c65" origin="PREPROCESSOR" />
+  <lex begin="1082" end="1083" id="l194" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1084" end="1090" id="l195" lemma="friend" origin="PREPROCESSOR" pos="NN" text="friend" />
+  <lex begin="1091" end="1093" id="l196" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <lex begin="1094" end="1101" id="l197" lemma="Rudolph" origin="PREPROCESSOR" pos="NNP" text="Rudolph" />
+  <ng begin="1094" end="1101" id="c66" origin="PREPROCESSOR" />
+  <lex begin="1102" end="1108" id="l198" lemma="work" origin="PREPROCESSOR" pos="VBD" text="worked" />
+  <vg begin="1102" end="1108" id="c67" origin="PREPROCESSOR" />
+  <EVENT begin="1102" end="1108" aspect="NONE" class="OCCURRENCE" eid="e28" eiid="ei28" epos="VERB" form="worked" origin="EVITA" pos="VBD" tense="PAST" />
+  <lex begin="1108" end="1109" id="l199" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="1111" end="1424" id="d9" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="1111" end="1244" id="s21" origin="PREPROCESSOR" />
+  <lex begin="1111" end="1114" id="l200" lemma="and" origin="PREPROCESSOR" pos="CC" text="And" />
+  <lex begin="1115" end="1120" id="l201" lemma="nail" origin="PREPROCESSOR" pos="NNS" text="nails" />
+  <ng begin="1115" end="1120" id="c68" origin="PREPROCESSOR" />
+  <lex begin="1121" end="1126" id="l202" lemma="find" origin="PREPROCESSOR" pos="VBN" text="found" />
+  <vg begin="1121" end="1126" id="c69" origin="PREPROCESSOR" />
+  <EVENT begin="1121" end="1126" aspect="NONE" class="OCCURRENCE" eid="e29" eiid="ei29" epos="VERB" form="found" origin="EVITA" pos="VBN" tense="PASTPART" />
+  <lex begin="1127" end="1129" id="l203" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <ng begin="1130" end="1165" id="c70" origin="PREPROCESSOR" />
+  <lex begin="1130" end="1133" id="l204" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1134" end="1141" id="l205" lemma="Atlanta" origin="PREPROCESSOR" pos="NNP" text="Atlanta" />
+  <lex begin="1142" end="1150" id="l206" lemma="abortion" origin="PREPROCESSOR" pos="NN" text="abortion" />
+  <lex begin="1151" end="1157" id="l207" lemma="clinic" origin="PREPROCESSOR" pos="NN" text="clinic" />
+  <lex begin="1158" end="1165" id="l208" lemma="bombing" origin="PREPROCESSOR" pos="NN" text="bombing" />
+  <EVENT begin="1158" end="1165" aspect="NONE" class="OCCURRENCE" eid="e30" eiid="ei30" epos="NOUN" form="bombing" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1166" end="1169" id="l209" lemma="be" origin="PREPROCESSOR" pos="VBP" text="are" />
+  <vg begin="1166" end="1169" id="c71" origin="PREPROCESSOR" />
+  <lex begin="1170" end="1179" id="l210" lemma="identical" origin="PREPROCESSOR" pos="JJ" text="identical" />
+  <EVENT begin="1170" end="1179" aspect="NONE" class="STATE" eid="e31" eiid="ei31" epos="ADJECTIVE" form="identical" origin="EVITA" pos="JJ" tense="PRESENT" />
+  <lex begin="1180" end="1182" id="l211" lemma="to" origin="PREPROCESSOR" pos="TO" text="to" />
+  <lex begin="1183" end="1188" id="l212" lemma="those" origin="PREPROCESSOR" pos="DT" text="those" />
+  <lex begin="1189" end="1199" id="l213" lemma="discover" origin="PREPROCESSOR" pos="VBN" text="discovered" />
+  <vg begin="1189" end="1199" id="c72" origin="PREPROCESSOR" />
+  <EVENT begin="1189" end="1199" aspect="NONE" class="OCCURRENCE" eid="e32" eiid="ei32" epos="VERB" form="discovered" origin="EVITA" pos="VBN" tense="PASTPART" />
+  <lex begin="1200" end="1202" id="l214" lemma="at" origin="PREPROCESSOR" pos="IN" text="at" />
+  <lex begin="1203" end="1210" id="l215" lemma="Rudolph" origin="PREPROCESSOR" pos="NNP" text="Rudolph" />
+  <ng begin="1203" end="1210" id="c73" origin="PREPROCESSOR" />
+  <lex begin="1210" end="1212" id="l216" lemma="'s" origin="PREPROCESSOR" pos="POS" text="'s" />
+  <lex begin="1213" end="1220" id="l217" lemma="storage" origin="PREPROCESSOR" pos="NN" text="storage" />
+  <ng begin="1213" end="1220" id="c74" origin="PREPROCESSOR" />
+  <EVENT begin="1213" end="1220" aspect="NONE" class="OCCURRENCE" eid="e33" eiid="ei33" epos="NOUN" form="storage" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1221" end="1225" id="l218" lemma="shed" origin="PREPROCESSOR" pos="VBD" text="shed" />
+  <vg begin="1221" end="1225" id="c75" origin="PREPROCESSOR" />
+  <EVENT begin="1221" end="1225" aspect="NONE" class="OCCURRENCE" eid="e34" eiid="ei34" epos="VERB" form="shed" origin="EVITA" pos="VBD" tense="PAST" />
+  <lex begin="1226" end="1228" id="l219" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <ng begin="1229" end="1243" id="c76" origin="PREPROCESSOR" />
+  <lex begin="1229" end="1234" id="l220" lemma="north" origin="PREPROCESSOR" pos="JJ" text="north" />
+  <lex begin="1235" end="1243" id="l221" lemma="Carolina" origin="PREPROCESSOR" pos="NNP" text="Carolina" />
+  <lex begin="1243" end="1244" id="l222" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="1245" end="1424" id="s22" origin="PREPROCESSOR" />
+  <ng begin="1245" end="1276" id="c77" origin="PREPROCESSOR" />
+  <lex begin="1245" end="1246" id="l223" lemma="a" origin="PREPROCESSOR" pos="DT" text="A" />
+  <lex begin="1247" end="1253" id="l224" lemma="senior" origin="PREPROCESSOR" pos="JJ" text="senior" />
+  <lex begin="1254" end="1257" id="l225" lemma="law" origin="PREPROCESSOR" pos="NN" text="law" />
+  <lex begin="1258" end="1269" id="l226" lemma="enforcement" origin="PREPROCESSOR" pos="NN" text="enforcement" />
+  <lex begin="1270" end="1276" id="l227" lemma="source" origin="PREPROCESSOR" pos="NN" text="source" />
+  <lex begin="1277" end="1282" id="l228" lemma="tell" origin="PREPROCESSOR" pos="VBZ" text="tells" />
+  <vg begin="1277" end="1282" id="c78" origin="PREPROCESSOR" />
+  <EVENT begin="1277" end="1282" aspect="NONE" class="REPORTING" eid="e35" eiid="ei35" epos="VERB" form="tells" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <lex begin="1283" end="1286" id="l229" lemma="CNN" origin="PREPROCESSOR" pos="NNP" text="CNN" />
+  <ng begin="1283" end="1286" id="c79" origin="PREPROCESSOR" />
+  <lex begin="1286" end="1287" id="l230" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="1288" end="1293" id="l231" lemma="there" origin="PREPROCESSOR" pos="EX" text="there" />
+  <lex begin="1294" end="1296" id="l232" lemma="be" origin="PREPROCESSOR" pos="VBZ" text="is" />
+  <vg begin="1294" end="1296" id="c80" origin="PREPROCESSOR" />
+  <ng begin="1297" end="1302" id="c81" origin="PREPROCESSOR" />
+  <lex begin="1297" end="1298" id="l233" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1299" end="1302" id="l234" lemma="lot" origin="PREPROCESSOR" pos="NN" text="lot" />
+  <lex begin="1303" end="1305" id="l235" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <ng begin="1306" end="1329" id="c82" origin="PREPROCESSOR" />
+  <lex begin="1306" end="1320" id="l236" lemma="circumstantial" origin="PREPROCESSOR" pos="JJ" text="circumstantial" />
+  <lex begin="1321" end="1329" id="l237" lemma="evidence" origin="PREPROCESSOR" pos="NN" text="evidence" />
+  <lex begin="1330" end="1333" id="l238" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <lex begin="1334" end="1336" id="l239" lemma="it" origin="PREPROCESSOR" pos="PP" text="it" />
+  <ng begin="1334" end="1336" id="c83" origin="PREPROCESSOR" />
+  <vg begin="1337" end="1345" id="c84" origin="PREPROCESSOR" />
+  <lex begin="1337" end="1342" id="l240" lemma="would" origin="PREPROCESSOR" pos="MD" text="would" />
+  <lex begin="1343" end="1345" id="l241" lemma="be" origin="PREPROCESSOR" pos="VB" text="be" />
+  <lex begin="1346" end="1359" id="l242" lemma="extraordinary" origin="PREPROCESSOR" pos="JJ" text="extraordinary" />
+  <EVENT begin="1346" end="1359" aspect="NONE" class="STATE" eid="e36" eiid="ei36" epos="ADJECTIVE" form="extraordinary" modality="would" origin="EVITA" pos="JJ" tense="NONE" />
+  <vg begin="1360" end="1367" id="c85" origin="PREPROCESSOR" />
+  <lex begin="1360" end="1362" id="l243" lemma="to" origin="PREPROCESSOR" pos="TO" text="to" />
+  <lex begin="1363" end="1367" id="l244" lemma="have" origin="PREPROCESSOR" pos="VB" text="have" />
+  <EVENT begin="1363" end="1367" aspect="NONE" class="OCCURRENCE" eid="e37" eiid="ei37" epos="VERB" form="have" origin="EVITA" pos="VB" tense="INFINITIVE" />
+  <lex begin="1368" end="1371" id="l245" lemma="all" origin="PREPROCESSOR" pos="PDT" text="all" />
+  <ng begin="1372" end="1382" id="c86" origin="PREPROCESSOR" />
+  <lex begin="1372" end="1377" id="l246" lemma="these" origin="PREPROCESSOR" pos="DT" text="these" />
+  <lex begin="1378" end="1382" id="l247" lemma="bit" origin="PREPROCESSOR" pos="NNS" text="bits" />
+  <lex begin="1383" end="1386" id="l248" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <lex begin="1387" end="1393" id="l249" lemma="piece" origin="PREPROCESSOR" pos="NNS" text="pieces" />
+  <ng begin="1387" end="1393" id="c87" origin="PREPROCESSOR" />
+  <lex begin="1394" end="1397" id="l250" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <lex begin="1398" end="1403" id="l251" lemma="there" origin="PREPROCESSOR" pos="RB" text="there" />
+  <lex begin="1404" end="1407" id="l252" lemma="not" origin="PREPROCESSOR" pos="RB" text="not" />
+  <lex begin="1408" end="1410" id="l253" lemma="be" origin="PREPROCESSOR" pos="VB" text="be" />
+  <vg begin="1408" end="1410" id="c88" origin="PREPROCESSOR" />
+  <ng begin="1411" end="1423" id="c89" origin="PREPROCESSOR" />
+  <lex begin="1411" end="1412" id="l254" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1413" end="1423" id="l255" lemma="connection" origin="PREPROCESSOR" pos="NN" text="connection" />
+  <lex begin="1423" end="1424" id="l256" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="1426" end="1621" id="d10" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="1426" end="1518" id="s23" origin="PREPROCESSOR" />
+  <lex begin="1426" end="1429" id="l257" lemma="and" origin="PREPROCESSOR" pos="CC" text="And" />
+  <ng begin="1430" end="1453" id="c90" origin="PREPROCESSOR" />
+  <lex begin="1430" end="1433" id="l258" lemma="law" origin="PREPROCESSOR" pos="NN" text="law" />
+  <lex begin="1434" end="1445" id="l259" lemma="enforcement" origin="PREPROCESSOR" pos="NN" text="enforcement" />
+  <lex begin="1446" end="1453" id="l260" lemma="source" origin="PREPROCESSOR" pos="NNS" text="sources" />
+  <lex begin="1454" end="1457" id="l261" lemma="say" origin="PREPROCESSOR" pos="VBP" text="say" />
+  <vg begin="1454" end="1457" id="c91" origin="PREPROCESSOR" />
+  <EVENT begin="1454" end="1457" aspect="NONE" class="REPORTING" eid="e38" eiid="ei38" epos="VERB" form="say" origin="EVITA" pos="VBP" tense="PRESENT" />
+  <lex begin="1458" end="1462" id="l262" lemma="they" origin="PREPROCESSOR" pos="PP" text="they" />
+  <ng begin="1458" end="1462" id="c92" origin="PREPROCESSOR" />
+  <vg begin="1463" end="1475" id="c93" origin="PREPROCESSOR" />
+  <lex begin="1463" end="1465" id="l263" lemma="ca" origin="PREPROCESSOR" pos="MD" text="ca" />
+  <lex begin="1465" end="1468" id="l264" lemma="n't" origin="PREPROCESSOR" pos="RB" text="n't" />
+  <lex begin="1469" end="1475" id="l265" lemma="ignore" origin="PREPROCESSOR" pos="VB" text="ignore" />
+  <EVENT begin="1469" end="1475" aspect="NONE" class="OCCURRENCE" eid="e39" eiid="ei39" epos="VERB" form="ignore" modality="can" origin="EVITA" polarity="NEG" pos="VB" tense="NONE" />
+  <lex begin="1476" end="1483" id="l266" lemma="letter" origin="PREPROCESSOR" pos="NNS" text="letters" />
+  <ng begin="1476" end="1483" id="c94" origin="PREPROCESSOR" />
+  <lex begin="1484" end="1490" id="l267" lemma="pen" origin="PREPROCESSOR" pos="VBN" text="penned" />
+  <vg begin="1484" end="1490" id="c95" origin="PREPROCESSOR" />
+  <EVENT begin="1484" end="1490" aspect="NONE" class="OCCURRENCE" eid="e40" eiid="ei40" epos="VERB" form="penned" origin="EVITA" pos="VBN" tense="PASTPART" />
+  <lex begin="1491" end="1496" id="l268" lemma="under" origin="PREPROCESSOR" pos="IN" text="under" />
+  <ng begin="1497" end="1510" id="c96" origin="PREPROCESSOR" />
+  <lex begin="1497" end="1500" id="l269" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1501" end="1505" id="l270" lemma="name" origin="PREPROCESSOR" pos="NN" text="name" />
+  <lex begin="1506" end="1510" id="l271" lemma="army" origin="PREPROCESSOR" pos="NN" text="army" />
+  <lex begin="1511" end="1513" id="l272" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <lex begin="1514" end="1517" id="l273" lemma="god" origin="PREPROCESSOR" pos="NN" text="god" />
+  <ng begin="1514" end="1517" id="c97" origin="PREPROCESSOR" />
+  <lex begin="1517" end="1518" id="l274" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="1519" end="1621" id="s24" origin="PREPROCESSOR" />
+  <lex begin="1519" end="1523" id="l275" lemma="army" origin="PREPROCESSOR" pos="NN" text="Army" />
+  <ng begin="1519" end="1523" id="c98" origin="PREPROCESSOR" />
+  <lex begin="1524" end="1526" id="l276" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <lex begin="1527" end="1530" id="l277" lemma="god" origin="PREPROCESSOR" pos="NN" text="god" />
+  <ng begin="1527" end="1530" id="c99" origin="PREPROCESSOR" />
+  <lex begin="1531" end="1533" id="l278" lemma="be" origin="PREPROCESSOR" pos="VBZ" text="is" />
+  <vg begin="1531" end="1533" id="c100" origin="PREPROCESSOR" />
+  <ng begin="1534" end="1555" id="c101" origin="PREPROCESSOR" />
+  <lex begin="1534" end="1535" id="l279" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1536" end="1542" id="l280" lemma="secret" origin="PREPROCESSOR" pos="JJ" text="secret" />
+  <lex begin="1543" end="1555" id="l281" lemma="organization" origin="PREPROCESSOR" pos="NN" text="organization" />
+  <lex begin="1556" end="1560" id="l282" lemma="that" origin="PREPROCESSOR" pos="WDT" text="that" />
+  <lex begin="1561" end="1566" id="l283" lemma="hate" origin="PREPROCESSOR" pos="VBZ" text="hates" />
+  <vg begin="1561" end="1566" id="c102" origin="PREPROCESSOR" />
+  <EVENT begin="1561" end="1566" aspect="NONE" class="OCCURRENCE" eid="e41" eiid="ei41" epos="VERB" form="hates" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <ng begin="1567" end="1585" id="c103" origin="PREPROCESSOR" />
+  <lex begin="1567" end="1575" id="l284" lemma="abortion" origin="PREPROCESSOR" pos="NN" text="abortion" />
+  <lex begin="1576" end="1585" id="l285" lemma="provider" origin="PREPROCESSOR" pos="NNS" text="providers" />
+  <lex begin="1585" end="1586" id="l286" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="1587" end="1598" id="l287" lemma="homosexual" origin="PREPROCESSOR" pos="NNS" text="homosexuals" />
+  <ng begin="1587" end="1598" id="c104" origin="PREPROCESSOR" />
+  <lex begin="1599" end="1602" id="l288" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <ng begin="1603" end="1620" id="c105" origin="PREPROCESSOR" />
+  <lex begin="1603" end="1606" id="l289" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1607" end="1609" id="l290" lemma="US" origin="PREPROCESSOR" pos="NNP" text="US" />
+  <lex begin="1610" end="1620" id="l291" lemma="government" origin="PREPROCESSOR" pos="NN" text="government" />
+  <lex begin="1620" end="1621" id="l292" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="1623" end="1779" id="d11" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="1623" end="1779" id="s25" origin="PREPROCESSOR" />
+  <lex begin="1623" end="1627" id="l293" lemma="army" origin="PREPROCESSOR" pos="NN" text="Army" />
+  <ng begin="1623" end="1627" id="c106" origin="PREPROCESSOR" />
+  <lex begin="1628" end="1630" id="l294" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <ng begin="1631" end="1642" id="c107" origin="PREPROCESSOR" />
+  <lex begin="1631" end="1634" id="l295" lemma="god" origin="PREPROCESSOR" pos="NN" text="god" />
+  <lex begin="1635" end="1642" id="l296" lemma="letter" origin="PREPROCESSOR" pos="NNS" text="letters" />
+  <lex begin="1643" end="1648" id="l297" lemma="claim" origin="PREPROCESSOR" pos="VBP" text="claim" />
+  <vg begin="1643" end="1648" id="c108" origin="PREPROCESSOR" />
+  <EVENT begin="1643" end="1648" aspect="NONE" class="I_ACTION" eid="e42" eiid="ei42" epos="VERB" form="claim" origin="EVITA" pos="VBP" tense="PRESENT" />
+  <lex begin="1649" end="1663" id="l298" lemma="responsibility" origin="PREPROCESSOR" pos="NN" text="responsibility" />
+  <ng begin="1649" end="1663" id="c109" origin="PREPROCESSOR" />
+  <EVENT begin="1649" end="1663" aspect="NONE" class="OCCURRENCE" eid="e43" eiid="ei43" epos="NOUN" form="responsibility" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1664" end="1667" id="l299" lemma="for" origin="PREPROCESSOR" pos="IN" text="for" />
+  <ng begin="1668" end="1703" id="c110" origin="PREPROCESSOR" />
+  <lex begin="1668" end="1671" id="l300" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1672" end="1679" id="l301" lemma="Atlanta" origin="PREPROCESSOR" pos="NNP" text="Atlanta" />
+  <lex begin="1680" end="1688" id="l302" lemma="abortion" origin="PREPROCESSOR" pos="NN" text="abortion" />
+  <lex begin="1689" end="1695" id="l303" lemma="clinic" origin="PREPROCESSOR" pos="NN" text="clinic" />
+  <lex begin="1696" end="1703" id="l304" lemma="bombing" origin="PREPROCESSOR" pos="NN" text="bombing" />
+  <EVENT begin="1696" end="1703" aspect="NONE" class="OCCURRENCE" eid="e44" eiid="ei44" epos="NOUN" form="bombing" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1703" end="1704" id="l305" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="1705" end="1735" id="c111" origin="PREPROCESSOR" />
+  <lex begin="1705" end="1706" id="l306" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1707" end="1715" id="l307" lemma="nineteen" origin="PREPROCESSOR" pos="CD" text="nineteen" />
+  <lex begin="1716" end="1728" id="l308" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="JJ" text="ninety-seven" />
+  <lex begin="1729" end="1735" id="l309" lemma="attack" origin="PREPROCESSOR" pos="NN" text="attack" />
+  <EVENT begin="1729" end="1735" aspect="NONE" class="OCCURRENCE" eid="e45" eiid="ei45" epos="NOUN" form="attack" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1736" end="1738" id="l310" lemma="on" origin="PREPROCESSOR" pos="IN" text="on" />
+  <ng begin="1739" end="1751" id="c112" origin="PREPROCESSOR" />
+  <lex begin="1739" end="1740" id="l311" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="1741" end="1744" id="l312" lemma="gay" origin="PREPROCESSOR" pos="JJ" text="gay" />
+  <lex begin="1745" end="1751" id="l313" lemma="lounge" origin="PREPROCESSOR" pos="NN" text="lounge" />
+  <lex begin="1752" end="1755" id="l314" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <ng begin="1756" end="1778" id="c113" origin="PREPROCESSOR" />
+  <lex begin="1756" end="1759" id="l315" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1760" end="1770" id="l316" lemma="Birmingham" origin="PREPROCESSOR" pos="NNP" text="Birmingham" />
+  <lex begin="1771" end="1778" id="l317" lemma="assault" origin="PREPROCESSOR" pos="NN" text="assault" />
+  <EVENT begin="1771" end="1778" aspect="NONE" class="OCCURRENCE" eid="e46" eiid="ei46" epos="NOUN" form="assault" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1778" end="1779" id="l318" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="1781" end="2011" id="d12" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="1781" end="1935" id="s26" origin="PREPROCESSOR" />
+  <ng begin="1781" end="1799" id="c114" origin="PREPROCESSOR" />
+  <lex begin="1781" end="1783" id="l319" lemma="an" origin="PREPROCESSOR" pos="DT" text="An" />
+  <lex begin="1784" end="1791" id="l320" lemma="intense" origin="PREPROCESSOR" pos="JJ" text="intense" />
+  <lex begin="1792" end="1799" id="l321" lemma="manhunt" origin="PREPROCESSOR" pos="NN" text="manhunt" />
+  <EVENT begin="1792" end="1799" aspect="NONE" class="OCCURRENCE" eid="e47" eiid="ei47" epos="NOUN" form="manhunt" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="1800" end="1809" id="l322" lemma="conduct" origin="PREPROCESSOR" pos="VBN" text="conducted" />
+  <vg begin="1800" end="1809" id="c115" origin="PREPROCESSOR" />
+  <EVENT begin="1800" end="1809" aspect="NONE" class="OCCURRENCE" eid="e48" eiid="ei48" epos="VERB" form="conducted" origin="EVITA" pos="VBN" tense="PASTPART" />
+  <lex begin="1810" end="1812" id="l323" lemma="by" origin="PREPROCESSOR" pos="IN" text="by" />
+  <ng begin="1813" end="1820" id="c116" origin="PREPROCESSOR" />
+  <lex begin="1813" end="1816" id="l324" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1817" end="1820" id="l325" lemma="FBI" origin="PREPROCESSOR" pos="NNP" text="FBI" />
+  <lex begin="1821" end="1824" id="l326" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <ng begin="1825" end="1835" id="c117" origin="PREPROCESSOR" />
+  <lex begin="1825" end="1828" id="l327" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1829" end="1835" id="l328" lemma="bureau" origin="PREPROCESSOR" pos="NN" text="bureau" />
+  <lex begin="1836" end="1838" id="l329" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <lex begin="1839" end="1846" id="l330" lemma="alcohol" origin="PREPROCESSOR" pos="NN" text="alcohol" />
+  <ng begin="1839" end="1846" id="c118" origin="PREPROCESSOR" />
+  <lex begin="1846" end="1847" id="l331" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="1848" end="1855" id="l332" lemma="tobacco" origin="PREPROCESSOR" pos="NN" text="tobacco" />
+  <ng begin="1848" end="1855" id="c119" origin="PREPROCESSOR" />
+  <lex begin="1856" end="1859" id="l333" lemma="and" origin="PREPROCESSOR" pos="CC" text="and" />
+  <lex begin="1860" end="1868" id="l334" lemma="firearm" origin="PREPROCESSOR" pos="NNS" text="firearms" />
+  <ng begin="1860" end="1868" id="c120" origin="PREPROCESSOR" />
+  <lex begin="1869" end="1878" id="l335" lemma="continue" origin="PREPROCESSOR" pos="VBZ" text="continues" />
+  <vg begin="1869" end="1878" id="c121" origin="PREPROCESSOR" />
+  <EVENT begin="1869" end="1878" aspect="NONE" class="ASPECTUAL" eid="e49" eiid="ei49" epos="VERB" form="continues" origin="EVITA" pos="VBZ" tense="PRESENT" />
+  <lex begin="1879" end="1882" id="l336" lemma="for" origin="PREPROCESSOR" pos="IN" text="for" />
+  <lex begin="1883" end="1890" id="l337" lemma="Rudolph" origin="PREPROCESSOR" pos="NNP" text="Rudolph" />
+  <ng begin="1883" end="1890" id="c122" origin="PREPROCESSOR" />
+  <lex begin="1891" end="1893" id="l338" lemma="in" origin="PREPROCESSOR" pos="IN" text="in" />
+  <ng begin="1894" end="1908" id="c123" origin="PREPROCESSOR" />
+  <lex begin="1894" end="1897" id="l339" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="1898" end="1908" id="l340" lemma="wilderness" origin="PREPROCESSOR" pos="NN" text="wilderness" />
+  <lex begin="1909" end="1911" id="l341" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <ng begin="1912" end="1934" id="c124" origin="PREPROCESSOR" />
+  <lex begin="1912" end="1919" id="l342" lemma="western" origin="PREPROCESSOR" pos="JJ" text="western" />
+  <lex begin="1920" end="1925" id="l343" lemma="north" origin="PREPROCESSOR" pos="NN" text="north" />
+  <lex begin="1926" end="1934" id="l344" lemma="Carolina" origin="PREPROCESSOR" pos="NNP" text="Carolina" />
+  <lex begin="1934" end="1935" id="l345" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="1936" end="2011" id="s27" origin="PREPROCESSOR" />
+  <lex begin="1936" end="1939" id="l346" lemma="and" origin="PREPROCESSOR" pos="CC" text="And" />
+  <ng begin="1940" end="1949" id="c125" origin="PREPROCESSOR" />
+  <TIMEX3 begin="1940" end="1949" origin="GUTIME" tid="t5" type="DATE" value="2017W47" />
+  <lex begin="1940" end="1944" id="l347" lemma="this" origin="PREPROCESSOR" pos="DT" text="this" />
+  <lex begin="1945" end="1949" id="l348" lemma="week" origin="PREPROCESSOR" pos="NN" text="week" />
+  <lex begin="1949" end="1950" id="l349" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="1951" end="1975" id="c126" origin="PREPROCESSOR" />
+  <lex begin="1951" end="1954" id="l350" lemma="FBI" origin="PREPROCESSOR" pos="NNP" text="FBI" />
+  <lex begin="1955" end="1963" id="l351" lemma="director" origin="PREPROCESSOR" pos="NN" text="director" />
+  <lex begin="1964" end="1969" id="l352" lemma="Louie" origin="PREPROCESSOR" pos="NNP" text="Louie" />
+  <lex begin="1970" end="1975" id="l353" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="NNP" text="Freeh" />
+  <lex begin="1976" end="1984" id="l354" lemma="assign" origin="PREPROCESSOR" pos="VBD" text="assigned" />
+  <vg begin="1976" end="1984" id="c127" origin="PREPROCESSOR" />
+  <EVENT begin="1976" end="1984" aspect="NONE" class="OCCURRENCE" eid="e50" eiid="ei50" epos="VERB" form="assigned" origin="EVITA" pos="VBD" tense="PAST" />
+  <ng begin="1985" end="1996" id="c128" origin="PREPROCESSOR" />
+  <lex begin="1985" end="1989" id="l355" lemma="more" origin="PREPROCESSOR" pos="JJR" text="more" />
+  <lex begin="1990" end="1996" id="l356" lemma="agent" origin="PREPROCESSOR" pos="NNS" text="agents" />
+  <lex begin="1997" end="1999" id="l357" lemma="to" origin="PREPROCESSOR" pos="TO" text="to" />
+  <ng begin="2000" end="2010" id="c129" origin="PREPROCESSOR" />
+  <lex begin="2000" end="2003" id="l358" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="2004" end="2010" id="l359" lemma="search" origin="PREPROCESSOR" pos="NN" text="search" />
+  <EVENT begin="2004" end="2010" aspect="NONE" class="OCCURRENCE" eid="e51" eiid="ei51" epos="NOUN" form="search" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="2010" end="2011" id="l360" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <docelement begin="2013" end="2386" id="d13" origin="DOCSTRUCTURE" type="paragraph" />
+  <s begin="2013" end="2173" id="s28" origin="PREPROCESSOR" />
+  <lex begin="2013" end="2018" id="l361" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="NNP" text="Freeh" />
+  <ng begin="2013" end="2018" id="c130" origin="PREPROCESSOR" />
+  <lex begin="2019" end="2023" id="l362" lemma="also" origin="PREPROCESSOR" pos="RB" text="also" />
+  <lex begin="2024" end="2031" id="l363" lemma="order" origin="PREPROCESSOR" pos="VBD" text="ordered" />
+  <vg begin="2024" end="2031" id="c131" origin="PREPROCESSOR" />
+  <EVENT begin="2024" end="2031" aspect="NONE" class="I_ACTION" eid="e52" eiid="ei52" epos="VERB" form="ordered" origin="EVITA" pos="VBD" tense="PAST" />
+  <ng begin="2032" end="2049" id="c132" origin="PREPROCESSOR" />
+  <lex begin="2032" end="2035" id="l364" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="2036" end="2049" id="l365" lemma="investigation" origin="PREPROCESSOR" pos="NN" text="investigation" />
+  <EVENT begin="2036" end="2049" aspect="NONE" class="OCCURRENCE" eid="e53" eiid="ei53" epos="NOUN" form="investigation" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="2050" end="2061" id="l366" lemma="consolidate" origin="PREPROCESSOR" pos="VB" text="consolidate" />
+  <vg begin="2050" end="2061" id="c133" origin="PREPROCESSOR" />
+  <EVENT begin="2050" end="2061" aspect="NONE" class="OCCURRENCE" eid="e54" eiid="ei54" epos="VERB" form="consolidate" origin="EVITA" pos="VB" tense="INFINITIVE" />
+  <lex begin="2062" end="2073" id="l367" lemma="information" origin="PREPROCESSOR" pos="NN" text="information" />
+  <ng begin="2062" end="2073" id="c134" origin="PREPROCESSOR" />
+  <lex begin="2074" end="2079" id="l368" lemma="under" origin="PREPROCESSOR" pos="IN" text="under" />
+  <ng begin="2080" end="2102" id="c135" origin="PREPROCESSOR" />
+  <lex begin="2080" end="2083" id="l369" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="2084" end="2091" id="l370" lemma="Atlanta" origin="PREPROCESSOR" pos="NNP" text="Atlanta" />
+  <lex begin="2092" end="2096" id="l371" lemma="task" origin="PREPROCESSOR" pos="NN" text="task" />
+  <lex begin="2097" end="2102" id="l372" lemma="force" origin="PREPROCESSOR" pos="NN" text="force" />
+  <lex begin="2102" end="2103" id="l373" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <ng begin="2104" end="2132" id="c136" origin="PREPROCESSOR" />
+  <lex begin="2104" end="2111" id="l374" lemma="another" origin="PREPROCESSOR" pos="DT" text="another" />
+  <lex begin="2112" end="2122" id="l375" lemma="indication" origin="PREPROCESSOR" pos="NN" text="indication" />
+  <lex begin="2123" end="2132" id="l376" lemma="official" origin="PREPROCESSOR" pos="NNS" text="officials" />
+  <lex begin="2133" end="2140" id="l377" lemma="suspect" origin="PREPROCESSOR" pos="VBP" text="suspect" />
+  <vg begin="2133" end="2140" id="c137" origin="PREPROCESSOR" />
+  <EVENT begin="2133" end="2140" aspect="NONE" class="OCCURRENCE" eid="e55" eiid="ei55" epos="VERB" form="suspect" origin="EVITA" pos="VBP" tense="PRESENT" />
+  <ng begin="2141" end="2147" id="c138" origin="PREPROCESSOR" />
+  <lex begin="2141" end="2142" id="l378" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="2143" end="2147" id="l379" lemma="link" origin="PREPROCESSOR" pos="NN" text="link" />
+  <lex begin="2148" end="2155" id="l380" lemma="between" origin="PREPROCESSOR" pos="IN" text="between" />
+  <lex begin="2156" end="2159" id="l381" lemma="all" origin="PREPROCESSOR" pos="PDT" text="all" />
+  <ng begin="2160" end="2172" id="c139" origin="PREPROCESSOR" />
+  <lex begin="2160" end="2163" id="l382" lemma="the" origin="PREPROCESSOR" pos="DT" text="the" />
+  <lex begin="2164" end="2172" id="l383" lemma="bombing" origin="PREPROCESSOR" pos="NNS" text="bombings" />
+  <EVENT begin="2164" end="2172" aspect="NONE" class="OCCURRENCE" eid="e56" eiid="ei56" epos="NOUN" form="bombings" origin="EVITA" pos="NNS" tense="NONE" />
+  <lex begin="2172" end="2173" id="l384" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="2174" end="2251" id="s29" origin="PREPROCESSOR" />
+  <lex begin="2174" end="2183" id="l385" lemma="privately" origin="PREPROCESSOR" pos="RB" text="Privately" />
+  <lex begin="2183" end="2184" id="l386" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="2185" end="2196" id="l387" lemma="authority" origin="PREPROCESSOR" pos="NNS" text="authorities" />
+  <ng begin="2185" end="2196" id="c140" origin="PREPROCESSOR" />
+  <lex begin="2197" end="2200" id="l388" lemma="say" origin="PREPROCESSOR" pos="VBP" text="say" />
+  <vg begin="2197" end="2200" id="c141" origin="PREPROCESSOR" />
+  <EVENT begin="2197" end="2200" aspect="NONE" class="REPORTING" eid="e57" eiid="ei57" epos="VERB" form="say" origin="EVITA" pos="VBP" tense="PRESENT" />
+  <lex begin="2201" end="2208" id="l389" lemma="Rudolph" origin="PREPROCESSOR" pos="NNP" text="Rudolph" />
+  <ng begin="2201" end="2208" id="c142" origin="PREPROCESSOR" />
+  <vg begin="2209" end="2219" id="c143" origin="PREPROCESSOR" />
+  <lex begin="2209" end="2212" id="l390" lemma="have" origin="PREPROCESSOR" pos="VBZ" text="has" />
+  <lex begin="2213" end="2219" id="l391" lemma="become" origin="PREPROCESSOR" pos="VBN" text="become" />
+  <EVENT begin="2213" end="2219" aspect="PERFECTIVE" class="OCCURRENCE" eid="e58" eiid="ei58" epos="VERB" form="become" origin="EVITA" pos="VBN" tense="PRESENT" />
+  <ng begin="2220" end="2227" id="c144" origin="PREPROCESSOR" />
+  <lex begin="2220" end="2221" id="l392" lemma="a" origin="PREPROCESSOR" pos="DT" text="a" />
+  <lex begin="2222" end="2227" id="l393" lemma="focus" origin="PREPROCESSOR" pos="NN" text="focus" />
+  <lex begin="2228" end="2230" id="l394" lemma="of" origin="PREPROCESSOR" pos="IN" text="of" />
+  <lex begin="2231" end="2236" id="l395" lemma="their" origin="PREPROCESSOR" pos="PP$" text="their" />
+  <lex begin="2237" end="2250" id="l396" lemma="investigation" origin="PREPROCESSOR" pos="NN" text="investigation" />
+  <ng begin="2237" end="2250" id="c145" origin="PREPROCESSOR" />
+  <EVENT begin="2237" end="2250" aspect="NONE" class="OCCURRENCE" eid="e59" eiid="ei59" epos="NOUN" form="investigation" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="2250" end="2251" id="l397" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="2252" end="2312" id="s30" origin="PREPROCESSOR" />
+  <lex begin="2252" end="2260" id="l398" lemma="publicly" origin="PREPROCESSOR" pos="RB" text="Publicly" />
+  <lex begin="2260" end="2261" id="l399" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="2262" end="2266" id="l400" lemma="they" origin="PREPROCESSOR" pos="PP" text="they" />
+  <ng begin="2262" end="2266" id="c146" origin="PREPROCESSOR" />
+  <lex begin="2267" end="2270" id="l401" lemma="be" origin="PREPROCESSOR" pos="VBP" text="are" />
+  <vg begin="2267" end="2270" id="c147" origin="PREPROCESSOR" />
+  <lex begin="2271" end="2280" id="l402" lemma="unwilling" origin="PREPROCESSOR" pos="JJ" text="unwilling" />
+  <EVENT begin="2271" end="2280" aspect="NONE" class="I_STATE" eid="e60" eiid="ei60" epos="ADJECTIVE" form="unwilling" origin="EVITA" pos="JJ" tense="PRESENT" />
+  <vg begin="2281" end="2288" id="c148" origin="PREPROCESSOR" />
+  <lex begin="2281" end="2283" id="l403" lemma="to" origin="PREPROCESSOR" pos="TO" text="to" />
+  <lex begin="2284" end="2288" id="l404" lemma="make" origin="PREPROCESSOR" pos="VB" text="make" />
+  <EVENT begin="2284" end="2288" aspect="NONE" class="OCCURRENCE" eid="e61" eiid="ei61" epos="VERB" form="make" origin="EVITA" pos="VB" tense="INFINITIVE" />
+  <ng begin="2289" end="2311" id="c149" origin="PREPROCESSOR" />
+  <lex begin="2289" end="2292" id="l405" lemma="any" origin="PREPROCESSOR" pos="DT" text="any" />
+  <lex begin="2293" end="2301" id="l406" lemma="sweeping" origin="PREPROCESSOR" pos="JJ" text="sweeping" />
+  <lex begin="2302" end="2311" id="l407" lemma="assertion" origin="PREPROCESSOR" pos="NN" text="assertion" />
+  <EVENT begin="2302" end="2311" aspect="NONE" class="OCCURRENCE" eid="e62" eiid="ei62" epos="NOUN" form="assertion" origin="EVITA" pos="NN" tense="NONE" />
+  <lex begin="2311" end="2312" id="l408" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="2313" end="2354" id="s31" origin="PREPROCESSOR" />
+  <ng begin="2313" end="2323" id="c150" origin="PREPROCESSOR" />
+  <lex begin="2313" end="2316" id="l409" lemma="the" origin="PREPROCESSOR" pos="DT" text="The" />
+  <lex begin="2317" end="2323" id="l410" lemma="reason" origin="PREPROCESSOR" pos="NN" text="reason" />
+  <lex begin="2323" end="2324" id="l411" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="2325" end="2329" id="l412" lemma="they" origin="PREPROCESSOR" pos="PP" text="they" />
+  <ng begin="2325" end="2329" id="c151" origin="PREPROCESSOR" />
+  <lex begin="2330" end="2338" id="l413" lemma="remember" origin="PREPROCESSOR" pos="VBP" text="remember" />
+  <vg begin="2330" end="2338" id="c152" origin="PREPROCESSOR" />
+  <EVENT begin="2330" end="2338" aspect="NONE" class="OCCURRENCE" eid="e63" eiid="ei63" epos="VERB" form="remember" origin="EVITA" pos="VBP" tense="PRESENT" />
+  <ng begin="2339" end="2353" id="c153" origin="PREPROCESSOR" />
+  <lex begin="2339" end="2346" id="l414" lemma="Richard" origin="PREPROCESSOR" pos="NNP" text="Richard" />
+  <lex begin="2347" end="2353" id="l415" lemma="Jewell" origin="PREPROCESSOR" pos="NNP" text="Jewell" />
+  <lex begin="2353" end="2354" id="l416" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <s begin="2355" end="2386" id="s32" origin="PREPROCESSOR" />
+  <ng begin="2355" end="2368" id="c154" origin="PREPROCESSOR" />
+  <lex begin="2355" end="2361" id="l417" lemma="Pierre" origin="PREPROCESSOR" pos="NNP" text="pierre" />
+  <lex begin="2362" end="2368" id="l418" lemma="&lt;unknown&gt;" origin="PREPROCESSOR" pos="NNS" text="thomas" />
+  <lex begin="2368" end="2369" id="l419" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="2370" end="2373" id="l420" lemma="CNN" origin="PREPROCESSOR" pos="NNP" text="CNN" />
+  <ng begin="2370" end="2373" id="c155" origin="PREPROCESSOR" />
+  <lex begin="2373" end="2374" id="l421" lemma="," origin="PREPROCESSOR" pos="," text="," />
+  <lex begin="2375" end="2385" id="l422" lemma="Washington" origin="PREPROCESSOR" pos="NNP" text="Washington" />
+  <ng begin="2375" end="2385" id="c156" origin="PREPROCESSOR" />
+  <lex begin="2385" end="2386" id="l423" lemma="." origin="PREPROCESSOR" pos="." text="." />
+  <SLINK eventInstanceID="ei23" lid="l1" origin="SLINKET" relType="MODAL" subordinatedEventInstance="ei24" syntax="toClause1" />
+  <SLINK eventInstanceID="ei32" lid="l2" origin="SLINKET" relType="FACTIVE" subordinatedEventInstance="ei34" syntax="thatClause_NOT_that" />
+  <SLINK eventInstanceID="ei38" lid="l3" origin="SLINKET" relType="EVIDENTIAL" subordinatedEventInstance="ei39" syntax="thatClause_NOT_that" />
+  <SLINK eventInstanceID="ei42" lid="l4" origin="SLINKET" relType="MODAL" subordinatedEventInstance="ei43" syntax="NP_event1" />
+  <SLINK eventInstanceID="ei52" lid="l5" origin="SLINKET" relType="MODAL" subordinatedEventInstance="ei54" syntax="toClause3" />
+  <SLINK eventInstanceID="ei57" lid="l6" origin="SLINKET" relType="EVIDENTIAL" subordinatedEventInstance="ei58" syntax="thatClause_NOT_that" />
+  <TLINK eventInstanceID="ei23" lid="l7" origin="S2T" relType="BEFORE" relatedToEventInstance="ei24" syntax="RULE-10" />
+  <TLINK eventInstanceID="ei32" lid="l8" origin="S2T" relType="AFTER" relatedToEventInstance="ei34" syntax="RULE-9" />
+  <TLINK eventInstanceID="ei42" lid="l9" origin="S2T" relType="BEFORE" relatedToEventInstance="ei43" syntax="RULE-10" />
+  <TLINK eventInstanceID="ei52" lid="l10" origin="S2T" relType="BEFORE" relatedToEventInstance="ei54" syntax="RULE-10" />
+  <TLINK eventInstanceID="ei57" lid="l11" origin="S2T" relType="AFTER" relatedToEventInstance="ei58" syntax="RULE-4" />
+  <TLINK lid="l12" origin="BLINKER-TimexLinking" relType="IDENTITY" relatedToTime="t3" timeID="t1" />
+  <TLINK lid="l13" origin="BLINKER-TimexLinking" relType="AFTER" relatedToTime="t4" timeID="t1" />
+  <TLINK lid="l14" origin="BLINKER-TimexLinking" relType="IS_INCLUDED" relatedToTime="t5" timeID="t1" />
+  <TLINK lid="l15" origin="BLINKER-TimexLinking" relType="AFTER" relatedToTime="t4" timeID="t3" />
+  <TLINK lid="l16" origin="BLINKER-TimexLinking" relType="IS_INCLUDED" relatedToTime="t5" timeID="t3" />
+  <TLINK lid="l17" origin="BLINKER-TimexLinking" relType="BEFORE" relatedToTime="t5" timeID="t4" />
+  <TLINK eventInstanceID="ei7" lid="l18" origin="BLINKER-Rule-3-17" relType="BEFORE" relatedToEventInstance="ei9" />
+  <TLINK eventInstanceID="ei10" lid="l19" origin="BLINKER-Rule-3-17" relType="BEFORE" relatedToEventInstance="ei11" />
+  <TLINK eventInstanceID="ei38" lid="l20" origin="BLINKER-Rule-3-17" relType="BEFORE" relatedToEventInstance="ei41" />
+  <TLINK eventInstanceID="ei52" lid="l21" origin="BLINKER-Rule-3-23" relType="BEFORE" relatedToEventInstance="ei57" />
+  <TLINK eventInstanceID="ei1" lid="l22" origin="CLASSIFIER-0.2458" relType="AFTER" relatedToEventInstance="ei2" />
+  <TLINK eventInstanceID="ei3" lid="l23" origin="CLASSIFIER-0.2049" relType="BEFORE" relatedToEventInstance="ei4" />
+  <TLINK eventInstanceID="ei6" lid="l24" origin="CLASSIFIER-0.2772" relType="BEFORE" relatedToEventInstance="ei7" />
+  <TLINK eventInstanceID="ei7" lid="l25" origin="CLASSIFIER-0.2140" relType="AFTER" relatedToEventInstance="ei8" />
+  <TLINK eventInstanceID="ei11" lid="l26" origin="CLASSIFIER-0.2785" relType="IAFTER" relatedToEventInstance="ei12" />
+  <TLINK eventInstanceID="ei13" lid="l27" origin="CLASSIFIER-0.5769" relType="AFTER" relatedToEventInstance="ei14" />
+  <TLINK eventInstanceID="ei15" lid="l28" origin="CLASSIFIER-0.3689" relType="SIMULTANEOUS" relatedToEventInstance="ei16" />
+  <TLINK eventInstanceID="ei16" lid="l29" origin="CLASSIFIER-0.4504" relType="AFTER" relatedToEventInstance="ei17" />
+  <TLINK eventInstanceID="ei17" lid="l30" origin="CLASSIFIER-0.2140" relType="AFTER" relatedToEventInstance="ei18" />
+  <TLINK eventInstanceID="ei19" lid="l31" origin="CLASSIFIER-0.3247" relType="SIMULTANEOUS" relatedToEventInstance="ei20" />
+  <TLINK eventInstanceID="ei21" lid="l32" origin="CLASSIFIER-0.6661" relType="AFTER" relatedToEventInstance="ei22" />
+  <TLINK eventInstanceID="ei22" lid="l33" origin="CLASSIFIER-0.1634" relType="BEFORE" relatedToEventInstance="ei23" />
+  <TLINK eventInstanceID="ei23" lid="l34" origin="CLASSIFIER-0.3163" relType="BEFORE" relatedToEventInstance="ei24" />
+  <TLINK eventInstanceID="ei24" lid="l35" origin="CLASSIFIER-0.5082" relType="AFTER" relatedToEventInstance="ei25" />
+  <TLINK eventInstanceID="ei25" lid="l36" origin="CLASSIFIER-0.7773" relType="AFTER" relatedToEventInstance="ei26" />
+  <TLINK eventInstanceID="ei27" lid="l37" origin="CLASSIFIER-0.4946" relType="IS_INCLUDED" relatedToEventInstance="ei28" />
+  <TLINK eventInstanceID="ei29" lid="l38" origin="CLASSIFIER-0.7773" relType="AFTER" relatedToEventInstance="ei30" />
+  <TLINK eventInstanceID="ei30" lid="l39" origin="CLASSIFIER-0.3178" relType="ENDED_BY" relatedToEventInstance="ei31" />
+  <TLINK eventInstanceID="ei31" lid="l40" origin="CLASSIFIER-0.6111" relType="AFTER" relatedToEventInstance="ei32" />
+  <TLINK eventInstanceID="ei32" lid="l41" origin="CLASSIFIER-0.2848" relType="AFTER" relatedToEventInstance="ei33" />
+  <TLINK eventInstanceID="ei33" lid="l42" origin="CLASSIFIER-0.1955" relType="IDENTITY" relatedToEventInstance="ei34" />
+  <TLINK eventInstanceID="ei35" lid="l43" origin="CLASSIFIER-0.4913" relType="BEFORE" relatedToEventInstance="ei36" />
+  <TLINK eventInstanceID="ei36" lid="l44" origin="CLASSIFIER-0.3152" relType="BEFORE" relatedToEventInstance="ei37" />
+  <TLINK eventInstanceID="ei38" lid="l45" origin="CLASSIFIER-0.2380" relType="AFTER" relatedToEventInstance="ei39" />
+  <TLINK eventInstanceID="ei39" lid="l46" origin="CLASSIFIER-0.4522" relType="AFTER" relatedToEventInstance="ei40" />
+  <TLINK eventInstanceID="ei42" lid="l47" origin="CLASSIFIER-0.1717" relType="AFTER" relatedToEventInstance="ei43" />
+  <TLINK eventInstanceID="ei43" lid="l48" origin="CLASSIFIER-0.5438" relType="AFTER" relatedToEventInstance="ei44" />
+  <TLINK eventInstanceID="ei44" lid="l49" origin="CLASSIFIER-0.2878" relType="AFTER" relatedToEventInstance="ei45" />
+  <TLINK eventInstanceID="ei45" lid="l50" origin="CLASSIFIER-0.2718" relType="AFTER" relatedToEventInstance="ei46" />
+  <TLINK eventInstanceID="ei47" lid="l51" origin="CLASSIFIER-0.3881" relType="AFTER" relatedToEventInstance="ei48" />
+  <TLINK eventInstanceID="ei48" lid="l52" origin="CLASSIFIER-0.2760" relType="SIMULTANEOUS" relatedToEventInstance="ei49" />
+  <TLINK eventInstanceID="ei50" lid="l53" origin="CLASSIFIER-0.2807" relType="IS_INCLUDED" relatedToEventInstance="ei51" />
+  <TLINK eventInstanceID="ei52" lid="l54" origin="CLASSIFIER-0.2280" relType="IS_INCLUDED" relatedToEventInstance="ei53" />
+  <TLINK eventInstanceID="ei53" lid="l55" origin="CLASSIFIER-0.3114" relType="INCLUDES" relatedToEventInstance="ei54" />
+  <TLINK eventInstanceID="ei54" lid="l56" origin="CLASSIFIER-0.3459" relType="SIMULTANEOUS" relatedToEventInstance="ei55" />
+  <TLINK eventInstanceID="ei55" lid="l57" origin="CLASSIFIER-0.2140" relType="AFTER" relatedToEventInstance="ei56" />
+  <TLINK eventInstanceID="ei57" lid="l58" origin="CLASSIFIER-0.4949" relType="AFTER" relatedToEventInstance="ei58" />
+  <TLINK eventInstanceID="ei58" lid="l59" origin="CLASSIFIER-0.4644" relType="IS_INCLUDED" relatedToEventInstance="ei59" />
+  <TLINK eventInstanceID="ei60" lid="l60" origin="CLASSIFIER-0.3213" relType="ENDED_BY" relatedToEventInstance="ei61" />
+  <TLINK eventInstanceID="ei61" lid="l61" origin="CLASSIFIER-0.6019" relType="IDENTITY" relatedToEventInstance="ei62" />
+  <TLINK eventInstanceID="ei2" lid="l62" origin="CLASSIFIER-0.7138" relType="IS_INCLUDED" relatedToTime="t1" />
+  <TLINK eventInstanceID="ei3" lid="l63" origin="CLASSIFIER-0.6976" relType="IS_INCLUDED" relatedToTime="t1" />
+  <TLINK eventInstanceID="ei11" lid="l64" origin="CLASSIFIER-0.7183" relType="IS_INCLUDED" relatedToTime="t3" />
+  <TLINK eventInstanceID="ei15" lid="l65" origin="CLASSIFIER-0.7945" relType="IS_INCLUDED" relatedToTime="t4" />
+  <TLINK eventInstanceID="ei50" lid="l66" origin="CLASSIFIER-0.7146" relType="IS_INCLUDED" relatedToTime="t5" />
+</tarsqi_tags>
+</ttk>
