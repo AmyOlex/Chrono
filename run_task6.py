@@ -91,7 +91,8 @@ if __name__ == "__main__":
         classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
     else:
         ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        ##classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        classifier, feats = NBclass.build_model("./aquaint_train_data_win1.csv", "./aquaint_train_class_win1.csv")
         
     ## Pass the ML classifier through to the parse SUTime entities method.
   
