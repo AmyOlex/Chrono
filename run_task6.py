@@ -85,7 +85,7 @@ if __name__ == "__main__":
     ## Train ML methods on training data
     if(args.m == "DT"):
         ## Train the decision tree classifier and save in the classifier variable
-        classifier = DTree.get_classifier("data/aquaint_train_data.csv", 5, 5, 10)
+        classifier = DTree.build_dt_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
         classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
