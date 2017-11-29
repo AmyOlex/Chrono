@@ -1,8 +1,9 @@
----
+<!---
 output:
   html_document: default
   pdf_document: default
----
+--->
+
 # SemEval-2018 Task 6 - Parsing Time Normalizations
 
 ### Amy Olex, Nicholas Morton, Luke Maffey
