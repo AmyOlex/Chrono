@@ -37,9 +37,9 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         t6MinuteFlag = False
         t6SecondFlag = False
         #Parse out Year function
-        t6List, t6ID  = buildT6Year(s,t6ID,t6List)
+        t6List, t6ID, t6MinuteFlag, t6SecondFlag  = buildT6Year(s,t6ID,t6List, t6MinuteFlag, t6SecondFlag)
         #Parse out Two-Digit Year 
-        t6List, t6ID  = buildT62DigitYear(s,t6ID,t6List)
+        t6List, t6ID, t6MinuteFlag, t6SecondFlag  = buildT62DigitYear(s,t6ID,t6List, t6MinuteFlag, t6SecondFlag)
         #Parse out Month-of-Year
         t6List, t6ID  = buildT6MonthOfYear(s,t6ID,t6List)
         #Parse out Day-of-Month
@@ -47,9 +47,9 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         #Parse out HourOfDay
         t6List, t6ID  = buildT6HourOfDay(s,t6ID,t6List)
         #Parse out MinuteOfHour
-        t6List, t6ID  = buildT6MinuteOfHour(s,t6ID,t6List)   
+        t6List, t6ID  = buildT6MinuteOfHour(s,t6ID,t6List, t6MinuteFlag)   
         #Parse out SecondOfMinute
-        t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List)           
+        t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List, t6SecondFlag)           
         
 
         #call non-standard formatting temporal phrases, 
@@ -84,7 +84,7 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
-def buildT6Year(s, t6ID, t6List):
+def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
 
     b, text, startSpan, endSpan = hasYear(s)
     if b:
@@ -150,7 +150,7 @@ def buildT6Year(s, t6ID, t6List):
                             t6List.append(t6SecondEntity)
                             t6ID =t6ID +1
                             t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())                
-    return t6List,t6ID
+    return t6List,t6ID,t6MinuteFlag,t6SecondFlag
 ####
 #END_MODULE
 ####
@@ -161,7 +161,7 @@ def buildT6Year(s, t6ID, t6List):
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
-def buildT62DigitYear(s, t6ID, t6List):           
+def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):           
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b:
         #In most cases this will be at the end of the Span
@@ -228,7 +228,7 @@ def buildT62DigitYear(s, t6ID, t6List):
                             t6ID =t6ID +1
                             t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())   
               
-    return t6List,t6ID
+    return t6List,t6ID, t6MinuteFlag, t6SecondFlag
 ####
 #END_MODULE
 ####
@@ -303,7 +303,7 @@ def buildT6HourOfDay(s, t6ID, t6List):
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
-def buildT6MinuteOfHour(s,t6ID, t6List):
+def buildT6MinuteOfHour(s,t6ID, t6List, t6MinuteFlag):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
     if b and not t6MinuteFlag:
         ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -324,7 +324,7 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
-def buildT6SecondOfMinute(s,t6ID, t6List):
+def buildT6SecondOfMinute(s,t6ID, t6List, t6SecondFlag):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
     if b and not t6SecondFlag:
         ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -535,7 +535,7 @@ def buildAMPM(s, t6ID, t6List):
 ####
 #END_MODULE
 ####
-
+'''
 ## Parses a sutime entity's text field to determine if it contains a calendar interval phrase, then builds the associated t6entity list
 # @author Amy Olex
 # @param s The SUtime entity to parse 
@@ -587,6 +587,8 @@ def buildCalendarInterval(s, t6ID, t6List):
 #END_MODULE
 ####
 
+'''
+
 ## Parses a sutime entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated t6entity list
 # @author Amy Olex
 # @param s The SUtime entity to parse 
@@ -615,10 +617,16 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
         my_features = utils.extract_prediction_features(ref_list, ref_idx, features)
         
         # classify into period or interval
-        my_class = classifier.classify(my_features)
-        print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+        if(classifier[1] == "NN"):
+            my_class = classifier[0].predict(my_features)
+            print('Predictions: {}' .format(list(my_class)))
+            print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+        else:
+            my_class = classifier[0].classify(my_features)
+            print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+            
         # if 1 then it is a period, if 0 then it is an interval  
-        if(my_class == 1):
+        if(my_class == "period"):
             my_entity = t6.T6PeriodEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
             t6ID = t6ID+1
         else:
@@ -670,10 +678,15 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
             my_features = utils.extract_prediction_features(ref_list, ref_idx, features)
         
             # classify into period or interval
-            my_class = classifier.classify(my_features)
-            print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-            # if 1 then it is a period, if 0 then it is an interval  
-            if(my_class == "1"):
+            if(classifier[1] == "NN"):
+                my_class = classifier[0].predict(my_features)
+                print("Class: " + str(list(my_class)) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+            else:
+                my_class = classifier[0].classify(my_features)
+                print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+            
+             # if 1 then it is a period, if 0 then it is an interval  
+            if(my_class == "period"):
                 my_entity = t6.T6PeriodEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
                 t6ID = t6ID+1
             else:

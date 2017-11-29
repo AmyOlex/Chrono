@@ -38,7 +38,7 @@ from task6 import t6Entities as t6
 from task6 import createMLTrainingMatrix
 from ChronoNN import ChronoNN
 from chronoML import NB_nltk_classifier as NBclass
-from DT import DecisionTree as DTree
+from chronoML import DecisionTree as DTree
 
 debug=False
 ## This is the driver method to run all of task6.
@@ -85,14 +85,16 @@ if __name__ == "__main__":
     ## Train ML methods on training data
     if(args.m == "DT"):
         ## Train the decision tree classifier and save in the classifier variable
-        classifier = DTree.build_dt_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        classifier, feats = DTree.build_dt_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoNN.build_model("data/aquaint_train_fixed.csv",layers=[867,867,867])
+        classifier = ChronoNN.build_model("./data/aquaint_train_fixed.csv",layers=[867,867,867])
+        feats = utils.get_features("./data/aquaint_train_data.csv")
     else:
         ## Train the naive bayes classifier and save in the classifier variable
         ##classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
-        classifier, feats = NBclass.build_model("./aquaint_train_data_win1.csv", "./aquaint_train_class_win1.csv")
+        classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
         
     ## Pass the ML classifier through to the parse SUTime entities method.
   
@@ -129,7 +131,7 @@ if __name__ == "__main__":
             for tok in my_refToks : print(tok)
         
         try :
-            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,my_refToks, classifier, feats, doctime)
+            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,my_refToks, (classifier, args.m), feats, doctime)
         except ValueError:
             print("Value ERROR on "+infiles[f])
         else :

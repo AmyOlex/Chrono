@@ -12,6 +12,9 @@ import dateutil.parser
 import datetime
 from task6 import SUTime_To_T6
 import re
+import csv
+from collections import OrderedDict
+import numpy as np
 from word2number import w2n
 
 ## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
@@ -260,7 +263,27 @@ def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
     return(feature_dict)
 ######
 ## END Function
-######   
+###### 
+
+
+## Function to extract prediction features
+# @author Amy Olex
+def get_features(data_file):
+    ## Import csv files
+    data_list = []
+    with open(data_file) as file:
+        reader = csv.DictReader(file)
+        data_list = [row for row in reader]
+
+    ## Create the empty orderedDict to pass back for use in the other methods.
+    dict_keys = data_list[0].keys()
+
+    dic = OrderedDict(zip(dict_keys, np.repeat(0,len(dict_keys))))
+    
+    return(dic)
+######
+## END Function
+###### 
         
     
     
