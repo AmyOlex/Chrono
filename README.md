@@ -1,8 +1,9 @@
----
+<!---
 output:
   html_document: default
   pdf_document: default
----
+--->
+
 # SemEval-2018 Task 6 - Parsing Time Normalizations
 
 ### Amy Olex, Nicholas Morton, Luke Maffey
@@ -96,6 +97,7 @@ Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#refere
 ##### NB:
 
 ##### NN:
+The neural network algorithm was written using TensorFlow based off of the IrisNN tutorial available here: https://www.tensorflow.org/get_started/estimator  It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model.  The training data file requires a header with the number of samples and number of features to properly read in. 
 
 ##### DT:
 The decision tree algorithm was based off of a model built from: https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/ It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  Updates were made to the source code to work for our program.
