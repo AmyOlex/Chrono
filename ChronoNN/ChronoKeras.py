@@ -39,4 +39,5 @@ def keras_evaluate(model,test_data,test_labels):
 
 
 def keras_classify(model,predict_data):
-    return model.predict(predict_data)
+    prediction = model.predict(predict_data)
+    return prediction[0]
