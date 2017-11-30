@@ -29,7 +29,7 @@ def build_model(train_data, train_labels, size):
     model.add(Dense(1, activation='sigmoid'))
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     
-    model.fit(X, Y, epochs=10, batch_size=10)
+    model.fit(X, Y, epochs=3, batch_size=10)
     return model
 
 def keras_evaluate(model,test_data,test_labels):
@@ -39,7 +39,7 @@ def keras_evaluate(model,test_data,test_labels):
 
 
 def keras_classify(model,predict_data):
-    print("Predicting...")
-    prediction = model.predict(predict_data)
+    print("Predicting on {}".format(predict_data))
+    prediction = model.predict(list(predict_data))
     print("The prediction is: {}".format(round(prediction[0])))
     return round(prediction[0])
