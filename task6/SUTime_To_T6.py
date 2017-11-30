@@ -11,7 +11,7 @@ import calendar
 import string
 import re
 import datetime
-from ChronoNN import ChronoNN
+from ChronoNN import ChronoKeras
 import numpy as np
 
 #Example SUTime List
@@ -695,7 +695,7 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
         # classify into period or interval
         if(classifier[1] == "NN"):
             print("Chrono HERE1")
-            my_class = ChronoNN.classify(classifier[0],np.array(list(my_features.values())))
+            my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
             #print('Predictions: {}' .format(list(my_class)))
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
         else:
@@ -759,8 +759,8 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
             if(classifier[1] == "NN"):
                 #my_class = classifier[0].predict(my_features)
                 print("Chrono HERE2")
-                my_class = ChronoNN.classify(classifier[0],np.array(list(my_features.values())))
-                print("Class: " + str(list(my_class)) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+                my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
+                print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             else:
                 my_class = classifier[0].classify(my_features)
                 print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
