@@ -20,7 +20,7 @@ def build_model(train_data, train_labels):
     Y = labels[:]
     # Build keras NN
     model = Sequential()
-    model.add(Dense(size, input_shape=(size, 1), activation='relu'))
+    model.add(Dense(size, input_shape=(None, size), activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(size, activation='relu'))
     model.add(Dropout(0.5))
