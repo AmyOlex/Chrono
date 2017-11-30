@@ -36,7 +36,7 @@ from task6 import sutime_wrapper
 from task6 import SUTime_To_T6
 from task6 import t6Entities as t6
 from task6 import createMLTrainingMatrix
-from ChronoNN import ChronoNN
+from ChronoNN import ChronoKeras
 from chronoML import NB_nltk_classifier as NBclass
 from chronoML import DecisionTree as DTree
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoNN.build_model("./data/aquaint_train_fixed.csv",layers=[867,867,867])
+        classifier = ChronoKeras.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv",867)
         feats = utils.get_features("./data/aquaint_train_data.csv")
     else:
         ## Train the naive bayes classifier and save in the classifier variable
