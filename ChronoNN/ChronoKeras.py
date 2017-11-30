@@ -40,4 +40,4 @@ def keras_evaluate(model,test_data,test_labels):
 
 def keras_classify(model,predict_data):
     prediction = model.predict(predict_data)
-    return prediction[0]
+    return np.round(prediction[0])
