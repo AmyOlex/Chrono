@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv",867)
+        classifier = ChronoKeras.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
         feats = utils.get_features("./data/aquaint_train_data.csv")
     else:
         ## Train the naive bayes classifier and save in the classifier variable
