@@ -694,7 +694,8 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
         
         # classify into period or interval
         if(classifier[1] == "NN"):
-            print("Chrono HERE1")
+            print("Chrono HERE1: "+str(len(my_features)))
+            print(my_features)
             my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
             #print('Predictions: {}' .format(list(my_class)))
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
