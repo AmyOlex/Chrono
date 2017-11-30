@@ -93,8 +93,8 @@ if __name__ == "__main__":
         feats = utils.get_features("./data/aquaint_train_data.csv")
     else:
         ## Train the naive bayes classifier and save in the classifier variable
-        ##classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
         classifier, feats = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        classifier.show_most_informative_features(20)
         
     ## Pass the ML classifier through to the parse SUTime entities method.
   

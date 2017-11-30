@@ -11,6 +11,8 @@ import calendar
 import string
 import re
 import datetime
+from ChronoNN import ChronoNN
+import numpy as np
 
 #Example SUTime List
 #Wsj_0152
@@ -58,6 +60,8 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         t6List, t6ID  = buildAMPM(s,t6ID,t6List)                
         #t6List, t6ID  = buildCalendarInterval(s,t6ID,t6List)
         t6List, t6ID  = buildPartOfDay(s,t6ID,t6List)
+        t6List, t6ID  = buildPartOfWeek(s,t6ID,t6List)
+        t6List, t6ID  = buildSeasonOfYear(s,t6ID,t6List)
 
         t6List, t6ID  = buildPeriodInterval(s, t6ID,t6List, ref_list, PIclassifier, PIfeatures)
      
@@ -382,6 +386,78 @@ def buildDayOfWeek(s, t6ID, t6List):
     return t6List, t6ID
 ####
 #END_MODULE
+#### 
+
+## Parses a sutime entity's text field to determine if it contains a season of the year written out in text form, then builds the associated t6entity list
+# @author Amy Olex
+# @param s The SUtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
+def buildSeasonOfYear(s, t6ID, t6List):
+    
+    boo, val, idxstart, idxend = hasSeasonOfYear(s)
+    if boo:
+        ref_Sspan, ref_Espan = s.getSpan()
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_entity = t6.T6SeasonOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, season_type=val)
+        
+        #check here to see if it has a modifier
+        hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+        if(hasMod):
+            if mod_type == "This":
+                t6List.append(t6.T6ThisOperator(entityID=t6ID, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6ID = t6ID+1
+                
+            if mod_type == "Next":
+                t6List.append(t6.T6NextOperator(entityID=t6ID, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6ID = t6ID+1
+                
+            if mod_type == "Last":
+                t6List.append(t6.T6LastOperator(entityID=t6ID, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6ID = t6ID+1
+            else:
+                t6List.append(t6.T6LastOperator(entityID=t6ID, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                t6ID = t6ID+1
+                
+       # else:
+    #        t6List.append(t6.T6LastOperator(entityID=t6ID, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+     #       t6ID = t6ID+1
+    
+        #check to see if it has a number associated with it.  We assume the number comes before the interval string
+        if idxstart > 0:
+            substr = s.getText()[0:idxstart]
+            m = re.search('([0-9]{1,2})', substr)
+            if m is not None :
+                num_val = m.group(0)
+                abs_Sspan = ref_Sspan + m.span(0)[0]
+                abs_Espan = ref_Sspan + m.span(0)[1]
+        
+                my_number_entity = t6.T6Number(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
+                t6ID = t6ID+1
+            
+                #add the number entity to the list
+                t6List.append(my_number_entity)
+                my_entity.set_number(my_number_entity.get_id())
+                #else search for a text number
+            else:
+                texNumVal = utils.getNumberFromText(substr)
+                if texNumVal is not None:
+                    #create the number entity
+                    my_number_entity = t6.T6Number(entityID=str(t6ID)+"entity", start_span=ref_Sspan, end_span=ref_Sspan+(idxstart-1), value=texNumVal)
+                    t6ID = t6ID+1
+                    #append to list
+                    t6List.append(my_number_entity)
+                    #link to interval entity
+                    my_entity.set_number(my_number_entity.get_id())
+    
+            t6List.append(my_entity)
+            t6ID = t6ID+1
+            
+    return t6List, t6ID
+####
+#END_MODULE
 ####    
 
 
@@ -618,8 +694,9 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
         
         # classify into period or interval
         if(classifier[1] == "NN"):
-            my_class = classifier[0].predict(my_features)
-            print('Predictions: {}' .format(list(my_class)))
+            print("Chrono HERE1")
+            my_class = ChronoNN.classify(classifier[0],np.array(list(my_features.values())))
+            #print('Predictions: {}' .format(list(my_class)))
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
         else:
             my_class = classifier[0].classify(my_features)
@@ -647,6 +724,7 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
                 
                 #add the number entity to the list
                 t6List.append(my_number_entity)
+                my_entity.set_number(my_number_entity.get_id())
             #else search for a text number
             else:
                 texNumVal = utils.getNumberFromText(substr)
@@ -679,7 +757,9 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
         
             # classify into period or interval
             if(classifier[1] == "NN"):
-                my_class = classifier[0].predict(my_features)
+                #my_class = classifier[0].predict(my_features)
+                print("Chrono HERE2")
+                my_class = ChronoNN.classify(classifier[0],np.array(list(my_features.values())))
                 print("Class: " + str(list(my_class)) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             else:
                 my_class = classifier[0].classify(my_features)
@@ -755,6 +835,29 @@ def buildPartOfDay(s, t6ID, t6List):
 ####
 #END_MODULE
 ####    
+
+## Parses a sutime entity's text field to determine if it contains a part of the week expression, then builds the associated t6entity list
+# @author Amy Olex
+# @param s The SUtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
+def buildPartOfWeek(s, t6ID, t6List):
+    
+    boo, val, idxstart, idxend = hasPartOfWeek(s)
+    if boo:
+        ref_Sspan, ref_Espan = s.getSpan()
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_entity = t6.T6PartOfWeekEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, part_of_week_type=val)
+        t6List.append(my_entity)
+        t6ID = t6ID+1
+        #check here to see if it has a modifier
+        
+    return t6List, t6ID
+####
+#END_MODULE
+#### 
 
 
 ## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
@@ -1257,7 +1360,7 @@ def hasPartOfDay(suentity):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","today","nights","mornings","evening","afternoons"]
+    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon"]
     
     #figure out if any of the tokens in the text_list are also in the ampm list
     intersect = list(set(text_list) & set(partofday))
@@ -1268,21 +1371,104 @@ def hasPartOfDay(suentity):
         
         term = intersect[0]
         start_idx, end_idx = getSpan(text_norm, term)
-        if term == "morning" or term == "dawn" or term == "mornings":
+        if term == "morning" or term == "mornings":
             return True, "Morning", start_idx, end_idx
+        if term == "dawn":
+            return True, "Dawn", start_idx, end_idx
         elif term == "evening" or term == "dusk" or term == "evenings":
             return True, "Evening", start_idx, end_idx
         elif term == "afternoon" or term == "afternoons":
             return True, "Afternoon", start_idx, end_idx 
         elif term == "nights":
-            return True, "Night", start_idx, end_idx  
+            return True, "Night", start_idx, end_idx
+        elif term == "noon":
+            return True, "Noon", start_idx, end_idx  
         elif term == "night" or term == "overnight" or term == "tonight":
             m = re.search("night", text_norm)
             sidx = m.span(0)[0]
             eidx = m.span(0)[1]
             return True, "Night", sidx, eidx  
-        elif term == "today":
-            return True, "Day", start_idx, end_idx
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
+
+## Takes in a SUTime entity and identifies if it has any season terms, like "summer" or "fall"
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasSeasonOfYear(suentity):
+    
+    #convert to all lower
+    #text_lower = suentity.getText().lower()
+    text = suentity.getText()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my period lists
+    seasonofyear = ["summer", "winter", "fall", "spring"]
+    
+    #figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(seasonofyear))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        
+        term = intersect[0]
+        start_idx, end_idx = getSpan(text_norm, term)
+        if term == "summer":
+            return True, "Summer", start_idx, end_idx
+        if term == "winter":
+            return True, "Winter", start_idx, end_idx
+        elif term == "fall":
+            return True, "Fall", start_idx, end_idx
+        elif term == "spring":
+            return True, "Spring", start_idx, end_idx   
+        else :
+            return False, None, None, None
+    else :
+        return False, None, None, None
+    
+####
+#END_MODULE
+####
+
+## Takes in a SUTime entity and identifies if it has any part of week terms, like "weekend"
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+#############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
+def hasPartOfWeek(suentity):
+    
+    #convert to all lower
+    #text_lower = suentity.getText().lower()
+    text = suentity.getText()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my period lists
+    partofday = ["weekend", "weekends"]
+    
+    #figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(partofday))
+    
+    #only proceed if the intersect list has a length of 1 or more.
+    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1 :
+        
+        term = intersect[0]
+        start_idx, end_idx = getSpan(text_norm, term)
+        if term == "weekend" or term == "weekends":
+            return True, "Weekend", start_idx, end_idx
         else :
             return False, None, None, None
     else :

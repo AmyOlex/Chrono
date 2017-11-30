@@ -220,6 +220,40 @@ class T6MonthOfYearEntity(T6RepeatingIntervalEntity):
 			  "\t\t</properties>\n\t</entity>\n".format(self.month_type,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
 
+## @param season_type Required {Summer, Winter, Fall, Spring}
+class T6SeasonOfYearEntity(T6RepeatingIntervalEntity):
+	def __init__(self, entityID, start_span, end_span, season_type,
+	             number=None, modifier=None):
+		super().__init__(entityID, start_span, end_span, "Season-Of-Year")
+		self.season_type = season_type
+		self.number = number
+		self.modifier = modifier
+		
+	def set_season_type(self, season_type):
+		self.season_type = season_type
+		
+	def get_season_type(self):
+		return self.season_type
+	
+	def set_number(self, number):
+		self.number = number
+		
+	def get_number(self):
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self):
+		return self.modifier
+
+	## Prints the xml leaving empty variables blank
+	def print_xml(self):
+		return(super().print_xml() + "\t<Type>{}</Type>\n"
+			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
+			  "\t\t</properties>\n\t</entity>\n".format(self.season_type,
+			    self.number or '', self.modifier or ''))
+
 ## Based on the paper, I assume this takes a value to denote which week of the year
 # @param value Required {1-52}
 class T6WeekOfYearEntity(T6RepeatingIntervalEntity):
@@ -548,6 +582,40 @@ class T6PartOfDayEntity(T6RepeatingIntervalEntity):
 		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.part_of_day_type, self.number or '', self.modifier or ''))
+
+## @param part_of_week_type Required {Weekend, etc}
+class T6PartOfWeekEntity(T6RepeatingIntervalEntity):
+	def __init__(self, entityID, start_span, end_span, part_of_week_type, number=None,
+		         modifier=None):
+		super().__init__(entityID, start_span, end_span, "Part-Of-Week")
+		self.part_of_week_type = part_of_week_type
+		self.number = number
+		self.modifier = modifier
+		
+		
+	def set_part_of_week_type(self, part_of_week_type):
+		self.part_of_week_type = part_of_week_type
+		
+	def get_part_of_week_type(self):
+		return self.part_of_week_type
+		
+	def set_number(self, number):
+		self.number = number
+		
+	def get_number(self):
+		return self.number
+	
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+	
+	def get_modifier(self):
+		return self.modifier
+
+	## Prints the xml leaving empty variables blank
+	def print_xml(self):
+		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
+			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
+			  self.part_of_week_type, self.number or '', self.modifier or ''))
 
 ## @param ampm_type Required {AM, PM}
 class T6AMPMOfDayEntity(T6RepeatingIntervalEntity):
