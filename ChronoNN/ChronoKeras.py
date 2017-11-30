@@ -39,5 +39,7 @@ def keras_evaluate(model,test_data,test_labels):
 
 
 def keras_classify(model,predict_data):
+    print("Predicting...")
     prediction = model.predict(predict_data)
+    print("The prediction is: {}".format(round(prediction[0])))
     return round(prediction[0])
