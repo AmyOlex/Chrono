@@ -11,9 +11,10 @@ import random
 
 np.random.seed(123)
 
-def build_model(train_data, train_labels, size):
+def build_model(train_data, train_labels):
     dataset = np.loadtxt(train_data, delimiter=",",skiprows=1)
     labels = np.loadtxt(train_labels, delimiter=",")
+    size = len(dataset[0,:])
     X = dataset[:, 0:size]
     Y = labels[:]
     # Build keras NN
@@ -40,6 +41,6 @@ def keras_evaluate(model,test_data,test_labels):
 
 def keras_classify(model,predict_data):
     print("Predicting on {}".format(predict_data))
-    prediction = model.predict([predict_data])
+    prediction = model.predict(predict_data)
     print("The prediction is: {}".format(round(prediction[0])))
     return round(prediction[0])
