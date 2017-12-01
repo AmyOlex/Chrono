@@ -90,13 +90,11 @@ if __name__ == "__main__":
 
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model("./aquaint_train_data.csv", "./aquaint_train_class.csv")
+        classifier = ChronoKeras.build_model("./aquaint_train_data_win3_filtered.csv", "./aquaint_train_class.csv")
         feats = utils.get_features("./aquaint_train_data.csv")
     else:
         ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats, NB_input = NBclass.build_model("./aquaint_train_data_win1.csv", "./aquaint_train_class_win1.csv")
-        print("204" + ":" + str(classifier.classify(NB_input[204][0])))
-        print("203" + ":" + str(classifier.classify(NB_input[203][0])))
+        classifier, feats, NB_input = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
         classifier.show_most_informative_features(20)
         
     ## Pass the ML classifier through to the parse SUTime entities method.
@@ -134,7 +132,7 @@ if __name__ == "__main__":
             for tok in my_refToks : print(tok)
         
         try :
-            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,my_refToks, (classifier, args.m, NB_input), feats, doctime)
+            tmpList, tmpCounter = SUTime_To_T6.buildT6List(suList,my_t6IDcounter,my_refToks, (classifier, args.m), feats, doctime)
         except ValueError:
             print("Value ERROR on "+infiles[f])
         else :

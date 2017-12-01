@@ -217,7 +217,7 @@ def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
     stemmer = SnowballStemmer("english")
     my_stem = stemmer.stem(reftok.getText().lower())
     if(my_stem in feature_dict.keys()):
-        feature_dict[my_stem] = 1
+        feature_dict[my_stem] = '1'
     
     
     ### identify the numeric feature
@@ -225,11 +225,11 @@ def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
     after = min(reftok_idx+1,len(reftok_list)-1)
     
     if(before != reftok_idx and isinstance(getNumberFromText(reftok_list[before].getText()), (int))):
-        feature_dict['feat_numeric'] = 1
+        feature_dict['feat_numeric'] = '1'
     elif(after != reftok_idx and isinstance(getNumberFromText(reftok_list[after].getText()), (int))):
-        feature_dict['feat_numeric'] = 1
+        feature_dict['feat_numeric'] = '1'
     else:
-        feature_dict['feat_numeric'] = 0
+        feature_dict['feat_numeric'] = '0'
 
 
     ## identify bow feature
@@ -241,15 +241,15 @@ def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
             num_check = getNumberFromText(reftok_list[r].getText())
             if(isinstance(num_check, (int))):
                 if(num_check in feature_dict.keys()):
-                    feature_dict[num_check] = 1
+                    feature_dict[num_check] = '1'
             else:
                 txt = reftok_list[r].getText()
                 if(txt in feature_dict.keys()):
-                    feature_dict[txt] = 1
+                    feature_dict[txt] = '1'
 
     ## identify temp_self feature    
     if reftok.isTemporal():
-        feature_dict['feat_temp_self'] = 1
+        feature_dict['feat_temp_self'] = '1'
     
     ## identify temp_context within 3 words to either side of the target.
     start = max(reftok_idx-window,0)
@@ -257,7 +257,7 @@ def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
     for r in range(start, end):
         if r != reftok_idx:
             if reftok_list[r].isTemporal():
-                feature_dict['feat_temp_context'] = 1
+                feature_dict['feat_temp_context'] = '1'
                 break
 
     return(feature_dict)
@@ -278,7 +278,7 @@ def get_features(data_file):
     ## Create the empty orderedDict to pass back for use in the other methods.
     dict_keys = data_list[0].keys()
 
-    dic = OrderedDict(zip(dict_keys, np.repeat(0,len(dict_keys))))
+    dic = OrderedDict(zip(dict_keys, list(np.repeat('0',len(dict_keys)))))
     
     return(dic)
 ######

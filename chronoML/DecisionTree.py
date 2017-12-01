@@ -31,6 +31,6 @@ def build_dt_model(data_file, class_file):
     #Create orderedDict
     dict_keys = data[0].keys()
     
-    ordDict = OrderedDict(zip(dict_keys, np.repeat(0,len(dict_keys))))
+    ordDict = OrderedDict(zip(dict_keys, np.repeat('0',len(dict_keys))))
     
     return(classifier,ordDict)

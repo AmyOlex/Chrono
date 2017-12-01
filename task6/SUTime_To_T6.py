@@ -72,12 +72,6 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         #t6List, t6ID = buildDuration(s, t6ID, t6List)               
         #t6List, t6ID = buildSet(s, t6ID, t6List) 
               
-        
-    ## test classifier
-    print("Third 204" + ":" + str(PIclassifier[0].classify(PIclassifier[2][204][0])))
-    #print(PIclassifier[2][204][0])
-    print("Third 203" + ":" + str(PIclassifier[0].classify(PIclassifier[2][203][0])))
-    
     return t6List, t6ID
     
 ####
@@ -681,10 +675,6 @@ def buildCalendarInterval(s, t6ID, t6List):
 ###### More Issues: I created the training data incorrectly to remove the SUTime entity from consideration.  In order to classify from scratch we would need multiple classes: period, interval, everything else.  I only have a binary classifier here, so I need to narrow it down before trying to classify.
 def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
     
-    print("Fourth 204" + ":" + str(classifier[0].classify(classifier[2][204][0])))
-    #print(PIclassifier[2][204][0])
-    print("Fourth 203" + ":" + str(classifier[0].classify(classifier[2][203][0])))
-    
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
     print("SUTime Text: " + s.getText())
@@ -705,25 +695,11 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
         # classify into period or interval
         if(classifier[1] == "NN"):
             my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
-            #print('Predictions: {}' .format(list(my_class)))
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
         else:
-            print(my_features.keys())
-            #print(odict(feats).keys)
-            my_class = classifier[0].classify(collections.OrderedDict(my_features))
+            my_class = classifier[0].classify(my_features)
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-            test = [i[0] for i in classifier[2]]
-            if(my_features in test):
-                print("Found!")
-            else:
-                print("ERROR: Not Equal")
-            keys = my_features.keys()
-            with open('genfeatures.csv', 'a') as output_file:
-                dict_writer = csv.DictWriter(output_file, keys)
-                dict_writer.writeheader()
-                test_list = []
-                test_list.append(my_features)
-                dict_writer.writerows(test_list)
+            
             
             
         # if 1 then it is a period, if 0 then it is an interval  
