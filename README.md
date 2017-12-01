@@ -100,7 +100,7 @@ Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#refere
 The neural network algorithm was written using TensorFlow based off of the IrisNN tutorial available here: https://www.tensorflow.org/get_started/estimator  It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model.  The training data file requires a header with the number of samples and number of features to properly read in. 
 
 ##### DT:
-The decision tree algorithm was based off of a model built from: https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/ It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  Updates were made to the source code to work for our program.
+The decision tree algorithm was based off of a nltk documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
 
 #### T6 Program Structure
 Our program has 4 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
@@ -217,5 +217,3 @@ not be relevant thus complicating the task of tagging free-text temporal express
 14. [Python-SUTime](https://github.com/FraBle/python-sutime)
 
 15. Chang, A., and Manning, C. (2012) [SUTime: A Library for Recognizing and Normalizing Time Expressions](http://nlp.stanford.edu/pubs/lrec2012-sutime.pdf), 8th International Conference on Language Resources and Evaluation (LREC 2012)
-
-16. [Implement Decision Tree Algorithm Scratch Python] (https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/)
