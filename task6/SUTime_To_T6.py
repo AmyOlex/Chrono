@@ -10,7 +10,9 @@ from task6 import referenceToken
 import calendar
 import string
 import re
+import csv
 import datetime
+import collections
 from ChronoNN import ChronoKeras
 import numpy as np
 
@@ -71,6 +73,10 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         #t6List, t6ID = buildSet(s, t6ID, t6List) 
               
         
+    ## test classifier
+    print("Third 204" + ":" + str(PIclassifier[0].classify(PIclassifier[2][204][0])))
+    #print(PIclassifier[2][204][0])
+    print("Third 203" + ":" + str(PIclassifier[0].classify(PIclassifier[2][203][0])))
     
     return t6List, t6ID
     
@@ -673,8 +679,13 @@ def buildCalendarInterval(s, t6ID, t6List):
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 ###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning of the string from sutime represents the number.  If this is not the case the spans may be off.
 ###### More Issues: I created the training data incorrectly to remove the SUTime entity from consideration.  In order to classify from scratch we would need multiple classes: period, interval, everything else.  I only have a binary classifier here, so I need to narrow it down before trying to classify.
-def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
+def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
     
+    print("Fourth 204" + ":" + str(classifier[0].classify(classifier[2][204][0])))
+    #print(PIclassifier[2][204][0])
+    print("Fourth 203" + ":" + str(classifier[0].classify(classifier[2][203][0])))
+    
+    features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
     print("SUTime Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
@@ -690,21 +701,33 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
                 break
         
         # extract ML features
-        my_features = utils.extract_prediction_features(ref_list, ref_idx, features)
-        
+        my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
         # classify into period or interval
         if(classifier[1] == "NN"):
-            print("Chrono HERE1: "+str(len(my_features)))
-            print(my_features)
             my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
             #print('Predictions: {}' .format(list(my_class)))
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
         else:
-            my_class = classifier[0].classify(my_features)
+            print(my_features.keys())
+            #print(odict(feats).keys)
+            my_class = classifier[0].classify(collections.OrderedDict(my_features))
             print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+            test = [i[0] for i in classifier[2]]
+            if(my_features in test):
+                print("Found!")
+            else:
+                print("ERROR: Not Equal")
+            keys = my_features.keys()
+            with open('genfeatures.csv', 'a') as output_file:
+                dict_writer = csv.DictWriter(output_file, keys)
+                dict_writer.writeheader()
+                test_list = []
+                test_list.append(my_features)
+                dict_writer.writerows(test_list)
+            
             
         # if 1 then it is a period, if 0 then it is an interval  
-        if(my_class == "period"):
+        if(my_class == 1):
             my_entity = t6.T6PeriodEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
             t6ID = t6ID+1
         else:
@@ -758,8 +781,6 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
         
             # classify into period or interval
             if(classifier[1] == "NN"):
-                #my_class = classifier[0].predict(my_features)
-                print("Chrono HERE2")
                 my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
                 print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             else:
@@ -767,7 +788,7 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, features):
                 print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             
              # if 1 then it is a period, if 0 then it is an interval  
-            if(my_class == "period"):
+            if(my_class == 1):
                 my_entity = t6.T6PeriodEntity(entityID=str(t6ID)+"entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
                 t6ID = t6ID+1
             else:

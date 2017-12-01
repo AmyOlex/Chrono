@@ -8,7 +8,7 @@
 
 ## Run the program and save results in ./results folder
 echo "Running T6 on input files....."
-python run_task6.py -i ./data/TrainDataMatching/ -r ./data/SemEval-Task6-Gold/ -o ./results/ -t 0 -m NN
+python run_task6.py -i ./data/TrainDataMatching/ -r ./data/SemEval-Task6-Gold/ -o ./results/ -t 0 -m NB
 
 ## go to the anaforatools directory
 cd anaforatools

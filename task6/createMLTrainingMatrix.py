@@ -131,10 +131,10 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
                             outfile.write("\nNext Token: " + str(my_refToks[min(r+1, len(my_refToks)-1)])+"\n")
                         
                         ### Identify Temporal features
-                        this_obs = extract_temp_features(my_refToks, r, 1, this_obs)
+                        this_obs = extract_temp_features(my_refToks, r, 5, this_obs)
                         
                         ### Extract all words within a N-word window
-                        this_obs, observations = extract_bow_features(my_refToks, r, 1, features, this_obs)
+                        this_obs, observations = extract_bow_features(my_refToks, r, 5, features, this_obs)
                         
                         ### Determine if there is a numeric before or after the target word.
                         this_obs = extract_numeric_feature(my_refToks, r, this_obs)
@@ -165,12 +165,12 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
     
     ## Now print the list of tuples to a file, then return the list.
     keys = full_obs_list[0].keys()
-    with open('aquaint_train_data_win1.csv', 'w') as output_file:
+    with open('aquaint_train_data.csv', 'w') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(full_obs_list)
     
-    with open('aquaint_train_class_win1.csv','w') as output_file:
+    with open('aquaint_train_class.csv','w') as output_file:
         for c in category:
             output_file.write("%s\n" % c)
     

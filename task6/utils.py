@@ -210,7 +210,7 @@ def overlap(sp1, sp2) :
 def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
 
     reftok = reftok_list[reftok_idx]
-    window = 3
+    window = 5
     
     ### Extract the stem feature
     my_str = reftok.getText()

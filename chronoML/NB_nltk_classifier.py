@@ -31,11 +31,13 @@ def build_model(data_file, class_file):
     
     ## Train the classifier and return it along with the ordered dictionary keys.
     classifier = NaiveBayesClassifier.train(NB_input)
-
+    print('accuracy:', nltk.classify.util.accuracy(classifier, NB_input))
+    print("204" + ":" + str(classifier.classify(NB_input[204][0])))
+    print("203" + ":" + str(classifier.classify(NB_input[203][0])))
     ## Create the empty orderedDict to pass back for use in the other methods.
     dict_keys = data_list[0].keys()
 
     dic = OrderedDict(zip(dict_keys, np.repeat(0,len(dict_keys))))
     
-    return(classifier, dic)
+    return(classifier, dic, NB_input)
     
