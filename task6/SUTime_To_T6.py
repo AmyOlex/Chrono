@@ -173,7 +173,7 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)          
-        t62DigitYearEntity = t6.T6TwoDigitYearOperator(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text, sub_interval = "None")  
+        t62DigitYearEntity = t6.T6TwoDigitYearOperator(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
         t6List.append(t62DigitYearEntity)
         t6ID =t6ID +1
         

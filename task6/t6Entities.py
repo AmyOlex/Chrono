@@ -1153,15 +1153,15 @@ class T6NthOperator(T6Operator):
 	def print_xml(self):
 		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Interval>{}</Interval>\n"
 			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
-			  "\t\t</properties>\n\t</entity>\n".format(self.value,
-			  self.interval, self.repeating_interval or ''))
+			  "\t\t</properties>\n\t</entity>\n".format(self.value or '',
+			  self.interval or '', self.repeating_interval or ''))
 
 ## Creates a two digit year operator
 # @param interval_type Defaults to DocTime
 # @param interval Defaults to None
 class T6TwoDigitYearOperator(T6Operator):
-	def __init__(self, entityID, start_span, end_span, value, sub_interval, 
-	             interval_type="DocTime", interval=None):
+	def __init__(self, entityID, start_span, end_span, value, sub_interval = None, 
+	             interval_type="DocTime", interval = None):
 		super().__init__(entityID, start_span, end_span, "Two-Digit-Year")
 		self.interval_type = interval_type
 		self.interval = interval
@@ -1196,8 +1196,8 @@ class T6TwoDigitYearOperator(T6Operator):
 		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Value>{}</Value>\n"
 			  "\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
-			  "\t\t</properties>\n\t</entity>\n".format(self.interval_type,
-			  self.interval, self.value, self.sub_interval))
+			  "\t\t</properties>\n\t</entity>\n".format(self.interval_type or '',
+			  self.interval or '', self.value or '', self.sub_interval or ''))
 
 ## Super class for all Other entities
 class T6OtherEntity(T6Entity):
