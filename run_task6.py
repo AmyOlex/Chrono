@@ -86,15 +86,15 @@ if __name__ == "__main__":
     ## Train ML methods on training data
     if(args.m == "DT"):
         ## Train the decision tree classifier and save in the classifier variable
-        classifier, feats = DTree.build_dt_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        classifier, feats = DTree.build_dt_model("./data/aquaint_train_data_TrainWin3.csv", "./data/aquaint_train_class_TrainWin3.csv")
 
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
-        feats = utils.get_features("./data/aquaint_train_data.csv")
+        classifier = ChronoKeras.build_model("./data/aquaint_train_data_TrainWin3.csv", "./data/aquaint_train_class_TrainWin3.csv")
+        feats = utils.get_features("./data/aquaint_train_data_TrainWin3.csv")
     else:
         ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats, NB_input = NBclass.build_model("./data/aquaint_train_data.csv", "./data/aquaint_train_class.csv")
+        classifier, feats, NB_input = NBclass.build_model("./data/aquaint_train_data_TrainWin3.csv", "./data/aquaint_train_class_TrainWin3.csv")
         classifier.show_most_informative_features(20)
         
     ## Pass the ML classifier through to the parse SUTime entities method.
