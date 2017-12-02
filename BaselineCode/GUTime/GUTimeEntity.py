@@ -1,3 +1,11 @@
+## GUTime Entity Code
+#---------------------------------------------------------------------------------------------------------
+# Date: 12/01/2017
+#
+# Programmer Name: Nicholas Morton 
+#
+
+
 class GUTimeEntity :
     
     ## The constructor
