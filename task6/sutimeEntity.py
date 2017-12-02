@@ -29,7 +29,7 @@ class sutimeEntity :
     ## String representation    
     def __str__(self) :
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
-        return str(self.id) + " " + self.text + span_str + self.sutype  + " " + self.suvalue + " " + str(self.doctime)
+        return(str(self.id) + " " + str(self.text) + span_str + str(self.sutype)  + " " + str(self.suvalue) + " " + str(self.doctime))
     
 
     #### Methods to SET properties ###
