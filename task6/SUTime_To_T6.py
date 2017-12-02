@@ -694,7 +694,7 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
     
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    print("SUTime Text: " + s.getText())
+    #print("SUTime Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
     if boo:
         abs_Sspan = ref_Sspan + idxstart
@@ -886,10 +886,10 @@ def build24HourTime(s, t6ID, t6List, loneDigitYearFlag):
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not loneDigitYearFlag:
         ## assume format of hhmm
-        print("24HourTime Text: " + val)
+        #print("24HourTime Text: " + val)
         hour = int(val[:2])
         minute = int(val[2:])
-        print("24HourTime Minute:" + str(minute))
+        #print("24HourTime Minute:" + str(minute))
         
         ## build minute entity
         min_entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart+3, end_span=ref_Sspan+idxend, value=minute)
