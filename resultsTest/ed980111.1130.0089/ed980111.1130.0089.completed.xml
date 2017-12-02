@@ -1,0 +1,16 @@
+<data>
+<annotations>
+	<entity>
+		<id>1entity</id>
+		<span>177,181</span>
+		<type>Period</type>
+		<parentsType>Duration</parentsType>
+		<properties>
+			<Type>Days</Type>
+			<Number></Number>
+			<Modifier></Modifier>
+		</properties>
+	</entity>
+
+</annotations>
+</data>
