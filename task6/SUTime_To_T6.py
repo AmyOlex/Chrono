@@ -41,8 +41,9 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         #print(s)
         t6MinuteFlag = False
         t6SecondFlag = False
+        loneDigitYearFlag = False
         #Parse out Year function
-        t6List, t6ID, t6MinuteFlag, t6SecondFlag  = buildT6Year(s,t6ID,t6List, t6MinuteFlag, t6SecondFlag)
+        t6List, t6ID, t6MinuteFlag, t6SecondFlag  = buildT6Year(s,t6ID,t6List, t6MinuteFlag, t6SecondFlag, loneDigitYearFlag)
         #Parse out Two-Digit Year 
         t6List, t6ID, t6MinuteFlag, t6SecondFlag  = buildT62DigitYear(s,t6ID,t6List, t6MinuteFlag, t6SecondFlag)
         #Parse out Month-of-Year
@@ -56,6 +57,7 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
         #Parse out SecondOfMinute
         t6List, t6ID  = buildT6SecondOfMinute(s,t6ID,t6List, t6SecondFlag)           
         
+        t6List, t6ID  = build24HourTime(s, t6ID, t6List, loneDigitYearFlag)
 
         #call non-standard formatting temporal phrases, 
         t6List, t6ID  = buildDayOfWeek(s,t6ID,t6List)
@@ -89,9 +91,9 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
-def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
+def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag, loneDigitYearFlag):
 
-    b, text, startSpan, endSpan = hasYear(s)
+    b, text, startSpan, endSpan, loneDigitYearFlag = hasYear(s, loneDigitYearFlag)
     if b:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
@@ -113,7 +115,7 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
             if bDay:
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
-                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
+                t6DayEntity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
                 t6ID =t6ID +1
                 t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
 
@@ -123,7 +125,7 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
-                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
+                    t6HourEntity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
                     t6ID =t6ID +1
                     t6DayEntity.set_sub_interval(t6HourEntity.get_id())
 
@@ -199,7 +201,7 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
             if bDay:
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
-                t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
+                t6DayEntity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
                 t6List.append(t6DayEntity)
                 t6ID =t6ID +1
                 t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
@@ -210,7 +212,7 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
-                    t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
+                    t6HourEntity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
                     t6List.append(t6HourEntity)
                     t6ID =t6ID +1
                     t6DayEntity.set_sub_interval(t6HourEntity.get_id())
@@ -317,6 +319,7 @@ def buildT6HourOfDay(s, t6ID, t6List):
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
 def buildT6MinuteOfHour(s,t6ID, t6List, t6MinuteFlag):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
+    
     if b and not t6MinuteFlag:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
@@ -860,6 +863,40 @@ def buildPartOfWeek(s, t6ID, t6List):
         t6ID = t6ID+1
         #check here to see if it has a modifier
         
+    return t6List, t6ID
+####
+#END_MODULE
+#### 
+
+## Parses a sutime entity's text field to determine if it contains a 24-hour time expression, then builds the associated t6entity list
+# @author Amy Olex
+# @param s The SUtime entity to parse 
+# @param t6ID The current t6ID to increment as new t6entities are added to list.
+# @param t6List The list of T6 objects we currently have.  Will add to these.
+# @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
+def build24HourTime(s, t6ID, t6List, loneDigitYearFlag):
+    
+    boo, val, idxstart, idxend = has24HourTime(s, loneDigitYearFlag)
+    ref_Sspan, ref_Espan = s.getSpan()
+    if boo and not loneDigitYearFlag:
+        ## assume format of hhmm
+        print("24HourTime Text: " + val)
+        hour = int(val[:2])
+        minute = int(val[2:])
+        print("24HourTime Minute:" + str(minute))
+        
+        ## build minute entity
+        min_entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart, end_span=ref_Sspan+idxstart+2, value=minute)
+        print("Minute Value Added: " + str(min_entity.get_value()))
+        t6List.append(min_entity)
+        t6ID = t6ID+1
+        
+        hour_entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart+3, end_span=ref_Sspan+idxend, value=hour)
+        hour_entity.set_sub_interval(min_entity.get_id())
+        t6List.append(hour_entity)
+        t6ID =t6ID +1
+
+ 
     return t6List, t6ID
 ####
 #END_MODULE
@@ -1484,11 +1521,45 @@ def hasPartOfWeek(suentity):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has any 4 digit 24-hour time phrases
+# @author Amy Olex
+# @param suentity The SUTime entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+# Note: This need to be called after it has checked for years
+def has24HourTime(suentity, loneDigitYearFlag):
+    
+    text_lower = suentity.getText().lower() 
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0 and not loneDigitYearFlag:
+        #loop through list looking for expression
+        for text in text_list:
+            if len(text) == 4:
+                num = utils.getNumberFromText(text)
+                if num is not None:
+                    hour = utils.getNumberFromText(text[:2])
+                    minute = utils.getNumberFromText(text[2:])
+                    if (hour is not None) and (minute is not None):
+                        if (minute > 60) or (hour > 24):
+                            return False, None, None, None
+                        else:
+                            start_idx, end_idx = getSpan(text_norm, text)    
+                            return True, text, start_idx, end_idx
+
+
+        return False, None, None, None #if no 4 digit year expressions were found return false            
+    else:
+        return False, None, None, None #if the text_list does not have any entries, return false
+
+
 ## Takes in a single text string and identifies if it has any 4 digit year phrases
 # @author Nicholas Morton
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasYear(suentity):
+def hasYear(suentity, loneDigitYearFlag):
     
     text_lower = suentity.getText().lower() 
     #remove all punctuation
@@ -1503,49 +1574,49 @@ def hasYear(suentity):
             #define regular expression to find a 4-digit year from the date format
             if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text)):
                 if  len(text.split("/")) == 3:
-                    print(text_norm,re.compile("/").split(text)[2])
                     start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
-                    return True, re.compile("/").split(text)[2], start_idx, end_idx
+                    return True, re.compile("/").split(text)[2], start_idx, end_idx, loneDigitYearFlag
                 elif len(text.split("-")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
-                    return True, re.compile("-").split(text)[2], start_idx, end_idx
+                    return True, re.compile("-").split(text)[2], start_idx, end_idx, loneDigitYearFlag
                 else:
-                   return False, None, None, None
+                   return False, None, None, None, loneDigitYearFlag
             ## look for year at start of date
             ## added by Amy Olex
             elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
                 if  len(text.split("/")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
-                    return True, re.compile("/").split(text)[0], start_idx, end_idx
+                    return True, re.compile("/").split(text)[0], start_idx, end_idx, loneDigitYearFlag
                 elif len(text.split("-")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[0])    
-                    return True, re.compile("-").split(text)[0], start_idx, end_idx
+                    return True, re.compile("-").split(text)[0], start_idx, end_idx, loneDigitYearFlag
                 else:
-                   return False, None, None, None
+                   return False, None, None, None, loneDigitYearFlag
             ## if no date format, see if there is a 4 digit number and assume it is a year if between 1800 and 2050
             ## Added by Amy Olex
             elif len(text) == 4:
                 num = utils.getNumberFromText(text)
                 if num is not None:
                     if  (num >= 1800) and (num <= 2050):
-                        start_idx, end_idx = getSpan(text_norm, text)    
-                        return True, num, start_idx, end_idx
+                        start_idx, end_idx = getSpan(text_norm, text)
+                        loneDigitYearFlag = True    
+                        return True, num, start_idx, end_idx, loneDigitYearFlag
                     else:
-                       return False, None, None, None
+                       return False, None, None, None, loneDigitYearFlag
             ## parse out the condesnsed date format like 19980303.  Assumes the format yyyymmdd.  SUTime currently doesn't recognize this format.
             elif len(text) == 8:
                 num = utils.getNumberFromText(text[0:4])
                 if num is not None:
                     if  (num >= 1800) and (num <= 2050):
                         start_idx, end_idx = getSpan(text_norm, text)    
-                        return True, num, start_idx, end_idx
+                        return True, num, start_idx, end_idx, loneDigitYearFlag
                     else:
-                       return False, None, None, None
+                       return False, None, None, None, loneDigitYearFlag
 
-        return False, None, None, None #if no 4 digit year expressions were found return false            
+        return False, None, None, None, loneDigitYearFlag #if no 4 digit year expressions were found return false            
     else:
 
-        return False, None, None, None #if the text_list does not have any entries, return false
+        return False, None, None, None, loneDigitYearFlag #if the text_list does not have any entries, return false
 
 ####
 #END_MODULE
@@ -1747,7 +1818,7 @@ def hasMinuteOfHour(suentity):
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
     text_list = text_norm.split(" ")
-
+    
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
