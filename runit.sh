@@ -9,13 +9,13 @@
 ## Run the program and save results in ./results folder
 echo "Running T6 on input files....."
 #python run_task6.py -i ./testdata/train/ -r ./testdata/gold/ -o ./testresults/ -t 0 -m NB
-python run_task6.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-Gold/ -o ./results/ -t 0 -m NB
+python run_task6.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -t 0 -m NB
 ## go to the anaforatools directory
 cd anaforatools
 
 ## run the evaluation script
 echo "Evaluating T6 Results..."
-python -m anafora.evaluate -r ../testdata/gold -p ../testresults/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart
+python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart
 
 ## go to baselinecode Directory
 #cd ../
