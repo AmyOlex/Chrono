@@ -183,7 +183,6 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)          
         t62DigitYearEntity = t6.T6TwoDigitYearOperator(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)  
-        t6List.append(t62DigitYearEntity)
         t6ID =t6ID +1
         
         #Check for Month in same element
@@ -192,7 +191,6 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth) 
             t6MonthEntity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])  
-            t6List.append(t6MonthEntity)
             t6ID =t6ID +1
             t62DigitYearEntity.set_sub_interval(t6MonthEntity.get_id())
 
@@ -202,7 +200,6 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
                 t6DayEntity = t6.T6DayOfMonthEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
-                t6List.append(t6DayEntity)
                 t6ID =t6ID +1
                 t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
 
@@ -213,7 +210,6 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
                     t6HourEntity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
-                    t6List.append(t6HourEntity)
                     t6ID =t6ID +1
                     t6DayEntity.set_sub_interval(t6HourEntity.get_id())
 
@@ -225,7 +221,6 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
                         t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=int(textMinute))  
-                        t6List.append(t6MinuteEntity)
                         t6ID =t6ID +1
                         t6HourEntity.set_sub_interval(t6MinuteEntity.get_id())
                         
@@ -241,6 +236,17 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                             t6List.append(t6SecondEntity)
                             t6ID =t6ID +1
                             t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())   
+    
+                        t6List.append(t6MinuteEntity)
+                    
+                    t6List.append(t6HourEntity)
+                    
+                t6List.append(t6DayEntity) 
+               
+            t6List.append(t6MonthEntity)
+            
+        t6List.append(t62DigitYearEntity)
+
               
     return t6List,t6ID, t6MinuteFlag, t6SecondFlag
 ####
@@ -886,12 +892,12 @@ def build24HourTime(s, t6ID, t6List, loneDigitYearFlag):
         print("24HourTime Minute:" + str(minute))
         
         ## build minute entity
-        min_entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart, end_span=ref_Sspan+idxstart+2, value=minute)
+        min_entity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart+3, end_span=ref_Sspan+idxend, value=minute)
         print("Minute Value Added: " + str(min_entity.get_value()))
         t6List.append(min_entity)
         t6ID = t6ID+1
         
-        hour_entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart+3, end_span=ref_Sspan+idxend, value=hour)
+        hour_entity = t6.T6HourOfDayEntity(entityID=str(t6ID)+"entity", start_span=ref_Sspan+idxstart+3, end_span=ref_Sspan+idxstart+2, value=hour)
         hour_entity.set_sub_interval(min_entity.get_id())
         t6List.append(hour_entity)
         t6ID =t6ID +1
