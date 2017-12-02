@@ -1,3 +1,10 @@
+## Main program to run GUTime baseline code
+#---------------------------------------------------------------------------------------------------------
+# Date: 12/01/2017
+#
+# Programmer Name: Nicholas Morton 
+#
+
 import sys
 import os
 import argparse
