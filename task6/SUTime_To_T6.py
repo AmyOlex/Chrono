@@ -38,6 +38,7 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
+        print(str(s.getText()))
         t6MinuteFlag = False
         t6SecondFlag = False
         #Parse out Year function
@@ -132,10 +133,10 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
 
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
-                    if bMinute:
+                    if bMinute and not t6MinuteFlag:
                         t6MinuteFlag=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
-                        abs_StartSpanMinute = ref_StartSpan + startSpan
+                        abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
                         t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=int(textMinute))  
                         t6List.append(t6MinuteEntity)
@@ -145,10 +146,10 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
 
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
-                        if bSecond:
+                        if bSecond and not t6SecondFlag:
                             t6SecondFlag=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
-                            abs_StartSpanSecond = ref_StartSpan + startSpan
+                            abs_StartSpanSecond = ref_StartSpan + startSpanSecond
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
                             t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=int(textSecond))  
                             t6List.append(t6SecondEntity)
@@ -209,10 +210,10 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
 
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
-                    if bMinute:
+                    if bMinute and not t6MinuteFlag:
                         t6MinuteFlag=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
-                        abs_StartSpanMinute = ref_StartSpan + startSpan
+                        abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
                         t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=int(textMinute))  
                         t6List.append(t6MinuteEntity)
@@ -222,10 +223,10 @@ def buildT62DigitYear(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
 
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
-                        if bSecond:
+                        if bSecond and not t6SecondFlag:
                             t6SecondFlag=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
-                            abs_StartSpanSecond = ref_StartSpan + startSpan
+                            abs_StartSpanSecond = ref_StartSpan + startSpanSecond
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
                             t6SecondEntity = t6.T6SecondOfMinuteEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanSecond, end_span=abs_EndSpanSecond, value=int(textSecond))  
                             t6List.append(t6SecondEntity)
@@ -1499,6 +1500,15 @@ def hasYear(suentity):
                 elif len(text.split("-")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
                     return True, re.compile("-").split(text)[2], start_idx, end_idx
+                else:
+                   return False, None, None, None
+            elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
+                if  len(text.split("/")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
+                    return True, re.compile("/").split(text)[0], start_idx, end_idx
+                elif len(text.split("-")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[0])    
+                    return True, re.compile("-").split(text)[0], start_idx, end_idx
                 else:
                    return False, None, None, None
 
