@@ -17,3 +17,6 @@ results
 *.ipynb
 .Rhistory
 gold-standard-parsing.txt
+testdata
+testresults
+aquaint*
