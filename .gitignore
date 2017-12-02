@@ -20,3 +20,7 @@ gold-standard-parsing.txt
 testdata
 testresults
 aquaint*
+genfeatures.csv
+NBtestResults.txt
+NN_results.txt
+raw_data.csv
