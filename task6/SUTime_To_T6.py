@@ -38,7 +38,7 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        print(str(s.getText()))
+        print(s)
         t6MinuteFlag = False
         t6SecondFlag = False
         #Parse out Year function
@@ -97,7 +97,6 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
         t6YearEntity = t6.T6YearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))  
-        t6List.append(t6YearEntity)
         t6ID =t6ID +1
 
         #Check for Month in same element
@@ -106,7 +105,6 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth) 
             t6MonthEntity = t6.T6MonthOfYearEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])  
-            t6List.append(t6MonthEntity)
             t6ID =t6ID +1
             t6YearEntity.set_sub_interval(t6MonthEntity.get_id())
 
@@ -116,7 +114,6 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
                 t6DayEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))  
-                t6List.append(t6DayEntity)
                 t6ID =t6ID +1
                 t6MonthEntity.set_sub_interval(t6DayEntity.get_id())
 
@@ -127,7 +124,6 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
                     t6HourEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanHour, end_span=abs_EndSpanHour, value=int(textHour))  
-                    t6List.append(t6HourEntity)
                     t6ID =t6ID +1
                     t6DayEntity.set_sub_interval(t6HourEntity.get_id())
 
@@ -139,7 +135,6 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
                         t6MinuteEntity = t6.T6MinuteOfHourEntity(entityID=str(t6ID)+"entity", start_span=abs_StartSpanMinute, end_span=abs_EndSpanMinute, value=int(textMinute))  
-                        t6List.append(t6MinuteEntity)
                         t6ID =t6ID +1
                         t6HourEntity.set_sub_interval(t6MinuteEntity.get_id())
                         
@@ -155,6 +150,18 @@ def buildT6Year(s, t6ID, t6List, t6MinuteFlag, t6SecondFlag):
                             t6List.append(t6SecondEntity)
                             t6ID =t6ID +1
                             t6MinuteEntity.set_sub_interval(t6SecondEntity.get_id())                
+                        
+                        t6List.append(t6MinuteEntity)
+                    
+                    t6List.append(t6HourEntity)
+                    
+                t6List.append(t6DayEntity) 
+               
+            t6List.append(t6MonthEntity)
+            
+        t6List.append(t6YearEntity)
+        
+        
     return t6List,t6ID,t6MinuteFlag,t6SecondFlag
 ####
 #END_MODULE
