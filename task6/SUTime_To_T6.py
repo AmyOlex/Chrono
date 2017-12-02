@@ -38,7 +38,7 @@ def buildT6List(suTimeList, t6ID , ref_list, PIclassifier, PIfeatures, dct=None)
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        print(s)
+        #print(s)
         t6MinuteFlag = False
         t6SecondFlag = False
         #Parse out Year function
@@ -703,10 +703,10 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
         # classify into period or interval
         if(classifier[1] == "NN"):
             my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
-            print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+            #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
         else:
             my_class = classifier[0].classify(my_features)
-            print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+            #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             
             
             
@@ -766,10 +766,10 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
             # classify into period or interval
             if(classifier[1] == "NN"):
                 my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
-                print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+                #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             else:
                 my_class = classifier[0].classify(my_features)
-                print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
+                #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             
              # if 1 then it is a period, if 0 then it is an interval  
             if(my_class == 1):
@@ -1499,9 +1499,11 @@ def hasYear(suentity):
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
-            #define regular expression to find a 4-digit year
+            #print(text + " " + str(len(text)))
+            #define regular expression to find a 4-digit year from the date format
             if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text)):
                 if  len(text.split("/")) == 3:
+                    print(text_norm,re.compile("/").split(text)[2])
                     start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
                     return True, re.compile("/").split(text)[2], start_idx, end_idx
                 elif len(text.split("-")) == 3:
@@ -1509,6 +1511,8 @@ def hasYear(suentity):
                     return True, re.compile("-").split(text)[2], start_idx, end_idx
                 else:
                    return False, None, None, None
+            ## look for year at start of date
+            ## added by Amy Olex
             elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
                 if  len(text.split("/")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
@@ -1518,6 +1522,25 @@ def hasYear(suentity):
                     return True, re.compile("-").split(text)[0], start_idx, end_idx
                 else:
                    return False, None, None, None
+            ## if no date format, see if there is a 4 digit number and assume it is a year if between 1800 and 2050
+            ## Added by Amy Olex
+            elif len(text) == 4:
+                num = utils.getNumberFromText(text)
+                if num is not None:
+                    if  (num >= 1800) and (num <= 2050):
+                        start_idx, end_idx = getSpan(text_norm, text)    
+                        return True, num, start_idx, end_idx
+                    else:
+                       return False, None, None, None
+            ## parse out the condesnsed date format like 19980303.  Assumes the format yyyymmdd.  SUTime currently doesn't recognize this format.
+            elif len(text) == 8:
+                num = utils.getNumberFromText(text[0:4])
+                if num is not None:
+                    if  (num >= 1800) and (num <= 2050):
+                        start_idx, end_idx = getSpan(text_norm, text)    
+                        return True, num, start_idx, end_idx
+                    else:
+                       return False, None, None, None
 
         return False, None, None, None #if no 4 digit year expressions were found return false            
     else:
