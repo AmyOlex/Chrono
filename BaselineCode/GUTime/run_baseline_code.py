@@ -1,3 +1,10 @@
+## Main program to run GUTime baseline code
+#---------------------------------------------------------------------------------------------------------
+# Date: 12/01/2017
+#
+# Programmer Name: Nicholas Morton 
+#
+
 import sys
 import os
 import argparse
@@ -49,12 +56,14 @@ if __name__ == "__main__":
         Timex3List = []
         lexList = []
         
+        #Search through lists to find TIMEX3 and Lex strings
         for fi in fileTextList:
             if "<TIMEX3 begin" in fi:
                 Timex3List.append(fi)
             elif "<lex begin" in fi:
                 lexList.append(fi)        
         
+        #Build GUTimeEntity List
         for t in Timex3List:
             GU_Counter = GU_Counter+1
             start_span1 = t[t.find('begin="')+7:t.find('" end')]

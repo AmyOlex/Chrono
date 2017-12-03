@@ -1,8 +1,8 @@
-## Converts SUTime Entites into T6 Entities
+## Converts GUTime Entites into T6 Entities
 #
 # Programmer Name: Nicholas Morton
 #
-# Date: 9/28/17
+# Date: 12/01/17
 
 import t6Entities as t6
 import calendar
@@ -10,16 +10,9 @@ import string
 import re
 import datetime
 
-#Example SUTime List
-#Wsj_0152
-#0 11/02/89 <12,20> DATE 1989-11-02
-#1 Nov. 9 11/02/89 <145,160> DATE 1989-11-02
-#2 5 p.m. EST Nov. 9 <393,410> TIME 2017-11-09T17:00-0500
-#3 Nov. 6 <536,542> DATE 2017-11-06
-
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param list of SUTime Output
+# @param list of GUTime Output
 # @param document creation time (optional)
 # @return List of T6 entities
 def buildT6List(suTimeList, t6ID , dct=None):
@@ -52,7 +45,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
 
 ## Takes in list of SUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
+# @param GUTime 
 # @output T6Year Entity
 def buildT6Year(s, t6ID, t6List):
 
@@ -123,9 +116,9 @@ def buildT6Year(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
+# @param GUTime 
 # @output T6Year Entity
 def buildT62DigitYear(s, t6ID, t6List):           
     b, text, startSpan, endSpan = has2DigitYear(s)
@@ -197,9 +190,9 @@ def buildT62DigitYear(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
+# @param GUTime 
 # @return T6MonthOfYear Entity
 def buildT6MonthOfYear(s, t6ID, t6List):    
     b, text, startSpan, endSpan = hasMonthOfYear(s)
@@ -216,9 +209,9 @@ def buildT6MonthOfYear(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime 
+# @param GUTime 
 # @return T6DayOfMonthEntity
 def buildT6DayOfMonth(s, t6ID, t6List):
     b, text, startSpan, endSpan = hasDayOfMonth(s)
@@ -236,9 +229,9 @@ def buildT6DayOfMonth(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime Entity
+# @param GUTime Entity
 # @return T6HourOfDay Entity
 def buildT6HourOfDay(s, t6ID, t6List):
     b, text, startSpan, endSpan = hasHourOfDay(s)
@@ -255,9 +248,9 @@ def buildT6HourOfDay(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime Entity
+# @param GUTime Entity
 # @return T6MinuteOfHour Entity
 def buildT6MinuteOfHour(s,t6ID, t6List):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
@@ -274,9 +267,9 @@ def buildT6MinuteOfHour(s,t6ID, t6List):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
-# @param SUTime Entity
+# @param GUTime Entity
 # @return T6HourOfDay Entity
 def buildT6SecondOfMinute(s,t6ID, t6List):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
@@ -294,9 +287,9 @@ def buildT6SecondOfMinute(s,t6ID, t6List):
 ####
 
 
-## Parses a sutime entity's text field to determine if it contains a day of the week written out in text form, then builds the associated t6entity list
+## Parses a GUTime entity's text field to determine if it contains a day of the week written out in text form, then builds the associated t6entity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -339,9 +332,9 @@ def buildDayOfWeek(s, t6ID, t6List):
 ####    
 
 
-## Parses a sutime entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated t6entity list
+## Parses a GUTime entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated t6entity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -424,9 +417,9 @@ def buildTextMonthAndDay(s, t6ID, t6List, dct=None):
 #END_MODULE
 ####
  
-## Parses a sutime entity's text field to determine if it contains a AM or PM time indication, then builds the associated t6entity list
+## Parses a GUTime entity's text field to determine if it contains a AM or PM time indication, then builds the associated t6entity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -490,9 +483,9 @@ def buildAMPM(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Parses a sutime entity's text field to determine if it contains a calendar interval phrase, then builds the associated t6entity list
+## Parses a GUTime entity's text field to determine if it contains a calendar interval phrase, then builds the associated t6entity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -541,9 +534,9 @@ def buildCalendarInterval(s, t6ID, t6List):
 #END_MODULE
 ####
 
-## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
+## Parses a GUTime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
@@ -567,10 +560,10 @@ def buildPartOfDay(s, t6ID, t6List):
 
 ## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
 # @author Nicholas Morton
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
-# @return SUTime Duration Entity
+# @return GUTime Duration Entity
 def buildDuration(s, t6ID, t6List): 
 
     #if hasExactDuration(s):  #3 days -> P3D
@@ -587,10 +580,10 @@ def buildDuration(s, t6ID, t6List):
 
 ## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
 # @author Nicholas Morton
-# @param s The SUtime entity to parse 
+# @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
-# @return SUTime Set Entity
+# @return GUTime Set Entity
 def buildSet(s, t6ID, t6List):
 
     return t6List, t6ID
@@ -689,7 +682,7 @@ def hasDayOfWeek(suentity):
 
 ## Takes in a single text string and identifies if it has any modufying phrases
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param guentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasModifier(suentity):
     
@@ -758,7 +751,7 @@ def hasModifier(suentity):
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
-# @param suentity The entity to parse
+# @param guentity The entity to parse
 # @return value The normalized string value for the month of the year, or None if no month of year found.
 # @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
 def hasTextMonth(suentity):
@@ -855,7 +848,7 @@ def hasTextMonth(suentity):
 
 ## Takes in a single text string and identifies if it has any AM or PM phrases
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param guentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasAMPM(suentity):
     
@@ -899,7 +892,7 @@ def hasAMPM(suentity):
 
 ## Takes in a single sutime entity and determines if it has a time zone specified in the text.
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param guentity The SUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
     return re.search('(AST|EST|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
@@ -908,9 +901,9 @@ def hasTimeZone(suentity):
 #END_MODULE
 ####
 
-## Takes in a SUTime entity and identifies if it has any calendar interval phrases like "week" or "days"
+## Takes in a GUTime entity and identifies if it has any calendar interval phrases like "week" or "days"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean
 def hasCalendarInterval(suentity):
     
@@ -969,9 +962,9 @@ def hasCalendarInterval(suentity):
 ####
 
 
-## Takes in a SUTime entity and identifies if it has any part of day terms, like "overnight" or "morning"
+## Takes in a GUTime entity and identifies if it has any part of day terms, like "overnight" or "morning"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 #############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
 def hasPartOfDay(suentity):
@@ -1022,7 +1015,7 @@ def hasPartOfDay(suentity):
 
 ## Takes in a single text string and identifies if it has any 4 digit year phrases
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param GUTime The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasYear(suentity):
     
@@ -1057,7 +1050,7 @@ def hasYear(suentity):
 
 ## Takes in a single text string and identifies if it has any 2 digit year phrases
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def has2DigitYear(suentity):
 
@@ -1093,7 +1086,7 @@ def has2DigitYear(suentity):
 
 ## Takes in a single text string and identifies if it has a month of year
 # @author Nicholas Morton and Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasMonthOfYear(suentity):
 
@@ -1144,7 +1137,7 @@ def hasMonthOfYear(suentity):
 
 ## Takes in a single text string and identifies if it has a day of the month in numeric format
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasDayOfMonth(suentity):
 
@@ -1180,7 +1173,7 @@ def hasDayOfMonth(suentity):
 
 ## Takes in a single text string and identifies if it has a hh:mm:ss
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasTimeString(suentity):
 
@@ -1214,7 +1207,7 @@ def hasTimeString(suentity):
 
 ## Takes in a single text string and identifies if it has a hour of a day
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasHourOfDay(suentity):
 
@@ -1246,7 +1239,7 @@ def hasHourOfDay(suentity):
 
 ## Takes in a single text string and identifies if it has a minute of an hour
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasMinuteOfHour(suentity):
 
@@ -1278,7 +1271,7 @@ def hasMinuteOfHour(suentity):
 
 ## Takes in a single text string and identifies if it has a second of an minute
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasSecondOfMinute(suentity):
 
@@ -1309,7 +1302,7 @@ def hasSecondOfMinute(suentity):
 ####
 
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param suentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag
 def hasExactDuration(suentity):
     
