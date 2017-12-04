@@ -93,11 +93,12 @@ values as a json string.  These json strings are then parsed into Bethard's sche
 Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#references) for a detailed description of the annotation scheme).
 
 #### Machine Learning Methods
+We are currently using three different machine learning models to classify periods versus calendar-intervals.  These methods allow our parser to take context into account when building a t6entity.
 
 ##### NB:
 
 ##### NN:
-The neural network algorithm was written using TensorFlow based off of the IrisNN tutorial available here: https://www.tensorflow.org/get_started/estimator  It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model.  The training data file requires a header with the number of samples and number of features to properly read in. 
+The neural network algorithm was written using Keras. It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model.  
 
 ##### DT:
 The decision tree algorithm was based off of a nltk documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
