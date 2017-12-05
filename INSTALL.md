@@ -10,6 +10,8 @@
 - Maven, installation instructions for Ubuntu from <https://www.mkyong.com/maven/how-to-install-maven-in-ubuntu/>, or for MacOSX from <https://www.mkyong.com/maven/install-maven-on-mac-osx/>
 - Pip, installation instructions from <https://www.saltycrane.com/blog/2010/02/how-install-pip-ubuntu/>, or see below.
 - TensorFlow, installation instructions here: <https://www.tensorflow.org/install/>
+- Keras, installation instructions here: <https://keras.io/#installation>
+- gensim, installation instructions here: <https://radimrehurek.com/gensim/install.html>
 
 ### Streamlined Steps:
 
