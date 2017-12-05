@@ -3,7 +3,6 @@
 
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
-from gensim.models.keyedvectors import KeyedVectors
 
 import numpy as np
 import csv
