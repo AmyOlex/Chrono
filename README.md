@@ -23,11 +23,11 @@ Full documentation available at documentation/index.html
 
 ### Roles and Contributions
  - *Amy Olex:* Team lead, workflow development lead, framework implementation, run_task6.py author, sutimeEntity.py 
- author, SUTime_To-T6.py method contributer, utils.py author, referenceToken.py author, presentation preperation, 
- README co-author, installation co-author and tester, literature review.
+ author, SUTime_To-T6.py method contributer, utils.py author, referenceToken.py author, presentation preparation, 
+ README co-author, installation co-author and tester, literature review, naive bayes implementation.
  - *Luke Maffey:* Doxygen code documentation lead, t6Entities.py author, stopword identification/editing and method 
- implementation, presentation preparation, README co-author, installation co-author and tester, literature review, GUTime testing.
- - *Nicholas Morton:* SUTime installation and implementation lead, HeidelTime baseline implementation lead, SUTime python wrapper author, workflow development, SUTime_To-T6.py author, README co-author, installation co-author and tester, literature review.
+ implementation, presentation preparation, README co-author, installation co-author and tester, literature review, GUTime testing, presentation preparation, neural network implementation.
+ - *Nicholas Morton:* SUTime installation and implementation lead, HeidelTime baseline implementation lead, SUTime python wrapper author, workflow development, SUTime_To-T6.py author, README co-author, installation co-author and tester, literature review, GUTime integration and testing, decision tree implementation.
 
 ---
 
@@ -96,12 +96,13 @@ Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#refere
 We are currently using three different machine learning models to classify periods versus calendar-intervals.  These methods allow our parser to take context into account when building a t6entity.
 
 ##### NB:
+The naive bayes algorithm uses the implementation built-in to NLTK. It reads in the generated training data and creates a naive bayes model for evaluation.  
 
 ##### NN:
 The neural network algorithm was written using Keras. It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model.  
 
 ##### DT:
-The decision tree algorithm was based off of a nltk documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
+The decision tree algorithm was based off of a NLTK documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
 
 #### T6 Program Structure
 Our program has 4 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
@@ -172,8 +173,8 @@ Our rule-based parsing of SUTime temporal phrases achieves higher precision and 
 
 Table 1 - T6 and baseline results.
 
-### 4. Future Work
-Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Therefore, we think it would be useful to implement a machine learning algorithm to identify more complex temporal expressions missed by SUTime utilizing contextual information.  One such example is differentiating between a “Calendar-Interval” and a “Period”. Currently, all phrases that include terms such as "day", "week", "month", "year", or their plurals are classified as Calendar-Intervals; however, depending on the context of the sentence they could be refering to a Period. For example, "we will meet a week from now" versus "there are 5 flights a week".  SUTime will identify "a week" as the temporal phrase in both cases, however, the first example should be annotated as a Period because it does not refer to a calendar week but rather 7 days from now, and the second should be annotated as a Calendar-Interval because it refers to the calendar week of Sunday to Saturday.  Another use of machine learning can help identify relations such as "Between" using surrounding contextual information. Feature vectors for input into both of these systems would include the surrounding words, their parts of speech, verb tense, and if there are other temporal tokens nearby.
+### 4. Future Work (Updated)
+Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Further identification using machine learning methods could improve some of the less common entities.
 
 Other improvements to our rule-based parsing system would be to capture more sub-intervals from uncommon formats of dates and times. We also aim to adjust the SUTime model implementation to improve the quality of the underlying parser in identifying temporal phrases.  Once we implement these improvements, we will be able to compare our new results to our current results to ensure the modifications are improving the overall result.
 
