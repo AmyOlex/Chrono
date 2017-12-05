@@ -58,6 +58,7 @@ def keras_classify(model,predict_data):
     # Keras wants a list of numpy arrays
     X = []
     X.append(list(predict_data))
+    X.append(list(predict_data))
     #print("Predicting on {}".format(X))
     prediction = model.predict(X,verbose=1)
     #print("The prediction is: {}".format(np.round(prediction[0])))
