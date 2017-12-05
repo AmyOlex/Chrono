@@ -112,7 +112,7 @@ if __name__ == "__main__":
         
         ## parse out reference tokens
         text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/task6/stopwords_short2.txt")
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./task6/stopwords_short2.txt")
         if(debug) :
             print("REFERENCE TOKENS:\n")
             for tok in my_refToks : print(tok)
