@@ -99,7 +99,7 @@ We are currently using three different machine learning models to classify perio
 The naive bayes algorithm uses the implementation built-in to NLTK. It reads in the generated training data and creates a naive bayes model for evaluation.  
 
 ##### NN:
-The neural network algorithm was written using Keras. It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model.  
+The neural network algorithm was written using Keras. It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model<sup>16</sup>.  
 
 ##### DT:
 The decision tree algorithm was based off of a NLTK documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
@@ -219,3 +219,5 @@ not be relevant thus complicating the task of tagging free-text temporal express
 14. [Python-SUTime](https://github.com/FraBle/python-sutime)
 
 15. Chang, A., and Manning, C. (2012) [SUTime: A Library for Recognizing and Normalizing Time Expressions](http://nlp.stanford.edu/pubs/lrec2012-sutime.pdf), 8th International Conference on Language Resources and Evaluation (LREC 2012)
+
+16. Keras: The Python Deep Learning library https://keras.io/
