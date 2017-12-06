@@ -16,18 +16,24 @@ output:
 To use type:
 
 ```bash
->> source runit.sh
+>> source runit.sh [NB | NN | DT]
 ```
+
+Input argument selects the type of machine learning algorithm to use:
+
+* NB - Naive Bayes
+* NN - Neural Network
+* DT - Decision Tree
 
 Full documentation available at documentation/index.html
 
 ### Roles and Contributions
  - *Amy Olex:* Team lead, workflow development lead, framework implementation, run_task6.py author, sutimeEntity.py 
  author, SUTime_To-T6.py method contributer, utils.py author, referenceToken.py author, presentation preparation, 
- README co-author, installation co-author and tester, literature review, naive bayes implementation.
+ README co-author, installation co-author and tester, literature review, naive bayes implementation, ML algorithm integration, lead feature vector developer and parsing implementation, gold standard parsing createMLTrainingMatrix.py author, gold_standard_utils.py author.
  - *Luke Maffey:* Doxygen code documentation lead, t6Entities.py author, stopword identification/editing and method 
  implementation, presentation preparation, README co-author, installation co-author and tester, literature review, GUTime testing, presentation preparation, neural network implementation.
- - *Nicholas Morton:* SUTime installation and implementation lead, HeidelTime baseline implementation lead, SUTime python wrapper author, workflow development, SUTime_To-T6.py author, README co-author, installation co-author and tester, literature review, GUTime integration and testing, decision tree implementation.
+ - *Nicholas Morton:* SUTime installation and implementation lead, HeidelTime/GUTime baseline implementation lead, SUTime python wrapper author, workflow development, SUTime_To-T6.py author, README co-author, installation co-author and tester, literature review, GUTime integration and testing, decision tree implementation.
 
 ---
 
@@ -39,7 +45,7 @@ conversation, or write a coherent document without the use of temporal informati
 have already ingested a drink prior to the statement, whereas the second implies you currently posses a drink, but it is 
 not known whether or not you have ingested some of it already. The human mind processes this subtle temporal information 
 instantly and effortlessly; however, it is difficult for computers to identify, process, and utilize this information in 
-an automated fashion because it requires knowledge and understanding of syntax, semantics, and context to link to time 
+an automated fashion because it requires knowledge and understanding of syntax, semantics, and context to link time 
 information to the correct events to order them on a timeline. For instance, Kuzey et al identified four types of 
 temporal expressions, each of which presents a unique challenge for computers[<sup>1</sup>](#references):
 > 1. _Explicit temporal expressions_ denote a precise time point or period...
@@ -80,7 +86,7 @@ currently existing schemes. Ultimately, the annotations generated in this format
 automatically generate useful information, such as a patient's medical timeline from doctor's notes. The available 
 corpora for Task 6 is the TimeBank/AQUAINT corpus of annotated newswire text, and the THYME colon cancer clinical notes 
 corpus; however, as the THYME corpus is currently unavailable we utilized the TimeBank/AQUAINT corpus for all evaluations.  
-To address this challenge we developed T6, a rule-based Python package that normalizes temporal expressions from the the 
+To address this challenge we developed Chrono, a hybrid rule-based and machine learning Python package that normalizes temporal expressions from the 
 TimeBank/AQUAINT corpus into the Semantically Compositional Annotation Scheme of Bethard and Parker.
 
 ### 2.  Method
@@ -90,43 +96,25 @@ while written in java, has a python wrapper written by Frank Blechschmidt[<sup>1
 SUTime[<sup>15</sup>](#references) is a rule-based temporal annotator that was the top scoring for recall and F1 in the 
 TempEval3 challenge utilizing the TimeBank/AQUAINT corpus. SUTime outputs its parsed temporal phrases and their normalized 
 values as a json string.  These json strings are then parsed into Bethard's scheme and output into the required 
-Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#references) for a detailed description of the annotation scheme).
+Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#references) for a detailed description of the annotation scheme).  Parsing the SUTime phrases is primarily done using a rule-based approach; however, for select ambiguous phrases machine learning is utilized in order to consider contextual information in classifying the ambiguous temporal entity.  This approach and the program structure are described in more detail below.
 
-#### Machine Learning Methods
-We are currently using three different machine learning models to classify periods versus calendar-intervals.  These methods allow our parser to take context into account when building a t6entity.
-
-##### NB:
-The naive bayes algorithm uses the implementation built-in to NLTK. It reads in the generated training data and creates a naive bayes model for evaluation.  
-
-##### NN:
-The neural network algorithm was written using Keras. It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model<sup>16</sup>.  
-
-##### DT:
-The decision tree algorithm was based off of a NLTK documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
-
-#### T6 Program Structure
-Our program has 4 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
+#### Chrono Program Structure
+Our program has 5 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
 program flow; "sutimeEntity.py" is the class file that defines a SUTime entity object; "t6entity.py" is the class file 
-that defines all possible annotation types described by Bethard and Parker; and "SUTime_To_T6.py" is the primary method 
-and list of functions that parse a SUTime entity object to the appropriate set of T6 entities.
+that defines all possible annotation types described by Bethard and Parker; "SUTime_To_T6.py" is the primary method 
+and list of functions that parse a SUTime entity object to the appropriate set of T6 entities; and the three machine learning methods--NB_nltk_classifier.py, DecisionTree.py, and ChronoKeras.py--which will be discussed in the next section.
 
-__run_T6.py:__ This is the main method for the T6 program.  It handles all input arguments, identifies the list of files to be annotated, loops through each file to 1) parse out temporal expreessions with SUTime, 2) convert the returned json string to SUTime entities, 3) call SUTime_To_T6 to convert the SUTime entities to T6 entities, and 4) writes the T6 entities to an XML file.
+__run_T6.py:__ This is the main method for the Chrono program.  It handles all input arguments, identifies the list of files to be annotated, trains the requested machine learning classifier, and loops through each file to 1) parse out temporal expreessions with SUTime, 2) convert the returned json string to SUTime entities, 3) call SUTime_To_T6 to convert the SUTime entities to T6 entities, and 4) writes the T6 entities to an XML file.
 
 __sutimeEntities.py:__ This file defines the "sutimeEntity" object. SUTime parses raw text files and returns the following as a JSON string: the parsed temporal phrase, the beginning and end spans of the parsed phrase, the type of temporal entity (DATE, TIME, DURATION, SET), and finally the normalized temporal value. The sutimeEntities.py file contains a method to import SUTime's JSON string into the sutimeEntity object.  The SUTime entities are then stored in a Python List structure in the run_T6.py main method.
 
 __t6entity.py:__ This file defines the t6entity class that stores all of the information for each annotation type. For example, the phrase "May 20, 2017" would be represented as the following three t6entities: Year, MonthOfYear, and DayOfMonth. Each entity has several properties that must be identified and set correctly, including the type or value, span indicies, and a sub-interval. In the given example "year" would have the value "2017" and would point to its sub-interval MonthOfYear. MonthOfYear would be of the type "May" and have a sub-interval that points to DayOfMonth. DayOfMonth would have the value 20 and would not point to any sub-interval. Each object would also have it's span specified, which is the original coordinates of the phrase in the input text file. There are 29 types of entities with 5 parent types described by Bethard and Parker that we have included in our program. The t6entity class also has several methods to perform operations on each object.  This includes a method to print each entity in the required Anafora XML format and a method to compare 2 entities using their location in the text and entity type.    
 
-__SUTime_To_T6.py:__ This file contains all methods needed to convert a list of SUTime entities to a set of T6 Entities. For example, the raw string "11/02/89" has three T6 Entities: a T6 twoDigitYear, '89'; a T6 MonthOfYear 'November', where November is a sub-interval of the twoDigitYear entity, and a DayOfMonth, '02', which is a sub-interval of the MonthOfYear entity. SUTime does noramlize all of it's parsed phrases; however, this normalization can be flawed depending on the phrase.  For example, a phrase without a year such as "Nov. 6" is automatically given the current year.  This is not correct according to the new annotation scheme.  Therefore, all of our methods parse the identified text of the SUTime entity and not the normalized value. Parsing out the temporal patterns is done using rule-based logic and regular expressions.  Prior to any parsing the temporal phrase is normalized by converting everything to lowercase and removing all punctuation (except for a few specific cases as mentioned below).  
+__SUTime_To_T6.py:__ This file contains all methods needed to convert a list of SUTime entities to a set of T6 Entities. For example, the raw string "11/02/89" has three T6 Entities: a T6 twoDigitYear, '89'; a T6 MonthOfYear 'November', where November is a sub-interval of the twoDigitYear entity, and a DayOfMonth, '02', which is a sub-interval of the MonthOfYear entity. SUTime does noramlize all of it's parsed phrases; however, this normalization can be flawed depending on the phrase.  For example, a phrase without a year such as "Nov. 6" is automatically given the current year.  This is not correct according to the new annotation scheme.  Therefore, all of our methods parse the identified text of the SUTime entity and not the normalized value. Parsing the temporal patterns is done using rule-based logic, regular expressions, and a machine learning classifier for selected termporal types.  Prior to any parsing the temporal phrase is normalized by converting everything to lowercase and removing all punctuation (except for a few specific cases as mentioned below).  
 
-For example, when identifying T6 entities of the type DayOfWeek we simply search for days of the week. The parsing methods in this file 
-are all rule-based, and parse the SUTime entity's string. There are several base methods that look for typical temporal 
-expressions like 11/02/89.  There are also several methods which look for atypical temporal expressions like a specific 
-day of the week ('Tuesday' for example) or if the SUTime entity contains a Calendar interval.  As each T6 Entity is found 
-it is appended to a master T6 list, also a specific T6 id is assigned to each found T6 Entity.  Finally, once all of the 
-SUTime objects have been parsed into their respective T6 entities, the master list is passed back to the main function for 
-further processing.
+For example, when identifying T6 entities of the type DayOfWeek we simply search for days of the week. The majority of the parsing methods in this file are all rule-based, and parse the SUTime entity's string. There are several base methods that look for typical temporal expressions like 11/02/89.  There are also several methods which look for atypical temporal expressions like a specific day of the week ('Tuesday' for example).  As each T6 Entity is found it is appended to a master T6 list, also a specific T6 id is assigned to each found T6 Entity.  Finally, once all of the SUTime objects have been parsed into their respective T6 entities, the master list is passed back to the main function for further processing.
 
-Here is a list of T6Entity types and our parsing strategy:
+Here is a list of T6Entity types athat are parsed using a rule-based system:
 
 * *Day of Week:* Days of the week were identified by looking for specific sub-strings such as "monday" or "mon". All puntuation 
 was removed prior to parsing out these strings.
@@ -145,6 +133,18 @@ such as "3 weeks". After identifying the interval it is assumed that any number 
 * *Hour of Day:*  2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
 * *Minute of Hour:* 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
 * *Second of Minute:* 2 digit hours were identified looking for a specific format: HH:MM:SS.  If a pattern was identified, it would create a day of the month entity and look for any other sub-intervals.
+
+#### Machine Learning Methods
+We are currently using three different machine learning models to classify periods versus calendar-intervals.  These methods allow our parser to take context into account when building a t6entity.
+
+##### NB:
+The naive bayes algorithm uses the implementation built-in to NLTK. It reads in the generated training data and creates a naive bayes model for evaluation.  
+
+##### NN:
+The neural network algorithm was written using Keras. It trains a "Deep Neural Network" - three hidden layers all fully connected - on the training data and stores the model<sup>16</sup>.  
+
+##### DT:
+The decision tree algorithm was based off of a NLTK documentation. It reads in the generated training data and creates a binary decision tree for evaluation taking into account the weights of certain inputs.  
 
 
 ### 3.  Evaluation, Baseline, and Results
