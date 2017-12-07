@@ -4,17 +4,18 @@
 #
 # Date: 9/28/17
 
+import calendar
+import datetime
+import re
+import string
+
+import numpy as np
+
+from chronoML import ChronoKeras
+from task6 import referenceToken
 from task6 import t6Entities as t6
 from task6 import utils
-from task6 import referenceToken
-import calendar
-import string
-import re
-import csv
-import datetime
-import collections
-from ChronoNN import ChronoKeras
-import numpy as np
+
 
 #Example SUTime List
 #Wsj_0152
@@ -711,7 +712,7 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
         # classify into period or interval
         if(classifier[1] == "NN"):
-            my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
+            my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
         else:
             my_class = classifier[0].classify(my_features)
@@ -774,7 +775,7 @@ def buildPeriodInterval(s, t6ID, t6List, ref_list, classifier, feats):
         
             # classify into period or interval
             if(classifier[1] == "NN"):
-                my_class = ChronoKeras.keras_classify(classifier[0],np.array(list(my_features.values())))
+                my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
                 #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
             else:
                 my_class = classifier[0].classify(my_features)
