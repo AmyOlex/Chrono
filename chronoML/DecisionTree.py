@@ -1,3 +1,9 @@
+### DT_nltk_classifier
+### Author: Amy Olex and Nick Morton
+### 11/25/17
+### This program takes in 2 text files and trains the NLTK DT Classifier.
+### 
+
 import numpy as np
 import csv
 import nltk
