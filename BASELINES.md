@@ -32,13 +32,15 @@ STAGE 2 RESULTS:
 
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
-| T6 - 100% Entity Correct         |  0.000    | 0.000  | 0.429 |
-| GUTime - 100% Entity Correct     |  0.534    | 0.183  | 0.273 |
-| HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
+| ChronoNB - 100% Entity Correct   |  0.439    | 0.420  | 0.429 |
+| ChronoNN - 100% Entity Correct   |  0.430    | 0.411  | 0.420 |
+| ChronoDT - 100% Entity Correct   |  0.434    | 0.416  | 0.425 |
+| GUTime - 100% Entity Correct     |  0.534    | 0.169  | 0.260 |
 | -------------------------------- | --------- | ------ | ----- |
-| T6 - Corrent Spans               |  0.000    | 0.000  | 0.609 |
-| GUTime - Correct Spans           |  0.923    | 0.282  | 0.432 |
-| HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
+| ChronoNB - Corrent Spans         |  0.648    | 0.550  | 0.595 | 
+| ChronoNN - Corrent Spans         |  0.643    | 0.545  | 0.590 |
+| ChronoDT - Corrent Spans         |  0.663    | 0.563  | 0.609 |
+| GUTime - Correct Spans           |  0.923    | 0.260  | 0.405 |
 
 ---Explain your table---
 
