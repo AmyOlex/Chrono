@@ -89,7 +89,7 @@ corpus; however, as the THYME corpus is currently unavailable we utilized the Ti
 To address this challenge we developed Chrono, a hybrid rule-based and machine learning Python package that normalizes temporal expressions from the 
 TimeBank/AQUAINT corpus into the Semantically Compositional Annotation Scheme of Bethard and Parker.
 
-### 2.  Method
+### 2.  Methods
 Our approach is to utilize an already proven temporal annotator to identify the majority of temporal phrases in the text, 
 then build from there to incorporate more complex temporal relations.  We chose SUTime for initial phrase tagging, and 
 while written in java, has a python wrapper written by Frank Blechschmidt[<sup>14</sup>](#references).  
@@ -97,6 +97,9 @@ SUTime[<sup>15</sup>](#references) is a rule-based temporal annotator that was t
 TempEval3 challenge utilizing the TimeBank/AQUAINT corpus. SUTime outputs its parsed temporal phrases and their normalized 
 values as a json string.  These json strings are then parsed into Bethard's scheme and output into the required 
 Anafora XML format for evaluation (see Bethard and Parker[<sup>13</sup>](#references) for a detailed description of the annotation scheme).  Parsing the SUTime phrases is primarily done using a rule-based approach; however, for select ambiguous phrases machine learning is utilized in order to consider contextual information in classifying the ambiguous temporal entity.  This approach and the program structure are described in more detail below.
+
+#### Dataset
+For this challenge the TimeBank/AQUAINT corpus is used.  The gold standard annotated sub set consists of 78 hand-annotated documents.  The test dataset has not yet been released.  
 
 #### Chrono Program Structure
 Chrono has 5 main components: "run_T6.py" is the driver script that imports the data files and controls the the main 
@@ -146,7 +149,7 @@ All machine learning implementations utilized binary feature vectors that contai
 * *context:* All words within a 3-word window are identified as features and set to "1" if that word is present. Prior to identifying these features, all words were lowercased with punctuation removed. The 3-word window includes crossing sentence boundaries before and/or after the target word.
 
 ##### Training Data
-Prior to training the machine learning classifiers a training data set had to be compiled.  A python script (createMLTrainingMatrix.py) was written to identify all gold standard annotated periods or calendar-intervals from the 78 gold standard anafora XML files provided by the task moderator. The text phrase, start and end spans, and entity type were identified and written to a tab-delimited text file for import by the machine learning algorithms for training.
+Prior to training the machine learning classifiers a training data set had to be compiled.  A python script (createMLTrainingMatrix.py) was written to identify all gold standard annotated periods or calendar-intervals from the 78 gold standard anafora XML files provided by the task moderator. The text phrase, start and end spans, and entity type were identified and written to a tab-delimited text file for import by the machine learning algorithms for training.  For the final evaluation, only 67 of the 78 gold standard files were used to create the training dataset for machine leanring training.  The remaining 11 files were utilized as the test data set and not included in the training data.
 
 ##### Machine Learning Algorithms
 Three different machine learning models were implemented to classify periods versus calendar-intervals using the features described above for training. 
@@ -163,12 +166,12 @@ The user identifies which of these methods they would like implemented from the 
 ### 3.  Evaluation, Baseline, and Results
 
 #### Evaluation
-The AnaforaTools Pythons package was used to calculate the Precision, Recall, and F1 measures using selected XML entities, types, properties, and spans output by our program compared to the provided gold standard.  The gold standard was provided by Bethard and Parker, and was manually annotated using the AnaforaTools annotator with an inter-annotator agreement of F1 = 0.917. The entity types not included in the current evaluation are "After", "Before", "Union", "Event", "Between", "Frequency", "Modifier", and "This". These entity types are currently not being parsed from the SUTime temporal phrases, so were not included in the evaluation.     
+The AnaforaTools Pythons package was used to calculate the Precision, Recall, and F1 measures using selected XML entities, types, properties, and spans output by our program compared to the provided gold standard.  The gold standard was provided by Bethard and Parker, and was manually annotated using the AnaforaTools annotator with an inter-annotator agreement of F1 = 0.917. The entity types specifically excluded in the current evaluation are "After", "Before", "Union", "Event", "Between", "Frequency", "Modifier", and "This". These entity types are currently not being parsed from the SUTime temporal phrases, so were not included in the evaluation metric calculations.     
 
 #### Baseline
-The goal of this SemEval task is to obtain a fine-grained parsing of temporal information from text using the Semantically Compositional Annotation Scheme by Bethard and Parker.  There currently is no published system for parsing temporal information into this scheme for use as a baseline.  Therefore, we decided to naively parse the TIMEX3 temporal phrases identified by HeidelTime into our T6entity structure for comparison. HeidelTime was developed at Heidelberg University and was used as a baseline for SUTime in the task of identifying temporal phrases.  
+The goal of this SemEval task is to obtain a fine-grained parsing of temporal information from text using the Semantically Compositional Annotation Scheme by Bethard and Parker.  There currently is no published system for parsing temporal information into this scheme for use as a baseline.  We investigated HeidelTime and GUTime as possible baseline implementations.  GUTime returned the text phrase spans required by the normalization schema, whereas HeidleTime did not.  Therefore, we decided to naively parse the TIMEX3 temporal phrases identified by GUTime into our T6entity structure for comparison. GUTime was developed at Georgetown University and was used as a baseline for SUTime in the task of identifying temporal phrases.  
 
-HeidelTime phrases were converted to T6 entities and evaluated against the gold standard using the AnaforaTools package. Each input file was run with HeidelTime's standalone system and the results were parsed into a HeidelTime list.  Once the HeidelTime List was generated, using similar methods from SUTime_To_T6.py, T6 Entites were generated only for the Year, Month, Day, Hour, Second, and Minute.  This naive parsing omits many relationships such as event-time relations.  HeidelTime was not built for parsing data into such a fine-grainined structure, so it may not be the best choice for base line moving forward.
+GUTime phrases were converted to T6 entities and evaluated against the gold standard using the AnaforaTools package. Each input file was run with GUTime's standalone system and the results were parsed into a GUTime list.  Once the GUTime list was generated, using similar methods from SUTime_To_T6.py, T6 Entites were generated only for the Year, Month, Day, Hour, Second, and Minute.  This naive parsing omits many relationships such as event-time relations.  
 
 #### Results
 
@@ -176,18 +179,21 @@ Our rule-based parsing of SUTime temporal phrases achieves higher precision and 
 
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
-| T6 - 100% Entity Correct         |  0.269    | 0.253  | 0.260 |
-| GUTime - 100% Entity Correct     |  0.088    | 0.020  | 0.033 |
-| HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
+| ChronoNB - 100% Entity Correct   |  0.439    | 0.420  | 0.429 |
+| ChronoNN - 100% Entity Correct   |  0.430    | 0.411  | 0.420 |
+| ChronoDT - 100% Entity Correct   |  0.434    | 0.416  | 0.425 |
+| GUTime - 100% Entity Correct     |  0.534    | 0.169  | 0.260 |
 | -------------------------------- | --------- | ------ | ----- |
-| T6 - Corrent Spans               |  0.606    | 0.522  | 0.561 |   
-| GUTime - Correct Spans           |  0.735    | 0.136  | 0.230 |
-| HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
+| ChronoNB - Corrent Spans         |  0.648    | 0.550  | 0.595 | 
+| ChronoNN - Corrent Spans         |  0.643    | 0.545  | 0.590 |
+| ChronoDT - Corrent Spans         |  0.663    | 0.563  | 0.609 |
+| GUTime - Correct Spans           |  0.923    | 0.260  | 0.405 |
 
-Table 1 - T6 and baseline results.
+Table 1 - Chrono and baseline results. ChronoNB - uses Naive Bayes, ChronoNN - uses Neural Network, ChronoDT - uses Decision Tree.
 
-### Add in an Error Analysis here
-### 4. Future Work (Updated)
+### 4. Error Analysis
+
+### 5. Future Work ADD a description of current known pitfalls.
 Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Further identification using machine learning methods could improve some of the less common entities.
 
 Other improvements to our rule-based parsing system would be to capture more sub-intervals from uncommon formats of dates and times. We also aim to adjust the SUTime model implementation to improve the quality of the underlying parser in identifying temporal phrases.  Once we implement these improvements, we will be able to compare our new results to our current results to ensure the modifications are improving the overall result.
