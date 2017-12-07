@@ -13,7 +13,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='task6',
+    name='Chrono',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -55,7 +55,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='nlp temporal time-normalization semeval2018-task6',
+    keywords='nlp temporal time-normalization semeval2018-Chrono',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().

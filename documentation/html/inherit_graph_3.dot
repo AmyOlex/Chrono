@@ -1,7 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="task6.referenceToken.ref\lToken",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtask6_1_1reference_token_1_1ref_token.html",tooltip="Class definitions to represent a whitespace-parsed token in the raw text file. "];
-}
