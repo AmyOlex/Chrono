@@ -8,3 +8,7 @@
 5. AnaforaTools - https://github.com/bethard/anaforatools
 6. HeidelTime - https://github.com/HeidelTime/heideltime
 7. TreeTagger - http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/
+8. GUTime (Part of Tarsqi Toolkit) - http://www.timeml.org/tarsqi/toolkit/index.html
+9. NLTK - http://www.nltk.org/
+10. Tensor Flow - https://www.tensorflow.org/
+11. Keras - https://keras.io/
