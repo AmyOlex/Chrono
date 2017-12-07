@@ -10,14 +10,14 @@ import string
 import re
 import datetime
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of Gutime output and converts to T6Entity
 # @author Nicholas Morton
 # @param list of GUTime Output
 # @param document creation time (optional)
 # @return List of T6 entities
-def buildT6List(suTimeList, t6ID , dct=None):
+def buildT6List(guTimeList, t6ID , dct=None):
     t6List = []
-    for s in suTimeList :                 
+    for s in guTimeList :                 
         #Parse out Year function
         t6List, t6ID  = buildT6Year(s,t6ID,t6List)
         #Parse out Two-Digit Year 
@@ -43,7 +43,7 @@ def buildT6List(suTimeList, t6ID , dct=None):
 #################### Start buildX() Methods #######################
 
 
-## Takes in list of SUTime output and converts to T6Entity
+## Takes in list of GUTime output and converts to T6Entity
 # @author Nicholas Morton
 # @param GUTime 
 # @output T6Year Entity
@@ -444,7 +444,7 @@ def buildAMPM(s, t6ID, t6List):
         t6List.append(my_AMPM_entity)
         
         #check to see if it has a time associated with it.  We assume the time comes before the AMPM string
-        #We could parse out the time from the sutime normalized value.  The problem is getting the correct span.
+        #We could parse out the time from the gutime normalized value.  The problem is getting the correct span.
         #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
         if idxstart > 0:
             substr = s.getText()[0:idxstart]
@@ -489,7 +489,7 @@ def buildAMPM(s, t6ID, t6List):
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
 # @param t6List The list of T6 objects we currently have.  Will add to these.
 # @return t6List, t6ID Returns the expanded t6List and the incremented t6ID.
-###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning fo the string from sutime represents the number.  If this is not the case the spans may be off.
+###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning fo the string from gutime represents the number.  If this is not the case the spans may be off.
 def buildCalendarInterval(s, t6ID, t6List):
     
     ref_Sspan, ref_Espan = s.getSpan()
@@ -558,7 +558,7 @@ def buildPartOfDay(s, t6ID, t6List):
 ####    
 
 
-## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
+## Parses a gutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
 # @author Nicholas Morton
 # @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
@@ -578,7 +578,7 @@ def buildDuration(s, t6ID, t6List):
 #END_MODULE
 #### 
 
-## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
+## Parses a gutime entity's text field to determine if it contains a part of the day expression, then builds the associated t6entity list
 # @author Nicholas Morton
 # @param s The GUTime entity to parse 
 # @param t6ID The current t6ID to increment as new t6entities are added to list.
@@ -682,7 +682,7 @@ def hasDayOfWeek(suentity):
 
 ## Takes in a single text string and identifies if it has any modufying phrases
 # @author Amy Olex
-# @param guentity The SUTime entity object being parsed
+# @param guentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasModifier(suentity):
     
@@ -848,7 +848,7 @@ def hasTextMonth(suentity):
 
 ## Takes in a single text string and identifies if it has any AM or PM phrases
 # @author Amy Olex
-# @param guentity The SUTime entity object being parsed
+# @param guentity The GUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasAMPM(suentity):
     
@@ -890,9 +890,9 @@ def hasAMPM(suentity):
 #END_MODULE
 ####
 
-## Takes in a single sutime entity and determines if it has a time zone specified in the text.
+## Takes in a single gutime entity and determines if it has a time zone specified in the text.
 # @author Amy Olex
-# @param guentity The SUTime entity object being parsed
+# @param guentity The GUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
     return re.search('(AST|EST|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
@@ -1321,7 +1321,7 @@ def hasExactDuration(suentity):
 # @param text The text to be searched
 # @param search_text The text to search for.
 # @return The start index and end index of the search_text string.
-######## ISSUE: This needs to be re-named here and in all the above usages.  Probably should also move this to the utils class.  Dont delete the s.getSpan() as those are from the sutime entity class.
+######## ISSUE: This needs to be re-named here and in all the above usages.  Probably should also move this to the utils class.  Dont delete the s.getSpan() as those are from the gutime entity class.
 def getSpan(text, search_text):
     try:
         start_idx = text.index(search_text)
