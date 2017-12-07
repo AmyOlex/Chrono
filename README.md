@@ -193,6 +193,8 @@ Table 1 - Chrono and baseline results. ChronoNB - uses Naive Bayes, ChronoNN - u
 
 ### 4. Error Analysis
 
+<NICK NEEDS TO BE MORE CAREFUL WHEN COPYING AND PASTING HIS CODE :)>
+
 ### 5. Future Work ADD a description of current known pitfalls.
 Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Further identification using machine learning methods could improve some of the less common entities.
 
