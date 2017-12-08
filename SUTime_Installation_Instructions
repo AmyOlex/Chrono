@@ -1,6 +1,3 @@
-I will clean this up as we get closer to the deadline...
-
-
 Here are the instructions I have to get SUTime working, I am using Linux Mint 18.2 Cinnamon, Java: 1.8.0_131, Python: 3.5.2
 
 I did this on a clean install of linux on my virtual box...
@@ -36,6 +33,3 @@ I did this on a clean install of linux on my virtual box...
       print(json.dumps(sutime.parse(test_case),sort_keys=True,indent=4))
       
       '''End Python code'''
-      
-  7.  This worked for me, as far as getting it working in our git I am still working that out, I installed our git and have had to 
-      manually move files around to get it to work.  I will continue this guide tomorrow!
