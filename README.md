@@ -198,7 +198,7 @@ Through the course of implementing the T6 parser, we identified that SUTime does
 
 Other improvements to our rule-based parsing system would be to capture more sub-intervals from uncommon formats of dates and times. We also aim to adjust the SUTime model implementation to improve the quality of the underlying parser in identifying temporal phrases.  Once we implement these improvements, we will be able to compare our new results to our current results to ensure the modifications are improving the overall result.
 
-### 5.  Conclusion
+### 6.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
 applications.  Improvements in correctly identifying free-text, ambiguous temporal expressions will continue to be a 
 challenge.  We believe that advances in machine learning will improve correct identification of temporal expressions 
