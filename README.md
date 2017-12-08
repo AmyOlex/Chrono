@@ -205,10 +205,8 @@ Another issue with SUTime is that it doesn't always return the entire text strin
 #### Gold Standard Gaps
 Finally, it was discovered that the gold standard even has some problems.  For example, in the AP900815-0044 article the temporal phrase "08-15 1334 PM" is not annotated as a temporal phrase in the gold standard while it is clearly a temporal expression in 24-hour time.  While this temporal phrase is not in the gold standard annotations, Chrono was able to identify and correctly classify the phrase, but because it was not in the gold standard it reduces Chrono's overall performance.
 
-### 5. Future Work ADD a description of current known pitfalls.
-Through the course of implementing the T6 parser, we identified that SUTime does not capture all of the temporal information required to correctly parse it into the "Semantically Compositional Annotation Scheme".  Further identification using machine learning methods could improve some of the less common entities.
-
-Other improvements to our rule-based parsing system would be to capture more sub-intervals from uncommon formats of dates and times. We also aim to adjust the SUTime model implementation to improve the quality of the underlying parser in identifying temporal phrases.  Once we implement these improvements, we will be able to compare our new results to our current results to ensure the modifications are improving the overall result.
+### 5. Future Work 
+There are still many improvements to be made to Chrono.  Continued improvements to the rule-based parsing will help identify correct entity properties and identify additional entities.  We will need to re-assess our parsing strategy to obtain additional sub-interval links that we are currently missing (e.g. “August 1998”). Several parsing errors are currently being caught and ignored with a Try-Catch. Removing this Try-Catch block and dealing with the parsing issues directly will lead to improved performance.  Since SUTime does have it's limitations, furture work could involve the development of our own temporal phrase extractor so that we are not relying on SUTime. Finally, implementation of additional machine learning classifiers to disambiguate terms such as "Spring" and "spring" will help improve Chrono's performance.  Once parse temporal information is performing well, we will want to tackle the problem of linking temporal phrases to the events they are associated with.
 
 ### 6.  Conclusion
 This annotation scheme has the potential to be very useful by providing high quality temporal data to downstream 
