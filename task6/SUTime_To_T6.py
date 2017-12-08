@@ -1246,7 +1246,7 @@ def hasAMPM(suentity):
 # @param suentity The SUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
-    return re.search('(AST|EST|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
+    return re.search('(AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
 
 ####
 #END_MODULE
