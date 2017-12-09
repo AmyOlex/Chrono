@@ -51,10 +51,11 @@ if __name__ == "__main__":
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
     parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
-    parser.add_argument('-t', metavar='trainML', type=str, help='Boolean to require the training data file to be generated', required=False, default=0)
+    parser.add_argument('-t', metavar='trainML', type=str, help='A string representing the file name that triggers the training data file to be generated using the input data set in the -i option.', required=False, default=False)
     parser.add_argument('-m', metavar='MLmethod', type=str, help='The machine learning method to use. Must be one of NN (neural network), DT (decision tree), NB (naive bayes, default). If option is not provided, or is not NN or DT, the default is NB is used.', required=False, default='NB')
     parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
+    parser.add_argument('-w', metavar='windowSize', type=str, help='An integer representing the window size for context feature extraction. Default is 3.', required=False, default=3)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -76,8 +77,8 @@ if __name__ == "__main__":
               os.makedirs(os.path.join(args.o,name))
     
     ## Create the training data matrix and write to a file
-    if(int(args.t)):
-        train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.j, False)
+    if(args.t):
+        train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.j, False, args.t, int(args.w))
     ## Get training data for ML methods by importing pre-made boolean matrix
    
     ## Train ML methods on training data

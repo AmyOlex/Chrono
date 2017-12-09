@@ -45,7 +45,7 @@ debug = False
 ## Only import the gold standard files that are in the training files
 ## The infiles variable need to contain the full path to the input files.
 
-def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
+def createMLTrainingMatrix(infiles, gold_folder, jars, save = False, output = "aquaint_train", window = 3):
     ### Algorithm
     ## For each input file:
     ##      1) parse text to refTokens list
@@ -64,7 +64,7 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
     features = {'feat_numeric':0, 'feat_temp_context':0, 'feat_temp_self':0}  ### This is the full list of features.  I will use the key values to get the individual feature vectors.
 
     if(save):
-        outfile = open("/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/gold-standard-parsing.txt", 'w') 
+        outfile = open("./gold-standard-parsing.txt", 'w') 
  
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
@@ -76,7 +76,7 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
         
         ## parse out reference tokens
         text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/Chrono/stopwords_short2.txt")
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         if(debug) :
             print("REFERENCE TOKENS:\n")
             for tok in my_refToks : print(tok)
@@ -134,7 +134,7 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
                         this_obs = extract_temp_features(my_refToks, r, 3, this_obs)
                         
                         ### Extract all words within a N-word window
-                        this_obs, observations = extract_bow_features(my_refToks, r, 3, features, this_obs)
+                        this_obs, observations = extract_bow_features(my_refToks, r, window, features, this_obs)
                         
                         ### Determine if there is a numeric before or after the target word.
                         this_obs = extract_numeric_feature(my_refToks, r, this_obs)
@@ -165,12 +165,12 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False):
     
     ## Now print the list of tuples to a file, then return the list.
     keys = full_obs_list[0].keys()
-    with open('aquaint_train_data.csv', 'w') as output_file:
+    with open(output+'_data.csv', 'w') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(full_obs_list)
     
-    with open('aquaint_train_class.csv','w') as output_file:
+    with open(output+'_class.csv','w') as output_file:
         for c in category:
             output_file.write("%s\n" % c)
     

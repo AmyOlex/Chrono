@@ -842,7 +842,7 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
         
         ## build minute entity
         min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxend, value=minute)
-        print("Minute Value Added: " + str(min_entity.get_value()))
+        #print("Minute Value Added: " + str(min_entity.get_value()))
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
