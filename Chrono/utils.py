@@ -78,8 +78,8 @@ def manualT6AddEntities(t6list):
 def write_xml(chrono_list, outfile):
     fout = open(outfile + ".completed.xml", "w")
     fout.write("<data>\n<annotations>\n")
-    for t6 in chrono_list :
-        fout.write(str(t6.print_xml()))
+    for c in chrono_list :
+        fout.write(str(c.print_xml()))
     
     fout.write("\n</annotations>\n</data>")
     fout.close()
@@ -184,7 +184,9 @@ def getNumberFromText(text):
 #END_MODULE
 ####      
   
-  
+## Function to get the integer representation of a text month
+# @author Amy Olex  
+# @param text The text string to be converted to an integer.
 def getMonthNumber(text):
     month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12}
     return month_dict[text]
@@ -206,7 +208,10 @@ def overlap(sp1, sp2) :
         
 ## Function to extract prediction features
 # @author Amy Olex
-
+# @param reftok_list The full document being parsed as a list of tokens.
+# @param reftok_idx The index of the target token in the reference list.
+# @param feature_dict A dictionary with the features to be extracted listed as the keys and the values all set to zero.
+# @return A dictionary with the features as keys and the values set to 0 if not present, and 1 if present for the target word.
 def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
 
     reftok = reftok_list[reftok_idx]
@@ -266,8 +271,10 @@ def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
 ###### 
 
 
-## Function to extract prediction features
+## Function that get the list of features to extract from the input training data matrix file.
 # @author Amy Olex
+# @param data_file The name and path the the data file that contains the training matrix.  The first row is assumed to be the list of features.
+# @return A dictionary with all the features stored as keys and the values set to zero.
 def get_features(data_file):
     ## Import csv files
     data_list = []
