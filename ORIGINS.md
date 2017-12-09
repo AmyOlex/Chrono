@@ -1,5 +1,5 @@
 # NAMES AND LINKS TO ALL 3rd Party Code
-`Author: Nicholas Morton`
+`Author: Nicholas Morton and Amy Olex`
 
 1. Stanford SUTime (Part of Stanford CoreNLP) - https://stanfordnlp.github.io/CoreNLP/
 2. SUTime-Python Wrapper - https://github.com/FraBle/python-sutime
