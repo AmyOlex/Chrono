@@ -1,5 +1,7 @@
 # SemEval-2018 Task 6 - Parsing Time Normalizations
 
+***New Requirements for Stage 2 are indicated below.***
+
 ## Installation
 
 ### Pre-Reqs
@@ -9,6 +11,7 @@
 - Jpype, installation instructions from <http://jpype.readthedocs.io/en/latest/install.html>
 - Maven, installation instructions for Ubuntu from <https://www.mkyong.com/maven/how-to-install-maven-in-ubuntu/>, or for MacOSX from <https://www.mkyong.com/maven/install-maven-on-mac-osx/>
 - Pip, installation instructions from <https://www.saltycrane.com/blog/2010/02/how-install-pip-ubuntu/>, or see below.
+***New for Stage 2:***
 - TensorFlow, installation instructions here: <https://www.tensorflow.org/install/>
 - Keras, installation instructions here: <https://keras.io/#installation>
 
@@ -51,6 +54,12 @@ Install word2number:
 Install sutime:
 ``` bash
 >> pip install sutime
+```
+
+***New for Stage 2:***
+Install numpy:
+``` bash
+>> pip install numpy
 ```
 
 #### 5. Install SUTime Dependencies
