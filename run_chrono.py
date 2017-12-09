@@ -56,6 +56,8 @@ if __name__ == "__main__":
     parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
     parser.add_argument('-w', metavar='windowSize', type=str, help='An integer representing the window size for context feature extraction. Default is 3.', required=False, default=3)
+    parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
+    parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -84,15 +86,15 @@ if __name__ == "__main__":
     ## Train ML methods on training data
     if(args.m == "DT"):
         ## Train the decision tree classifier and save in the classifier variable
-        classifier, feats = DTree.build_dt_model("./data/aquaint_train_data_TrainWin3.csv", "./data/aquaint_train_class_TrainWin3.csv")
+        classifier, feats = DTree.build_dt_model(args.d, args.c)
 
     elif(args.m == "NN"):
         ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model("./data/aquaint_train_data_TrainWin3.csv", "./data/aquaint_train_class_TrainWin3.csv")
-        feats = utils.get_features("./data/aquaint_train_data_TrainWin3.csv")
+        classifier = ChronoKeras.build_model(args.d, args.c)
+        feats = utils.get_features(args.d)
     else:
         ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats, NB_input = NBclass.build_model("./data/aquaint_train_data_TrainWin3.csv", "./data/aquaint_train_class_TrainWin3.csv")
+        classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
         classifier.show_most_informative_features(20)
         
     ## Pass the ML classifier through to the parse SUTime entities method.
