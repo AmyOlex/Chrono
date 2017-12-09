@@ -30,3 +30,6 @@ jars
 resultsTest
 resultsTrain
 Chrono/sutime
+data/SemEval-Task6-GUTime-TestResults
+data/SemEval-Task6-GUTime-TrainResults
+
