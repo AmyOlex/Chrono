@@ -62,8 +62,8 @@ Get python-sutime from Git, cd into the directory, then run maven:
 ```
 
 While in the "python-sutime" folder:
-* Move the "./jars" folder to the top level of "CMSC516-SemEval2018-Task6-master/".
-* Move the "./sutime" folder to "CMSC516-SemEval2018-Task6-master/task6/".
+* Move the "./jars" folder to the top level of "CMSC516-SemEval2018-Task6/".
+* Move the "./sutime" folder to "CMSC516-SemEval2018-Task6/Chrono/".
 
 #### 6. Debugging
 
