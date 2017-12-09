@@ -55,7 +55,7 @@ def extractPeriodCalInterval(path, file):
 
 ############
 
-path='/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/data/SemEval-Task6-Gold/'
+#path='/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/data/SemEval-Task6-Gold/'
 
-print(path)
-parseGoldEntities(path)
+#print(path)
+#parseGoldEntities(path)
