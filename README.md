@@ -25,6 +25,21 @@ Input argument selects the type of machine learning algorithm to use:
 * NN - Neural Network
 * DT - Decision Tree
 
+### Training Data Matrix Generation
+The Ml methods require 2 files, a data matrix and a class file, in order to be trained.  While we provide a file that searches the context with a window size of 3, you can also create your own training file with different window sizes.  To create your own training file do the following:
+
+> 1) ensure all the gold standard data you want parsed into the training format is in one folder.
+> 2) Run the python run_chrono.py script as follows: 
+```bash
+>> python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m NB -t "my_train_matrix" -w 3 -m NB
+```
+The *-m* option allows you to choose the Ml algorithm you want to use. The *-t* option should be the file name base you want your training data matrix files to be saved to, and the *-w* option is the context window size, which is 3 by default.
+> 3) After your data files have been generated you can run the command again, but this time point to the new data and class files for the ML algorihtm training.
+```bash
+>> python run_chrono.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+```
+The *-d* option provides the path and file name of the file that the gold standard matrix should be saved.  Finally, *-c* option indicates the file name with the class information in it.
+
 Full documentation available at documentation/index.html
 
 ### Roles and Contributions
