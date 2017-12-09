@@ -28,17 +28,23 @@ See the table below for more details.
 | Chrono - Corrent Spans               |  0.606    | 0.522  | 0.561 |
 | HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
 
-## STAGE 2 RESULTS:
+## STAGE 2 RESULTS (Training Data - 67 files):
 
 | Implementation                   | Precision | Recall |   F1  |
 | -------------------------------- | --------- | ------ | ----- |
-| Chrono - 100% Entity Correct         |  0.000    | 0.000  | 0.000 |
-| GUTime - 100% Entity Correct     |  0.088    | 0.025  | 0.039 |
-| HeidelTime - 100% Entity Correct |  0.003    | 0.002  | 0.002 |
+| ChronoNB - 100% Entity Correct         |  0.489    | 0.436  | 0.461 |
+| ChronoNN - 100% Entity Correct         |  0.490    | 0.437  | 0.462 |
+| ChronoDT - 100% Entity Correct         |  0.488    | 0.435  | 0.460 |
+| GUTime - 100% Entity Correct     |  0.086    | 0.025  | 0.38 |
 | -------------------------------- | --------- | ------ | ----- |
-| Chrono - Corrent Spans               |  0.000    | 0.000  | 0.000 |
-| GUTime - Correct Spans           |  0.735    | 0.172  | 0.279 |
-| HeidelTime - Correct Spans       |  0.013    | 0.007  | 0.009 |
+| ChronoNB - Corrent Spans               |  0.787    | 0.590  | 0.674 |
+| ChronoNN - Corrent Spans               |  0.787    | 0.590  | 0.674 |
+| ChronoDT - Corrent Spans               |  0.782    | 0.586  | 0.670 |
+| GUTime - Correct Spans           |  0.736    | 0.171  | 0.278 |
+
+## STAGE 2 RESULTS (Test Data - 11 files):
+
+See Table in README.
 
 # Conclusion
 
