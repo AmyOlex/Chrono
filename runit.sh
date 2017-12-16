@@ -23,19 +23,19 @@ echo "Evaluating Chrono Test Results..."
 python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart
 
 ## go to baselinecode Directory
-cd ../
+#cd ../
 
 ## run GUTime Baseline Code
-echo "Running GUTime on Test files..."
-cd BaselineCode/GUTime
-python run_baseline_code.py -i ../../data/SemEval-Task6_GUTime-TestData/ -o ../../baseline_resultsTest/
+#echo "Running GUTime on Test files..."
+#cd BaselineCode/GUTime
+#python run_baseline_code.py -i ../../data/SemEval-Task6_GUTime-TestData/ -o ../../baseline_resultsTest/
 
 ## go to anaforatools directory
-cd ../../
-cd anaforatools
+#cd ../../
+#cd anaforatools
 
-echo "Evaluating Baseline Test Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold -p ../baseline_resultsTest/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart --overlap
+#echo "Evaluating Baseline Test Results..."
+#python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold -p ../baseline_resultsTest/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart --overlap
 
 ## change back to main directory
-cd ../
+#cd ../
