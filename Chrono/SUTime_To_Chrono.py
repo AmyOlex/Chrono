@@ -382,22 +382,22 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
         hasMod, mod_type, mod_start, mod_end = hasModifier(s)
         if(hasMod):
             if mod_type == "This":
-                chrono_list.append(chrono.ChronoThisOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
                 
             if mod_type == "Next":
-                chrono_list.append(chrono.ChronoNextOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
                 
             if mod_type == "Last":
-                chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
             else:
-                chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
                 
         else:
-            chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
             chrono_id = chrono_id + 1
     
         
@@ -425,22 +425,22 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
         hasMod, mod_type, mod_start, mod_end = hasModifier(s)
         if(hasMod):
             if mod_type == "This":
-                chrono_list.append(chrono.ChronoThisOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
                 
             if mod_type == "Next":
-                chrono_list.append(chrono.ChronoNextOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
                 
             if mod_type == "Last":
-                chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
             else:
-                chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
                 
        # else:
-    #        chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+    #        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
      #       chrono_id = chrono_id+1
     
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
@@ -520,10 +520,10 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                     mEnd = my_month_entity.get_end_span()
                     this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
                     if this_dct > dct:
-                        chrono_list.append(chrono.ChronoNextOperator(entityID=chrono_id, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                         chrono_id = chrono_id + 1
                     elif this_dct < dct:
-                        chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                         chrono_id = chrono_id + 1
                 
                 
@@ -549,10 +549,10 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                         mEnd = my_month_entity.get_end_span()
                         this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
                         if this_dct > dct:
-                            chrono_list.append(chrono.ChronoNextOperator(entityID=chrono_id, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                            chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
                         elif this_dct < dct:
-                            chrono_list.append(chrono.ChronoLastOperator(entityID=chrono_id, start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
                 
                 
