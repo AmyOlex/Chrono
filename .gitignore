@@ -1,19 +1,8 @@
 
 .DS_Store
-task6/__pycache__/__init__.cpython-36.pyc
-task6/__pycache__/sutime.cpython-36.pyc
-task6/jars/stanford-corenlp-3.8.0-models.jar
-task6/__pycache__/referenceToken.cpython-36.pyc
 *.pyc
-task6/__pycache__/__init__.cpython-36.pyc
-task6/__pycache__/*
-task6/jars/stanford-corenlp-3.6.0-models.jar
-task6/__pycache__/t6Entities.cpython-36.pyc
-task6/__pycache__/t6Entities.cpython-36.pyc
-jars/stanford-corenlp-3.6.0-models.jar
-jars/stanford-corenlp-3.8.0-models.jar
 results
-
+data/Debugging
 *.ipynb
 .Rhistory
 gold-standard-parsing.txt
