@@ -487,7 +487,6 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
-    
     boo, val, idxstart, idxend = hasTextMonth(s)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
@@ -500,6 +499,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
         #idx_end is the last index of the month.  If there are any characters after it the lenght of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
             substr = s.getText()[idxend:len(s.getText())]
+            
             m = re.search('([0-9]{1,2})', substr)
             if m is not None :
                 day_val = m.group(0)
@@ -530,8 +530,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
             #else test for a ordinal day of month
             else:
                 texNumVal = utils.getNumberFromText(substr)
-                
-                if texNumVal is not None:
+                if texNumVal is not None and texNumVal <= 31:
                     day_startidx, day_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
