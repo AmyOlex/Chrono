@@ -131,13 +131,16 @@ if __name__ == "__main__":
         if(debug) : 
             for tok in my_refToks : print(tok)
         
-        try :
-            tmpList, tmpCounter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
-        except ValueError:
-            print("Value ERROR on "+infiles[f])
-        else :
-            chrono_master_list = tmpList
-            my_chrono_ID_counter = tmpCounter
+#        try :
+#            tmpList, tmpCounter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
+#        except ValueError:
+#            print("Value ERROR on "+infiles[f])
+#        else :
+#            chrono_master_list = tmpList
+#            my_chrono_ID_counter = tmpCounter
+        
+        chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
+        
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
         ## need to pull out specific entities based on ID to link them to others if 
