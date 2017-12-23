@@ -9,8 +9,10 @@ import datetime
 import re
 import string
 
+
 import numpy as np
 
+from nltk.tokenize import WhitespaceTokenizer
 from chronoML import ChronoKeras
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
@@ -539,7 +541,6 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 #END_MODULE
 ####    
 
-
 ## Parses a sutime entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
 # @param s The SUtime entity to parse 
@@ -556,51 +557,39 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
         my_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, month_type=val)
         chrono_id = chrono_id + 1
         
-        #check to see if it has a day associated with it.  We assume the day comes after the month.
+        ## assume all numbers 1-31 are days
+        ## assume all numbers >1000 are years
+        ## parse all text before month
+            ## test to see if all text is a number or text year
+            ## if no:
+              ## remove all punctuation
+              ## seperate by spaces
+              ## parse each token, if find a number then assign to day or year as appropriate
+            ## if yes:
+              ## assign to day or year as appropriate
+              
+        ## parse all text after month
+          ## test to see if all text is a number or text year
+          ## if no:
+            ## remove all punctuation
+            ## seperate by spaces
+            ## parse each token, if find a number then assign to day or year as appropriate
+          ## if yes:
+            ## assign to day or year as appropriate
+
         #idx_end is the last index of the month.  If there are any characters after it the length of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
             substr = s.getText()[idxend:len(s.getText())]
-            
-            m = re.search('([0-9]{1,2})', substr)
-            if m is not None :
-                day_val = m.group(0)
-                day_startidx, day_endidx = getSpan(s.getText(), day_val)
-                abs_Sspan = ref_Sspan + day_startidx
-                abs_Espan = ref_Sspan + day_endidx
-                
-                my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=day_val)
-                chrono_list.append(my_day_entity)
-                chrono_id = chrono_id + 1
-                #now link the month to the day
-                my_month_entity.set_sub_interval(my_day_entity.get_id())
-                
-                #now figure out if it is a NEXT or LAST
-                #create doctime
-                if dct is not None:
-                    mStart = my_month_entity.get_start_span()
-                    mEnd = my_month_entity.get_end_span()
-                    this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
-                    if this_dct > dct:
-                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
-                        chrono_id = chrono_id + 1
-                    elif this_dct < dct:
-                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
-                        chrono_id = chrono_id + 1
-                
-                
-            #else test for a ordinal day of month
-            else:
-                texNumVal = utils.getNumberFromText(substr)
-                if texNumVal is not None and texNumVal <= 31:
+
+            num = utils.getNumberFromText(substr)
+            if num is not None:
+                if num <= 31:
                     day_startidx, day_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
-                    
-                    my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
+                    my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                     chrono_list.append(my_day_entity)
                     chrono_id = chrono_id + 1
-                    #now link the month to the day
-                    my_month_entity.set_sub_interval(my_day_entity.get_id())
                     
                     #now figure out if it is a NEXT or LAST
                     #create doctime
@@ -614,8 +603,45 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                         elif this_dct < dct:
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
+                #elif num >=1000:
+                    ##add as year
+            else:
+                ##parse and process each token
+                ##replace punctuation 
+                substr = substr.translate(str.maketrans("", "", string.punctuation))
+                ##split on spaces
+                tokenized_text = WhitespaceTokenizer().tokenize(substr)
+                for i in range(0,len(tokenized_text)):
+                    num = utils.getNumberFromText(tokenized_text[i])
+                    if num is not None:
+                        if num <= 31:
+                            day_startidx, day_endidx = getSpan(s.getText(), tokenized_text[i])
+                            abs_Sspan = ref_Sspan + day_startidx
+                            abs_Espan = ref_Sspan + day_endidx
+                            my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
+                            chrono_list.append(my_day_entity)
+                            chrono_id = chrono_id + 1
+                            
+                            #now figure out if it is a NEXT or LAST
+                            #create doctime
+                            if dct is not None:
+                                mStart = my_month_entity.get_start_span()
+                                mEnd = my_month_entity.get_end_span()
+                                this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
+                                if this_dct > dct:
+                                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                                    chrono_id = chrono_id + 1
+                                elif this_dct < dct:
+                                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
+                                    chrono_id = chrono_id + 1
+                        #elif num >=1000:
+                            ##add as year
+                    
+                
+        
                 
                 
+                      
         chrono_list.append(my_month_entity)
     
         
@@ -894,11 +920,21 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
     boo, val, idxstart, idxend = has24HourTime(s, lone_digit_year_flag)
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not lone_digit_year_flag:
-        ## assume format of hhmm
+        ## assume format of hhmm or hhmmzzz
         #print("24HourTime Text: " + val)
         hour = int(val[:2])
         minute = int(val[2:])
         #print("24HourTime Minute:" + str(minute))
+        
+        #search for time zone
+        ## Identify if a time zone string exists
+        tz = hasTimeZone(s)
+        if tz is not None:
+            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+            chrono_list.append(my_tz_entity)
+            chrono_id = chrono_id + 1
+        else:
+            my_tz_entity = None
         
         ## build minute entity
         min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxend, value=minute)
@@ -906,7 +942,11 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
-        hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour)
+        if my_tz_entity is not None:
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+        else:
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour)
+            
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
         chrono_id = chrono_id + 1
