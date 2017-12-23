@@ -561,6 +561,8 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
         if(idxend < len(s.getText())):
             substr = s.getText()[idxend:len(s.getText())]
             
+            #tokenize the new substring by spaces?
+            
             m = re.search('([0-9]{1,2})', substr)
             if m is not None :
                 day_val = m.group(0)
