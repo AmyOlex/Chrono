@@ -920,11 +920,21 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
     boo, val, idxstart, idxend = has24HourTime(s, lone_digit_year_flag)
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not lone_digit_year_flag:
-        ## assume format of hhmm
+        ## assume format of hhmm or hhmmzzz
         #print("24HourTime Text: " + val)
         hour = int(val[:2])
         minute = int(val[2:])
         #print("24HourTime Minute:" + str(minute))
+        
+        #search for time zone
+        ## Identify if a time zone string exists
+        tz = hasTimeZone(s)
+        if tz is not None:
+            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+            chrono_list.append(my_tz_entity)
+            chrono_id = chrono_id + 1
+        else:
+            my_tz_entity = None
         
         ## build minute entity
         min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxend, value=minute)
@@ -932,7 +942,11 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
-        hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour)
+        if my_tz_entity is not None:
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+        else:
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour)
+            
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
         chrono_id = chrono_id + 1
