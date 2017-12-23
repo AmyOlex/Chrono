@@ -70,18 +70,67 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
      
-        chrono_list += chrono_tmp_list
+        
+        
+        chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
         #chrono_list, chrono_id = buildSet(s, chrono_id, chrono_list)
-              
+      
     return chrono_list, chrono_id
     
 ####
 #END_MODULE
 ####
 
+
+## Takes in list of ChronoEntities and identifies sub-intervals within the list
+# @author Amy Olex
+# @param list of ChronoEntities
+# @return List of ChronoEntities with sub-intervals assigned
+def buildChronoSubIntervals(chrono_list):
+    year = None
+    month = None
+    day = None
+    hour = None
+    minute = None
+    second = None
+    
+    ## loop through all entities and pull out the approriate IDs
+    for e in chrono_list:
+        e_type = e.get_type()
+        
+        if e_type == "Two-Digit-Year" or e_type == "Year":
+            year = e
+        elif e_type == "Month-Of-Year":
+            month = e
+        elif e_type == "Day-Of-Month":
+            day = e
+        elif e_type == "Hour-Of-Day":
+            hour = e
+        elif e_type == "Minute-Of-Hour":
+            minute = e
+        elif e_type == "Second-Of-Minute":
+            second = e
+        
+    ## Now assign all sub-intervals
+    if second is not None and minute is not None:
+        minute.set_sub_interval(second.get_id())
+    if minute is not None and hour is not None:
+        hour.set_sub_interval(minute.get_id())
+    if hour is not None and day is not None:
+        day.set_sub_interval(hour.get_id())
+    if day is not None and month is not None:
+        month.set_sub_interval(day.get_id())
+    if month is not None and year is not None:
+        year.set_sub_interval(month.get_id())
+    
+    return chrono_list
+
+####
+#END_MODULE
+####
 
 #################### Start buildX() Methods #######################
 
@@ -508,7 +557,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
         chrono_id = chrono_id + 1
         
         #check to see if it has a day associated with it.  We assume the day comes after the month.
-        #idx_end is the last index of the month.  If there are any characters after it the lenght of the string will be greater than the endidx.
+        #idx_end is the last index of the month.  If there are any characters after it the length of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
             substr = s.getText()[idxend:len(s.getText())]
             
