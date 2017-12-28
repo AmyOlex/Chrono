@@ -151,7 +151,7 @@ if __name__ == "__main__":
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
         #t6list = utils.manualT6AddEntities(my_chronoentities)
         #utils.write_xml(t6list=my_chronoentities, outfile=outfiles[f])
-        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+       # print("Number of Chrono Entities: " + str(len(chrono_master_list)))
       #  utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
     
     

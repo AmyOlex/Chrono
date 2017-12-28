@@ -337,11 +337,11 @@ def temporalTest(tok):
     #tok = tok.translate(str.maketrans("", "", string.punctuation))
     
     #look for date patterns mm[/-]dd[/-]yyyy, mm[/-]dd[/-]yy, yyyy[/-]mm[/-]dd, yy[/-]mm[/-]dd
-    m = re.search('([0-9]{1,2,4}[-/][0-9]{1,2}[-/][0-9]{1,2,4})', tok)
+    m = re.search('([0-9]{1,4}[-/][0-9]{1,2}[-/][0-9]{1,4})', tok)
     if m is not None:
         return True
-    #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998
-    m = re.search('([0-9]{8})', tok)
+    #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998 or 980304
+    m = re.search('([0-9]{6,8})', tok)
     if m is not None:
         return True
     
@@ -353,9 +353,10 @@ def temporalTest(tok):
     #look for text month    
     if tt.hasTextMonth(tok):
         return True
+    if tt.hasDayOfWeek(tok):
+        return True
     
-    
-    #look for text day of week
+
     #look for periods/calendar intervals
     #look for 24-hour times
     #look for time zones
