@@ -8,6 +8,7 @@ import nltk
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem.snowball import SnowballStemmer
 from Chrono import chronoEntities as t6
+from Chrono import temporalTest as tt
 import dateutil.parser
 import datetime
 from Chrono import SUTime_To_Chrono
@@ -16,6 +17,7 @@ import csv
 from collections import OrderedDict
 import numpy as np
 from word2number import w2n
+import string
 
 ## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -291,6 +293,79 @@ def get_features(data_file):
 ######
 ## END Function
 ###### 
+
+## Marks all the reference tokens that are identified as temporal.
+# @author Amy Olex
+# @param refToks The list of reference Tokens
+# @return modified list of reftoks
+def markTemporal(refToks):
+    for ref in refToks:
+        #mark if numeric
+        ref.setNumeric(numericTest(ref.getText()))
+        #mark if temporal
+        ref.setTemporal(temporalTest(ref.getText()))
         
+    return refToks
+####
+#END_MODULE
+####
+
+## Tests to see if the token is a number.
+# @author Amy Olex
+# @param tok The token string
+# @return Boolean true if numeric, false otherwise
+def numericTest(tok):
+    #remove punctuation
+    tok = tok.translate(str.maketrans("", "", string.punctuation))
     
+    #test for a number
+    val = getNumberFromText(tok)
+    if val is not None:
+        return True
+    return False
+####
+#END_MODULE
+#### 
+
+
+## Tests to see if the token is a temporal value.
+# @author Amy Olex
+# @param tok The token string
+# @return Boolean true if temporal, false otherwise
+def temporalTest(tok):
+    #remove punctuation
+    #tok = tok.translate(str.maketrans("", "", string.punctuation))
+    
+    #look for date patterns mm[/-]dd[/-]yyyy, mm[/-]dd[/-]yy, yyyy[/-]mm[/-]dd, yy[/-]mm[/-]dd
+    m = re.search('([0-9]{1,2,4}[-/][0-9]{1,2}[-/][0-9]{1,2,4})', tok)
+    if m is not None:
+        return True
+    #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998
+    m = re.search('([0-9]{8})', tok)
+    if m is not None:
+        return True
+    
+    #look for time patterns hh:mm:ss
+    m = re.search('([0-9]{2}:[0-9]{2}:[0-9]{2})', tok)
+    if m is not None:
+        return True
+     
+    #look for text month    
+    if tt.hasTextMonth(tok):
+        return True
+    
+    
+    #look for text day of week
+    #look for periods/calendar intervals
+    #look for 24-hour times
+    #look for time zones
+    #look for seasons
+    #look for AMPM
+    #look for part of day
+    #look for part of week
+    
+    
+####
+#END_MODULE
+#### 
     
