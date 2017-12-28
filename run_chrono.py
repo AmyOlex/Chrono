@@ -117,29 +117,29 @@ if __name__ == "__main__":
             print("REFERENCE TOKENS:\n")
             for tok in my_refToks : print(tok)
         
+        ## mark all ref tokens if they are numeric or temporal
+        chroList = utils.markTemporal(my_refToks)
         
-        ## parse out SUTime entities
-        #print(infiles[0])
-        json_str = sutime_wrapper.callSUTimeParse(infiles[f], args.j)
-        suList = sutimeEntity.import_SUTime(sut_json=json_str, doctime=doctime)
-        if(debug) : 
-            print("SUTIME ENTITIES:\n")
-            for s in suList : print(s)
+        for c in chroList:
+            print(c)
         
-        ## mark all reference tokens that overlap with the sutime spans
-        my_refToks = utils.markTemporalRefToks(my_refToks, suList)
-        if(debug) : 
-            for tok in my_refToks : print(tok)
         
-#        try :
-#            tmpList, tmpCounter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
-#        except ValueError:
-#            print("Value ERROR on "+infiles[f])
-#        else :
-#            chrono_master_list = tmpList
-#            my_chrono_ID_counter = tmpCounter
         
-        chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
+        ### parse out SUTime entities
+        ##print(infiles[0])
+        #json_str = sutime_wrapper.callSUTimeParse(infiles[f], args.j)
+        #suList = sutimeEntity.import_SUTime(sut_json=json_str, doctime=doctime)
+        #if(debug) : 
+        #    print("SUTIME ENTITIES:\n")
+        #    for s in suList : print(s)
+        
+        ### mark all reference tokens that overlap with the sutime spans
+        #my_refToks = utils.markTemporalRefToks(my_refToks, suList)
+        #if(debug) : 
+        #    for tok in my_refToks : print(tok)
+        
+
+    #    chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
         
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
@@ -152,7 +152,7 @@ if __name__ == "__main__":
         #t6list = utils.manualT6AddEntities(my_chronoentities)
         #utils.write_xml(t6list=my_chronoentities, outfile=outfiles[f])
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-        utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+      #  utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
     
     
     #os.chdir(args.a)
