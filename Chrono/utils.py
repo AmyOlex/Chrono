@@ -357,8 +357,8 @@ def temporalTest(tok):
         return True
     if tt.hasPeriodInterval(tok):
         return True
-
-    #look for periods/calendar intervals
+    if tt.hasAMPM(tok):
+        return True
     #look for 24-hour times
     #look for time zones
     #look for seasons

@@ -83,11 +83,48 @@ def hasPeriodInterval(text):
     #define my period lists
     terms = ["decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
     ## possibly add in abbreviations like yr, sec, min, etc.
+    
     answer = next((m for m in terms if m in text_norm), None)
     if answer is not None:
         return True
     else:
         return False
+    
+####
+#END_MODULE
+####
+
+## Takes in a single text string and identifies if it has any AM or PM phrases
+# @author Amy Olex
+# @param text The string being parsed
+# @return Outputs True if an AMPM exists, False otherwise.
+# Note: this may be a little strict. I require the text to be found in the list, and a list item to be found in the text string.
+# Thus, strings such as 1330AM won't be identified, but that could probably be caught with some other method.
+def hasAMPM(text):
+    
+    #remove all ounctuation except periods
+    punct = "!\"#$%&\'()*+,-/:;<=>?@[]^_`{|}~"
+    text_norm = text.translate(str.maketrans(punct, ' '*len(punct))).strip()
+    #convert to list
+    text_list = text_norm.split(' ')
+    
+    #define my day lists
+    am = ["AM","am","A.M.","AM.","a.m.","am."]
+    pm = ["PM","pm","P.M.","p.m.","pm.","PM."]
+    
+    ampm = am+pm
+    
+    t_flag = False
+    for t in text_list:
+        answer = next((m for m in ampm if t in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in ampm if m in t), None)
+            if answer2 is not None and not t_flag:
+                print("True: "+str(text_list))
+                t_flag = True
+
+    
+    return t_flag
     
 ####
 #END_MODULE
