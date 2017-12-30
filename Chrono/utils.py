@@ -317,8 +317,10 @@ def markTemporal(refToks):
 # @param tok The token string
 # @return Boolean true if numeric, false otherwise
 def numericTest(tok):
+    
+
     #remove punctuation
-    tok = tok.translate(str.maketrans("", "", string.punctuation))
+    tok = tok.translate(str.maketrans("","",string.punctuation))
     
     #test for a number
     val = getNumberFromText(tok)
@@ -337,6 +339,11 @@ def numericTest(tok):
 def temporalTest(tok):
     #remove punctuation
     #tok = tok.translate(str.maketrans("", "", string.punctuation))
+    
+    #if the token has a dollar sign or percent sign it is not temporal
+    m = re.search('[#$%]', tok)
+    if m is not None:
+        return False
     
     #look for date patterns mm[/-]dd[/-]yyyy, mm[/-]dd[/-]yy, yyyy[/-]mm[/-]dd, yy[/-]mm[/-]dd
     m = re.search('([0-9]{1,4}[-/][0-9]{1,2}[-/][0-9]{1,4})', tok)
@@ -391,12 +398,24 @@ def getTemporalPhrases(chroList, doctime):
     tmpPhrase = [] #the temporary phrases list.
     inphrase = False
     for n in range(0,len(chroList)-1):
-        #if temporal start building a list 
-        if chroList[n].isTemporal() or chroList[n].isNumeric():
+        #if temporal start building a list    
+        if chroList[n].isTemporal():
             if not inphrase:
                 inphrase = True
             #in phrase, so add new element
             tmpPhrase.append(copy.copy(chroList[n]))
+            
+        elif chroList[n].isNumeric():
+            #if the token has a dollar sign or percent sign do not count it as temporal
+            m = re.search('[#$%]', chroList[n].getText())
+            if m is None:
+                #check for the "million" text phrase
+                answer = next((m for m in ["million", "billion", "trillion"] if m in chroList[n].getText().lower()), None)
+                if answer is None:
+                    if not inphrase:
+                        inphrase = True
+                    #in phrase, so add new element
+                    tmpPhrase.append(copy.copy(chroList[n]))
             
         else:
             #current element is not temporal, check to see if inphrase
