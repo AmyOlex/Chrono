@@ -362,7 +362,10 @@ def temporalTest(tok):
         return True
     if tt.hasAMPM(tok):
         return True
-
+    if tt.hasPartOfWeek(tok):
+        return True
+    if tt.hasSeasonOfYear(tok):
+        return True
     
     
     #look for time zones
