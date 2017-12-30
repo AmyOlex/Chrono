@@ -366,12 +366,10 @@ def temporalTest(tok):
         return True
     if tt.hasSeasonOfYear(tok):
         return True
-    
-    
-    #look for time zones
-    #look for seasons
-    #look for part of day
-    #look for part of week
+    if tt.hasPartOfDay(tok):
+        return True
+    if tt.hasTimeZone(tok):
+        return True
     
     
 ####

@@ -255,3 +255,57 @@ def hasSeasonOfYear(text):
 ####
 #END_MODULE
 ####
+
+## Takes in a string and identifies if it has any part of day terms, like "morning"
+# @author Amy Olex
+# @param text String being parsed
+# @return Outputs True if it contains a part of day.
+def hasPartOfDay(text):
+    
+    #convert to all lower
+    text_lower = text.lower()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my part of day lists
+    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon"] 
+    
+    for t in text_list:
+        answer = next((m for m in partofday if m in t), None)
+        if answer is not None:
+            return True
+        else:
+            return False
+    return False
+####
+#END_MODULE
+####
+
+## Takes in a string and identifies if it has a lone time zone like "EST"
+# @author Amy Olex
+# @param text String being parsed
+# @return Outputs True if it contains a time zone.
+def hasTimeZone(text):
+    
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my season lists
+    zones = ["AST","EST","EDT","CST","MST","PST","AKST","HST","UTC-11","UTC+10"]
+    
+    for t in text_list:
+        answer = next((m for m in zones if m in t), None)
+        if answer is not None:
+            answer2 = next((m for m in zones if t in m), None)
+            if answer2 is not None:
+                return True
+            else:
+                return False
+    return False
+####
+#END_MODULE
+####
