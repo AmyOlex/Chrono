@@ -355,7 +355,8 @@ def temporalTest(tok):
         return True
     if tt.hasDayOfWeek(tok):
         return True
-    
+    if tt.hasPeriodInterval(tok):
+        return True
 
     #look for periods/calendar intervals
     #look for 24-hour times

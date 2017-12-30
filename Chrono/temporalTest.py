@@ -4,6 +4,7 @@
 #
 # Programmer Name: Amy Olex
 
+import string
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
@@ -62,6 +63,31 @@ def hasDayOfWeek(text):
         else:
             return False
 
+####
+#END_MODULE
+####
+
+## Takes in a text string and identifies if it has any calendar interval phrases like "week" or "days"
+# @author Amy Olex
+# @param text The string being parsed
+# @return True if a calendar interval or period phrase exists, False otherwise.
+def hasPeriodInterval(text):
+    
+    #convert to all lower
+    text_lower = text.lower()
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    #define my period lists
+    terms = ["decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
+    ## possibly add in abbreviations like yr, sec, min, etc.
+    answer = next((m for m in terms if m in text_norm), None)
+    if answer is not None:
+        return True
+    else:
+        return False
     
 ####
 #END_MODULE
