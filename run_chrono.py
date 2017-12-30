@@ -119,8 +119,9 @@ if __name__ == "__main__":
         
         ## mark all ref tokens if they are numeric or temporal
         chroList = utils.markTemporal(my_refToks)
+        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
         
-        for c in chroList:
+        for c in tempPhrases:
             print(c)
         
         

@@ -12,12 +12,14 @@ from Chrono import temporalTest as tt
 import dateutil.parser
 import datetime
 from Chrono import SUTime_To_Chrono
+from Chrono import sutimeEntity as su
 import re
 import csv
 from collections import OrderedDict
 import numpy as np
 from word2number import w2n
 import string
+import copy
 
 ## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -375,4 +377,63 @@ def temporalTest(tok):
 ####
 #END_MODULE
 #### 
+
+## Takes in a Reference List that has had numeric and temporal tokens marked, and identifies all the 
+## temporal phrases by finding consecutive temporal tokens.
+# @author Amy Olex
+# @param chroList The list of temporally marked reference tokens
+# @return A list of temporal phrases for parsing
+def getTemporalPhrases(chroList, doctime):
+    #sutimeEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], sutype=j['type'], suvalue=j['value'], doctime=doctime)
+    id_counter = 0
+    
+    phrases = [] #the empty phrases list of sutime entities
+    tmpPhrase = [] #the temporary phrases list.
+    inphrase = False
+    for n in range(0,len(chroList)-1):
+        #if temporal start building a list 
+        if chroList[n].isTemporal() or chroList[n].isNumeric():
+            if not inphrase:
+                inphrase = True
+            #in phrase, so add new element
+            tmpPhrase.append(copy.copy(chroList[n]))
+            
+        else:
+            #current element is not temporal, check to see if inphrase
+            if inphrase:
+                #set to False, add tmpPhrase as sutime entitiy to phrases, then reset tmpPhrase
+                inphrase = False
+                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                id_counter = id_counter + 1
+                tmpPhrase = []
+    
+    return phrases
+
+####
+#END_MODULE
+#### 
+
+
+## Takes in a list of reference tokens identified as a temporal phrase and returns one sutimeEntity.
+# @author Amy Olex
+# @param items The list of reference tokesn
+# @param counter The ID this sutime entity should have
+# @param doctime The document time.
+# @return A single sutime entity with the text span and string concatenated.
+def createSUentity(items, counter, doctime):
+    start_span, tmp = items[0].getSpan()
+    tmp, end_span = items[len(items)-1].getSpan()
+    text = ""
+    for i in items:
+        text = text + ' ' + i.getText()
+    
+    return su.sutimeEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, sutype=None, suvalue=None, doctime=doctime)
+
+####
+#END_MODULE
+####                 
+                
+        
+    
+    
     
