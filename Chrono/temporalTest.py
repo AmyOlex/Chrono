@@ -5,6 +5,7 @@
 # Programmer Name: Amy Olex
 
 import string
+from Chrono import utils
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
@@ -125,6 +126,74 @@ def hasAMPM(text):
 
     
     return t_flag
+    
+####
+#END_MODULE
+####
+
+## Takes in a single text string and identifies if it has any 4 digit 24-hour time phrases
+# @author Amy Olex
+# @param text The string being parsed
+# @return Outputs True if possible 24-hour time, False otherwise
+def has24HourTime(text):
+    
+    punct = "!\"#$%&\'()*+,-/:;<=>?@[]^_`{|}~"
+    text_norm = text.translate(str.maketrans(punct, ' '*len(punct))).strip()
+    #convert to list
+    text_list = text_norm.split(' ')
+    
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            if len(text) == 4:
+                num = utils.getNumberFromText(text)
+                if num is not None:
+                    hour = utils.getNumberFromText(text[:2])
+                    minute = utils.getNumberFromText(text[2:])
+                    if (hour is not None) and (minute is not None):
+                        if (minute > 60) or (hour > 24):
+                            return False
+                        else:
+                            return True
+
+    return False
+    
+####
+#END_MODULE
+####
+
+## Takes in a single text string and identifies if it has any 6 or 8 digit dates
+# @author Amy Olex
+# @param text The string being parsed
+# @return Outputs True if possible date, False otherwise
+def hasDateOrTime(text):
+    
+    punct = "!\"#$%&\'()*+,-/:;<=>?@[]^_`{|}~"
+    text_norm = text.translate(str.maketrans(punct, ' '*len(punct))).strip()
+    #convert to list
+    text_list = text_norm.split(' ')
+    
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        for text in text_list:
+            if len(text) == 4:
+                num = utils.getNumberFromText(text)
+                if (num >= 1800) and (num <= 2050):
+                    ## for 4 digit years, but not all 4 digit numbers will be temporal. I set a specific range for 4-digit years.
+                    return True
+            if len(text) == 6:
+                ## could be yymmdd or mmddyy
+                ## possible ranges for the year: 00 - 99
+                ## possible ranges for the month: 01-12
+                ## possible ranges for the day: 01-31
+                ## It will be hard to narrow down these ranges at this point without context.
+                return True
+            if len(text) == 8:
+                return True
+
+    return False
     
 ####
 #END_MODULE

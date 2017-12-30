@@ -341,9 +341,12 @@ def temporalTest(tok):
     if m is not None:
         return True
     #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998 or 980304
-    m = re.search('([0-9]{6,8})', tok)
+    m = re.search('([0-9]{4,8})', tok)
     if m is not None:
-        return True
+        if tt.has24HourTime(m.group(0)):
+            return True
+        if tt.hasDateOrTime(m.group(0)):
+            return True
     
     #look for time patterns hh:mm:ss
     m = re.search('([0-9]{2}:[0-9]{2}:[0-9]{2})', tok)
@@ -359,10 +362,11 @@ def temporalTest(tok):
         return True
     if tt.hasAMPM(tok):
         return True
-    #look for 24-hour times
+
+    
+    
     #look for time zones
     #look for seasons
-    #look for AMPM
     #look for part of day
     #look for part of week
     
