@@ -422,9 +422,17 @@ def getTemporalPhrases(chroList, doctime):
             if inphrase:
                 #set to False, add tmpPhrase as sutime entitiy to phrases, then reset tmpPhrase
                 inphrase = False
-                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
-                id_counter = id_counter + 1
-                tmpPhrase = []
+                #check to see if only a single element and element is numeric, then do not add.
+                if len(tmpPhrase) != 1:
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                elif not tmpPhrase[0].isNumeric():
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                else:
+                    tmpPhrase = []
     
     return phrases
 

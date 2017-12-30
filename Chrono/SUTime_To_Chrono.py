@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False

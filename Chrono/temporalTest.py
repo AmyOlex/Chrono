@@ -121,7 +121,6 @@ def hasAMPM(text):
         if answer is not None and not t_flag:
             answer2 = next((m for m in ampm if m in t), None)
             if answer2 is not None and not t_flag:
-                print("True: "+str(text_list))
                 t_flag = True
 
     

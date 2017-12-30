@@ -122,8 +122,8 @@ if __name__ == "__main__":
         chroList = utils.markTemporal(my_refToks)
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
         
-        for c in tempPhrases:
-            print(c)
+        #for c in tempPhrases:
+        #    print(c)
         
         
         
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         #    for tok in my_refToks : print(tok)
         
 
-    #    chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(suList, my_chrono_ID_counter, my_refToks, (classifier, args.m), feats, doctime)
+        chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
         ## Need functions to parse the SUTime data into T6 format with links!
         ## I think we may need to create a class that is a T6List. We are going to 
@@ -153,8 +153,8 @@ if __name__ == "__main__":
         ##### Manually adding some T6 entities based on the wsj_0152 file #########
         #t6list = utils.manualT6AddEntities(my_chronoentities)
         #utils.write_xml(t6list=my_chronoentities, outfile=outfiles[f])
-       # print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-      #  utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+        utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
     
     
     #os.chdir(args.a)
