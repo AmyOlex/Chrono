@@ -20,9 +20,9 @@ def hasTextMonth(text):
     #text_list = text_norm.split(" ")
     
     #define my day lists
-    full_month = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-    abbr_month = ["Jan.", "Feb.","Mar.","Apr.","Jun.","Jul.","Aug.","Sept.","Oct.","Nov.","Dec."]
-
+    full_month = ["January","February","March","April","May","June","July","August","September","October","November","December","january","february","march","april","june","july","august","september","october","november","december"]
+    abbr_month = ["Jan.", "Feb.","Mar.","Apr.","Jun.","Jul.","Aug.","Sept.","Oct.","Nov.","Dec.","jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","oct.","nov.","dec."]
+    
     answer = next((m for m in full_month if m in text_norm), None)
     if answer is not None:
         return True
