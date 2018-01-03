@@ -122,7 +122,7 @@ if __name__ == "__main__":
         chroList = utils.markTemporal(my_refToks)
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
         
-        #for c in tempPhrases:
+        #for c in chroList:
         #    print(c)
         
         

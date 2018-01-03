@@ -398,42 +398,75 @@ def getTemporalPhrases(chroList, doctime):
     tmpPhrase = [] #the temporary phrases list.
     inphrase = False
     for n in range(0,len(chroList)-1):
-        #if temporal start building a list    
+        #if temporal start building a list 
+        #print("Filter Start Phrase: " + str(chroList[n]))   
         if chroList[n].isTemporal():
+            #print("Is Temporal: " + str(chroList[n]))
             if not inphrase:
                 inphrase = True
             #in phrase, so add new element
             tmpPhrase.append(copy.copy(chroList[n]))
+            # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
+            s1,e1 = chroList[n].getSpan()
+            s2,e2 = chroList[n+1].getSpan()
+            if e1+1 != s2 and inphrase:
+                print("has new line: " + str(chroList[n]))
+                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                id_counter = id_counter + 1
+                tmpPhrase = []
+                inphrase = False
+                
             
         elif chroList[n].isNumeric():
+            #print("Not Temporal, but Numeric: " + str(chroList[n]))
             #if the token has a dollar sign or percent sign do not count it as temporal
             m = re.search('[#$%]', chroList[n].getText())
             if m is None:
+                #print("No #$%: " + str(chroList[n]))
                 #check for the "million" text phrase
                 answer = next((m for m in ["million", "billion", "trillion"] if m in chroList[n].getText().lower()), None)
                 if answer is None:
+                    #print("No million/billion/trillion: " + str(chroList[n]))
                     if not inphrase:
                         inphrase = True
                     #in phrase, so add new element
                     tmpPhrase.append(copy.copy(chroList[n]))
-            
+            # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
+            s1,e1 = chroList[n].getSpan()
+            s2,e2 = chroList[n+1].getSpan()
+            if e1+1 != s2 and inphrase:
+                print("has new line: " + str(chroList[n]))
+                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                id_counter = id_counter + 1
+                tmpPhrase = []
+                inphrase = False
         else:
             #current element is not temporal, check to see if inphrase
+            #print("Not Temporal, or numeric " + str(chroList[n]))
             if inphrase:
                 #set to False, add tmpPhrase as sutime entitiy to phrases, then reset tmpPhrase
                 inphrase = False
                 #check to see if only a single element and element is numeric, then do not add.
                 if len(tmpPhrase) != 1:
+                    #print("multi element phrase ")
                     phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif not tmpPhrase[0].isNumeric():
+                    #print("not numeric: " + str(chroList[n-1]))
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                elif tmpPhrase[0].isNumeric() and tmpPhrase[0].isTemporal():
+                    #print("temporal and numeric: " + str(chroList[n-1]))
                     phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 else:
+                    #print("Element not added: " + str(chroList[n-1]))
                     tmpPhrase = []
-    
+        
+            
     return phrases
 
 ####
