@@ -1148,7 +1148,6 @@ def hasModifier(suentity):
 
 
 
-
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
 # @param suentity The entity to parse
@@ -1161,7 +1160,7 @@ def hasTextMonth(suentity):
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
-    text_list = text_norm.split(" ")
+    #text_list = text_norm.split(" ")
     
     #define my day lists
     M1 = ["january","jan."]
@@ -1181,64 +1180,84 @@ def hasTextMonth(suentity):
     
     
     #figure out if any of the tokens in the text_list are also in the months list
-    intersect = list(set(text_list) & set(full_year))
-    
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    if len(intersect) >= 1 :
-        #test if the intersect list contains which days.
-        if len(list(set(intersect) & set (M1))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M1))[0])
-            return True, "January", start_idx, end_idx
+    #intersect = list(set(text_list) & set(full_year))
         
-        if len(list(set(intersect) & set (M2))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M2))[0])
-            return True, "February", start_idx, end_idx
+    #only proceed if the intersect list has a length of 1 or more.
+    #if len(intersect) >= 1 :
+        #test if the intersect list contains which days.
+    #if len(list(set(intersect) & set (M1))) == 1:
+    answer = next((m for m in M1 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "January", start_idx, end_idx
+        
+    #if len(list(set(intersect) & set (M2))) == 1:
+    answer = next((m for m in M2 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "February", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M3))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M3))[0])
-            return True, "March", start_idx, end_idx
+    #if len(list(set(intersect) & set (M3))) == 1:
+    answer = next((m for m in M3 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "March", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M4))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M4))[0])
-            return True, "April", start_idx, end_idx
+    #if len(list(set(intersect) & set (M4))) == 1:
+    answer = next((m for m in M4 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "April", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M5))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M5))[0])
-            return True, "May", start_idx, end_idx
+    #if len(list(set(intersect) & set (M5))) == 1:
+    answer = next((m for m in M5 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "May", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M6))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M6))[0])
-            return True, "June", start_idx, end_idx
+    #if len(list(set(intersect) & set (M6))) == 1:
+    answer = next((m for m in M6 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "June", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M7))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M7))[0])
-            return True, "July", start_idx, end_idx
+    #if len(list(set(intersect) & set (M7))) == 1:
+    answer = next((m for m in M7 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "July", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M8))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M8))[0])
-            return True, "August", start_idx, end_idx
+    #if len(list(set(intersect) & set (M8))) == 1:
+    answer = next((m for m in M8 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "August", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M9))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M9))[0])
-            return True, "September", start_idx, end_idx
+    #if len(list(set(intersect) & set (M9))) == 1:
+    answer = next((m for m in M9 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "September", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M10))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M10))[0])
-            return True, "October", start_idx, end_idx
+    #if len(list(set(intersect) & set (M10))) == 1:
+    answer = next((m for m in M10 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "October", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M11))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M11))[0])
-            return True, "November", start_idx, end_idx
+    #if len(list(set(intersect) & set (M11))) == 1:
+    answer = next((m for m in M11 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "November", start_idx, end_idx
             
-        if len(list(set(intersect) & set (M12))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M12))[0])
-            return True, "December", start_idx, end_idx
+    #if len(list(set(intersect) & set (M12))) == 1:
+    answer = next((m for m in M12 if m in text_norm), None)
+    if answer is not None:
+        start_idx, end_idx = getSpan(text_norm, answer)
+        return True, "December", start_idx, end_idx
 
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
+    return False, None, None, None
     
 ####
 #END_MODULE
@@ -1678,7 +1697,7 @@ def hasYear(suentity, loneDigitYearFlag):
 ####
 
 ## Takes in a single text string and identifies if it has any 2 digit year phrases
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def has2DigitYear(suentity):
@@ -1692,15 +1711,16 @@ def has2DigitYear(suentity):
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
+            #get span of current text token in the list
+            start_idx, end_idx = getSpan(text_norm,text)
             #define regular expression to find a 2-digit year
             if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)) and len(text)==8:
-                #print(text)
                 if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
-                    return True, re.compile("/").split(text)[2], start_idx, end_idx
+                    s_offset, e_offset = getSpan(text,re.compile("/").split(text)[2])   
+                    return True, re.compile("/").split(text)[2], start_idx+s_offset, start_idx+e_offset
                 elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
-                    return True, re.compile("-").split(text)[2], start_idx, end_idx
+                    s_offset, e_offset = getSpan(text,re.compile("-").split(text)[2])   
+                    return True, re.compile("-").split(text)[2], start_idx+s_offset, start_idx+e_offset
                 else:
                    return False, None, None, None
 
