@@ -147,9 +147,11 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 
     b, text, startSpan, endSpan, lone_digit_year_flag = hasYear(s, lone_digit_year_flag)
     if b:
+        print("has 4-digit-year")
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        print("has 4-digit-year span: " + str(startSpan) + " to " + str(endSpan))
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))
         chrono_id = chrono_id + 1
 
@@ -158,6 +160,7 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
         if bMonth:
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
+            print("has month span: " + str(startSpanMonth) + " to " + str(endSpanMonth))
             if(int(textMonth) <= 12):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])
                 chrono_id = chrono_id + 1
@@ -168,6 +171,7 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
             if bDay:
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
+                print("has day span: " + str(startSpanDay) + " to " + str(endSpanDay))
                 if(int(textDay) <= 31):
                     chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanDay, end_span=abs_EndSpanDay, value=int(textDay))
                     chrono_id = chrono_id + 1
@@ -1795,23 +1799,37 @@ def hasDayOfMonth(suentity):
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
-            #define regular expression to find a 2-digit day
-            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)):
-                #print(text)
-                if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[1])    
-                    return True, re.compile("/").split(text)[1], start_idx, end_idx
-                elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[1])    
-                    return True, re.compile("-").split(text)[1], start_idx, end_idx
+            #define regular expression to find a 2-digit month
+            twodigitstart = re.search('(^[0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('(^[0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            
+            if(fourdigitstart):
+                #If start with 4 digits then assum the format yyyy/mm/dd
+                start_idx, end_idx = getSpan(text_norm,fourdigitstart[3])
+                return True, fourdigitstart[3], start_idx, end_idx
+            elif(twodigitstart):
+                #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
+                #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
+                if int(twodigitstart[2]) <= 12:
+                    # assume mm/dd/yy
+                    start_idx, end_idx = getSpan(text_norm,twodigitstart[2])
+                    return True, twodigitstart[1], start_idx, end_idx
+                elif int(twodigitstart[2]) > 12:
+                    # assume yy/mm/dd
+                    start_idx, end_idx = getSpan(text_norm,twodigitstart[3])
+                    return True, twodigitstart[3], start_idx, end_idx
                 else:
-                   return False, None, None, None
+                    return False, None, None, None
 
-        return False, None, None, None #if no 2 digit day expressions were found return false            
+        return False, None, None, None #if no 2 digit month expressions were found return false            
     else:
 
         return False, None, None, None #if the text_list does not have any entries, return false
 
+
+###########
+    
 ####
 #END_MODULE
 ####
