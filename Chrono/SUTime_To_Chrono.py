@@ -1056,10 +1056,10 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not lone_digit_year_flag:
         ## assume format of hhmm or hhmmzzz
-        #print("24HourTime Text: " + val)
-        hour = int(val[:2])
-        minute = int(val[2:])
-        #print("24HourTime Minute:" + str(minute))
+        print("24HourTime Text: " + val)
+        hour = int(val[0:2])
+        minute = int(val[2:4])
+        print("24HourTime Minute:" + str(minute))
         
         #search for time zone
         ## Identify if a time zone string exists
@@ -1072,15 +1072,15 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
             my_tz_entity = None
         
         ## build minute entity
-        min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxend, value=minute)
+        min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 2, end_span=ref_Sspan + idxstart + 4, value=minute)
         #print("Minute Value Added: " + str(min_entity.get_value()))
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
         if my_tz_entity is not None:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
         else:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour)
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
             
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
@@ -1718,15 +1718,17 @@ def hasPartOfWeek(suentity):
 # Note: This need to be called after it has checked for years
 def has24HourTime(suentity, loneDigitYearFlag):
     
-    text_lower = suentity.getText().lower() 
+    #text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
-    text_list = text_norm.split(" ")
+    stext = suentity.getText()
+    text_list = stext.split(" ")
 
-    if len(text_list)>0 and not loneDigitYearFlag:
+    if not loneDigitYearFlag:
         #loop through list looking for expression
         for text in text_list:
+            tz_format = re.search('([0-9]{4})((AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10))', text)
             if len(text) == 4:
                 num = utils.getNumberFromText(text)
                 if num is not None:
@@ -1736,13 +1738,23 @@ def has24HourTime(suentity, loneDigitYearFlag):
                         if (minute > 60) or (hour > 24):
                             return False, None, None, None
                         else:
-                            start_idx, end_idx = getSpan(text_norm, text)    
+                            start_idx, end_idx = getSpan(stext, text)    
                             return True, text, start_idx, end_idx
+            elif tz_format is not None:
+                time = tz_format[1]
+                zone = tz_format[2]
 
+                hour = utils.getNumberFromText(time[0:2])
+                minute = utils.getNumberFromText(time[2:4])
+                if (minute > 60) or (hour > 24):
+                    return False, None, None, None
+                else:
+                    start_idx, end_idx = getSpan(stext, time)    
+                    return True, time, start_idx, end_idx
 
         return False, None, None, None #if no 4 digit year expressions were found return false            
     else:
-        return False, None, None, None #if the text_list does not have any entries, return false
+        return False, None, None, None #if loneDigitYearFlag has already been set
 
 
 ## Takes in a single text string and identifies if it has any 4 digit year phrases
