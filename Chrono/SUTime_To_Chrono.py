@@ -1766,7 +1766,6 @@ def hasMonthOfYear(suentity):
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasDayOfMonth(suentity):
 
-    print("CALLING hasDayOfMonth() on: " + suentity.getText())
     text_lower = suentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
@@ -1776,22 +1775,34 @@ def hasDayOfMonth(suentity):
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
-            #define regular expression to find a 2-digit day
-            if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)):
-                #print(text)
-                if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[1]) 
-                    print("FOUND DayOfMonth: " + re.compile("/").split(text)[1])   
-                    return True, re.compile("/").split(text)[1], start_idx, end_idx
-                elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[1]) 
-                    print("FOUND DayOfMonth: " + re.compile("-").split(text)[1])   
-                    return True, re.compile("-").split(text)[1], start_idx, end_idx
+            #define regular expression to find a 2-digit month
+            twodigitstart = re.search('(^[0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('(^[0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            
+            if(fourdigitstart):
+                #If start with 4 digits then assum the format yyyy/mm/dd
+                start_idx, end_idx = getSpan(text_norm,fourdigitstart[3])
+                return True, fourdigitstart[3], start_idx, end_idx
+            elif(twodigitstart):
+                #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
+                #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
+                if int(twodigitstart[1]) <= 12:
+                    # assume mm/dd/yy
+                    start_idx, end_idx = getSpan(text_norm,twodigitstart[2])
+                    return True, twodigitstart[2], start_idx, end_idx
+                elif int(twodigitstart[1]) > 12:
+                    # assume yy/mm/dd
+                    start_idx, end_idx = getSpan(text_norm,twodigitstart[3])
+                    return True, twodigitstart[3], start_idx, end_idx
                 else:
-                   return False, None, None, None
+                    return False, None, None, None
 
-        return False, None, None, None #if no 2 digit day expressions were found return false            
+        return False, None, None, None #if no 2 digit month expressions were found return false            
     else:
+
+        return False, None, None, None #if the text_list does not have any entries, return false
+
 
         return False, None, None, None #if the text_list does not have any entries, return false
 
