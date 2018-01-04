@@ -1787,11 +1787,11 @@ def hasDayOfMonth(suentity):
                 #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
                 #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
                 #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
-                if int(twodigitstart[2]) <= 12:
+                if int(twodigitstart[1]) <= 12:
                     # assume mm/dd/yy
                     start_idx, end_idx = getSpan(text_norm,twodigitstart[2])
-                    return True, twodigitstart[1], start_idx, end_idx
-                elif int(twodigitstart[2]) > 12:
+                    return True, twodigitstart[2], start_idx, end_idx
+                elif int(twodigitstart[1]) > 12:
                     # assume yy/mm/dd
                     start_idx, end_idx = getSpan(text_norm,twodigitstart[3])
                     return True, twodigitstart[3], start_idx, end_idx
