@@ -264,7 +264,7 @@ def hasPartOfDay(text):
     #convert to all lower
     text_lower = text.lower()
     #remove all punctuation
-    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
     #convert to list
     text_list = text_norm.split(" ")
     
