@@ -73,7 +73,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
-     
+        chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_list, dct)
         
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
@@ -103,6 +103,7 @@ def buildChronoSubIntervals(chrono_list):
     hour = None
     minute = None
     second = None
+    daypart = None
     
     ## loop through all entities and pull out the approriate IDs
     for e in chrono_list:
@@ -120,6 +121,8 @@ def buildChronoSubIntervals(chrono_list):
             minute = e
         elif e_type == "Second-Of-Minute":
             second = e
+        #elif e_type = "Part-Of-Day":
+        #    daypart = e
         
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
@@ -132,6 +135,8 @@ def buildChronoSubIntervals(chrono_list):
         month.set_sub_interval(day.get_id())
     if month is not None and year is not None:
         year.set_sub_interval(month.get_id())
+    #if day is not None and daypart is not None and hour is None:
+    #    day.set_sub_interval(daypart.get_id())
     
     return chrono_list
 
@@ -676,10 +681,55 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 #END_MODULE
 ####    
 
+## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
+# @author Amy Olex
+# @param s The Chrono entity to parse 
+# @param chronoID The current chronoID to increment as new chronoentities are added to list.
+# @param chronoList The list of chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+def buildTextYear(s, chrono_id, chrono_list, dct=None):
+    print("hello: " + str(s))
+    boo, val, idxstart, idxend = isTextYear(s)
+    print(str(boo) + str(val) + str(idxstart) + str(idxend))
+    if boo:
+        ref_Sspan, ref_Espan = s.getSpan()
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_year_entity)
+        print("Adding Year Entity TextYear...")
+    
+        
+    return chrono_list, chrono_id
+
+def isTextYear(suentity):
+    ########## I need to re-think this entire parsing strategy!!!!!
+    text = suentity.getText().translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    #make sure it is all letters
+    m = re.search('[a-z,A-Z,-,\s]*', text)
+    if m[0] is not '':
+        ##split on spaces
+        tokenized_text = WhitespaceTokenizer().tokenize(text)
+        for t in tokenized_text:
+            if utils.getNumberFromText(t) is None:
+                return False, None, None, None
+        val = utils.getNumberFromText(text)
+        print("My Value Text: " + text)
+        if val is not None:
+            if val >= 1000 and val <= 3000:
+                start, end = suentity.getSpan()
+                return True, val, start, end
+            else:
+                return False, None, None, None
+        else:
+            return False, None, None, None
+    return False, None, None, None
+
 
 ## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The Chrono entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -749,6 +799,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                     my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                     chrono_list.append(my_year_entity)
                     my_year_entity.set_sub_interval(my_month_entity.get_id())
+                    print("Adding Year Entity TextMonth1...")
                     chrono_id = chrono_id + 1
             else:
                 ##parse and process each token
@@ -786,6 +837,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                             my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                             chrono_list.append(my_year_entity)
                             my_year_entity.set_sub_interval(my_month_entity.get_id())
+                            print("Adding Year Entity TextMonth2...")
                             chrono_id = chrono_id + 1
                     
                 
