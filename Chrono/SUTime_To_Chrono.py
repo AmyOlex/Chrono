@@ -161,17 +161,20 @@ def buildChronoSubIntervals(chrono_list):
 
 def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
     
-    text = s.getText()
+    text = s.getText().strip(".,")
     ## See if there is a 4 digit number and assume it is a year if between 1800 and 2050
     ## Note that 24hour times in this range will be interpreted as years.  However, if a timezone like 1800EDT is attached it will not be parsed here.
     if len(text) == 4:
+        
         num = utils.getNumberFromText(text)
         if num is not None:
             if  (num >= 1800) and (num <= 2050):
+                print("In NumericDate: " + text)
                 loneDigitYearFlag = True    
                 ## build year
                 ref_StartSpan, ref_EndSpan = s.getSpan()
-                chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_EndSpan, value=num)
+                start_idx, end_idx = re.search(text, s.getText()).span(0)
+                chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+start_idx, end_span=ref_StartSpan+end_idx, value=num)
                 chrono_id = chrono_id + 1
                 chrono_list.append(chrono_year_entity)
     
@@ -1384,8 +1387,6 @@ def hasTextMonth(suentity):
     
     #figure out if any of the tokens in the text_list are also in the months list
     intersect = list(set(text_list) & set(full_year))
-    print("My Intersect: " + str(intersect))
-    
     
     #only proceed if the intersect list has a length of 1 or more.
     if len(intersect) >= 1 :
