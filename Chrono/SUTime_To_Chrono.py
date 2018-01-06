@@ -73,8 +73,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
-        chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_list, dct)
-        
+        chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
@@ -687,7 +686,7 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildTextYear(s, chrono_id, chrono_list, dct=None):
+def buildTextYear(s, chrono_id, chrono_list):
     print("hello: " + str(s))
     boo, val, idxstart, idxend = isTextYear(s)
     print(str(boo) + str(val) + str(idxstart) + str(idxend))
@@ -695,6 +694,7 @@ def buildTextYear(s, chrono_id, chrono_list, dct=None):
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
+
         my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(my_year_entity)
@@ -704,8 +704,10 @@ def buildTextYear(s, chrono_id, chrono_list, dct=None):
     return chrono_list, chrono_id
 
 def isTextYear(suentity):
-    ########## I need to re-think this entire parsing strategy!!!!!
-    text = suentity.getText().translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    #remove ending punctuation
+    text1 = suentity.getText().strip(",.")
+    #replace all other punctuation and replace with spaces
+    text = text1.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #make sure it is all letters
     m = re.search('[a-z,A-Z,-,\s]*', text)
     if m[0] is not '':
@@ -718,7 +720,9 @@ def isTextYear(suentity):
         print("My Value Text: " + text)
         if val is not None:
             if val >= 1000 and val <= 3000:
-                start, end = suentity.getSpan()
+                print("Found Year: " + suentity.getText() + "   " + text1)
+                r = re.search(text1, suentity.getText())
+                start, end = r.span(0)
                 return True, val, start, end
             else:
                 return False, None, None, None
