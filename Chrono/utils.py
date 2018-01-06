@@ -17,7 +17,8 @@ import re
 import csv
 from collections import OrderedDict
 import numpy as np
-from word2number import w2n
+#from word2number import w2n
+from Chrono import w2ny as w2n
 import string
 import copy
 
@@ -320,10 +321,12 @@ def numericTest(tok):
     
 
     #remove punctuation
-    tok = tok.translate(str.maketrans("","",string.punctuation))
+    tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     
     #test for a number
+    #tok.strip(",.")
     val = getNumberFromText(tok)
+    print("Testing Number: Tok: " + tok + "  Val:" + str(val))
     if val is not None:
         return True
     return False
