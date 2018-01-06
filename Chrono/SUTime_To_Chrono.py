@@ -676,13 +676,16 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 #END_MODULE
 ####    
 
-## Parses a sutime entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
+
+## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
 # @param s The SUtime entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
+# ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
+#        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
 def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
     boo, val, idxstart, idxend = hasTextMonth(s)
     if boo:
@@ -714,7 +717,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
 
         #idx_end is the last index of the month.  If there are any characters after it the length of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
-            substr = s.getText()[idxend:len(s.getText())]
+            substr = s.getText()[idxend:].strip(",.").strip()
 
             num = utils.getNumberFromText(substr)
             if num is not None:
@@ -738,8 +741,15 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                         elif this_dct < dct:
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
-                #elif num >=1000:
-                    ##add as year
+                elif num >=1000 and num <=3000:
+                    print("Found a year: " + substr + " Value: " + str(num))
+                    year_startidx, year_endidx = getSpan(s.getText(), substr)
+                    abs_Sspan = ref_Sspan + year_startidx
+                    abs_Espan = ref_Sspan + year_endidx
+                    my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
+                    chrono_list.append(my_year_entity)
+                    my_year_entity.set_sub_interval(my_month_entity.get_id())
+                    chrono_id = chrono_id + 1
             else:
                 ##parse and process each token
                 ##replace punctuation 
@@ -769,8 +779,14 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                                 elif this_dct < dct:
                                     chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                                     chrono_id = chrono_id + 1
-                        #elif num >=1000:
-                            ##add as year
+                        elif num >=1000 and num <=3000:
+                            year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
+                            abs_Sspan = ref_Sspan + year_startidx
+                            abs_Espan = ref_Sspan + year_endidx
+                            my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
+                            chrono_list.append(my_year_entity)
+                            my_year_entity.set_sub_interval(my_month_entity.get_id())
+                            chrono_id = chrono_id + 1
                     
                 
         

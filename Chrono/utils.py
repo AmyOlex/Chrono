@@ -326,7 +326,7 @@ def numericTest(tok):
     #test for a number
     #tok.strip(",.")
     val = getNumberFromText(tok)
-    print("Testing Number: Tok: " + tok + "  Val:" + str(val))
+    #print("Testing Number: Tok: " + tok + "  Val:" + str(val))
     if val is not None:
         return True
     return False
