@@ -103,6 +103,7 @@ def buildChronoSubIntervals(chrono_list):
     minute = None
     second = None
     daypart = None
+    dayweek = None
     
     ## loop through all entities and pull out the approriate IDs
     for e in chrono_list:
@@ -120,8 +121,10 @@ def buildChronoSubIntervals(chrono_list):
             minute = e
         elif e_type == "Second-Of-Minute":
             second = e
-        #elif e_type = "Part-Of-Day":
-        #    daypart = e
+        elif e_type == "Part-Of-Day":
+            daypart = e
+        elif e_type == "Day-Of-Week":
+            dayweek = e
         
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
@@ -134,8 +137,12 @@ def buildChronoSubIntervals(chrono_list):
         month.set_sub_interval(day.get_id())
     if month is not None and year is not None:
         year.set_sub_interval(month.get_id())
-    #if day is not None and daypart is not None and hour is None:
-    #    day.set_sub_interval(daypart.get_id())
+    if dayweek is not None and hour is not None:
+        dayweek.set_sub_interval(hour.get_id())
+    if dayweek is not None and daypart is not None and hour is None:
+        dayweek.set_sub_interval(daypart.get_id())
+    if day is not None and daypart is not None and hour is None:
+        day.set_sub_interval(daypart.get_id())
     
     return chrono_list
 
