@@ -938,7 +938,32 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     ref_Sspan, ref_Espan = s.getSpan()
     #print("SUTime Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
-    if boo:
+
+    # FIND YESTERDAYS!
+    # print("***************{}**************".format(s.getText()))
+    if s.getText() == "yesterday":
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                        end_span=abs_Espan, calendar_type=val, number=None)
+        chrono_id = chrono_id + 1
+        my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                   end_span=abs_Espan,
+                                                   repeating_interval=str(chrono_id - 1) + "entity")
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_last_entity)
+        # print("**************Yesterday!*****************")
+        chrono_list.append(my_entity)
+    # elif s.getText() == "recently":
+    #     abs_Sspan = ref_Sspan + idxstart
+    #     abs_Espan = ref_Sspan + idxend
+    #     my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan)
+    #     chrono_id = chrono_id + 1
+    #     chrono_list.append(my_last_entity)
+    #     print("**************Yesterday!*****************==============================================")
+
+
+    elif boo:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         
@@ -951,6 +976,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         
         # extract ML features
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
+
         # classify into period or interval
         if(classifier[1] == "NN"):
             my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
@@ -958,9 +984,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         else:
             my_class = classifier[0].classify(my_features)
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-            
-            
-            
+
         # if 1 then it is a period, if 0 then it is an interval  
         if(my_class == 1):
             my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
@@ -968,7 +992,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         else:
             my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val, number=None)
             chrono_id = chrono_id + 1
-        
+
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
         if idxstart > 0:
             substr = s.getText()[0:idxstart]
@@ -1063,7 +1087,6 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                         my_entity.set_number(my_number_entity.get_id())
                     
             chrono_list.append(my_entity)
-    
             
     return chrono_list, chrono_id
 ####
