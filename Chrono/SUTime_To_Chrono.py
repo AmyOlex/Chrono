@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        #print(s)
+        print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False
@@ -284,7 +284,7 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
 
 
 ## Takes in list of SUTime output and converts to ChronoEntity
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param s The sutime entity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
@@ -1825,14 +1825,14 @@ def has24HourTime(suentity, loneDigitYearFlag):
 
 
 ## Takes in a single text string and identifies if it has any 4 digit year phrases
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasYear(suentity, loneDigitYearFlag):
     
     text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
     #convert to list
     text_list = text_norm.split(" ")
 
@@ -1861,7 +1861,17 @@ def hasYear(suentity, loneDigitYearFlag):
                     return True, re.compile("-").split(text)[0], start_idx, end_idx, loneDigitYearFlag
                 else:
                    return False, None, None, None, loneDigitYearFlag
-        
+            ## special case to look for c.yyyy
+            elif len(text)==6 is not None:
+                r = re.search("c\.([0-9]{4})", text)
+                if r is not None:
+                    print("Group0: " + r.group(1))
+                    rval = utils.getNumberFromText(r.group(1))
+                    if rval is not None:
+                        if rval >=1000 and rval<=3000:
+                            start_idx, end_idx = r.span(1)
+                            return True, rval, start_idx, end_idx, loneDigitYearFlag
+                        
         return False, None, None, None, loneDigitYearFlag #if no 4 digit year expressions were found return false            
 
     else:
