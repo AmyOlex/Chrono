@@ -451,9 +451,9 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
                     
                 chrono_list.append(chrono_day_entity)
                
-            chrono_list.append(            chrono_month_entity)
+            chrono_list.append(chrono_month_entity)
             
-        chrono_list.append(        chrono_2_digit_year_entity)
+        chrono_list.append(chrono_2_digit_year_entity)
 
               
     return chrono_list, chrono_id, chrono_minute_flag, chrono_second_flag
@@ -694,9 +694,9 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 def buildTextYear(s, chrono_id, chrono_list):
-    print("hello: " + str(s))
+    
     boo, val, idxstart, idxend = isTextYear(s)
-    print(str(boo) + str(val) + str(idxstart) + str(idxend))
+    
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -705,9 +705,7 @@ def buildTextYear(s, chrono_id, chrono_list):
         my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(my_year_entity)
-        print("Adding Year Entity TextYear...")
-    
-        
+
     return chrono_list, chrono_id
 
 def isTextYear(suentity):
@@ -724,10 +722,9 @@ def isTextYear(suentity):
             if utils.getNumberFromText(t) is None:
                 return False, None, None, None
         val = utils.getNumberFromText(text)
-        print("My Value Text: " + text)
+        
         if val is not None:
             if val >= 1000 and val <= 3000:
-                print("Found Year: " + suentity.getText() + "   " + text1)
                 r = re.search(text1, suentity.getText())
                 start, end = r.span(0)
                 return True, val, start, end
@@ -803,14 +800,12 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
                 elif num >=1000 and num <=3000:
-                    print("Found a year: " + substr + " Value: " + str(num))
                     year_startidx, year_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + year_startidx
                     abs_Espan = ref_Sspan + year_endidx
                     my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                     chrono_list.append(my_year_entity)
                     my_year_entity.set_sub_interval(my_month_entity.get_id())
-                    print("Adding Year Entity TextMonth1...")
                     chrono_id = chrono_id + 1
             else:
                 ##parse and process each token
@@ -848,14 +843,8 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                             my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                             chrono_list.append(my_year_entity)
                             my_year_entity.set_sub_interval(my_month_entity.get_id())
-                            print("Adding Year Entity TextMonth2...")
                             chrono_id = chrono_id + 1
-                    
-                
-        
-                
-                
-                      
+     
         chrono_list.append(my_month_entity)
     
         
