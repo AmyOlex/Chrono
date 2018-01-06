@@ -122,7 +122,6 @@ def year_formation(number_words):
     numbers = []
     century = number_words[0]
     decade = number_formation(number_words[1:len(number_words)])
-    print("My decade: " + str(decade))
     #if decade is 0-9, like in 2006, we write it as "two thousand six", which can be parsed normally.
     if century in century_words.keys() and decade >= 10:
         numbers.append(century_words[century]*100)
@@ -132,7 +131,6 @@ def year_formation(number_words):
         if 100 in numbers:
             return numbers[0]
         else:
-            print("Returning a year")
             return numbers[0] + numbers[1]
         
     else:

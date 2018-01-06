@@ -413,7 +413,6 @@ def getTemporalPhrases(chroList, doctime):
             s1,e1 = chroList[n].getSpan()
             s2,e2 = chroList[n+1].getSpan()
             if e1+1 != s2 and inphrase:
-                print("has new line: " + str(chroList[n]))
                 phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
                 id_counter = id_counter + 1
                 tmpPhrase = []
