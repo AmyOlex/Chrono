@@ -235,7 +235,7 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
             if (m <= 12) and (d <= 31):
                 ref_StartSpan, ref_EndSpan = s.getSpan()
                 #add year
-                chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+6, value=y)
+                chrono_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+6, value=y)
                 chrono_id = chrono_id + 1
                 #add month
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m])
@@ -258,7 +258,7 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
                     if (m2 <= 12) and (d2 <= 31):
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         #add year
-                        chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, value=y2)
+                        chrono_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, value=y2)
                         chrono_id = chrono_id + 1
                         #add month
                         chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+2, end_span=ref_StartSpan+4, month_type=calendar.month_name[m2])
@@ -385,6 +385,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        print("Adding 2-digit-year: " + text)
         chrono_2_digit_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)
         chrono_id = chrono_id + 1
         
