@@ -121,7 +121,7 @@ def number_formation(number_words):
 def year_formation(number_words):
     numbers = []
     if number_words[0] in century_words.keys():
-        numbers.append(century_words[number_words[0]]*1000)
+        numbers.append(century_words[number_words[0]]*100)
         numbers.append(number_formation(number_words[1:len(number_words)]))
         
         if 100 in numbers:
