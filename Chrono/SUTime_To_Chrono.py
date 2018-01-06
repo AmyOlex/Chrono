@@ -743,7 +743,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
             else:
                 ##parse and process each token
                 ##replace punctuation 
-                substr = substr.translate(str.maketrans("", "", string.punctuation))
+                substr = substr.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
                 ##split on spaces
                 tokenized_text = WhitespaceTokenizer().tokenize(substr)
                 for i in range(0,len(tokenized_text)):
