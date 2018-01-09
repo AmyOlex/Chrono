@@ -24,7 +24,7 @@ cd anaforatools
 
 ## run the evaluation script
 echo "Evaluating Chrono Test Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart
+python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --include This --per-document
 #python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart
 
 #python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart Period Calendar-Interval --per-document
