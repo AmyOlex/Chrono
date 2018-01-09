@@ -1050,6 +1050,17 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         else:
             my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val, number=None)
             chrono_id = chrono_id + 1
+            ### Check to see if this calendar interval has a "this" in front of it
+            prior_tok = ref_list[ref_idx-1].getText().lower()
+            if prior_tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))) == "this":
+                # add a This entitiy and link it to the interval.
+                start_span, end_span = re.search(prior_tok, "this").span(0)
+                prior_start, prior_end = ref_list[ref_idx-1].getSpan()
+                chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
+                chrono_id = chrono_id + 1
+                chrono_this_entity.set_repeating_interval(my_entity.get_id())
+                chrono_list.append(chrono_this_entity)
+            
 
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
         if idxstart > 0:

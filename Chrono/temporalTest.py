@@ -77,7 +77,7 @@ def hasPeriodInterval(text):
     #convert to all lower
     text_lower = text.lower()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
     text_list = text_norm.split(" ")
     
