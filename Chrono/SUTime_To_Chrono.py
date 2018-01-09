@@ -74,6 +74,8 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
         chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
+        
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
@@ -151,6 +153,42 @@ def buildChronoSubIntervals(chrono_list):
 ####
 
 #################### Start buildX() Methods #######################
+
+## Takes in a Chrono entity and identifies if it should be annotated as a This entity
+# @author Amy Olex
+# @param s The chrono entity to parse 
+# @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
+# @param chrono_list The list of Chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+
+def buildThis(s, chrono_id, chrono_list):
+    
+    #convert to lowercase
+    text = s.getText().lower()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    ## find the word "now" as a single token
+    for tok in text_list:
+        if tok == "now":
+            ## get start end coordinates in original temporal phrase
+            start_idx, end_idx = re.search("now", text).span(0)
+            ref_startSpan, ref_endSpan = s.getSpan()
+            
+            ## create a This entity
+            print("Adding a THIS entity")
+            chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
+            chrono_id = chrono_id + 1
+            chrono_list.append(chrono_this_entity)
+    
+    return chrono_list, chrono_id 
+
+
+####
+#END_MODULE
+####
 
 ## Takes in a Chrono entity and identifies if it is a numeric date format
 # @author Amy Olex
