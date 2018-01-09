@@ -28,7 +28,7 @@ class ChronoEntity:
 	def __str__(self):
 		return self.entityID + " " + self.type
 	
-	## Compares two Entities (ex. entity1 == entity2)
+	## Compares two ChronoEntities (ex. entity1 == entity2)
 	# @return Return True if they have the same span and type, false otherwise
 	def __eq__(self, other):
 		return self.start_span == other.start_span and self.end_span == other.end_span and self.type == other.type

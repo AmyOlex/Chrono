@@ -8,14 +8,19 @@ import nltk
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem.snowball import SnowballStemmer
 from Chrono import chronoEntities as t6
+from Chrono import temporalTest as tt
 import dateutil.parser
 import datetime
 from Chrono import SUTime_To_Chrono
+from Chrono import sutimeEntity as su
 import re
 import csv
 from collections import OrderedDict
 import numpy as np
-from word2number import w2n
+#from word2number import w2n
+from Chrono import w2ny as w2n
+import string
+import copy
 
 ## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -291,6 +296,206 @@ def get_features(data_file):
 ######
 ## END Function
 ###### 
+
+## Marks all the reference tokens that are identified as temporal.
+# @author Amy Olex
+# @param refToks The list of reference Tokens
+# @return modified list of reftoks
+def markTemporal(refToks):
+    for ref in refToks:
+        #mark if numeric
+        ref.setNumeric(numericTest(ref.getText()))
+        #mark if temporal
+        ref.setTemporal(temporalTest(ref.getText()))
         
+    return refToks
+####
+#END_MODULE
+####
+
+## Tests to see if the token is a number.
+# @author Amy Olex
+# @param tok The token string
+# @return Boolean true if numeric, false otherwise
+def numericTest(tok):
+    
+
+    #remove punctuation
+    tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+    
+    #test for a number
+    #tok.strip(",.")
+    val = getNumberFromText(tok)
+    #print("Testing Number: Tok: " + tok + "  Val:" + str(val))
+    if val is not None:
+        return True
+    return False
+####
+#END_MODULE
+#### 
+
+
+## Tests to see if the token is a temporal value.
+# @author Amy Olex
+# @param tok The token string
+# @return Boolean true if temporal, false otherwise
+def temporalTest(tok):
+    #remove punctuation
+    #tok = tok.translate(str.maketrans("", "", string.punctuation))
+    
+    #if the token has a dollar sign or percent sign it is not temporal
+    m = re.search('[#$%]', tok)
+    if m is not None:
+        return False
+    
+    #look for date patterns mm[/-]dd[/-]yyyy, mm[/-]dd[/-]yy, yyyy[/-]mm[/-]dd, yy[/-]mm[/-]dd
+    m = re.search('([0-9]{1,4}[-/][0-9]{1,2}[-/][0-9]{1,4})', tok)
+    if m is not None:
+        return True
+    #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998 or 980304
+    m = re.search('([0-9]{4,8})', tok)
+    if m is not None:
+        if tt.has24HourTime(m.group(0)):
+            return True
+        if tt.hasDateOrTime(m.group(0)):
+            return True
+    
+    #look for time patterns hh:mm:ss
+    m = re.search('([0-9]{2}:[0-9]{2}:[0-9]{2})', tok)
+    if m is not None:
+        return True
+     
+    #look for text month    
+    if tt.hasTextMonth(tok):
+        return True
+    if tt.hasDayOfWeek(tok):
+        return True
+    if tt.hasPeriodInterval(tok):
+        return True
+    if tt.hasAMPM(tok):
+        return True
+    if tt.hasPartOfWeek(tok):
+        return True
+    if tt.hasSeasonOfYear(tok):
+        return True
+    if tt.hasPartOfDay(tok):
+        return True
+    if tt.hasTimeZone(tok):
+        return True
+    
+    
+####
+#END_MODULE
+#### 
+
+## Takes in a Reference List that has had numeric and temporal tokens marked, and identifies all the 
+## temporal phrases by finding consecutive temporal tokens.
+# @author Amy Olex
+# @param chroList The list of temporally marked reference tokens
+# @return A list of temporal phrases for parsing
+def getTemporalPhrases(chroList, doctime):
+    #sutimeEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], sutype=j['type'], suvalue=j['value'], doctime=doctime)
+    id_counter = 0
+    
+    phrases = [] #the empty phrases list of sutime entities
+    tmpPhrase = [] #the temporary phrases list.
+    inphrase = False
+    for n in range(0,len(chroList)-1):
+        #if temporal start building a list 
+        #print("Filter Start Phrase: " + str(chroList[n]))   
+        if chroList[n].isTemporal():
+            #print("Is Temporal: " + str(chroList[n]))
+            if not inphrase:
+                inphrase = True
+            #in phrase, so add new element
+            tmpPhrase.append(copy.copy(chroList[n]))
+            # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
+            s1,e1 = chroList[n].getSpan()
+            s2,e2 = chroList[n+1].getSpan()
+            if e1+1 != s2 and inphrase:
+                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                id_counter = id_counter + 1
+                tmpPhrase = []
+                inphrase = False
+                
+            
+        elif chroList[n].isNumeric():
+            #print("Not Temporal, but Numeric: " + str(chroList[n]))
+            #if the token has a dollar sign or percent sign do not count it as temporal
+            m = re.search('[#$%]', chroList[n].getText())
+            if m is None:
+                #print("No #$%: " + str(chroList[n]))
+                #check for the "million" text phrase
+                answer = next((m for m in ["million", "billion", "trillion"] if m in chroList[n].getText().lower()), None)
+                if answer is None:
+                    #print("No million/billion/trillion: " + str(chroList[n]))
+                    if not inphrase:
+                        inphrase = True
+                    #in phrase, so add new element
+                    tmpPhrase.append(copy.copy(chroList[n]))
+            # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
+            s1,e1 = chroList[n].getSpan()
+            s2,e2 = chroList[n+1].getSpan()
+            if e1+1 != s2 and inphrase:
+                print("has new line: " + str(chroList[n]))
+                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                id_counter = id_counter + 1
+                tmpPhrase = []
+                inphrase = False
+        else:
+            #current element is not temporal, check to see if inphrase
+            #print("Not Temporal, or numeric " + str(chroList[n]))
+            if inphrase:
+                #set to False, add tmpPhrase as sutime entitiy to phrases, then reset tmpPhrase
+                inphrase = False
+                #check to see if only a single element and element is numeric, then do not add.
+                if len(tmpPhrase) != 1:
+                    #print("multi element phrase ")
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                elif not tmpPhrase[0].isNumeric():
+                    #print("not numeric: " + str(chroList[n-1]))
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                elif tmpPhrase[0].isNumeric() and tmpPhrase[0].isTemporal():
+                    #print("temporal and numeric: " + str(chroList[n-1]))
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                else:
+                    #print("Element not added: " + str(chroList[n-1]))
+                    tmpPhrase = []
+        
+            
+    return phrases
+
+####
+#END_MODULE
+#### 
+
+
+## Takes in a list of reference tokens identified as a temporal phrase and returns one sutimeEntity.
+# @author Amy Olex
+# @param items The list of reference tokesn
+# @param counter The ID this sutime entity should have
+# @param doctime The document time.
+# @return A single sutime entity with the text span and string concatenated.
+def createSUentity(items, counter, doctime):
+    start_span, tmp = items[0].getSpan()
+    tmp, end_span = items[len(items)-1].getSpan()
+    text = ""
+    for i in items:
+        text = text + ' ' + i.getText()
+    
+    return su.sutimeEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, sutype=None, suvalue=None, doctime=doctime)
+
+####
+#END_MODULE
+####                 
+                
+        
+    
     
     

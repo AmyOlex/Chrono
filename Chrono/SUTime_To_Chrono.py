@@ -63,7 +63,9 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
 
         chrono_tmp_list, chrono_id  = build24HourTime(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
 
-        #call non-standard formatting temporal phrases, 
+        #call non-standard formatting temporal phrases
+        chrono_tmp_list, chrono_id, loneDigitYearFlag  = buildNumericDate(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
+         
         chrono_tmp_list, chrono_id  = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct)
         chrono_tmp_list, chrono_id  = buildAMPM(s, chrono_id, chrono_tmp_list)
@@ -71,8 +73,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
-     
-        
+        chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
@@ -87,6 +88,9 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
 ####
 
 
+ 
+
+
 ## Takes in list of ChronoEntities and identifies sub-intervals within the list
 # @author Amy Olex
 # @param list of ChronoEntities
@@ -98,6 +102,8 @@ def buildChronoSubIntervals(chrono_list):
     hour = None
     minute = None
     second = None
+    daypart = None
+    dayweek = None
     
     ## loop through all entities and pull out the approriate IDs
     for e in chrono_list:
@@ -115,6 +121,10 @@ def buildChronoSubIntervals(chrono_list):
             minute = e
         elif e_type == "Second-Of-Minute":
             second = e
+        elif e_type == "Part-Of-Day":
+            daypart = e
+        elif e_type == "Day-Of-Week":
+            dayweek = e
         
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
@@ -127,6 +137,12 @@ def buildChronoSubIntervals(chrono_list):
         month.set_sub_interval(day.get_id())
     if month is not None and year is not None:
         year.set_sub_interval(month.get_id())
+    if dayweek is not None and hour is not None:
+        dayweek.set_sub_interval(hour.get_id())
+    if dayweek is not None and daypart is not None and hour is None:
+        dayweek.set_sub_interval(daypart.get_id())
+    if day is not None and daypart is not None and hour is None:
+        day.set_sub_interval(daypart.get_id())
     
     return chrono_list
 
@@ -136,9 +152,142 @@ def buildChronoSubIntervals(chrono_list):
 
 #################### Start buildX() Methods #######################
 
+## Takes in a Chrono entity and identifies if it is a numeric date format
+# @author Amy Olex
+# @param s The chrono entity to parse 
+# @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
+# @param chrono_list The list of Chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+
+def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
+    
+    text = s.getText().strip(".,")
+    ## See if there is a 4 digit number and assume it is a year if between 1800 and 2050
+    ## Note that 24hour times in this range will be interpreted as years.  However, if a timezone like 1800EDT is attached it will not be parsed here.
+    if len(text) == 4:
+        
+        num = utils.getNumberFromText(text)
+        if num is not None:
+            if  (num >= 1800) and (num <= 2050):
+                print("In NumericDate: " + text)
+                loneDigitYearFlag = True    
+                ## build year
+                ref_StartSpan, ref_EndSpan = s.getSpan()
+                start_idx, end_idx = re.search(text, s.getText()).span(0)
+                chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+start_idx, end_span=ref_StartSpan+end_idx, value=num)
+                chrono_id = chrono_id + 1
+                chrono_list.append(chrono_year_entity)
+    
+    ## parse out the condesnsed date format like 19980303 or 03031998.
+    elif len(text) == 8 and utils.getNumberFromText(text) is not None:
+        # Identify format yyyymmdd
+        y = utils.getNumberFromText(text[0:4])
+        m = utils.getNumberFromText(text[4:6])
+        d = utils.getNumberFromText(text[6:8])
+        if y is not None:
+            if  (y >= 1800) and (y <= 2050) and (m <= 12) and (d <= 31):   
+                ref_StartSpan, ref_EndSpan = s.getSpan()
+                #add year
+                chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+4, value=y)
+                chrono_id = chrono_id + 1
+                #add month
+                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+6, month_type=calendar.month_name[m])
+                chrono_id = chrono_id + 1
+                chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
+                #add day
+                chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+6, end_span=ref_StartSpan+8, value=d)
+                chrono_id = chrono_id + 1
+                chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
+                
+                chrono_list.append(chrono_year_entity)
+                chrono_list.append(chrono_month_entity)
+                chrono_list.append(chrono_day_entity)
+            else:
+                # test for mmddyyyy
+                y2 = utils.getNumberFromText(text[4:8])
+                m2 = utils.getNumberFromText(text[0:2])
+                d2 = utils.getNumberFromText(text[2:4])
+                if y2 is not None:
+                    if  (y2 >= 1800) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
+                        ref_StartSpan, ref_EndSpan = s.getSpan()
+                        #add year
+                        chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+8, value=y)
+                        chrono_id = chrono_id + 1
+                        #add month
+                        chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m])
+                        chrono_id = chrono_id + 1
+                        chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
+                        #add day
+                        chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+2, end_span=ref_StartSpan+4, value=d)
+                        chrono_id = chrono_id + 1
+                        chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
+                
+                        chrono_list.append(chrono_year_entity)
+                        chrono_list.append(chrono_month_entity)
+                        chrono_list.append(chrono_day_entity)
+    
+    ## parse out the condesnsed date format like 030399 or 990303. 
+    ## Note that dates such as 12-01-2006 (120106 vs 061201) and similar are not distinguishable.
+    elif len(text) == 6 and utils.getNumberFromText(text) is not None:
+        # Identify format mmddyy
+        
+        y = utils.getNumberFromText(text[4:6])
+        m = utils.getNumberFromText(text[0:2])
+        d = utils.getNumberFromText(text[2:4])
+        if y is not None and m is not None and d is not None:
+            if (m <= 12) and (d <= 31):
+                ref_StartSpan, ref_EndSpan = s.getSpan()
+                #add year
+                chrono_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+6, value=y)
+                chrono_id = chrono_id + 1
+                #add month
+                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m])
+                chrono_id = chrono_id + 1
+                chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
+                #add day
+                chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+2, end_span=ref_StartSpan+4, value=d)
+                chrono_id = chrono_id + 1
+                chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
+                
+                chrono_list.append(chrono_year_entity)
+                chrono_list.append(chrono_month_entity)
+                chrono_list.append(chrono_day_entity)
+            else:
+                # test for yymmdd
+                y2 = utils.getNumberFromText(text[0:2])
+                m2 = utils.getNumberFromText(text[2:4])
+                d2 = utils.getNumberFromText(text[4:6])
+                if y2 is not None:
+                    if (m2 <= 12) and (d2 <= 31):
+                        ref_StartSpan, ref_EndSpan = s.getSpan()
+                        #add year
+                        chrono_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, value=y2)
+                        chrono_id = chrono_id + 1
+                        #add month
+                        chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+2, end_span=ref_StartSpan+4, month_type=calendar.month_name[m2])
+                        chrono_id = chrono_id + 1
+                        chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
+                        #add day
+                        chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+6, value=d2)
+                        chrono_id = chrono_id + 1
+                        chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
+                
+                        chrono_list.append(chrono_year_entity)
+                        chrono_list.append(chrono_month_entity)
+                        chrono_list.append(chrono_day_entity)
+
+    return chrono_list, chrono_id, loneDigitYearFlag
+
+####
+#END_MODULE
+####   
+
+
+
+
 
 ## Takes in list of SUTime output and converts to ChronoEntity
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param s The sutime entity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
@@ -239,6 +388,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        print("Adding 2-digit-year: " + text)
         chrono_2_digit_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)
         chrono_id = chrono_id + 1
         
@@ -305,9 +455,9 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
                     
                 chrono_list.append(chrono_day_entity)
                
-            chrono_list.append(            chrono_month_entity)
+            chrono_list.append(chrono_month_entity)
             
-        chrono_list.append(        chrono_2_digit_year_entity)
+        chrono_list.append(chrono_2_digit_year_entity)
 
               
     return chrono_list, chrono_id, chrono_minute_flag, chrono_second_flag
@@ -541,13 +691,63 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
 #END_MODULE
 ####    
 
-## Parses a sutime entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
+## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The Chrono entity to parse 
+# @param chronoID The current chronoID to increment as new chronoentities are added to list.
+# @param chronoList The list of chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+def buildTextYear(s, chrono_id, chrono_list):
+    
+    boo, val, idxstart, idxend = isTextYear(s)
+    
+    if boo:
+        ref_Sspan, ref_Espan = s.getSpan()
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+
+        my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_year_entity)
+
+    return chrono_list, chrono_id
+
+def isTextYear(suentity):
+    #remove ending punctuation
+    text1 = suentity.getText().strip(",.")
+    #replace all other punctuation and replace with spaces
+    text = text1.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    #make sure it is all letters
+    m = re.search('[a-z,A-Z,-,\s]*', text)
+    if m[0] is not '':
+        ##split on spaces
+        tokenized_text = WhitespaceTokenizer().tokenize(text)
+        for t in tokenized_text:
+            if utils.getNumberFromText(t) is None:
+                return False, None, None, None
+        val = utils.getNumberFromText(text)
+        
+        if val is not None:
+            if val >= 1000 and val <= 3000:
+                r = re.search(text1, suentity.getText())
+                start, end = r.span(0)
+                return True, val, start, end
+            else:
+                return False, None, None, None
+        else:
+            return False, None, None, None
+    return False, None, None, None
+
+
+## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
+# @author Amy Olex
+# @param s The Chrono entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
+# ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
+#        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
 def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
     boo, val, idxstart, idxend = hasTextMonth(s)
     if boo:
@@ -579,7 +779,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
 
         #idx_end is the last index of the month.  If there are any characters after it the length of the string will be greater than the endidx.
         if(idxend < len(s.getText())):
-            substr = s.getText()[idxend:len(s.getText())]
+            substr = s.getText()[idxend:].strip(",.").strip()
 
             num = utils.getNumberFromText(substr)
             if num is not None:
@@ -603,12 +803,18 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                         elif this_dct < dct:
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
-                #elif num >=1000:
-                    ##add as year
+                elif num >=1000 and num <=3000:
+                    year_startidx, year_endidx = getSpan(s.getText(), substr)
+                    abs_Sspan = ref_Sspan + year_startidx
+                    abs_Espan = ref_Sspan + year_endidx
+                    my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
+                    chrono_list.append(my_year_entity)
+                    my_year_entity.set_sub_interval(my_month_entity.get_id())
+                    chrono_id = chrono_id + 1
             else:
                 ##parse and process each token
                 ##replace punctuation 
-                substr = substr.translate(str.maketrans("", "", string.punctuation))
+                substr = substr.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
                 ##split on spaces
                 tokenized_text = WhitespaceTokenizer().tokenize(substr)
                 for i in range(0,len(tokenized_text)):
@@ -634,14 +840,15 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
                                 elif this_dct < dct:
                                     chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                                     chrono_id = chrono_id + 1
-                        #elif num >=1000:
-                            ##add as year
-                    
-                
-        
-                
-                
-                      
+                        elif num >=1000 and num <=3000:
+                            year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
+                            abs_Sspan = ref_Sspan + year_startidx
+                            abs_Espan = ref_Sspan + year_endidx
+                            my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
+                            chrono_list.append(my_year_entity)
+                            my_year_entity.set_sub_interval(my_month_entity.get_id())
+                            chrono_id = chrono_id + 1
+     
         chrono_list.append(my_month_entity)
     
         
@@ -731,7 +938,32 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     ref_Sspan, ref_Espan = s.getSpan()
     #print("SUTime Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
-    if boo:
+
+    # FIND YESTERDAYS!
+    # print("***************{}**************".format(s.getText()))
+    if s.getText() == "yesterday":
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                        end_span=abs_Espan, calendar_type=val, number=None)
+        chrono_id = chrono_id + 1
+        my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                   end_span=abs_Espan,
+                                                   repeating_interval=str(chrono_id - 1) + "entity")
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_last_entity)
+        # print("**************Yesterday!*****************")
+        chrono_list.append(my_entity)
+    # elif s.getText() == "recently":
+    #     abs_Sspan = ref_Sspan + idxstart
+    #     abs_Espan = ref_Sspan + idxend
+    #     my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan)
+    #     chrono_id = chrono_id + 1
+    #     chrono_list.append(my_last_entity)
+    #     print("**************Yesterday!*****************==============================================")
+
+
+    elif boo:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         
@@ -744,6 +976,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         
         # extract ML features
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
+
         # classify into period or interval
         if(classifier[1] == "NN"):
             my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
@@ -751,9 +984,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         else:
             my_class = classifier[0].classify(my_features)
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-            
-            
-            
+
         # if 1 then it is a period, if 0 then it is an interval  
         if(my_class == 1):
             my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
@@ -761,7 +992,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         else:
             my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val, number=None)
             chrono_id = chrono_id + 1
-        
+
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
         if idxstart > 0:
             substr = s.getText()[0:idxstart]
@@ -856,7 +1087,6 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                         my_entity.set_number(my_number_entity.get_id())
                     
             chrono_list.append(my_entity)
-    
             
     return chrono_list, chrono_id
 ####
@@ -921,10 +1151,8 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not lone_digit_year_flag:
         ## assume format of hhmm or hhmmzzz
-        #print("24HourTime Text: " + val)
-        hour = int(val[:2])
-        minute = int(val[2:])
-        #print("24HourTime Minute:" + str(minute))
+        hour = int(val[0:2])
+        minute = int(val[2:4])
         
         #search for time zone
         ## Identify if a time zone string exists
@@ -937,15 +1165,15 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
             my_tz_entity = None
         
         ## build minute entity
-        min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxend, value=minute)
+        min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 2, end_span=ref_Sspan + idxstart + 4, value=minute)
         #print("Minute Value Added: " + str(min_entity.get_value()))
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
         if my_tz_entity is not None:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
         else:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 3, end_span=ref_Sspan + idxstart + 2, value=hour)
+            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
             
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
@@ -1159,7 +1387,7 @@ def hasTextMonth(suentity):
     #convert to all lower
     text_lower = suentity.getText().lower()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
     #convert to list
     text_list = text_norm.split(" ")
     
@@ -1183,56 +1411,55 @@ def hasTextMonth(suentity):
     #figure out if any of the tokens in the text_list are also in the months list
     intersect = list(set(text_list) & set(full_year))
     
-    
     #only proceed if the intersect list has a length of 1 or more.
     if len(intersect) >= 1 :
         #test if the intersect list contains which days.
         if len(list(set(intersect) & set (M1))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M1))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M1))[0])
             return True, "January", start_idx, end_idx
         
         if len(list(set(intersect) & set (M2))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M2))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M2))[0])
             return True, "February", start_idx, end_idx
             
         if len(list(set(intersect) & set (M3))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M3))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M3))[0])
             return True, "March", start_idx, end_idx
             
         if len(list(set(intersect) & set (M4))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M4))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M4))[0])
             return True, "April", start_idx, end_idx
             
         if len(list(set(intersect) & set (M5))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M5))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M5))[0])
             return True, "May", start_idx, end_idx
             
         if len(list(set(intersect) & set (M6))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M6))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M6))[0])
             return True, "June", start_idx, end_idx
             
         if len(list(set(intersect) & set (M7))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M7))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M7))[0])
             return True, "July", start_idx, end_idx
             
         if len(list(set(intersect) & set (M8))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M8))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M8))[0])
             return True, "August", start_idx, end_idx
             
         if len(list(set(intersect) & set (M9))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M9))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M9))[0])
             return True, "September", start_idx, end_idx
             
         if len(list(set(intersect) & set (M10))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M10))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M10))[0])
             return True, "October", start_idx, end_idx
             
         if len(list(set(intersect) & set (M11))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M11))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M11))[0])
             return True, "November", start_idx, end_idx
             
         if len(list(set(intersect) & set (M12))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (M12))[0])
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M12))[0])
             return True, "December", start_idx, end_idx
 
         else :
@@ -1450,8 +1677,8 @@ def getPeriodValue(val):
 def hasPartOfDay(suentity):
     
     #convert to all lower
-    #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    text = suentity.getText().lower()
+    #text = suentity.getText()
     #remove all punctuation
     text_norm = text.translate(str.maketrans("", "", string.punctuation))
     #convert to list
@@ -1583,15 +1810,17 @@ def hasPartOfWeek(suentity):
 # Note: This need to be called after it has checked for years
 def has24HourTime(suentity, loneDigitYearFlag):
     
-    text_lower = suentity.getText().lower() 
+    #text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
-    text_list = text_norm.split(" ")
+    stext = suentity.getText()
+    text_list = stext.split(" ")
 
-    if len(text_list)>0 and not loneDigitYearFlag:
+    if not loneDigitYearFlag:
         #loop through list looking for expression
         for text in text_list:
+            tz_format = re.search('([0-9]{4})((AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10))', text)
             if len(text) == 4:
                 num = utils.getNumberFromText(text)
                 if num is not None:
@@ -1601,24 +1830,34 @@ def has24HourTime(suentity, loneDigitYearFlag):
                         if (minute > 60) or (hour > 24):
                             return False, None, None, None
                         else:
-                            start_idx, end_idx = getSpan(text_norm, text)    
+                            start_idx, end_idx = getSpan(stext, text)    
                             return True, text, start_idx, end_idx
+            elif tz_format is not None:
+                time = tz_format[1]
+                zone = tz_format[2]
 
+                hour = utils.getNumberFromText(time[0:2])
+                minute = utils.getNumberFromText(time[2:4])
+                if (minute > 60) or (hour > 24):
+                    return False, None, None, None
+                else:
+                    start_idx, end_idx = getSpan(stext, time)    
+                    return True, time, start_idx, end_idx
 
         return False, None, None, None #if no 4 digit year expressions were found return false            
     else:
-        return False, None, None, None #if the text_list does not have any entries, return false
+        return False, None, None, None #if loneDigitYearFlag has already been set
 
 
 ## Takes in a single text string and identifies if it has any 4 digit year phrases
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasYear(suentity, loneDigitYearFlag):
     
     text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
     #convert to list
     text_list = text_norm.split(" ")
 
@@ -1647,30 +1886,20 @@ def hasYear(suentity, loneDigitYearFlag):
                     return True, re.compile("-").split(text)[0], start_idx, end_idx, loneDigitYearFlag
                 else:
                    return False, None, None, None, loneDigitYearFlag
-            ## if no date format, see if there is a 4 digit number and assume it is a year if between 1800 and 2050
-            ## Added by Amy Olex
-            elif len(text) == 4:
-                num = utils.getNumberFromText(text)
-                if num is not None:
-                    if  (num >= 1800) and (num <= 2050):
-                        start_idx, end_idx = getSpan(text_norm, text)
-                        loneDigitYearFlag = True    
-                        return True, num, start_idx, end_idx, loneDigitYearFlag
-                    else:
-                       return False, None, None, None, loneDigitYearFlag
-            ## parse out the condesnsed date format like 19980303.  Assumes the format yyyymmdd.  SUTime currently doesn't recognize this format.
-            elif len(text) == 8:
-                num = utils.getNumberFromText(text[0:4])
-                if num is not None:
-                    if  (num >= 1800) and (num <= 2050):
-                        start_idx, end_idx = getSpan(text_norm, text)    
-                        return True, num, start_idx, end_idx, loneDigitYearFlag
-                    else:
-                       return False, None, None, None, loneDigitYearFlag
-
+            ## special case to look for c.yyyy
+            elif len(text)==6 is not None:
+                r = re.search("c\.([0-9]{4})", text)
+                if r is not None:
+                    print("Group0: " + r.group(1))
+                    rval = utils.getNumberFromText(r.group(1))
+                    if rval is not None:
+                        if rval >=1000 and rval<=3000:
+                            start_idx, end_idx = r.span(1)
+                            return True, rval, start_idx, end_idx, loneDigitYearFlag
+                        
         return False, None, None, None, loneDigitYearFlag #if no 4 digit year expressions were found return false            
-    else:
 
+    else:
         return False, None, None, None, loneDigitYearFlag #if the text_list does not have any entries, return false
 
 ####
@@ -1803,6 +2032,8 @@ def hasDayOfMonth(suentity):
 
         return False, None, None, None #if the text_list does not have any entries, return false
 
+
+        return False, None, None, None #if the text_list does not have any entries, return false
 
 ####
 #END_MODULE
