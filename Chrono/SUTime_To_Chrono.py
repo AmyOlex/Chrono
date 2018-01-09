@@ -182,6 +182,24 @@ def buildThis(s, chrono_id, chrono_list):
             chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
             chrono_id = chrono_id + 1
             chrono_list.append(chrono_this_entity)
+            
+        elif tok == "today" or tok == "todays":
+            start_idx, end_idx = re.search("today", text).span(0)
+            ref_startSpan, ref_endSpan = s.getSpan()
+            
+            ## create a This entity
+            print("Adding a THIS entity")
+            chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
+            chrono_id = chrono_id + 1
+            
+            chrono_interval_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx, calendar_type="Day", number=None)
+            chrono_id = chrono_id + 1
+            
+            chrono_this_entity.set_repeating_interval(chrono_interval_entity.get_id())
+            
+            chrono_list.append(chrono_this_entity)
+            chrono_list.append(chrono_interval_entity)
+            
     
     return chrono_list, chrono_id 
 
