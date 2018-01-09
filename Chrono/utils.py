@@ -48,7 +48,7 @@ def getDocTime(file_path):
   
 ## Writes out the full XML file for all T6entities in list.
 # @author Amy Olex
-# @param t6list The list of T6 objects needed to be written in the file.
+# @param chrono_list The list of Chrono objects needed to be written in the file.
 # @param outfile A string containing the output file location and name.
 def write_xml(chrono_list, outfile):
     fout = open(outfile + ".completed.xml", "w")
@@ -67,15 +67,16 @@ def write_xml(chrono_list, outfile):
 # @author Amy Olex
 # @param refToks The list of reference Tokens
 # @param suList The list of SUtime entities to compare against
-def markTemporalRefToks(refToks, suList):
-    for ref in refToks:
-        for su in suList:
-            suStart, suEnd = su.getSpan()
-            if ref.spanOverlap(suStart, suEnd):
-                ref.setTemporal(True)
-        if ref.isTemporal() is None:
-            ref.setTemporal(False)
-    return refToks
+### I don't think we need/use this any longer.  Maybe can be recycled for something else.
+#def markTemporalRefToks(refToks, suList):
+#    for ref in refToks:
+#        for su in suList:
+#            suStart, suEnd = su.getSpan()
+#            if ref.spanOverlap(suStart, suEnd):
+#                ref.setTemporal(True)
+#        if ref.isTemporal() is None:
+#            ref.setTemporal(False)
+#    return refToks
 ####
 #END_MODULE
 ####
