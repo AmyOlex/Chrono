@@ -746,8 +746,9 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
                     #link to interval entity
                     my_entity.set_number(my_number_entity.get_id())
     
-            chrono_list.append(my_entity)
-            chrono_id = chrono_id + 1
+        chrono_list.append(my_entity)
+        chrono_id = chrono_id + 1
+            
             
     return chrono_list, chrono_id
 ####
@@ -1818,9 +1819,10 @@ def hasSeasonOfYear(suentity):
     
     #convert to all lower
     #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    text = suentity.getText().lower()
     #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+    
     #convert to list
     text_list = text_norm.split(" ")
     
