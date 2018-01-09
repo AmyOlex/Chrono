@@ -197,6 +197,17 @@ def buildThis(s, chrono_id, chrono_list):
             
             chrono_list.append(chrono_this_entity)
             chrono_list.append(chrono_interval_entity)
+        
+        ## Note, may need to look for phrases like "current week" at some point.
+        elif tok == "current":
+            ## get start end coordinates in original temporal phrase
+            start_idx, end_idx = re.search("current", text).span(0)
+            ref_startSpan, ref_endSpan = s.getSpan()
+            
+            ## create a This entity
+            chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
+            chrono_id = chrono_id + 1
+            chrono_list.append(chrono_this_entity)
             
     
     return chrono_list, chrono_id 
