@@ -328,7 +328,6 @@ def hasTempText(text):
         if answer is not None:
             answer2 = next((m for m in temp_text if t in m), None)
             if answer2 is not None:
-                print("Found a NOW: " + text)
                 return True
             else:
                 return False

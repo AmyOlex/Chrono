@@ -178,7 +178,6 @@ def buildThis(s, chrono_id, chrono_list):
             ref_startSpan, ref_endSpan = s.getSpan()
             
             ## create a This entity
-            print("Adding a THIS entity")
             chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
             chrono_id = chrono_id + 1
             chrono_list.append(chrono_this_entity)
@@ -188,7 +187,6 @@ def buildThis(s, chrono_id, chrono_list):
             ref_startSpan, ref_endSpan = s.getSpan()
             
             ## create a This entity
-            print("Adding a THIS entity")
             chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
             chrono_id = chrono_id + 1
             
@@ -225,7 +223,6 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
         num = utils.getNumberFromText(text)
         if num is not None:
             if  (num >= 1800) and (num <= 2050):
-                print("In NumericDate: " + text)
                 loneDigitYearFlag = True    
                 ## build year
                 ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -444,7 +441,6 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        print("Adding 2-digit-year: " + text)
         chrono_2_digit_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)
         chrono_id = chrono_id + 1
         
@@ -1047,6 +1043,17 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         if(my_class == 1):
             my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
             chrono_id = chrono_id + 1
+            ### Check to see if this calendar interval has a "this" in front of it
+            prior_tok = ref_list[ref_idx-1].getText().lower()
+            if prior_tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))) == "this":
+                # add a This entitiy and link it to the interval.
+                start_span, end_span = re.search(prior_tok, "this").span(0)
+                prior_start, prior_end = ref_list[ref_idx-1].getSpan()
+                print("Adding a Period THIS")
+                chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
+                chrono_id = chrono_id + 1
+                chrono_this_entity.set_period(my_entity.get_id())
+                chrono_list.append(chrono_this_entity)
         else:
             my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val, number=None)
             chrono_id = chrono_id + 1
@@ -1056,6 +1063,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 # add a This entitiy and link it to the interval.
                 start_span, end_span = re.search(prior_tok, "this").span(0)
                 prior_start, prior_end = ref_list[ref_idx-1].getSpan()
+                print("Adding a Calendar-Interval THIS")
                 chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
                 chrono_id = chrono_id + 1
                 chrono_this_entity.set_repeating_interval(my_entity.get_id())
