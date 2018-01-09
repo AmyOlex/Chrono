@@ -289,8 +289,6 @@ def markTemporal(refToks):
 # @param tok The token string
 # @return Boolean true if numeric, false otherwise
 def numericTest(tok):
-    
-
     #remove punctuation
     tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     
@@ -336,7 +334,7 @@ def temporalTest(tok):
     if m is not None:
         return True
      
-    #look for text month    
+   
     if tt.hasTextMonth(tok):
         return True
     if tt.hasDayOfWeek(tok):
@@ -352,6 +350,8 @@ def temporalTest(tok):
     if tt.hasPartOfDay(tok):
         return True
     if tt.hasTimeZone(tok):
+        return True
+    if tt.hasTempText(tok):
         return True
     
     
