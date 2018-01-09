@@ -1024,11 +1024,13 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         abs_Espan = ref_Sspan + idxend
         
         # get index of overlapping reference token
-        ref_idx = -1
-        for i in range(0,len(ref_list)):
-            if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
-                ref_idx = i
-                break
+        #ref_idx = -1
+        #for i in range(0,len(ref_list)):
+        #    if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
+        #        ref_idx = i
+        #        break
+        
+        ref_idx = utils.getRefIdx(ref_list, abs_Sspan, abs_Espan)
         
         # extract ML features
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())

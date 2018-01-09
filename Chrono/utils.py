@@ -464,7 +464,24 @@ def createSUentity(items, counter, doctime):
 
 ####
 #END_MODULE
-####                 
+####   
+
+
+## Takes in a reference list of tokens, a start span and an end span
+# @author Amy Olex
+# @param ref_list The list of reference tokens we want an index for.
+# @param start_span The start span of the token we need to find in ref_list
+# @param end_span The ending span of the token we need to find
+# @return Returns the index of the ref_list token that overlaps the start and end spans provided, or -1 if not found.
+def getRefIdx(ref_list, start_span, end_span):
+    for i in range(0,len(ref_list)):
+        if(overlap(ref_list[i].getSpan(),(start_span,end_span))):
+            return i              
+    return -1
+    
+####
+#END_MODULE
+####           
                 
         
     
