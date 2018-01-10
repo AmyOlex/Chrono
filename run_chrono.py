@@ -33,8 +33,6 @@ from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from Chrono import SUTime_To_Chrono
 from Chrono import createMLTrainingMatrix
 from Chrono import referenceToken
-from Chrono import sutimeEntity
-from Chrono import sutime_wrapper
 from Chrono import utils
 
 debug=False
