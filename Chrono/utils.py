@@ -45,40 +45,10 @@ def getDocTime(file_path):
     text = file.read()
     return(dateutil.parser.parse(text))
 
-## Manually creates the wsj_0152 t6Entity data
-# @author Amy Olex
-# @return A list of chrono entity objects
-def manualT6AddEntities(t6list):
-    t6list.append(t6.ChronoHourOfDayEntity(entityID=32, start_span=393, end_span=394, value=5, ampm=40, time_zone=35, sub_interval=None, number=None, modifier=None))
-    t6list.append(t6.chronoMonthOfYearEntity(entityID=33, start_span=12, end_span=14, month_type="November", sub_interval=41, number=None, modifier=None))
-    t6list.append(t6.chronoMonthOfYearEntity(entityID=34, start_span=536, end_span=540, month_type="November", sub_interval=42, number=None, modifier=None))
-    t6list.append(t6.ChronoTimeZoneEntity(entityID=35, start_span=400, end_span=403))
-    t6list.append(t6.chronoMonthOfYearEntity(entityID=36, start_span=145, end_span=149, month_type="November", sub_interval=37, number=None, modifier=None))
-    t6list.append(t6.ChronoDayOfMonthEntity(entityID=37, start_span=150, end_span=151, value=6, sub_interval=None, number=None, modifier=None))
-    t6list.append(t6.chronoMonthOfYearEntity(entityID=38, start_span=152, end_span=154, month_type="November", sub_interval=39, number=None, modifier=None))
-    t6list.append(t6.ChronoDayOfMonthEntity(entityID=39, start_span=155, end_span=157, value=2, sub_interval=None, number=None, modifier=None))
-    t6list.append(t6.ChronoAMPMOfDayEntity(entityID=40, start_span=395, end_span=399, ampm_type="PM", number=None, modifier=None))
-    t6list.append(t6.ChronoDayOfMonthEntity(entityID=41, start_span=15, end_span=17, value=2, sub_interval=None, number=None, modifier=None))
-    t6list.append(t6.ChronoDayOfMonthEntity(entityID=42, start_span=541, end_span=542, value=6, sub_interval=None, number=None, modifier=None))
-    t6list.append(t6.ChronoTwoDigitYearOperator(entityID=43, start_span=158, end_span=160, value=89, sub_interval=38))
-    t6list.append(t6.chronoMonthOfYearEntity(entityID=44, start_span=404, end_span=408, month_type="November", sub_interval=45, number=None, modifier=None))
-    t6list.append(t6.ChronoDayOfMonthEntity(entityID=45, start_span=409, end_span=410, value=9, sub_interval=32, number=None, modifier=None))
-    t6list.append(t6.ChronoTwoDigitYearOperator(entityID=46, start_span=18, end_span=20, value=89, sub_interval=33))
-    t6list.append(t6.ChronoNextOperator(entityID=47, start_span=145, end_span=149, period=None, repeating_interval=36))
-    t6list.append(t6.ChronoNextOperator(entityID=48, start_span=404, end_span=408, period=None, repeating_interval=44))
-    t6list.append(t6.ChronoNextOperator(entityID=49, start_span=536, end_span=540, period=None, repeating_interval=34))
-    t6list.append(t6.ChronoBetweenOperator(entityID=50, start_span=139, end_span=144, start_interval_type="DocTime", end_interval_type="Link", end_interval=47))
-    t6list.append(t6.ChronoBetweenOperator(entityID=51, start_span=387, end_span=392, start_interval_type="DocTime", end_interval_type="Link", end_interval=48))
-    
-    return(t6list)
-####
-#END_MODULE
-####
-
   
 ## Writes out the full XML file for all T6entities in list.
 # @author Amy Olex
-# @param t6list The list of T6 objects needed to be written in the file.
+# @param chrono_list The list of Chrono objects needed to be written in the file.
 # @param outfile A string containing the output file location and name.
 def write_xml(chrono_list, outfile):
     fout = open(outfile + ".completed.xml", "w")
@@ -97,15 +67,16 @@ def write_xml(chrono_list, outfile):
 # @author Amy Olex
 # @param refToks The list of reference Tokens
 # @param suList The list of SUtime entities to compare against
-def markTemporalRefToks(refToks, suList):
-    for ref in refToks:
-        for su in suList:
-            suStart, suEnd = su.getSpan()
-            if ref.spanOverlap(suStart, suEnd):
-                ref.setTemporal(True)
-        if ref.isTemporal() is None:
-            ref.setTemporal(False)
-    return refToks
+### I don't think we need/use this any longer.  Maybe can be recycled for something else.
+#def markTemporalRefToks(refToks, suList):
+#    for ref in refToks:
+#        for su in suList:
+#            suStart, suEnd = su.getSpan()
+#            if ref.spanOverlap(suStart, suEnd):
+#                ref.setTemporal(True)
+#        if ref.isTemporal() is None:
+#            ref.setTemporal(False)
+#    return refToks
 ####
 #END_MODULE
 ####
@@ -318,8 +289,6 @@ def markTemporal(refToks):
 # @param tok The token string
 # @return Boolean true if numeric, false otherwise
 def numericTest(tok):
-    
-
     #remove punctuation
     tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     
@@ -365,7 +334,7 @@ def temporalTest(tok):
     if m is not None:
         return True
      
-    #look for text month    
+   
     if tt.hasTextMonth(tok):
         return True
     if tt.hasDayOfWeek(tok):
@@ -381,6 +350,8 @@ def temporalTest(tok):
     if tt.hasPartOfDay(tok):
         return True
     if tt.hasTimeZone(tok):
+        return True
+    if tt.hasTempText(tok):
         return True
     
     
@@ -493,7 +464,24 @@ def createSUentity(items, counter, doctime):
 
 ####
 #END_MODULE
-####                 
+####   
+
+
+## Takes in a reference list of tokens, a start span and an end span
+# @author Amy Olex
+# @param ref_list The list of reference tokens we want an index for.
+# @param start_span The start span of the token we need to find in ref_list
+# @param end_span The ending span of the token we need to find
+# @return Returns the index of the ref_list token that overlaps the start and end spans provided, or -1 if not found.
+def getRefIdx(ref_list, start_span, end_span):
+    for i in range(0,len(ref_list)):
+        if(overlap(ref_list[i].getSpan(),(start_span,end_span))):
+            return i              
+    return -1
+    
+####
+#END_MODULE
+####           
                 
         
     
