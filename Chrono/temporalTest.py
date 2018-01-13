@@ -321,7 +321,7 @@ def hasTempText(text):
     #convert to list
     text_list = text_norm.split(" ")
     
-    temp_text = ["now", "current"]
+    temp_text = ["now", "current", "last"]
     
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)

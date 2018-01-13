@@ -674,7 +674,7 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
                 
         else:
             # TODO all last operators are getting added here except yesterday...
-            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, semantics="Interval-Included", repeating_interval=my_entity.get_id()))
             chrono_id = chrono_id + 1
     
         
@@ -1087,6 +1087,22 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 chrono_id = chrono_id + 1
                 chrono_this_entity.set_period(my_entity.get_id())
                 chrono_list.append(chrono_this_entity)
+                
+            else:    
+                # check for a Last Word
+                hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+                
+                if(hasMod):
+                    if mod_type == "Next":
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, period=my_entity.get_id()))
+                        chrono_id = chrono_id + 1
+                
+                    if mod_type == "Last":
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, period=my_entity.get_id(), semantics="Interval-Not-Included"))
+                        chrono_id = chrono_id + 1
+                        print("adding a last")
+                
+
         else:
             my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val, number=None)
             chrono_id = chrono_id + 1
@@ -1096,11 +1112,23 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 # add a This entitiy and link it to the interval.
                 start_span, end_span = re.search(prior_tok, "this").span(0)
                 prior_start, prior_end = ref_list[ref_idx-1].getSpan()
-                print("Adding a Calendar-Interval THIS")
+                
                 chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
                 chrono_id = chrono_id + 1
                 chrono_this_entity.set_repeating_interval(my_entity.get_id())
                 chrono_list.append(chrono_this_entity)
+            else:
+                # check for a Last Word
+                hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+                if(hasMod):
+                    if mod_type == "Next":
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_entity.get_id()))
+                        chrono_id = chrono_id + 1
+                
+                    if mod_type == "Last":
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_entity.get_id(), semantics="Interval-Not-Included"))
+                        chrono_id = chrono_id + 1
+                        print("adding a last")
             
 
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
@@ -1427,7 +1455,7 @@ def hasModifier(suentity):
     #convert to all lower
     text_lower = suentity.getText().lower()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
     text_list = text_norm.split(" ")
     
