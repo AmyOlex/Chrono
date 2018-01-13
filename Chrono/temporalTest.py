@@ -77,12 +77,12 @@ def hasPeriodInterval(text):
     #convert to all lower
     text_lower = text.lower()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
     text_list = text_norm.split(" ")
     
     #define my period lists
-    terms = ["quarter","decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]#,"recently"]
+    terms = ["quarter","decades","decade","yesterday","yesterdays","today","todays","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]#,"recently"]
     ## possibly add in abbreviations like yr, sec, min, etc.
     
     answer = next((m for m in terms if m in text_norm), None)
@@ -300,6 +300,33 @@ def hasTimeZone(text):
         answer = next((m for m in zones if m in t), None)
         if answer is not None:
             answer2 = next((m for m in zones if t in m), None)
+            if answer2 is not None:
+                return True
+            else:
+                return False
+    return False
+####
+#END_MODULE
+####
+
+
+## Takes in a string and identifies if it contains the temporal word "now"
+# @author Amy Olex
+# @param text String being parsed
+# @return Outputs True if it contains "now"
+def hasTempText(text):
+    
+    #remove all punctuation and convert to lowercase
+    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip().lower()
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    temp_text = ["now", "current"]
+    
+    for t in text_list:
+        answer = next((m for m in temp_text if m in t), None)
+        if answer is not None:
+            answer2 = next((m for m in temp_text if t in m), None)
             if answer2 is not None:
                 return True
             else:

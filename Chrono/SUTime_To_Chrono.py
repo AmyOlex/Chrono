@@ -74,6 +74,8 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
         chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
+        
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
@@ -152,6 +154,69 @@ def buildChronoSubIntervals(chrono_list):
 
 #################### Start buildX() Methods #######################
 
+## Takes in a Chrono entity and identifies if it should be annotated as a This entity
+# @author Amy Olex
+# @param s The chrono entity to parse 
+# @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
+# @param chrono_list The list of Chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+
+def buildThis(s, chrono_id, chrono_list):
+    
+    #convert to lowercase
+    text = s.getText().lower()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    ## find the word "now" as a single token
+    for tok in text_list:
+        if tok == "now":
+            ## get start end coordinates in original temporal phrase
+            start_idx, end_idx = re.search("now", text).span(0)
+            ref_startSpan, ref_endSpan = s.getSpan()
+            
+            ## create a This entity
+            chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
+            chrono_id = chrono_id + 1
+            chrono_list.append(chrono_this_entity)
+            
+        elif tok == "today" or tok == "todays":
+            start_idx, end_idx = re.search("today", text).span(0)
+            ref_startSpan, ref_endSpan = s.getSpan()
+            
+            ## create a This entity
+            chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
+            chrono_id = chrono_id + 1
+            
+            chrono_interval_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx, calendar_type="Day", number=None)
+            chrono_id = chrono_id + 1
+            
+            chrono_this_entity.set_repeating_interval(chrono_interval_entity.get_id())
+            
+            chrono_list.append(chrono_this_entity)
+            chrono_list.append(chrono_interval_entity)
+        
+        ## Note, may need to look for phrases like "current week" at some point.
+        elif tok == "current":
+            ## get start end coordinates in original temporal phrase
+            start_idx, end_idx = re.search("current", text).span(0)
+            ref_startSpan, ref_endSpan = s.getSpan()
+            
+            ## create a This entity
+            chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id)+"entity", start_span=ref_startSpan+start_idx, end_span=ref_startSpan+end_idx)
+            chrono_id = chrono_id + 1
+            chrono_list.append(chrono_this_entity)
+            
+    
+    return chrono_list, chrono_id 
+
+
+####
+#END_MODULE
+####
+
 ## Takes in a Chrono entity and identifies if it is a numeric date format
 # @author Amy Olex
 # @param s The chrono entity to parse 
@@ -169,7 +234,6 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
         num = utils.getNumberFromText(text)
         if num is not None:
             if  (num >= 1800) and (num <= 2050):
-                print("In NumericDate: " + text)
                 loneDigitYearFlag = True    
                 ## build year
                 ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -388,7 +452,6 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        print("Adding 2-digit-year: " + text)
         chrono_2_digit_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=text)
         chrono_id = chrono_id + 1
         
@@ -684,8 +747,9 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
                     #link to interval entity
                     my_entity.set_number(my_number_entity.get_id())
     
-            chrono_list.append(my_entity)
-            chrono_id = chrono_id + 1
+        chrono_list.append(my_entity)
+        chrono_id = chrono_id + 1
+            
             
     return chrono_list, chrono_id
 ####
@@ -969,11 +1033,13 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         abs_Espan = ref_Sspan + idxend
         
         # get index of overlapping reference token
-        ref_idx = -1
-        for i in range(0,len(ref_list)):
-            if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
-                ref_idx = i
-                break
+        #ref_idx = -1
+        #for i in range(0,len(ref_list)):
+        #    if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
+        #        ref_idx = i
+        #        break
+        
+        ref_idx = utils.getRefIdx(ref_list, abs_Sspan, abs_Espan)
         
         # extract ML features
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
@@ -990,9 +1056,32 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         if(my_class == 1):
             my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
             chrono_id = chrono_id + 1
+            ### Check to see if this calendar interval has a "this" in front of it
+            prior_tok = ref_list[ref_idx-1].getText().lower()
+            if prior_tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))) == "this":
+                # add a This entitiy and link it to the interval.
+                start_span, end_span = re.search(prior_tok, "this").span(0)
+                prior_start, prior_end = ref_list[ref_idx-1].getSpan()
+                print("Adding a Period THIS")
+                chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
+                chrono_id = chrono_id + 1
+                chrono_this_entity.set_period(my_entity.get_id())
+                chrono_list.append(chrono_this_entity)
         else:
             my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val, number=None)
             chrono_id = chrono_id + 1
+            ### Check to see if this calendar interval has a "this" in front of it
+            prior_tok = ref_list[ref_idx-1].getText().lower()
+            if prior_tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))) == "this":
+                # add a This entitiy and link it to the interval.
+                start_span, end_span = re.search(prior_tok, "this").span(0)
+                prior_start, prior_end = ref_list[ref_idx-1].getSpan()
+                print("Adding a Calendar-Interval THIS")
+                chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
+                chrono_id = chrono_id + 1
+                chrono_this_entity.set_repeating_interval(my_entity.get_id())
+                chrono_list.append(chrono_this_entity)
+            
 
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
         if idxstart > 0:
@@ -1731,9 +1820,10 @@ def hasSeasonOfYear(suentity):
     
     #convert to all lower
     #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    text = suentity.getText().lower()
     #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+    
     #convert to list
     text_list = text_norm.split(" ")
     
