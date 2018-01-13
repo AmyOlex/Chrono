@@ -929,7 +929,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 def buildAMPM(s, chrono_id, chrono_list):
-    
+    am_flag = True
     ref_Sspan, ref_Espan = s.getSpan()
     ## Identify if a time zone string exists
     tz = hasTimeZone(s)
@@ -942,12 +942,15 @@ def buildAMPM(s, chrono_id, chrono_list):
      
     boo, val, idxstart, idxend = hasAMPM(s)
     if boo:
-        abs_Sspan = ref_Sspan + idxstart
-        abs_Espan = ref_Sspan + idxend
-        my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, ampm_type=val)
-        chrono_id = chrono_id + 1
-        chrono_list.append(my_AMPM_entity)
-        
+        if s.getText() == "PM":
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                          end_span=abs_Espan, ampm_type=val)
+            chrono_id = chrono_id + 1
+            chrono_list.append(my_AMPM_entity)
+            am_flag = False
+
         #check to see if it has a time associated with it.  We assume the time comes before the AMPM string
         #We could parse out the time from the sutime normalized value.  The problem is getting the correct span.
         #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
@@ -955,6 +958,14 @@ def buildAMPM(s, chrono_id, chrono_list):
             substr = s.getText()[0:idxstart]
             m = re.search('([0-9]{1,2})', substr)
             if m is not None :
+                if am_flag:
+                    abs_Sspan = ref_Sspan + idxstart
+                    abs_Espan = ref_Sspan + idxend
+                    my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                                  end_span=abs_Espan, ampm_type=val)
+                    chrono_id = chrono_id + 1
+                    chrono_list.append(my_AMPM_entity)
+
                 hour_val = m.group(0)
                 abs_Sspan = ref_Sspan + m.span(0)[0]
                 abs_Espan = ref_Sspan + m.span(0)[1]
@@ -974,6 +985,14 @@ def buildAMPM(s, chrono_id, chrono_list):
                 texNumVal = utils.getNumberFromText(substr)
                 
                 if texNumVal is not None:
+                    if am_flag:
+                        abs_Sspan = ref_Sspan + idxstart
+                        abs_Espan = ref_Sspan + idxend
+                        my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity",
+                                                                      start_span=abs_Sspan,
+                                                                      end_span=abs_Espan, ampm_type=val)
+                        chrono_id = chrono_id + 1
+                        chrono_list.append(my_AMPM_entity)
                     #create the hour entity
                     my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal, ampm=my_AMPM_entity.get_id())
                     chrono_id = chrono_id + 1
@@ -981,7 +1000,8 @@ def buildAMPM(s, chrono_id, chrono_list):
                         my_hour_entity.set_time_zone(my_tz_entity.get_id())
                     #append to list
                     chrono_list.append(my_hour_entity)
-                         
+
+
     return chrono_list, chrono_id
     
 ####
