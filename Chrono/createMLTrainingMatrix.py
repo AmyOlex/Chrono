@@ -30,7 +30,6 @@ from Chrono import chronoEntities
 from Chrono import utils
 from Chrono import sutimeEntity
 from Chrono import referenceToken
-from Chrono import sutime_wrapper
 
 debug = False
 ## This method extracts the feature data from the XML files for ML training.
