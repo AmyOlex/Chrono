@@ -736,6 +736,7 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoSeasonOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, season_type=val)
+        chrono_id = chrono_id + 1
         
         #check here to see if it has a modifier
         hasMod, mod_type, mod_start, mod_end = hasModifier(s)
@@ -787,8 +788,6 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
                     my_entity.set_number(my_number_entity.get_id())
     
         chrono_list.append(my_entity)
-        chrono_id = chrono_id + 1
-            
             
     return chrono_list, chrono_id
 ####
@@ -2034,7 +2033,7 @@ def hasSeasonOfYear(suentity):
         start_idx, end_idx = getSpan(text_norm, term)
         if term == "summer":
             return True, "Summer", start_idx, end_idx
-        if term == "winter":
+        elif term == "winter":
             return True, "Winter", start_idx, end_idx
         elif term == "fall":
             return True, "Fall", start_idx, end_idx
