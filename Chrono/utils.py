@@ -34,7 +34,8 @@ def getWhitespaceTokens(file_path):
     span_generator = WhitespaceTokenizer().span_tokenize(text)
     spans = [span for span in span_generator]
     tokenized_text = WhitespaceTokenizer().tokenize(text)
-    return text, tokenized_text, spans
+    tags = nltk.pos_tag(tokenized_text)
+    return text, tokenized_text, spans, tags
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
