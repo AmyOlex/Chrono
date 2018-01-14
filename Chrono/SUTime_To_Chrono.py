@@ -173,13 +173,13 @@ def buildBeforeAfter(s, chrono_id, chrono_list):
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
         
         if val == "After":
-            chrono_after_entity = chrono.ChronoAfterOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
+            chrono_after_entity = chrono.ChronoAfterOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, interval_type = "Link")
             chrono_id = chrono_id + 1
             chrono_list.append(chrono_after_entity)
             
             
         elif val == "Before":
-            chrono_before_entity = chrono.ChronoBeforeOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
+            chrono_before_entity = chrono.ChronoBeforeOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, interval_type = "Link")
             chrono_id = chrono_id + 1
             chrono_list.append(chrono_before_entity)
             
@@ -1500,7 +1500,7 @@ def hasBeforeAfter(suentity):
     text_list = text_norm.split(" ")
     
     #define my day lists
-    b_words = ["before", "ago", "pre", "previously"]
+    b_words = ["before", "ago", "pre", "previously", "earlier", "until"]
     a_words = ["after", "later"]
     ba_words = b_words + a_words
     
