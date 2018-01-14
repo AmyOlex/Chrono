@@ -67,7 +67,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id, loneDigitYearFlag  = buildNumericDate(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
          
         chrono_tmp_list, chrono_id  = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct)
+        chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
         chrono_tmp_list, chrono_id  = buildAMPM(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
@@ -852,8 +852,8 @@ def isTextYear(suentity):
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 # ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
 #        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
-def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
-    boo, val, idxstart, idxend = hasTextMonth(s)
+def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
+    boo, val, idxstart, idxend = hasTextMonth(s, ref_list)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -1602,7 +1602,9 @@ def hasModifier(suentity):
 # @param suentity The entity to parse
 # @return value The normalized string value for the month of the year, or None if no month of year found.
 # @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
-def hasTextMonth(suentity):
+def hasTextMonth(suentity, ref_list):
+    
+    refStart_span, refEnd_span = suentity.getSpan()
     
     #convert to all lower
     text_lower = suentity.getText().lower()
@@ -1636,56 +1638,117 @@ def hasTextMonth(suentity):
         #test if the intersect list contains which days.
         if len(list(set(intersect) & set (M1))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M1))[0])
-            return True, "January", start_idx, end_idx
-        
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "January", start_idx, end_idx
+            
         if len(list(set(intersect) & set (M2))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M2))[0])
-            return True, "February", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "February", start_idx, end_idx
             
         if len(list(set(intersect) & set (M3))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M3))[0])
-            return True, "March", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            print("FOUND a MARCH")
+            if postag == "NNP":
+                print("ADDING A MARCH")
+                return True, "March", start_idx, end_idx
             
         if len(list(set(intersect) & set (M4))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M4))[0])
-            return True, "April", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "April", start_idx, end_idx
             
         if len(list(set(intersect) & set (M5))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M5))[0])
-            return True, "May", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "May", start_idx, end_idx
             
         if len(list(set(intersect) & set (M6))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M6))[0])
-            return True, "June", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "June", start_idx, end_idx
             
         if len(list(set(intersect) & set (M7))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M7))[0])
-            return True, "July", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "July", start_idx, end_idx
             
         if len(list(set(intersect) & set (M8))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M8))[0])
-            return True, "August", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "August", start_idx, end_idx
             
         if len(list(set(intersect) & set (M9))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M9))[0])
-            return True, "September", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "September", start_idx, end_idx
             
         if len(list(set(intersect) & set (M10))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M10))[0])
-            return True, "October", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "October", start_idx, end_idx
             
         if len(list(set(intersect) & set (M11))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M11))[0])
-            return True, "November", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "November", start_idx, end_idx
             
         if len(list(set(intersect) & set (M12))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M12))[0])
-            return True, "December", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "December", start_idx, end_idx
 
         else :
             return False, None, None, None
-    else :
-        return False, None, None, None
+            
+    return False, None, None, None
     
 ####
 #END_MODULE
