@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False
@@ -71,7 +71,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildAMPM(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
         chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
@@ -728,9 +728,9 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildSeasonOfYear(s, chrono_id, chrono_list):
+def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
     
-    boo, val, idxstart, idxend = hasSeasonOfYear(s)
+    boo, val, idxstart, idxend = hasSeasonOfYear(s, ref_list)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -1658,9 +1658,8 @@ def hasTextMonth(suentity, ref_list):
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
             postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-            print("FOUND a MARCH")
+            
             if postag == "NNP":
-                print("ADDING A MARCH")
                 return True, "March", start_idx, end_idx
             
         if len(list(set(intersect) & set (M4))) == 1:
@@ -2008,7 +2007,9 @@ def hasPartOfDay(suentity):
 # @author Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasSeasonOfYear(suentity):
+def hasSeasonOfYear(suentity, ref_list):
+    
+    refStart_span, refEnd_span = suentity.getSpan()
     
     #convert to all lower
     #text_lower = suentity.getText().lower()
@@ -2020,7 +2021,7 @@ def hasSeasonOfYear(suentity):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    seasonofyear = ["summer", "winter", "fall", "spring"]
+    seasonofyear = ["summer", "winter", "fall", "spring", "summers", "falls", "winters", "springs"]
     
     #figure out if any of the tokens in the text_list are also in the ampm list
     intersect = list(set(text_list) & set(seasonofyear))
@@ -2031,18 +2032,46 @@ def hasSeasonOfYear(suentity):
         
         term = intersect[0]
         start_idx, end_idx = getSpan(text_norm, term)
-        if term == "summer":
-            return True, "Summer", start_idx, end_idx
-        elif term == "winter":
-            return True, "Winter", start_idx, end_idx
-        elif term == "fall":
-            return True, "Fall", start_idx, end_idx
-        elif term == "spring":
-            return True, "Spring", start_idx, end_idx   
+        if term == "summer" or term == "summers":
+            start_idx, end_idx = getSpan(text_norm, "summer")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Summer", start_idx, end_idx
+                
+        elif term == "winter" or term == "winters":
+            start_idx, end_idx = getSpan(text_norm, "winter")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Winter", start_idx, end_idx
+                
+        elif term == "fall" or term == "falls":
+            start_idx, end_idx = getSpan(text_norm, "fall")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Fall", start_idx, end_idx
+            
+        elif term == "spring" or term == "springs":
+            start_idx, end_idx = getSpan(text_norm, "spring")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Spring", start_idx, end_idx   
+            
         else :
             return False, None, None, None
-    else :
-        return False, None, None, None
+    
+    return False, None, None, None
     
 ####
 #END_MODULE
