@@ -159,7 +159,7 @@ def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=Non
     
     
     for idx in range(0,tok_len):
-        ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, end_span=span[idx][1] if include[1] else None, pos=pos[idx] if include[2] else None, temporal=temporal[idx] if include[3] else None))
+        ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, end_span=span[idx][1] if include[1] else None, pos=pos[idx][1] if include[2] else None, temporal=temporal[idx] if include[3] else None))
         id_counter = id_counter +1
         
     if remove_stopwords is not None:

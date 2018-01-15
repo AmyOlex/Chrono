@@ -109,9 +109,9 @@ if __name__ == "__main__":
         if(debug) : print(doctime)
         
         ## parse out reference tokens
-        text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
+        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f])
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
         if(debug) :
             print("REFERENCE TOKENS:\n")
             for tok in my_refToks : print(tok)
@@ -120,8 +120,8 @@ if __name__ == "__main__":
         chroList = utils.markTemporal(my_refToks)
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
         
-        #for c in chroList:
-        #    print(c)
+        for c in chroList:
+            print(c)
         
 
         chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)

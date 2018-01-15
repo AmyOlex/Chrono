@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False
@@ -67,11 +67,11 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id, loneDigitYearFlag  = buildNumericDate(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
          
         chrono_tmp_list, chrono_id  = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct)
+        chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
         chrono_tmp_list, chrono_id  = buildAMPM(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
         chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
         chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
@@ -728,14 +728,15 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildSeasonOfYear(s, chrono_id, chrono_list):
+def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
     
-    boo, val, idxstart, idxend = hasSeasonOfYear(s)
+    boo, val, idxstart, idxend = hasSeasonOfYear(s, ref_list)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoSeasonOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, season_type=val)
+        chrono_id = chrono_id + 1
         
         #check here to see if it has a modifier
         hasMod, mod_type, mod_start, mod_end = hasModifier(s)
@@ -787,8 +788,6 @@ def buildSeasonOfYear(s, chrono_id, chrono_list):
                     my_entity.set_number(my_number_entity.get_id())
     
         chrono_list.append(my_entity)
-        chrono_id = chrono_id + 1
-            
             
     return chrono_list, chrono_id
 ####
@@ -852,8 +851,8 @@ def isTextYear(suentity):
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 # ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
 #        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
-def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None):
-    boo, val, idxstart, idxend = hasTextMonth(s)
+def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
+    boo, val, idxstart, idxend = hasTextMonth(s, ref_list)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -1602,7 +1601,9 @@ def hasModifier(suentity):
 # @param suentity The entity to parse
 # @return value The normalized string value for the month of the year, or None if no month of year found.
 # @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
-def hasTextMonth(suentity):
+def hasTextMonth(suentity, ref_list):
+    
+    refStart_span, refEnd_span = suentity.getSpan()
     
     #convert to all lower
     text_lower = suentity.getText().lower()
@@ -1636,56 +1637,116 @@ def hasTextMonth(suentity):
         #test if the intersect list contains which days.
         if len(list(set(intersect) & set (M1))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M1))[0])
-            return True, "January", start_idx, end_idx
-        
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "January", start_idx, end_idx
+            
         if len(list(set(intersect) & set (M2))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M2))[0])
-            return True, "February", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "February", start_idx, end_idx
             
         if len(list(set(intersect) & set (M3))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M3))[0])
-            return True, "March", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "March", start_idx, end_idx
             
         if len(list(set(intersect) & set (M4))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M4))[0])
-            return True, "April", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "April", start_idx, end_idx
             
         if len(list(set(intersect) & set (M5))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M5))[0])
-            return True, "May", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "May", start_idx, end_idx
             
         if len(list(set(intersect) & set (M6))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M6))[0])
-            return True, "June", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "June", start_idx, end_idx
             
         if len(list(set(intersect) & set (M7))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M7))[0])
-            return True, "July", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "July", start_idx, end_idx
             
         if len(list(set(intersect) & set (M8))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M8))[0])
-            return True, "August", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "August", start_idx, end_idx
             
         if len(list(set(intersect) & set (M9))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M9))[0])
-            return True, "September", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "September", start_idx, end_idx
             
         if len(list(set(intersect) & set (M10))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M10))[0])
-            return True, "October", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "October", start_idx, end_idx
             
         if len(list(set(intersect) & set (M11))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M11))[0])
-            return True, "November", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "November", start_idx, end_idx
             
         if len(list(set(intersect) & set (M12))) == 1:
             start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (M12))[0])
-            return True, "December", start_idx, end_idx
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NNP":
+                return True, "December", start_idx, end_idx
 
         else :
             return False, None, None, None
-    else :
-        return False, None, None, None
+            
+    return False, None, None, None
     
 ####
 #END_MODULE
@@ -1946,7 +2007,9 @@ def hasPartOfDay(suentity):
 # @author Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasSeasonOfYear(suentity):
+def hasSeasonOfYear(suentity, ref_list):
+    
+    refStart_span, refEnd_span = suentity.getSpan()
     
     #convert to all lower
     #text_lower = suentity.getText().lower()
@@ -1958,7 +2021,7 @@ def hasSeasonOfYear(suentity):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    seasonofyear = ["summer", "winter", "fall", "spring"]
+    seasonofyear = ["summer", "winter", "fall", "spring", "summers", "falls", "winters", "springs"]
     
     #figure out if any of the tokens in the text_list are also in the ampm list
     intersect = list(set(text_list) & set(seasonofyear))
@@ -1969,18 +2032,46 @@ def hasSeasonOfYear(suentity):
         
         term = intersect[0]
         start_idx, end_idx = getSpan(text_norm, term)
-        if term == "summer":
-            return True, "Summer", start_idx, end_idx
-        if term == "winter":
-            return True, "Winter", start_idx, end_idx
-        elif term == "fall":
-            return True, "Fall", start_idx, end_idx
-        elif term == "spring":
-            return True, "Spring", start_idx, end_idx   
+        if term == "summer" or term == "summers":
+            start_idx, end_idx = getSpan(text_norm, "summer")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Summer", start_idx, end_idx
+                
+        elif term == "winter" or term == "winters":
+            start_idx, end_idx = getSpan(text_norm, "winter")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Winter", start_idx, end_idx
+                
+        elif term == "fall" or term == "falls":
+            start_idx, end_idx = getSpan(text_norm, "fall")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Fall", start_idx, end_idx
+            
+        elif term == "spring" or term == "springs":
+            start_idx, end_idx = getSpan(text_norm, "spring")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            
+            if postag == "NN":
+                return True, "Spring", start_idx, end_idx   
+            
         else :
             return False, None, None, None
-    else :
-        return False, None, None, None
+    
+    return False, None, None, None
     
 ####
 #END_MODULE
