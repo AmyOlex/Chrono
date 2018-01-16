@@ -107,6 +107,9 @@ def buildChronoSubIntervals(chrono_list):
     second = None
     daypart = None
     dayweek = None
+    interval = None
+    period = None
+    nth = None
     
     ## loop through all entities and pull out the approriate IDs
     for e in chrono_list:
@@ -128,6 +131,15 @@ def buildChronoSubIntervals(chrono_list):
             daypart = e
         elif e_type == "Day-Of-Week":
             dayweek = e
+        elif e_type == "Calendar-Interval":
+            print("FOUND Interval")
+            interval = e
+        elif e_type == "Period":
+            print("FOUND Period")
+            period = e
+        elif e_type == "NthFromStart":
+            print("FOUND nth")
+            nth = e
         
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
@@ -146,6 +158,12 @@ def buildChronoSubIntervals(chrono_list):
         dayweek.set_sub_interval(daypart.get_id())
     if day is not None and daypart is not None and hour is None:
         day.set_sub_interval(daypart.get_id())
+    if nth is not None and period is not None:
+        print("Adding period sub-interval")
+        nth.set_period(period.get_id())
+    if nth is not None and interval is not None:
+        print("Adding interval sub-interval")
+        nth.set_repeating_interval(interval.get_id())
     
     return chrono_list
 
@@ -169,7 +187,7 @@ def buildNthFromStart(s, chrono_id, chrono_list):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        print("FOUND NthFromStart: " + s.getText())
+        
         chrono_nth_entity = chrono.ChronoNthOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(chrono_nth_entity)
@@ -1166,7 +1184,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 # add a This entitiy and link it to the interval.
                 start_span, end_span = re.search(prior_tok, "this").span(0)
                 prior_start, prior_end = ref_list[ref_idx-1].getSpan()
-                print("Adding a Period THIS")
+                
                 chrono_this_entity = chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=prior_start + start_span, end_span = prior_start + end_span)
                 chrono_id = chrono_id + 1
                 chrono_this_entity.set_period(my_entity.get_id())
@@ -1184,7 +1202,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                     if mod_type == "Last":
                         chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, period=my_entity.get_id(), semantics="Interval-Not-Included"))
                         chrono_id = chrono_id + 1
-                        print("adding a last")
+                       
                 
 
         else:
@@ -1212,7 +1230,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                     if mod_type == "Last":
                         chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_entity.get_id(), semantics="Interval-Not-Included"))
                         chrono_id = chrono_id + 1
-                        print("adding a last")
+                       
             
 
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
@@ -2248,7 +2266,6 @@ def hasYear(suentity, loneDigitYearFlag):
             elif len(text)==6 is not None:
                 r = re.search("c\.([0-9]{4})", text)
                 if r is not None:
-                    print("Group0: " + r.group(1))
                     rval = utils.getNumberFromText(r.group(1))
                     if rval is not None:
                         if rval >=1000 and rval<=3000:
