@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        #print(s)
+        print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False
@@ -76,7 +76,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildBeforeAfter(s, chrono_id, chrono_tmp_list)
-        #chrono_tmp_list, chrono_id  = buildBefore(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id  = buildNthFromStart(s, chrono_id, chrono_tmp_list)  ##needs subinterval linking
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
@@ -154,6 +154,52 @@ def buildChronoSubIntervals(chrono_list):
 ####
 
 #################### Start buildX() Methods #######################
+
+## Takes in a Chrono entity and identifies if it has an NthFromStart entity
+# @author Amy Olex
+# @param s The chrono entity to parse 
+# @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
+# @param chrono_list The list of Chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+### Note: Currently this only identified ordinals. the other oddities I don't completely understand yet are ignored.
+def buildNthFromStart(s, chrono_id, chrono_list):
+    boo, val, startSpan, endSpan = hasNthFromStart(s)
+    
+    if boo:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        print("FOUND NthFromStart: " + s.getText())
+        chrono_nth_entity = chrono.ChronoNthOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=val)
+        chrono_id = chrono_id + 1
+        chrono_list.append(chrono_nth_entity)
+        
+    return chrono_list, chrono_id
+    
+def hasNthFromStart(suentity):
+    
+    #convert to all lower
+    text = suentity.getText().lower()
+    #remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    #convert to list
+    text_list = text_norm.split(" ")
+    
+    ## if the term does not exist by itself it may be a substring. Go through each word in the SUTime string and see if a substring matches.
+    for t in text_list:
+        val = utils.isOrdinal(t)
+        
+        if val is not None:
+            start_idx, end_idx = getSpan(text_norm, t)
+            return True, val, start_idx, end_idx
+    
+    return False, None, None, None
+####
+#END_MODULE
+####    
+    
+    
+    
 
 ## Takes in a Chrono entity and identifies if it should be annotated as a After entity
 # @author Amy Olex
@@ -1876,7 +1922,7 @@ def hasEmbeddedPeriodInterval(suentity):
     #text_lower = suentity.getText().lower()
     text = suentity.getText()
     #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
     text_list = text_norm.split(" ")
     
