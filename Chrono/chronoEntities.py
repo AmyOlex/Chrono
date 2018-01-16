@@ -1124,37 +1124,52 @@ class ChronoBetweenOperator(ChronoOperator):
 # @param interval The Calendar-Interval to link to
 # @param repeating_interval The repeating interval to link to
 class ChronoNthOperator(ChronoOperator):
-	def __init__(self, entityID, start_span, end_span, value, interval,
-	             repeating_interval):
-		super().__init__(entityID, start_span, end_span, "Nth")
-		self.value = value
-		self.interval = interval
-		self.repeating_interval = repeating_interval
+    def __init__(self, entityID, start_span, end_span, value=None, interval=None, interval_type="DocTime", repeating_interval=None, period=None):
+        super().__init__(entityID, start_span, end_span, "NthFromStart")
+        self.value = value
+        self.interval_type = interval_type
+        self.interval = interval
+        self.period = period
+        self.repeating_interval = repeating_interval
 		
-	def set_value(self, value):
-		self.value = value
+    def set_value(self, value):
+        self.value = value
 		
-	def get_value(self):
-		return self.value
+    def get_value(self):
+        return self.value
+    
+    def set_interval_type(self, interval_type):
+        self.interval_type = interval_type
+
+    def get_interval_type(self):
+        return self.interval_type
 	
-	def set_interval(self, interval):
-		self.interval = interval
+    def set_interval(self, interval):
+        self.interval = interval
 		
-	def get_interval(self):
-		return self.interval
+    def get_interval(self):
+        return self.interval
 	
-	def set_repeating_interval(self, repeating_interval):
-		self.repeating_interval = repeating_interval
+    def set_period(self, period):
+        self.period = period
 		
-	def get_repeating_interval(self):
-		return self.repeating_interval
+    def get_period(self):
+        return self.period
+        
+    def set_repeating_interval(self, repeating_interval):
+        self.repeating_interval = repeating_interval
+		
+    def get_repeating_interval(self):
+        return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Interval>{}</Interval>\n"
-			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
-			  "\t\t</properties>\n\t</entity>\n".format(self.value or '',
-			  self.interval or '', self.repeating_interval or ''))
+    def print_xml(self):
+        return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+        "\t\t\t<Interval>{}</Interval>\n\t\t\t<Value>{}</Value>\n"
+        "\t\t\t<Period>{}</Period>\n"
+        "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
+        "\t\t</properties>\n\t</entity>\n".format(self.interval_type or '',
+        self.interval or '', self.value or '', self.period or '', self.repeating_interval or ''))
 
 ## Creates a two digit year operator
 # @param interval_type Defaults to DocTime
