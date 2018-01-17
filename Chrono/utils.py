@@ -90,76 +90,88 @@ def getNumberFromText(text):
     try :
         number = w2n.word_to_num(text)
     except ValueError:
-        text_lower = text.lower()
-        if(re.search('1st|first', text_lower) is not None):
-            number = 1
-        elif(re.search('2nd|second', text_lower) is not None):
-            number = 2
-        elif(re.search('3rd|third', text_lower) is not None):
-            number = 3
-        elif(re.search('4th|fourth', text_lower) is not None):
-            number = 4
-        elif(re.search('5th|fifth', text_lower) is not None):
-            number = 5
-        elif(re.search('6th|sixth', text_lower) is not None):
-            number = 6
-        elif(re.search('7th|seventh', text_lower) is not None):
-            number = 7
-        elif(re.search('8th|eighth', text_lower) is not None):
-            number = 8
-        elif(re.search('9th|ninth', text_lower) is not None):
-            number = 9
-        elif(re.search('10th|tenth', text_lower) is not None):
-            number = 10
-        elif(re.search('11th|eleventh', text_lower) is not None):
-            number = 11
-        elif(re.search('12th|twelfth', text_lower) is not None):
-            number = 12
-        elif(re.search('13th|thirteenth', text_lower) is not None):
-            number = 13
-        elif(re.search('14th|fourteenth', text_lower) is not None):
-            number = 14
-        elif(re.search('15th|fifteenth', text_lower) is not None):
-            number = 15
-        elif(re.search('16th|sixteenth', text_lower) is not None):
-            number = 16
-        elif(re.search('17th|seventeenth', text_lower) is not None):
-            number = 17
-        elif(re.search('18th|eighteenth', text_lower) is not None):
-            number = 18
-        elif(re.search('19th|nineteenth', text_lower) is not None):
-            number = 19
-        elif(re.search('20th|twentieth', text_lower) is not None):
-            number = 20
-        elif(re.search('21st|twenty-first', text_lower) is not None):
-            number = 21
-        elif(re.search('22nd|twenty-second', text_lower) is not None):
-            number = 22
-        elif(re.search('23rd|twenty-third', text_lower) is not None):
-            number = 23
-        elif(re.search('24th|twenty-fourth', text_lower) is not None):
-            number = 24
-        elif(re.search('25th|twenty-fifth', text_lower) is not None):
-            number = 25
-        elif(re.search('26th|twenty-sixth', text_lower) is not None):
-            number = 26
-        elif(re.search('27th|twenty-seventh', text_lower) is not None):
-            number = 27
-        elif(re.search('28th|twenty-eighth', text_lower) is not None):
-            number = 28
-        elif(re.search('29th|twenty-ninth', text_lower) is not None):
-            number = 29
-        elif(re.search('30th|thirtieth', text_lower) is not None):
-            number = 30
-        elif(re.search('31st|thirty-first', text_lower) is not None):
-            number = 31
-        else:
-            number = None                                                                                                                    
+        number = isOrdinal(text)                                                                                                                   
 
     return number
 ####
 #END_MODULE
-####      
+####  
+
+## Function to identify an ordinal number
+# @author Amy Olex
+# @param text The text string to be tested for an ordinal.
+def isOrdinal(text):
+    text_lower = text.lower()
+    if text_lower == '1st' or text_lower== 'first': #re.search('1st|first', text_lower) is not None):
+        number = 1
+    elif text_lower == '2nd' or text_lower== 'second':
+        number = 2
+    elif text_lower == '3rd' or text_lower== 'third':
+        number = 3
+    elif text_lower == '4th' or text_lower== 'fourth':
+        number = 4
+    elif text_lower == '5th' or text_lower== 'fifth':
+        number = 5
+    elif text_lower == '6th' or text_lower== 'sixth':
+        number = 6
+    elif text_lower == '7th' or text_lower== 'seventh':
+        number = 7
+    elif text_lower == '8th' or text_lower== 'eighth':
+        number = 8
+    elif text_lower == '9th' or text_lower== 'nineth':
+        number = 9
+    elif text_lower == '10th' or text_lower== 'tenth':
+        number = 10
+    elif text_lower == '11th' or text_lower== 'eleventh':
+        number = 11
+    elif text_lower == '12th' or text_lower== 'twelveth':
+        number = 12
+    elif text_lower == '13th' or text_lower== 'thirteenth':
+        number = 13
+    elif text_lower == '14th' or text_lower== 'fourteenth':
+        number = 14
+    elif text_lower == '15th' or text_lower== 'fifteenth':
+        number = 15
+    elif text_lower == '16th' or text_lower== 'sixteenth':
+        number = 16
+    elif text_lower == '17th' or text_lower== 'seventeenth':
+        number = 17
+    elif text_lower == '18th' or text_lower== 'eighteenth':
+        number = 18
+    elif text_lower == '19th' or text_lower== 'nineteenth':
+        number = 19
+    elif text_lower == '20th' or text_lower== 'twentieth':
+        number = 20
+    elif text_lower == '21st' or text_lower== 'twenty first':
+        number = 21
+    elif text_lower == '22nd' or text_lower== 'twenty second':
+        number = 22
+    elif text_lower == '23rd' or text_lower== 'twenty third':
+        number = 23
+    elif text_lower == '24th' or text_lower== 'twenty fourth':
+        number = 24
+    elif text_lower == '25th' or text_lower== 'twenty fifth':
+        number = 25
+    elif text_lower == '26th' or text_lower== 'twenty sixth':
+        number = 26
+    elif text_lower == '27th' or text_lower== 'twenty seventh':
+        number = 27
+    elif text_lower == '28th' or text_lower== 'twenty eighth':
+        number = 28
+    elif text_lower == '29th' or text_lower== 'twenty nineth':
+        number = 29
+    elif text_lower == '30th' or text_lower== 'thirtieth':
+        number = 30
+    elif text_lower == '31st' or text_lower== 'thirty first':
+        number = 31
+    else:
+        number = None
+    
+    return number
+       
+####
+#END_MODULE
+####    
   
 ## Function to get the integer representation of a text month
 # @author Amy Olex  
@@ -276,7 +288,7 @@ def get_features(data_file):
 def markTemporal(refToks):
     for ref in refToks:
         #mark if numeric
-        ref.setNumeric(numericTest(ref.getText()))
+        ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
         ref.setTemporal(temporalTest(ref.getText()))
         
@@ -289,17 +301,21 @@ def markTemporal(refToks):
 # @author Amy Olex
 # @param tok The token string
 # @return Boolean true if numeric, false otherwise
-def numericTest(tok):
-    #remove punctuation
-    tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+def numericTest(tok, pos):
     
-    #test for a number
-    #tok.strip(",.")
-    val = getNumberFromText(tok)
-    #print("Testing Number: Tok: " + tok + "  Val:" + str(val))
-    if val is not None:
+    if pos == "CD":
         return True
-    return False
+    else:
+        #remove punctuation
+        tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+    
+        #test for a number
+        #tok.strip(",.")
+        val = getNumberFromText(tok)
+        #print("Testing Number: Tok: " + tok + "  Val:" + str(val))
+        if val is not None:
+            return True
+        return False
 ####
 #END_MODULE
 #### 
