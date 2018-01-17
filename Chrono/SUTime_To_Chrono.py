@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False
@@ -76,7 +76,13 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildBeforeAfter(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildNthFromStart(s, chrono_id, chrono_tmp_list)  ##needs subinterval linking
+        chrono_tmp_list, chrono_id  = buildNthFromStart(s, chrono_id, chrono_tmp_list, ref_list) 
+        
+    #    print("XXXXXXXXX")
+    #    print(s)
+    #    for e in chrono_tmp_list:
+    #        print(e)
+        
         
         chrono_list += buildChronoSubIntervals(chrono_tmp_list)
         
@@ -112,8 +118,10 @@ def buildChronoSubIntervals(chrono_list):
     nth = None
     
     ## loop through all entities and pull out the approriate IDs
-    for e in chrono_list:
-        e_type = e.get_type()
+    for e in range(0,len(chrono_list)):
+        #print(chrono_list[e].get_id())
+        e_type = chrono_list[e].get_type()
+        #print("E-type: " + e_type)
         
         if e_type == "Two-Digit-Year" or e_type == "Year":
             year = e
@@ -143,27 +151,32 @@ def buildChronoSubIntervals(chrono_list):
         
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
-        minute.set_sub_interval(second.get_id())
+        chrono_list[minute].set_sub_interval(chrono_list[second].get_id())
     if minute is not None and hour is not None:
-        hour.set_sub_interval(minute.get_id())
+        chrono_list[hour].set_sub_interval(chrono_list[minute].get_id())
     if hour is not None and day is not None:
-        day.set_sub_interval(hour.get_id())
+        chrono_list[day].set_sub_interval(chrono_list[hour].get_id())
     if day is not None and month is not None:
-        month.set_sub_interval(day.get_id())
+        chrono_list[month].set_sub_interval(chrono_list[day].get_id())
     if month is not None and year is not None:
-        year.set_sub_interval(month.get_id())
+        chrono_list[year].set_sub_interval(chrono_list[month].get_id())
     if dayweek is not None and hour is not None:
-        dayweek.set_sub_interval(hour.get_id())
+        chrono_list[dayweek].set_sub_interval(chrono_list[hour].get_id())
     if dayweek is not None and daypart is not None and hour is None:
-        dayweek.set_sub_interval(daypart.get_id())
+        chrono_list[dayweek].set_sub_interval(chrono_list[daypart].get_id())
     if day is not None and daypart is not None and hour is None:
-        day.set_sub_interval(daypart.get_id())
+        chrono_list[day].set_sub_interval(chrono_list[daypart].get_id())
+    
     if nth is not None and period is not None:
         print("Adding period sub-interval")
-        nth.set_period(period.get_id())
-    if nth is not None and interval is not None:
+        chrono_list[nth].set_period(chrono_list[period].get_id())
+    elif nth is not None and interval is not None:
         print("Adding interval sub-interval")
-        nth.set_repeating_interval(interval.get_id())
+        chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
+    elif nth is not None:
+        # if the nthFromStart does not have a corresponding interval we should remove it from the list.
+        print("REMOVING NthFromStart: " + str(chrono_list[nth]))
+        del chrono_list[nth]
     
     return chrono_list
 
@@ -180,8 +193,8 @@ def buildChronoSubIntervals(chrono_list):
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 ### Note: Currently this only identified ordinals. the other oddities I don't completely understand yet are ignored.
-def buildNthFromStart(s, chrono_id, chrono_list):
-    boo, val, startSpan, endSpan = hasNthFromStart(s)
+def buildNthFromStart(s, chrono_id, chrono_list, ref_list):
+    boo, val, startSpan, endSpan = hasNthFromStart(s, ref_list)
     
     if boo:
         ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -194,7 +207,9 @@ def buildNthFromStart(s, chrono_id, chrono_list):
         
     return chrono_list, chrono_id
     
-def hasNthFromStart(suentity):
+def hasNthFromStart(suentity, ref_list):
+    
+    refStart_span, refEnd_span = suentity.getSpan()
     
     #convert to all lower
     text = suentity.getText().lower()
@@ -209,7 +224,10 @@ def hasNthFromStart(suentity):
         
         if val is not None:
             start_idx, end_idx = getSpan(text_norm, t)
-            return True, val, start_idx, end_idx
+            #now get the reference index of this token and see if there are any temporal tokens next to it.
+            idx = utils.getRefIdx(ref_list, refStart_span+start_idx, refStart_span+end_idx)
+            if ref_list[idx-1].isTemporal() or ref_list[idx+1].isTemporal():
+                return True, val, start_idx, end_idx
     
     return False, None, None, None
 ####
