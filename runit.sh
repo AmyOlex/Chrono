@@ -10,8 +10,8 @@ ML=$1
 
 ## Run the program and save results in ./results folder
 echo "Running Chrono on Test files....."
-python run_chrono.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
-#python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+#python run_chrono.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 
 
 #python run_chrono.py -i ./data/Debugging/data/ -r ./data/Debugging/gold/ -o ./resultsDebug/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
@@ -24,10 +24,10 @@ cd anaforatools
 
 ## run the evaluation script
 echo "Evaluating Chrono Test Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event Before:Interval After:Interval
-#python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before Between Frequency Union Modifier This Intersection NthFromStart
+#python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event Before After NthFromStart
+python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before
 
-#python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --include Last --per-document
+#python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before  --include NthFromStart --per-document
 
 ## go to baselinecode Directory
 #cd ../

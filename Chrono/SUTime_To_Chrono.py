@@ -41,7 +41,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in suTimeList :
-        #print(s)
+        print(s)
         chrono_tmp_list = []
         chrono_minute_flag = False
         chrono_second_flag = False
@@ -173,10 +173,13 @@ def buildChronoSubIntervals(chrono_list):
     elif nth is not None and interval is not None:
         print("Adding interval sub-interval")
         chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
-    elif nth is not None:
+    ##### Notes: This next bit is complicated.  If I include it I remove some False Positives, but I also create some False Negatives.
+    ##### I think more complex parsing is needed here to figure out if the ordinal is an NthFromStart or not.  
+    ##### I think implementing a machine learning method here may help.
+    #elif nth is not None:
         # if the nthFromStart does not have a corresponding interval we should remove it from the list.
-        print("REMOVING NthFromStart: " + str(chrono_list[nth]))
-        del chrono_list[nth]
+        #print("REMOVING NthFromStart: " + str(chrono_list[nth]))
+        #del chrono_list[nth]
     
     return chrono_list
 
