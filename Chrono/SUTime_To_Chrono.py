@@ -1065,7 +1065,7 @@ def buildAMPM(s, chrono_id, chrono_list):
      
     boo, val, idxstart, idxend = hasAMPM(s)
     if boo:
-        if s.getText() == "PM":
+        if val == "PM":
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
             my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,

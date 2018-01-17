@@ -14,7 +14,7 @@ echo "Running Chrono on Test files....."
 python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 
 
-#python run_chrono.py -i ./data/Debugging/data/ -r ./data/Debugging/gold/ -o ./resultsDebug/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+python run_chrono.py -i ./data/Debugging/data/ -r ./data/Debugging/gold/ -o ./resultsDebug/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 
 ## Run the following if you want to create a new training data matrix
 #python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -t "my_train_matrix" -w 3 -m $ML 
@@ -27,7 +27,7 @@ echo "Evaluating Chrono Test Results..."
 #python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event Before After NthFromStart
 python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before
 
-#python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before  --include NthFromStart --per-document
+#python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before  --include AMPM-Of-Day --per-document
 
 ## go to baselinecode Directory
 #cd ../

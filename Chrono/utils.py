@@ -288,7 +288,7 @@ def get_features(data_file):
 def markTemporal(refToks):
     for ref in refToks:
         #mark if numeric
-        ref.setNumeric(numericTest(ref.getText()))
+        ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
         ref.setTemporal(temporalTest(ref.getText()))
         
@@ -301,17 +301,21 @@ def markTemporal(refToks):
 # @author Amy Olex
 # @param tok The token string
 # @return Boolean true if numeric, false otherwise
-def numericTest(tok):
-    #remove punctuation
-    tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+def numericTest(tok, pos):
     
-    #test for a number
-    #tok.strip(",.")
-    val = getNumberFromText(tok)
-    #print("Testing Number: Tok: " + tok + "  Val:" + str(val))
-    if val is not None:
+    if pos == "CD":
         return True
-    return False
+    else:
+        #remove punctuation
+        tok = tok.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
+    
+        #test for a number
+        #tok.strip(",.")
+        val = getNumberFromText(tok)
+        #print("Testing Number: Tok: " + tok + "  Val:" + str(val))
+        if val is not None:
+            return True
+        return False
 ####
 #END_MODULE
 #### 
