@@ -294,7 +294,7 @@ def hasTimeZone(text):
     text_list = text_norm.split(" ")
     
     #define my season lists
-    zones = ["AST","EST","EDT","CST","CDT","MST","MDT","PST","PDT","AKST","HST","HAST","HADT","SST","SDT","GMT","CHST","UTC-11","UTC+10"]
+    zones = ["AST","EST","EDT","CST","CDT","MST","MDT","PST","PDT","AKST","HST","HAST","HADT","SST","SDT","GMT","CHST","UTC"]
     
     for t in text_list:
         answer = next((m for m in zones if m in t), None)
