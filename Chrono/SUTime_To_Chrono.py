@@ -1517,7 +1517,7 @@ def buildModifierText(s, chrono_id, chrono_list):
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Mid")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
-            elif val == "fiscal" or "fy":
+            elif val == "fiscal" or val == "fy":
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Fiscal")
                 chrono_list.append(my_modifier_entity)
@@ -1525,6 +1525,11 @@ def buildModifierText(s, chrono_id, chrono_list):
             elif val == "over":
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "early":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="Start")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
             else:
@@ -2656,7 +2661,7 @@ def hasModifierText(suentity):
 
     if len(text_list)>0:
         #loop through list looking for expression
-        temp_text = ["nearly", "almost", "late", "mid", "fiscal", "fy", "over"]
+        temp_text = ["nearly", "almost", "late", "mid", "fiscal", "fy", "over", "early"]
 
         for t in text_list:
             answer = next((m for m in temp_text if m in t), None)
