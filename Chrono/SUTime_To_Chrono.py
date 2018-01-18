@@ -1419,6 +1419,7 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
             hour = int(val[0:2])
             minute = int(val[2:4])
         except ValueError:
+            print("TIME ZONE: {}".format(val))
             tz = hasTimeZone(s)
             my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
                                                        end_span=tz.span(0)[1] + ref_Sspan)
@@ -2302,8 +2303,8 @@ def has24HourTime(suentity, loneDigitYearFlag):
                             start_idx, end_idx = getSpan(stext, text)    
                             return True, text, start_idx, end_idx
             elif tz_format is not None:
-                time = tz_format[1]
-
+                time = tz_format[0]
+                print("THIS TIME: {}".format(time))
                 hour = utils.getNumberFromText(time[0:2])
                 minute = utils.getNumberFromText(time[2:4])
                 # if (minute > 60) or (hour > 24):
