@@ -63,6 +63,9 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
 
         chrono_tmp_list, chrono_id  = build24HourTime(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
 
+        #Parse modifier text
+        chrono_tmp_list, chrono_id = buildModifierText(s, chrono_id, chrono_tmp_list)
+
         #call non-standard formatting temporal phrases
         chrono_tmp_list, chrono_id, loneDigitYearFlag  = buildNumericDate(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
          
@@ -1412,9 +1415,17 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not lone_digit_year_flag:
         ## assume format of hhmm or hhmmzzz
-        hour = int(val[0:2])
-        minute = int(val[2:4])
-        
+        try:
+            hour = int(val[0:2])
+            minute = int(val[2:4])
+        except ValueError:
+            print("TIME ZONE: {}".format(val))
+            tz = hasTimeZone(s)
+            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
+                                                       end_span=tz.span(0)[1] + ref_Sspan)
+            chrono_list.append(my_tz_entity)
+            chrono_id = chrono_id + 1
+            return chrono_list, chrono_id
         #search for time zone
         ## Identify if a time zone string exists
         tz = hasTimeZone(s)
@@ -1480,7 +1491,69 @@ def buildSet(s, chrono_id, chrono_list):
 
 ####
 #END_MODULE
-#### 
+####
+
+## Parses a sutime entity's text field to determine if it contains a modifier text expression, then builds the associated chronoentity list
+# @author Luke Maffey
+# @param s The SUtime entity to parse
+# @param chronoID The current chronoID to increment as new chronoentities are added to list.
+# @param chronoList The list of chrono objects we currently have.  Will add to these.
+# @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
+def buildModifierText(s, chrono_id, chrono_list):
+    boo, val, idxstart, idxend = hasModifierText(s)
+    if boo:
+        ref_Sspan, ref_Espan = s.getSpan()
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        if val is not None:
+            if val == "nearly" or val == "almost":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, modifier="Less-Than")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "about":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="Approx")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "late":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="End")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "mid":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="Mid")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "fiscal" or val == "fy":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="Fiscal")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "over":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val == "early":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="Start")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            else:
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="Approx")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+        else:
+            my_modifier_entity = None
+
+    return chrono_list, chrono_id
+
+
+####
+# END_MODULE
+####
 
 
 ############# Start hasX() Methods ##################
@@ -1888,7 +1961,7 @@ def hasAMPM(suentity):
 # @param suentity The SUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
-    return re.search('(AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
+    return re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', suentity.getText())
 
 ####
 #END_MODULE
@@ -2217,7 +2290,7 @@ def has24HourTime(suentity, loneDigitYearFlag):
     if not loneDigitYearFlag:
         #loop through list looking for expression
         for text in text_list:
-            tz_format = re.search('([0-9]{4})((AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10))', text)
+            tz_format = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text)
             if len(text) == 4:
                 num = utils.getNumberFromText(text)
                 if num is not None:
@@ -2230,16 +2303,15 @@ def has24HourTime(suentity, loneDigitYearFlag):
                             start_idx, end_idx = getSpan(stext, text)    
                             return True, text, start_idx, end_idx
             elif tz_format is not None:
-                time = tz_format[1]
-                zone = tz_format[2]
-
+                time = tz_format[0]
+                print("THIS TIME: {}".format(time))
                 hour = utils.getNumberFromText(time[0:2])
                 minute = utils.getNumberFromText(time[2:4])
-                if (minute > 60) or (hour > 24):
-                    return False, None, None, None
-                else:
-                    start_idx, end_idx = getSpan(stext, time)    
-                    return True, time, start_idx, end_idx
+                # if (minute > 60) or (hour > 24):
+                #     return False, None, None, None
+                # else:
+                start_idx, end_idx = getSpan(stext, time)
+                return True, time, start_idx, end_idx
 
         return False, None, None, None #if no 4 digit year expressions were found return false            
     else:
@@ -2490,7 +2562,10 @@ def hasHourOfDay(suentity):
                     start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[0]) 
                     return True, re.compile(":").split(text)[0], start_idx, end_idx                    
                 else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return false  
+                    return False, None, None, None #if no 2 digit hour expressions were found return fa
+
+
+                    # lse
 
         return False, None, None, None #if no 2 digit hour expressions were found return false            
     else:
@@ -2575,6 +2650,39 @@ def hasExactDuration(suentity):
     else:
         return False
 
+####
+#END_MODULE
+####
+
+## Takes in a single text string and identifies if it has a modifier text
+# @author Luke Maffey
+# @param suentity The SUTime entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasModifierText(suentity):
+
+    text_lower = suentity.getText().lower()
+    #remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    #convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list)>0:
+        #loop through list looking for expression
+        temp_text = ["nearly", "almost", "late", "mid", "fiscal", "fy", "over", "early"]
+
+        for t in text_list:
+            answer = next((m for m in temp_text if m in t), None)
+            if answer is not None:
+                answer2 = next((m for m in temp_text if t in m), None)
+                if answer2 is not None:
+                    return True, t, getSpan(text_norm,t)[0], getSpan(text_norm,t)[1]
+                else:
+                    return False, None, None, None  # if no 2 digit hour expressions were found return false
+            else:
+                return False, None, None, None  # if no 2 digit day expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
 ####
 #END_MODULE
 ####
