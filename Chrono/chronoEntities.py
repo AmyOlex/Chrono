@@ -1248,7 +1248,7 @@ class ChronoModifier(ChronoOtherEntity):
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
-		return(super().print_xml() + "\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t"
+		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t</properties>\n\t"
 			  "</entity>\n".format(self.modifier))
 
 class ChronoEvent(ChronoOtherEntity):

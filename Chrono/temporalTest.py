@@ -289,12 +289,12 @@ def hasPartOfDay(text):
 def hasTimeZone(text):
     
     #remove all punctuation
-    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    text_norm = text.translate(str.maketrans(string.punctuation+"0123456789", " "*(len(string.punctuation)+10))).strip()
     #convert to list
     text_list = text_norm.split(" ")
     
     #define my season lists
-    zones = ["AST","EST","EDT","CST","MST","PST","AKST","HST","UTC-11","UTC+10"]
+    zones = ["AST","EST","EDT","CST","CDT","MST","MDT","PST","PDT","AKST","HST","HAST","HADT","SST","SDT","GMT","CHST","UTC"]
     
     for t in text_list:
         answer = next((m for m in zones if m in t), None)
@@ -344,7 +344,7 @@ def hasModifierText(text):
     # convert to list
     text_list = text_norm.split(" ")
 
-    temp_text = ["nearly", "almost", "or so", "late", "mid"]
+    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early"]
 
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
