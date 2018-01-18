@@ -1415,9 +1415,16 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
     ref_Sspan, ref_Espan = s.getSpan()
     if boo and not lone_digit_year_flag:
         ## assume format of hhmm or hhmmzzz
-        hour = int(val[0:2])
-        minute = int(val[2:4])
-        
+        try:
+            hour = int(val[0:2])
+            minute = int(val[2:4])
+        except ValueError:
+            tz = hasTimeZone(s)
+            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
+                                                       end_span=tz.span(0)[1] + ref_Sspan)
+            chrono_list.append(my_tz_entity)
+            chrono_id = chrono_id + 1
+            return chrono_list, chrono_id
         #search for time zone
         ## Identify if a time zone string exists
         tz = hasTimeZone(s)
@@ -1953,7 +1960,7 @@ def hasAMPM(suentity):
 # @param suentity The SUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
-    return re.search('(AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10)', suentity.getText())
+    return re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', suentity.getText())
 
 ####
 #END_MODULE
@@ -2282,7 +2289,7 @@ def has24HourTime(suentity, loneDigitYearFlag):
     if not loneDigitYearFlag:
         #loop through list looking for expression
         for text in text_list:
-            tz_format = re.search('([0-9]{4})((AST|EST|EDT|CST|MST|PST|AKST|HST|UTC-11|UTC+10))', text)
+            tz_format = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text)
             if len(text) == 4:
                 num = utils.getNumberFromText(text)
                 if num is not None:
@@ -2296,15 +2303,14 @@ def has24HourTime(suentity, loneDigitYearFlag):
                             return True, text, start_idx, end_idx
             elif tz_format is not None:
                 time = tz_format[1]
-                zone = tz_format[2]
 
                 hour = utils.getNumberFromText(time[0:2])
                 minute = utils.getNumberFromText(time[2:4])
-                if (minute > 60) or (hour > 24):
-                    return False, None, None, None
-                else:
-                    start_idx, end_idx = getSpan(stext, time)    
-                    return True, time, start_idx, end_idx
+                # if (minute > 60) or (hour > 24):
+                #     return False, None, None, None
+                # else:
+                start_idx, end_idx = getSpan(stext, time)
+                return True, time, start_idx, end_idx
 
         return False, None, None, None #if no 4 digit year expressions were found return false            
     else:
