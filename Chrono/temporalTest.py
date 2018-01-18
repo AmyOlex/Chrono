@@ -289,7 +289,7 @@ def hasPartOfDay(text):
 def hasTimeZone(text):
     
     #remove all punctuation
-    text_norm = text.translate(str.maketrans(string.punctuation, " "*len(string.punctuation))).strip()
+    text_norm = text.translate(str.maketrans(string.punctuation+"0123456789", " "*(len(string.punctuation)+10))).strip()
     #convert to list
     text_list = text_norm.split(" ")
     
