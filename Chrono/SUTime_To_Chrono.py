@@ -87,8 +87,8 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     #        print(e)
         
         
-        chrono_list += buildChronoSubIntervals(chrono_tmp_list)
-        
+        tmplist, chrono_id = buildChronoSubIntervals(chrono_tmp_list, chrono_id, dct)
+        chrono_list = chrono_list+tmplist
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
         #chrono_list, chrono_id = buildSet(s, chrono_id, chrono_list)
@@ -107,7 +107,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
 # @author Amy Olex
 # @param list of ChronoEntities
 # @return List of ChronoEntities with sub-intervals assigned
-def buildChronoSubIntervals(chrono_list):
+def buildChronoSubIntervals(chrono_list, chrono_id, dct):
     year = None
     month = None
     day = None
@@ -128,6 +128,7 @@ def buildChronoSubIntervals(chrono_list):
         
         if e_type == "Two-Digit-Year" or e_type == "Year":
             year = e
+            print("YEAR VALUE: " + str(chrono_list[e].get_value()))
         elif e_type == "Month-Of-Year":
             month = e
         elif e_type == "Day-Of-Month":
@@ -152,6 +153,33 @@ def buildChronoSubIntervals(chrono_list):
             print("FOUND nth")
             nth = e
         
+    ## Now identify all NEXT and LAST entities
+    if year is None:
+        if dct is not None:
+            if month is not None:
+                mStart = chrono_list[month].get_start_span()
+                mEnd = chrono_list[month].get_end_span()
+                
+                my_month = utils.getMonthNumber(chrono_list[month].get_month_type())
+                
+                if day is not None and my_month == dct.month:
+                    # add a Last
+                    if chrono_list[day].get_value() <= dct.day:
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                        chrono_id = chrono_id + 1
+                    elif chrono_list[day].get_value() > dct.day:
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                        chrono_id = chrono_id + 1
+                
+                elif my_month < dct.month:
+                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                    chrono_id = chrono_id + 1
+                    
+                elif my_month > dct.month:
+                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                    chrono_id = chrono_id + 1                
+                
+    
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
         chrono_list[minute].set_sub_interval(chrono_list[second].get_id())
@@ -184,7 +212,7 @@ def buildChronoSubIntervals(chrono_list):
         #print("REMOVING NthFromStart: " + str(chrono_list[nth]))
         #del chrono_list[nth]
     
-    return chrono_list
+    return chrono_list, chrono_id
 
 ####
 #END_MODULE
@@ -984,7 +1012,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                     
                     #now figure out if it is a NEXT or LAST
                     #create doctime
-                    if dct is not None:
+                    if False: #dct is not None:
                         mStart = my_month_entity.get_start_span()
                         mEnd = my_month_entity.get_end_span()
                         this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
@@ -994,7 +1022,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                         elif this_dct < dct:
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
-                elif num >=1000 and num <=3000:
+                elif num >=1000 and num <=2100:
                     year_startidx, year_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + year_startidx
                     abs_Espan = ref_Sspan + year_endidx
@@ -1021,7 +1049,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                             
                             #now figure out if it is a NEXT or LAST
                             #create doctime
-                            if dct is not None:
+                            if False: #dct is not None:
                                 mStart = my_month_entity.get_start_span()
                                 mEnd = my_month_entity.get_end_span()
                                 this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
@@ -1031,7 +1059,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                                 elif this_dct < dct:
                                     chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                                     chrono_id = chrono_id + 1
-                        elif num >=1000 and num <=3000:
+                        elif num >=1000 and num <=2100:
                             year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
                             abs_Sspan = ref_Sspan + year_startidx
                             abs_Espan = ref_Sspan + year_endidx
