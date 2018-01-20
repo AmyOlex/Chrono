@@ -119,6 +119,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct):
     interval = None
     period = None
     nth = None
+    mod = None
     
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
@@ -130,6 +131,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct):
             year = e
             print("YEAR VALUE: " + str(chrono_list[e].get_value()))
         elif e_type == "Month-Of-Year":
+            print("FOUND Month")
             month = e
         elif e_type == "Day-Of-Month":
             day = e
@@ -144,19 +146,21 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct):
         elif e_type == "Day-Of-Week":
             dayweek = e
         elif e_type == "Calendar-Interval":
-            print("FOUND Interval")
             interval = e
         elif e_type == "Period":
-            print("FOUND Period")
             period = e
         elif e_type == "NthFromStart":
-            print("FOUND nth")
             nth = e
+        elif e_type == "This" or e_type == "Next" or e_type == "Last":
+            print("FOUND Mod")
+            mod = e
         
     ## Now identify all NEXT and LAST entities
+    ## Need to edit to figure out if a modifier word exists first, then test for year, etc.
+    ## need to look specifically for modifier words in the other methods.  This method catches full dates that are next or last with no modifier words.
     if year is None:
         if dct is not None:
-            if month is not None:
+            if month is not None and mod is None:                
                 mStart = chrono_list[month].get_start_span()
                 mEnd = chrono_list[month].get_end_span()
                 
@@ -823,9 +827,9 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
             if mod_type == "Last":
                 chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
                 chrono_id = chrono_id + 1
-            else:
-                chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
-                chrono_id = chrono_id + 1
+            #else:
+            #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
+            #    chrono_id = chrono_id + 1
                 
         else:
             # TODO all last operators are getting added here except yesterday...
@@ -868,9 +872,9 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
             if mod_type == "Last":
                 chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
-            else:
-                chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
-                chrono_id = chrono_id + 1
+            #else:
+            #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+            #    chrono_id = chrono_id + 1
                 
        # else:
     #        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
@@ -1780,6 +1784,36 @@ def hasModifier(suentity):
 ####
 
 
+## Takes in a single text string and identifies if it is a month of the year
+# @author Amy Olex
+# @param text The text to parse
+# @return value The normalized string value for the month of the year, or None if no month of year found.
+def hasTextMonth(text):
+    
+    #Note: I took out converting to lower case because the capitilazation adds information for month mentions.
+    #remove all commas
+    text_norm = text.translate(str.maketrans("", "", ","))
+    #convert to list
+    #text_list = text_norm.split(" ")
+    
+    #define my day lists
+    full_month = ["January","February","March","April","May","June","July","August","September","October","November","December","january","february","march","april","may","june","july","august","september","october","november","december"]
+    abbr_month = ["Jan.", "Feb.","Mar.","Apr.","Jun.","Jul.","Aug.","Sept.","Oct.","Nov.","Dec.","jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","oct.","nov.","dec."]
+    
+    answer = next((m for m in full_month if m in text_norm), None)
+    if answer is not None:
+        return True
+    else:
+        answer2 = next((a for a in abbr_month if a in text_norm), None)
+        if answer2 is not None:
+            return True
+        else:
+            return False
+
+    
+####
+#END_MODULE
+####
 
 
 ## Takes in a single text string and identifies if it is a month of the year
@@ -1794,12 +1828,58 @@ def hasTextMonth(suentity, ref_list):
     #convert to all lower
     text_lower = suentity.getText().lower()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
+    #text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     #convert to list
     text_list = text_norm.split(" ")
     
-    #define my day lists
-    M1 = ["january","jan."]
+    #define my month lists
+    full_month = ["january","february","march","april","may","june","july","august","september","october","november","december"]
+    abbr_month = ["jan","feb","mar","apr","jun","jul","aug","sept","oct","nov","dec"]
+    all_month = full_month+abbr_month
+    
+    t_flag = False
+    for tok in text_list:
+        answer = next((m for m in all_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in all_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["january","jan"]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["february","feb"]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["march","mar"]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["april","apr"]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["may"]:
+                        return True, "May", start_idx, end_idx
+                    elif answer2 in ["june","jun"]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["july","jul"]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["august","aug"]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["september","sep","sept"]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["october","oct"]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["november","nov"]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["december","dec"]:
+                        return True, "December", start_idx, end_idx
+          
+    return False, None, None, None
+    '''   
+    M1 = ["january","jan"]
     M2 = ["february","feb."]
     M3 = ["march","mar."]
     M4 = ["april","apr."]
@@ -1928,11 +2008,8 @@ def hasTextMonth(suentity, ref_list):
             
             if postag == "NNP":
                 return True, "December", start_idx, end_idx
+    '''
 
-        else :
-            return False, None, None, None
-            
-    return False, None, None, None
     
 ####
 #END_MODULE
