@@ -43,31 +43,33 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     for s in suTimeList :
         print(s)
         chrono_tmp_list = []
-        chrono_minute_flag = False
-        chrono_second_flag = False
-        loneDigitYearFlag = False
-        #Parse out Year function
-        chrono_tmp_list, chrono_id, chrono_minute_flag, chrono_second_flag  = buildChronoYear(s, chrono_id, chrono_tmp_list, chrono_minute_flag, chrono_second_flag, loneDigitYearFlag)
-        #Parse out Two-Digit Year 
-        chrono_tmp_list, chrono_id, chrono_minute_flag, chrono_second_flag  = buildChrono2DigitYear(s, chrono_id, chrono_tmp_list, chrono_minute_flag, chrono_second_flag)
-        #Parse out Month-of-Year
-        chrono_tmp_list, chrono_id  = buildChronoMonthOfYear(s, chrono_id, chrono_tmp_list)
-        #Parse out Day-of-Month
-        chrono_tmp_list, chrono_id  = buildChronoDayOfMonth(s, chrono_id, chrono_tmp_list)
-        #Parse out HourOfDay
-        chrono_tmp_list, chrono_id  = buildChronoHourOfDay(s, chrono_id, chrono_tmp_list)
-        #Parse out MinuteOfHour
-        chrono_tmp_list, chrono_id  = buildChronoMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_minute_flag)
-        #Parse out SecondOfMinute
-        chrono_tmp_list, chrono_id  = buildChronoSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_second_flag)
+        
+        # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
+        # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
+        chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False}
 
-        chrono_tmp_list, chrono_id  = build24HourTime(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
+        #Parse out Year function
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse out Two-Digit Year 
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChrono2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse out Month-of-Year
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse out Day-of-Month
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse out HourOfDay
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse out MinuteOfHour
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse out SecondOfMinute
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+
+        chrono_tmp_list, chrono_id, chrono_time_flags  = build24HourTime(s, chrono_id, chrono_tmp_list, chrono_time_flags)
 
         #Parse modifier text
         chrono_tmp_list, chrono_id = buildModifierText(s, chrono_id, chrono_tmp_list)
 
         #call non-standard formatting temporal phrases
-        chrono_tmp_list, chrono_id, loneDigitYearFlag  = buildNumericDate(s, chrono_id, chrono_tmp_list, loneDigitYearFlag)
+        chrono_tmp_list, chrono_id, chrono_time_flags  = buildNumericDate(s, chrono_id, chrono_tmp_list, chrono_time_flags)
          
         chrono_tmp_list, chrono_id  = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
@@ -382,8 +384,9 @@ def buildThis(s, chrono_id, chrono_list):
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-
-def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
+# The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
+#chrono_time_flags = {"loneDigitYear"=False, "month"=False, "day"=False, "hour"=False, "minute"=False, "second"=False}
+def buildNumericDate(s, chrono_id, chrono_list, flags):
     
     text = s.getText().strip(".,")
     ## See if there is a 4 digit number and assume it is a year if between 1800 and 2050
@@ -393,7 +396,7 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
         num = utils.getNumberFromText(text)
         if num is not None:
             if  (num >= 1800) and (num <= 2050):
-                loneDigitYearFlag = True    
+                flags["loneDigitYear"] = True    
                 ## build year
                 ref_StartSpan, ref_EndSpan = s.getSpan()
                 start_idx, end_idx = re.search(text, s.getText()).span(0)
@@ -499,7 +502,7 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
                         chrono_list.append(chrono_month_entity)
                         chrono_list.append(chrono_day_entity)
 
-    return chrono_list, chrono_id, loneDigitYearFlag
+    return chrono_list, chrono_id, flags
 
 ####
 #END_MODULE
@@ -515,9 +518,11 @@ def buildNumericDate(s, chrono_id, chrono_list, loneDigitYearFlag):
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second_flag, lone_digit_year_flag):
+# The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
 
-    b, text, startSpan, endSpan, lone_digit_year_flag = hasYear(s, lone_digit_year_flag)
+def buildChronoYear(s, chrono_id, chrono_list, flags):
+
+    b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
@@ -527,7 +532,8 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 
         #Check for Month in same element
         bMonth, textMonth, startSpanMonth, endSpanMonth = hasMonthOfYear(s)
-        if bMonth:
+        if bMonth and not flags["month"]:
+            flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
             if(int(textMonth) <= 12):
@@ -537,7 +543,8 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 
             #Check for Day in same element
             bDay, textDay, startSpanDay, endSpanDay = hasDayOfMonth(s)
-            if bDay:
+            if bDay and not flags["day"]:
+                flags["day"] = True
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
                 if(int(textDay) <= 31):
@@ -547,7 +554,8 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 
                 #Check for Hour in same element
                 bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
-                if bHour:
+                if bHour and not flags["hour"]:
+                    flags["hour"] = True
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
@@ -558,8 +566,8 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
-                    if bMinute and not chrono_minute_flag:
-                        chrono_minute_flag=True
+                    if bMinute and not flags["minute"]:
+                        flags["minute"]=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
@@ -571,8 +579,8 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
-                        if bSecond and not chrono_second_flag:
-                            chrono_second_flag=True
+                        if bSecond and not flags["second"]:
+                            flags["second"]=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpanSecond
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
@@ -593,7 +601,7 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
         chrono_list.append(chrono_year_entity)
         
         
-    return chrono_list, chrono_id, chrono_minute_flag, chrono_second_flag
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -604,7 +612,7 @@ def buildChronoYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_second_flag):
+def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b:
         #In most cases this will be at the end of the Span
@@ -616,7 +624,8 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
         
         #Check for Month in same element
         bMonth, textMonth, startSpanMonth, endSpanMonth = hasMonthOfYear(s)
-        if bMonth:
+        if bMonth and not flags["month"]:
+            flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
             if(int(textMonth) <= 12):
@@ -626,7 +635,8 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
 
             #Check for Day in same element
             bDay, textDay, startSpanDay, endSpanDay = hasDayOfMonth(s)
-            if bDay:
+            if bDay and not flags["day"]:
+                flags["day"] = True
                 abs_StartSpanDay = ref_StartSpan + startSpanDay
                 abs_EndSpanDay = abs_StartSpanDay + abs(endSpanDay-startSpanDay)
                 if(int(textDay) <= 31):
@@ -636,7 +646,8 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
 
                 #Check for Hour in same element
                 bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
-                if bHour:
+                if bHour and not flags["hour"]:
+                    flags["hour"] = True
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour-startSpanHour)
@@ -648,7 +659,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
                     if bMinute and not chrono_minute_flag:
-                        chrono_minute_flag=True
+                        flags["minute"]=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute-startSpanMinute)
@@ -661,7 +672,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
                         if bSecond and not chrono_second_flag:
-                            chrono_second_flag=True
+                            flags["second"]=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpanSecond
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond-startSpanSecond)
@@ -682,7 +693,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
         chrono_list.append(chrono_2_digit_year_entity)
 
               
-    return chrono_list, chrono_id, chrono_minute_flag, chrono_second_flag
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -693,9 +704,10 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, chrono_minute_flag, chrono_
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoMonthOfYear(s, chrono_id, chrono_list):
+def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMonthOfYear(s)
-    if b:
+    if b and not flags["month"]:
+        flags["month"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -704,7 +716,7 @@ def buildChronoMonthOfYear(s, chrono_id, chrono_list):
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
                          
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -715,9 +727,10 @@ def buildChronoMonthOfYear(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoDayOfMonth(s, chrono_id, chrono_list):
+def buildChronoDayOfMonth(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasDayOfMonth(s)
-    if b:
+    if b and not flags["day"]:
+        flags["day"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -726,7 +739,7 @@ def buildChronoDayOfMonth(s, chrono_id, chrono_list):
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
                           
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
     
 ####
 #END_MODULE
@@ -738,9 +751,10 @@ def buildChronoDayOfMonth(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoHourOfDay(s, chrono_id, chrono_list):
+def buildChronoHourOfDay(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasHourOfDay(s)
-    if b:
+    if b and not flags["hour"]:
+        flags["hour"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -748,7 +762,7 @@ def buildChronoHourOfDay(s, chrono_id, chrono_list):
         chrono_list.append(chrono_entity)
         chrono_id = chrono_id + 1
                           
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -759,10 +773,11 @@ def buildChronoHourOfDay(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoMinuteOfHour(s, chrono_id, chrono_list, chrono_minute_flag):
+def buildChronoMinuteOfHour(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
     
-    if b and not chrono_minute_flag:
+    if b and not flags["minute"]:
+        flags["minute"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -770,7 +785,7 @@ def buildChronoMinuteOfHour(s, chrono_id, chrono_list, chrono_minute_flag):
         chrono_list.append(chrono_entity)
         chrono_id = chrono_id + 1
                          
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -781,9 +796,10 @@ def buildChronoMinuteOfHour(s, chrono_id, chrono_list, chrono_minute_flag):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoSecondOfMinute(s, chrono_id, chrono_list, chrono_second_flag):
+def buildChronoSecondOfMinute(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
-    if b and not chrono_second_flag:
+    if b and not flags["second"]:
+        flags["second"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -791,7 +807,7 @@ def buildChronoSecondOfMinute(s, chrono_id, chrono_list, chrono_second_flag):
         chrono_list.append(chrono_entity)
         chrono_id = chrono_id + 1
                           
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -1441,11 +1457,11 @@ def buildPartOfWeek(s, chrono_id, chrono_list):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
+def build24HourTime(s, chrono_id, chrono_list, flags):
     
-    boo, val, idxstart, idxend = has24HourTime(s, lone_digit_year_flag)
+    boo, val, idxstart, idxend = has24HourTime(s, flags)
     ref_Sspan, ref_Espan = s.getSpan()
-    if boo and not lone_digit_year_flag:
+    if boo and not flags["loneDigitYear"]:
         ## assume format of hhmm or hhmmzzz
         try:
             hour = int(val[0:2])
@@ -1484,7 +1500,7 @@ def build24HourTime(s, chrono_id, chrono_list, lone_digit_year_flag):
         chrono_id = chrono_id + 1
 
  
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 #### 
@@ -1803,14 +1819,13 @@ def hasTextMonth(suentity, ref_list):
     
     #define my month lists
     full_month = ["january","february","march","april","may","june","july","august","september","october","november","december"]
-    abbr_month = ["jan","feb","mar","apr","jun","jul","aug","sept","oct","nov","dec"]
-    all_month = full_month+abbr_month
-    
+     
+    #run for full month
     t_flag = False
     for tok in text_list:
-        answer = next((m for m in all_month if tok in m), None)
+        answer = next((m for m in full_month if tok in m), None)
         if answer is not None and not t_flag:
-            answer2 = next((m for m in all_month if m in tok), None)
+            answer2 = next((m for m in full_month if m in tok), None)
             if answer2 is not None and not t_flag:
                 t_flag = True
                 #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
@@ -1820,31 +1835,75 @@ def hasTextMonth(suentity, ref_list):
                 postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
                 if postag == "NNP":
-                    if answer2 in ["january","jan"]:
+                    if answer2 in ["january"]:
                         return True, "January", start_idx, end_idx
-                    elif answer2 in ["february","feb"]:
+                    elif answer2 in ["february"]:
                         return True, "February", start_idx, end_idx
-                    elif answer2 in ["march","mar"]:
+                    elif answer2 in ["march"]:
                         return True, "March", start_idx, end_idx
-                    elif answer2 in ["april","apr"]:
+                    elif answer2 in ["april"]:
                         return True, "April", start_idx, end_idx
                     elif answer2 in ["may"]:
                         return True, "May", start_idx, end_idx
-                    elif answer2 in ["june","jun"]:
+                    elif answer2 in ["june"]:
                         return True, "June", start_idx, end_idx
-                    elif answer2 in ["july","jul"]:
+                    elif answer2 in ["july"]:
                         return True, "July", start_idx, end_idx
-                    elif answer2 in ["august","aug"]:
+                    elif answer2 in ["august"]:
                         return True, "August", start_idx, end_idx
-                    elif answer2 in ["september","sep","sept"]:
+                    elif answer2 in ["september"]:
                         return True, "September", start_idx, end_idx
-                    elif answer2 in ["october","oct"]:
+                    elif answer2 in ["october"]:
                         return True, "October", start_idx, end_idx
-                    elif answer2 in ["november","nov"]:
+                    elif answer2 in ["november"]:
                         return True, "November", start_idx, end_idx
-                    elif answer2 in ["december","dec"]:
+                    elif answer2 in ["december"]:
                         return True, "December", start_idx, end_idx
           
+    #run for abbr month
+    abbr_month = ["jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","sep.","oct.","nov.","dec."]
+    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
+    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' '*len(adj_punc))).strip()
+    #convert to list
+    text_list2 = text_norm2.split(" ")
+    
+    t_flag = False
+    for tok in text_list2:
+        answer = next((m for m in abbr_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in abbr_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["jan."]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["feb."]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["mar."]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["apr."]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["jun."]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["jul."]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["aug."]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["sept.", "sep."]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["oct."]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["nov."]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["dec."]:
+                        return True, "December", start_idx, end_idx
+    
     return False, None, None, None
 
     
@@ -2220,7 +2279,7 @@ def hasPartOfWeek(suentity):
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 # Note: This need to be called after it has checked for years
-def has24HourTime(suentity, loneDigitYearFlag):
+def has24HourTime(suentity, flags):
     
     #text_lower = suentity.getText().lower() 
     #remove all punctuation
@@ -2229,7 +2288,7 @@ def has24HourTime(suentity, loneDigitYearFlag):
     stext = suentity.getText()
     text_list = stext.split(" ")
 
-    if not loneDigitYearFlag:
+    if not flags["loneDigitYear"]:
         #loop through list looking for expression
         for text in text_list:
             tz_format = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text)
@@ -2264,7 +2323,7 @@ def has24HourTime(suentity, loneDigitYearFlag):
 # @author Nicholas Morton and Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasYear(suentity, loneDigitYearFlag):
+def hasYear(suentity, flags):
     
     text_lower = suentity.getText().lower() 
     #remove all punctuation
@@ -2280,23 +2339,23 @@ def hasYear(suentity, loneDigitYearFlag):
             if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text)):
                 if  len(text.split("/")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
-                    return True, re.compile("/").split(text)[2], start_idx, end_idx, loneDigitYearFlag
+                    return True, re.compile("/").split(text)[2], start_idx, end_idx, flags
                 elif len(text.split("-")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
-                    return True, re.compile("-").split(text)[2], start_idx, end_idx, loneDigitYearFlag
+                    return True, re.compile("-").split(text)[2], start_idx, end_idx, flags
                 else:
-                   return False, None, None, None, loneDigitYearFlag
+                   return False, None, None, None, flags
             ## look for year at start of date
             ## added by Amy Olex
             elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
                 if  len(text.split("/")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
-                    return True, re.compile("/").split(text)[0], start_idx, end_idx, loneDigitYearFlag
+                    return True, re.compile("/").split(text)[0], start_idx, end_idx, flags
                 elif len(text.split("-")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[0])    
-                    return True, re.compile("-").split(text)[0], start_idx, end_idx, loneDigitYearFlag
+                    return True, re.compile("-").split(text)[0], start_idx, end_idx, flags
                 else:
-                   return False, None, None, None, loneDigitYearFlag
+                   return False, None, None, None, flags
             ## special case to look for c.yyyy
             elif len(text)==6 is not None:
                 r = re.search("c\.([0-9]{4})", text)
@@ -2305,12 +2364,12 @@ def hasYear(suentity, loneDigitYearFlag):
                     if rval is not None:
                         if rval >=1000 and rval<=3000:
                             start_idx, end_idx = r.span(1)
-                            return True, rval, start_idx, end_idx, loneDigitYearFlag
+                            return True, rval, start_idx, end_idx, flags
                         
-        return False, None, None, None, loneDigitYearFlag #if no 4 digit year expressions were found return false            
+        return False, None, None, None, flags #if no 4 digit year expressions were found return false            
 
     else:
-        return False, None, None, None, loneDigitYearFlag #if the text_list does not have any entries, return false
+        return False, None, None, None, flags #if the text_list does not have any entries, return false
 
 ####
 #END_MODULE
