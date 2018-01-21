@@ -2352,26 +2352,28 @@ def hasYear(suentity, flags):
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
-            #print(text + " " + str(len(text)))
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+
             #define regular expression to find a 4-digit year from the date format
             if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text)):
                 if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[2])    
-                    return True, re.compile("/").split(text)[2], start_idx, end_idx, flags
+                    start_idx, end_idx = getSpan(text,re.compile("/").split(text)[2])    
+                    return True, re.compile("/").split(text)[2], text_start+start_idx, text_start+end_idx, flags
                 elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[2])    
-                    return True, re.compile("-").split(text)[2], start_idx, end_idx, flags
+                    start_idx, end_idx = getSpan(text,re.compile("-").split(text)[2])    
+                    return True, re.compile("-").split(text)[2], text_start+start_idx, text_start+end_idx, flags
                 else:
                    return False, None, None, None, flags
             ## look for year at start of date
             ## added by Amy Olex
             elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
                 if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(text)[0])    
-                    return True, re.compile("/").split(text)[0], start_idx, end_idx, flags
+                    start_idx, end_idx = getSpan(text,re.compile("/").split(text)[0])    
+                    return True, re.compile("/").split(text)[0], text_start+start_idx, text_start+end_idx, flags
                 elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(text)[0])    
-                    return True, re.compile("-").split(text)[0], start_idx, end_idx, flags
+                    start_idx, end_idx = getSpan(text,re.compile("-").split(text)[0])    
+                    return True, re.compile("-").split(text)[0], text_start+start_idx, text_start+end_idx, flags
                 else:
                    return False, None, None, None, flags
             ## special case to look for c.yyyy
@@ -2401,23 +2403,25 @@ def has2DigitYear(suentity):
 
     text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    text_norm = text_lower.translate(str.maketrans(",", " "))
     #convert to list
     text_list = text_norm.split(" ")
 
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+            
             #define regular expression to find a 2-digit year
             regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
             if regex and len(regex.group(0))==8:
-                #print(text)
                 if  len(regex.group(0).split("/")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("/").split(regex.group(0))[2])    
-                    return True, re.compile("/").split(regex.group(0))[2], start_idx, end_idx
+                    start_idx, end_idx = getSpan(text,re.compile("/").split(regex.group(0))[2])    
+                    return True, re.compile("/").split(regex.group(0))[2], text_start+start_idx, text_start+end_idx
                 elif len(regex.group(0).split("-")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile("-").split(regex.group(0))[2])    
-                    return True, re.compile("-").split(regex.group(0))[2], start_idx, end_idx
+                    start_idx, end_idx = getSpan(text,re.compile("-").split(regex.group(0))[2])    
+                    return True, re.compile("-").split(regex.group(0))[2], text_start+start_idx, text_start+end_idx
                 else:
                    return False, None, None, None
 
@@ -2438,7 +2442,7 @@ def hasMonthOfYear(suentity):
 
     text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    text_norm = text_lower.translate(str.maketrans(",", " "))
     #convert to list
     text_list = text_norm.split(" ")
 
@@ -2455,7 +2459,7 @@ def hasMonthOfYear(suentity):
             
             if(fourdigitstart):
                 #If start with 4 digits then assum the format yyyy/mm/dd
-                start_idx, end_idx = getSpan(text,fourdigitstart[2])  #fourdigitstart.span(2) #
+                start_idx, end_idx = getSpan(text,fourdigitstart[2])
                 return True, fourdigitstart[2], text_start+start_idx, text_start+end_idx
             elif(twodigitstart):
                 #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
@@ -2484,40 +2488,44 @@ def hasMonthOfYear(suentity):
 ####
 
 ## Takes in a single text string and identifies if it has a day of the month in numeric format
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param suentity The SUTime entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasDayOfMonth(suentity):
 
     text_lower = suentity.getText().lower() 
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    text_norm = text_lower.translate(str.maketrans(",", " "))
     #convert to list
     text_list = text_norm.split(" ")
 
     if len(text_list)>0:
         #loop through list looking for expression
         for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+            
             #define regular expression to find a 2-digit month
-            twodigitstart = re.search('(^[0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('(^[0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
             
             if(fourdigitstart):
                 #If start with 4 digits then assum the format yyyy/mm/dd
-                start_idx, end_idx = getSpan(text_norm,fourdigitstart[3])
-                return True, fourdigitstart[3], start_idx, end_idx
+                start_idx, end_idx = getSpan(text,fourdigitstart[3])
+                return True, fourdigitstart[3], text_start+start_idx, text_start+end_idx
             elif(twodigitstart):
                 #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
                 #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
                 #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
                 if int(twodigitstart[1]) <= 12:
+                    print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
                     # assume mm/dd/yy
-                    start_idx, end_idx = getSpan(text_norm,twodigitstart[2])
-                    return True, twodigitstart[2], start_idx, end_idx
+                    start_idx, end_idx = getSpan(text,twodigitstart[2])
+                    return True, twodigitstart[2], text_start+start_idx, text_start+end_idx
                 elif int(twodigitstart[1]) > 12:
                     # assume yy/mm/dd
-                    start_idx, end_idx = getSpan(text_norm,twodigitstart[3])
-                    return True, twodigitstart[3], start_idx, end_idx
+                    start_idx, end_idx = getSpan(text,twodigitstart[3])
+                    return True, twodigitstart[3], text_start+start_idx, text_start+end_idx
                 else:
                     return False, None, None, None
 
