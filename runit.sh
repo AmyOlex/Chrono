@@ -24,10 +24,10 @@ cd anaforatools
 
 ## run the evaluation script
 echo "Evaluating Chrono Test Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event Before After --include Next --per-document
-#python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before
+python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event Before After 
+#python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before --include This Next Last --per-document
 
-#python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before  --include AMPM-Of-Day --per-document
+#python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before  --include Next --per-document
 
 ## go to baselinecode Directory
 #cd ../
