@@ -1640,11 +1640,11 @@ def buildModifierText(s, chrono_id, chrono_list):
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Fiscal")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
-            elif val == "over":
-                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
-                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
-                chrono_list.append(my_modifier_entity)
-                chrono_id = chrono_id + 1
+            # elif val == "over":
+            #     my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+            #                                                start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
+            #     chrono_list.append(my_modifier_entity)
+            #     chrono_id = chrono_id + 1
             elif val == "early":
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Start")
