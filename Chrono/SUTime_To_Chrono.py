@@ -17,6 +17,7 @@ from chronoML import ChronoKeras
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
 from Chrono import utils
+from Chrono import w2ny as w2n
 
 
 #Example SUTime List
@@ -1168,13 +1169,13 @@ def buildAMPM(s, chrono_id, chrono_list):
     am_flag = True
     ref_Sspan, ref_Espan = s.getSpan()
     ## Identify if a time zone string exists
-    tz = hasTimeZone(s)
-    if tz is not None:
-        my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
-        chrono_list.append(my_tz_entity)
-        chrono_id = chrono_id + 1
-    else:
-        my_tz_entity = None
+    # tz = hasTimeZone(s)
+    # if tz is not None:
+    #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+    #     chrono_list.append(my_tz_entity)
+    #     chrono_id = chrono_id + 1
+    # else:
+    #     my_tz_entity = None
      
     boo, val, idxstart, idxend = hasAMPM(s)
     if boo:
@@ -1210,8 +1211,8 @@ def buildAMPM(s, chrono_id, chrono_list):
                  
                 chrono_id = chrono_id + 1
                  
-                if my_tz_entity is not None:
-                    my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                # if my_tz_entity is not None:
+                #     my_hour_entity.set_time_zone(my_tz_entity.get_id())
             
                 #add the hour entity to the list
                 chrono_list.append(my_hour_entity)
@@ -1232,8 +1233,8 @@ def buildAMPM(s, chrono_id, chrono_list):
                     #create the hour entity
                     my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal, ampm=my_AMPM_entity.get_id())
                     chrono_id = chrono_id + 1
-                    if my_tz_entity is not None:
-                        my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                    # if my_tz_entity is not None:
+                    #     my_hour_entity.set_time_zone(my_tz_entity.get_id())
                     #append to list
                     chrono_list.append(my_hour_entity)
 
@@ -1529,22 +1530,24 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
             hour = int(val[0:2])
             minute = int(val[2:4])
         except ValueError:
-            print("TIME ZONE: {}".format(val))
-            tz = hasTimeZone(s)
-            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
-                                                       end_span=tz.span(0)[1] + ref_Sspan)
-            chrono_list.append(my_tz_entity)
-            chrono_id = chrono_id + 1
-            return chrono_list, chrono_id
-        #search for time zone
-        ## Identify if a time zone string exists
-        tz = hasTimeZone(s)
-        if tz is not None:
-            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
-            chrono_list.append(my_tz_entity)
-            chrono_id = chrono_id + 1
-        else:
-            my_tz_entity = None
+            hour = w2n.word_to_num(val[0:2])
+            minute = w2n.word_to_num(val[2:4])
+        #     print("TIME ZONE: {}".format(val))
+        #     tz = hasTimeZone(s)
+        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
+        #                                                end_span=tz.span(0)[1] + ref_Sspan)
+        #     chrono_list.append(my_tz_entity)
+        #     chrono_id = chrono_id + 1
+        #     return chrono_list, chrono_id
+        # #search for time zone
+        # ## Identify if a time zone string exists
+        # tz = hasTimeZone(s)
+        # if tz is not None:
+        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+        #     chrono_list.append(my_tz_entity)
+        #     chrono_id = chrono_id + 1
+        # else:
+        #     my_tz_entity = None
         
         ## build minute entity
         min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 2, end_span=ref_Sspan + idxstart + 4, value=minute)
@@ -1552,10 +1555,10 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
-        if my_tz_entity is not None:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
-        else:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
+        # if my_tz_entity is not None:
+        #     hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+        # else:
+        hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
             
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
