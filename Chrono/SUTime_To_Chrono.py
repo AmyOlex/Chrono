@@ -702,7 +702,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
 
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
-                    if bMinute and not chrono_minute_flag:
+                    if bMinute and not flags["minute"]:
                         flags["minute"]=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
@@ -715,7 +715,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
 
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
-                        if bSecond and not chrono_second_flag:
+                        if bSecond and not flags["second"]:
                             flags["second"]=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpanSecond
