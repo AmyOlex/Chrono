@@ -183,7 +183,26 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct):
                     
                 elif my_month > dct.month:
                     chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
-                    chrono_id = chrono_id + 1                
+                    chrono_id = chrono_id + 1      
+            
+            if dayweek is not None and mod is None:                
+                mStart = chrono_list[dayweek].get_start_span()
+                mEnd = chrono_list[dayweek].get_end_span()
+                weekdays = {"Monday":0, "Tuesday":1, "Wednesday":2, "Thursday":3, "Friday":4, "Saturday":5, "Sunday":6}
+                ##Monday is 0 and Sunday is 6
+                dct_day = dct.weekday()
+                ##need convert the doctime to a day of week
+                my_dayweek = weekdays[chrono_list[dayweek].get_day_type()]
+                
+                if my_dayweek < dct_day:
+                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                    chrono_id = chrono_id + 1
+                    print("FOUND DAYWEEK LAST")
+                    
+                elif my_dayweek > dct_day:
+                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                    chrono_id = chrono_id + 1  
+                    print("FOUND DAYWEEK NEXT")        
                 
     
     ## Now assign all sub-intervals
@@ -847,10 +866,10 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
             #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
             #    chrono_id = chrono_id + 1
                 
-        else:
+        #else:
             # TODO all last operators are getting added here except yesterday...
-            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, semantics="Interval-Included", repeating_interval=my_entity.get_id()))
-            chrono_id = chrono_id + 1
+        #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, semantics="Interval-Included", repeating_interval=my_entity.get_id()))
+        #    chrono_id = chrono_id + 1
     
         
     return chrono_list, chrono_id
@@ -1103,7 +1122,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                 
                 if mod_type == "Last":
                     print("FOUND LAST")
-                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_month_entity.get_id(), semantics="Interval-Included"))
+                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_month_entity.get_id(), semantics="Interval-Not-Included"))
                     chrono_id = chrono_id + 1
         
         chrono_list.append(my_month_entity)
