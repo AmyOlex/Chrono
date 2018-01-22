@@ -89,7 +89,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     #        print(e)
         
         
-        tmplist, chrono_id = buildChronoSubIntervals(chrono_tmp_list, chrono_id, dct)
+        tmplist, chrono_id = buildChronoSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
         chrono_list = chrono_list+tmplist
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
@@ -109,7 +109,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
 # @author Amy Olex
 # @param list of ChronoEntities
 # @return List of ChronoEntities with sub-intervals assigned
-def buildChronoSubIntervals(chrono_list, chrono_id, dct):
+def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     year = None
     month = None
     day = None
@@ -185,9 +185,34 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct):
                     chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
                     chrono_id = chrono_id + 1      
             
+            ##having a problem where a past day is being referenced without it being explicit.  
+            ##need to look at the closest preceding verb tense to see if it is past or present I think.
+            ##will need the reference list to do this.
             if dayweek is not None and mod is None:                
                 mStart = chrono_list[dayweek].get_start_span()
                 mEnd = chrono_list[dayweek].get_end_span()
+                
+                #Get ref idx for this token
+                ref = utils.getRefIdx(ref_list, mStart, mEnd)
+                vb = None
+                
+                while vb is None and ref != 0:
+                    if "VB" in ref_list[ref].getPos():
+                        if ref_list[ref].getPos() in ["VBD","VBN"]:
+                            #past tense so put as a last
+                            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                            chrono_id = chrono_id + 1
+                            print("FOUND DAYWEEK LAST")
+                        elif ref_list[ref].getPos() in ["VB","VBG","VBP","VBZ"]:
+                            #present tense so put as a next
+                            chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                            chrono_id = chrono_id + 1  
+                            print("FOUND DAYWEEK NEXT")
+                        vb = True
+                    print("Ref Tok: " + str(ref))
+                    ref-=1
+                
+                '''
                 weekdays = {"Monday":0, "Tuesday":1, "Wednesday":2, "Thursday":3, "Friday":4, "Saturday":5, "Sunday":6}
                 ##Monday is 0 and Sunday is 6
                 dct_day = dct.weekday()
@@ -203,7 +228,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct):
                     chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
                     chrono_id = chrono_id + 1  
                     print("FOUND DAYWEEK NEXT")        
-                
+                '''
     
     ## Now assign all sub-intervals
     if second is not None and minute is not None:
