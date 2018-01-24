@@ -307,12 +307,12 @@ def hasTimeZone(text):
     #             return False
     # return False
     text_norm = text.translate(str.maketrans(string.punctuation+"0123456789", " "*(len(string.punctuation)+10))).strip()
-    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text_norm)
+    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK)', text_norm)
 
     if tz:
         return True
     else:
-        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST)', text_norm)
+        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
         if tz:
             return True
     return False

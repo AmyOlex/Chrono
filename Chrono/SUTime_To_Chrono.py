@@ -2054,10 +2054,10 @@ def hasAMPM(suentity):
 def hasTimeZone(suentity):
     text = suentity.getText()
     text_norm = text.translate(str.maketrans("", "", string.punctuation))
-    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text_norm)
+    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK)', text_norm)
 
     if tz is None:
-        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST)', text_norm)
+        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
         if tz is None:
             return False, None, None, None
         elif len(tz.group()) == 4:
