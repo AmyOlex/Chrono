@@ -282,15 +282,14 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
 #################### Start buildX() Methods #######################
 
 def buildTimeZone(s, chrono_id, chrono_list):
-    has_tz, tz_val, tz_start_span, tz_end_span = hasTimeZone(s)
+    boo, val, startSpan, endSpan = hasTimeZone(s)
 
-    if has_tz:
+    if boo:
         ref_StartSpan, ref_EndSpan = s.getSpan()
-        abs_StartSpan = ref_StartSpan + tz_start_span
-        abs_EndSpan = abs_StartSpan + abs(tz_end_span - tz_start_span)
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
 
-        chrono_tz_entity = chrono.ChronoTimeZoneEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
-                                                     end_span=abs_EndSpan)
+        chrono_tz_entity = chrono.ChronoTimeZoneEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
         chrono_id = chrono_id + 1
         chrono_list.append(chrono_tz_entity)
 
