@@ -255,6 +255,9 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
 
     if tz is not None and hour is not None:
         chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
+    elif tz is not None and hour is None:
+        # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
+        del chrono_list[tz]
     
     if nth is not None and period is not None:
         print("Adding period sub-interval")
