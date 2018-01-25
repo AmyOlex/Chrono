@@ -17,6 +17,7 @@ from chronoML import ChronoKeras
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
 from Chrono import utils
+from Chrono import w2ny as w2n
 
 
 #Example SUTime List
@@ -49,39 +50,40 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
         chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False}
 
         #Parse out Year function
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Two-Digit Year 
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChrono2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChrono2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Month-of-Year
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Day-of-Month
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out HourOfDay
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out MinuteOfHour
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out SecondOfMinute
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildChronoSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
 
-        chrono_tmp_list, chrono_id, chrono_time_flags  = build24HourTime(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = build24HourTime(s, chrono_id, chrono_tmp_list, chrono_time_flags)
 
         #Parse modifier text
         chrono_tmp_list, chrono_id = buildModifierText(s, chrono_id, chrono_tmp_list)
 
         #call non-standard formatting temporal phrases
-        chrono_tmp_list, chrono_id, chrono_time_flags  = buildNumericDate(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildNumericDate(s, chrono_id, chrono_tmp_list, chrono_time_flags)
          
-        chrono_tmp_list, chrono_id  = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
-        chrono_tmp_list, chrono_id  = buildAMPM(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildPartOfDay(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
-        chrono_tmp_list, chrono_id  = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
-        chrono_tmp_list, chrono_id  = buildTextYear(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildThis(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildBeforeAfter(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id  = buildNthFromStart(s, chrono_id, chrono_tmp_list, ref_list) 
+        chrono_tmp_list, chrono_id = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
+        chrono_tmp_list, chrono_id = buildAMPM(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildPartOfDay(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
+        chrono_tmp_list, chrono_id = buildPeriodInterval(s, chrono_id, chrono_tmp_list, ref_list, PIclassifier, PIfeatures)
+        chrono_tmp_list, chrono_id = buildTextYear(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildThis(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildBeforeAfter(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildNthFromStart(s, chrono_id, chrono_tmp_list, ref_list)
+        chrono_tmp_list, chrono_id = buildTimeZone(s, chrono_id, chrono_tmp_list)
         
     #    print("XXXXXXXXX")
     #    print(s)
@@ -122,6 +124,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     period = None
     nth = None
     mod = None
+    tz = None
     
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
@@ -156,6 +159,8 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         elif e_type == "This" or e_type == "Next" or e_type == "Last":
             print("FOUND Mod")
             mod = e
+        elif e_type == "Time-Zone":
+            tz = e
         
     ## Now identify all NEXT and LAST entities
     ## Need to edit to figure out if a modifier word exists first, then test for year, etc.
@@ -247,6 +252,12 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[dayweek].set_sub_interval(chrono_list[daypart].get_id())
     if day is not None and daypart is not None and hour is None:
         chrono_list[day].set_sub_interval(chrono_list[daypart].get_id())
+
+    if tz is not None and hour is not None:
+        chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
+    elif tz is not None and hour is None:
+        # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
+        del chrono_list[tz]
     
     if nth is not None and period is not None:
         print("Adding period sub-interval")
@@ -269,6 +280,21 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
 ####
 
 #################### Start buildX() Methods #######################
+
+def buildTimeZone(s, chrono_id, chrono_list):
+    boo, val, startSpan, endSpan = hasTimeZone(s)
+
+    if boo:
+        ref_StartSpan, ref_EndSpan = s.getSpan()
+        abs_StartSpan = ref_StartSpan + startSpan
+        abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
+
+        chrono_tz_entity = chrono.ChronoTimeZoneEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
+        chrono_id = chrono_id + 1
+        chrono_list.append(chrono_tz_entity)
+
+    return chrono_list, chrono_id
+
 
 ## Takes in a Chrono entity and identifies if it has an NthFromStart entity
 # @author Amy Olex
@@ -702,7 +728,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
 
                     #Check for Minute in same element
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
-                    if bMinute and not chrono_minute_flag:
+                    if bMinute and not flags["minute"]:
                         flags["minute"]=True
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
@@ -715,7 +741,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
 
                         #Check for Second in same element
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
-                        if bSecond and not chrono_second_flag:
+                        if bSecond and not flags["second"]:
                             flags["second"]=True
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpanSecond
@@ -1168,13 +1194,13 @@ def buildAMPM(s, chrono_id, chrono_list):
     am_flag = True
     ref_Sspan, ref_Espan = s.getSpan()
     ## Identify if a time zone string exists
-    tz = hasTimeZone(s)
-    if tz is not None:
-        my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
-        chrono_list.append(my_tz_entity)
-        chrono_id = chrono_id + 1
-    else:
-        my_tz_entity = None
+    # tz = hasTimeZone(s)
+    # if tz is not None:
+    #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+    #     chrono_list.append(my_tz_entity)
+    #     chrono_id = chrono_id + 1
+    # else:
+    #     my_tz_entity = None
      
     boo, val, idxstart, idxend = hasAMPM(s)
     if boo:
@@ -1210,8 +1236,8 @@ def buildAMPM(s, chrono_id, chrono_list):
                  
                 chrono_id = chrono_id + 1
                  
-                if my_tz_entity is not None:
-                    my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                # if my_tz_entity is not None:
+                #     my_hour_entity.set_time_zone(my_tz_entity.get_id())
             
                 #add the hour entity to the list
                 chrono_list.append(my_hour_entity)
@@ -1232,8 +1258,8 @@ def buildAMPM(s, chrono_id, chrono_list):
                     #create the hour entity
                     my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal, ampm=my_AMPM_entity.get_id())
                     chrono_id = chrono_id + 1
-                    if my_tz_entity is not None:
-                        my_hour_entity.set_time_zone(my_tz_entity.get_id())
+                    # if my_tz_entity is not None:
+                    #     my_hour_entity.set_time_zone(my_tz_entity.get_id())
                     #append to list
                     chrono_list.append(my_hour_entity)
 
@@ -1529,22 +1555,26 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
             hour = int(val[0:2])
             minute = int(val[2:4])
         except ValueError:
-            print("TIME ZONE: {}".format(val))
-            tz = hasTimeZone(s)
-            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
-                                                       end_span=tz.span(0)[1] + ref_Sspan)
-            chrono_list.append(my_tz_entity)
-            chrono_id = chrono_id + 1
-            return chrono_list, chrono_id
-        #search for time zone
-        ## Identify if a time zone string exists
-        tz = hasTimeZone(s)
-        if tz is not None:
-            my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
-            chrono_list.append(my_tz_entity)
-            chrono_id = chrono_id + 1
-        else:
-            my_tz_entity = None
+            print("Skipping, not a 24hour time")
+            return chrono_list, chrono_id, flags
+            # hour = w2n.number_formation(val[0:2])
+            # minute = w2n.word_to_num(val[2:4])
+        #     print("TIME ZONE: {}".format(val))
+        #     tz = hasTimeZone(s)
+        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
+        #                                                end_span=tz.span(0)[1] + ref_Sspan)
+        #     chrono_list.append(my_tz_entity)
+        #     chrono_id = chrono_id + 1
+        #     return chrono_list, chrono_id
+        # #search for time zone
+        # ## Identify if a time zone string exists
+        # tz = hasTimeZone(s)
+        # if tz is not None:
+        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+        #     chrono_list.append(my_tz_entity)
+        #     chrono_id = chrono_id + 1
+        # else:
+        #     my_tz_entity = None
         
         ## build minute entity
         min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 2, end_span=ref_Sspan + idxstart + 4, value=minute)
@@ -1552,10 +1582,10 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
-        if my_tz_entity is not None:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
-        else:
-            hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
+        # if my_tz_entity is not None:
+        #     hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+        # else:
+        hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
             
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
@@ -1640,11 +1670,11 @@ def buildModifierText(s, chrono_id, chrono_list):
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Fiscal")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
-            elif val == "over":
-                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
-                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
-                chrono_list.append(my_modifier_entity)
-                chrono_id = chrono_id + 1
+            # elif val == "over":
+            #     my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+            #                                                start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
+            #     chrono_list.append(my_modifier_entity)
+            #     chrono_id = chrono_id + 1
             elif val == "early":
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Start")
@@ -2020,11 +2050,33 @@ def hasAMPM(suentity):
 ####
 
 ## Takes in a single sutime entity and determines if it has a time zone specified in the text.
-# @author Amy Olex
+# @author Amy Olex and Luke Maffey
 # @param suentity The SUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
-    return re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', suentity.getText())
+    text = suentity.getText()
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    tz = re.search('(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK|AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+
+    if tz is not None:
+        return True, tz.group(1), tz.start(1), tz.end(1)
+    '''    
+        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+        if tz is None:
+            return False, None, None, None
+        elif len(tz.group()) == 4:
+            return True, tz.group(), tz.start(), tz.end()
+        elif len(tz.group()) == 6 or len(tz.group()) == 8:
+            return True, tz.group()[-4:], tz.end()-4, tz.end()
+        else:
+            return False, None, None, None
+    elif len(tz.group()) == 3:
+        return True, tz.group(), tz.start(), tz.end()
+    elif len(tz.group()) == 5 or len(tz.group()) == 7:
+        return True, tz.group()[-3:], tz.end()-3, tz.end()
+    '''
+    return False, None, None, None
+
 
 ####
 #END_MODULE

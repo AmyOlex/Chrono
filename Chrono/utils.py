@@ -390,7 +390,7 @@ def getTemporalPhrases(chroList, doctime):
     phrases = [] #the empty phrases list of sutime entities
     tmpPhrase = [] #the temporary phrases list.
     inphrase = False
-    for n in range(0,len(chroList)-1):
+    for n in range(0,len(chroList)):
         #if temporal start building a list 
         #print("Filter Start Phrase: " + str(chroList[n]))   
         if chroList[n].isTemporal():
@@ -400,13 +400,22 @@ def getTemporalPhrases(chroList, doctime):
             #in phrase, so add new element
             tmpPhrase.append(copy.copy(chroList[n]))
             # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
-            s1,e1 = chroList[n].getSpan()
-            s2,e2 = chroList[n+1].getSpan()
-            if e1+1 != s2 and inphrase:
-                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
-                id_counter = id_counter + 1
-                tmpPhrase = []
-                inphrase = False
+            # if this is the last token of the file, end the phrase.
+            if n == len(chroList)-1:
+                if inphrase:
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
+            else:
+                s1,e1 = chroList[n].getSpan()
+                print("MYN: " + str(len(chroList)) + ":" + str(n))
+                s2,e2 = chroList[n+1].getSpan()
+                if e1+1 != s2 and inphrase:
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
                 
             
         elif chroList[n].isNumeric():
@@ -424,14 +433,22 @@ def getTemporalPhrases(chroList, doctime):
                     #in phrase, so add new element
                     tmpPhrase.append(copy.copy(chroList[n]))
             # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
-            s1,e1 = chroList[n].getSpan()
-            s2,e2 = chroList[n+1].getSpan()
-            if e1+1 != s2 and inphrase:
-                print("has new line: " + str(chroList[n]))
-                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
-                id_counter = id_counter + 1
-                tmpPhrase = []
-                inphrase = False
+            # if this is the last token of the file, end the phrase.
+            if n == len(chroList)-1:
+                if inphrase:
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
+            else:
+                s1,e1 = chroList[n].getSpan()
+                s2,e2 = chroList[n+1].getSpan()
+                if e1+1 != s2 and inphrase:
+                    print("has new line: " + str(chroList[n]))
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
         else:
             #current element is not temporal, check to see if inphrase
             #print("Not Temporal, or numeric " + str(chroList[n]))

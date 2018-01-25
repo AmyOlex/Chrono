@@ -5,6 +5,7 @@
 # Programmer Name: Amy Olex
 
 import string
+import re
 from Chrono import utils
 
 ## Takes in a single text string and identifies if it is a month of the year
@@ -288,22 +289,32 @@ def hasPartOfDay(text):
 # @return Outputs True if it contains a time zone.
 def hasTimeZone(text):
     
-    #remove all punctuation
+    # #remove all punctuation
+    # text_norm = text.translate(str.maketrans(string.punctuation+"0123456789", " "*(len(string.punctuation)+10))).strip()
+    # #convert to list
+    # text_list = text_norm.split(" ")
+    #
+    # #define my season lists
+    # zones = ["AST","EST","EDT","CST","CDT","MST","MDT","PST","PDT","AKST","HST","HAST","HADT","SST","SDT","GMT","CHST","UTC"]
+    #
+    # for t in text_list:
+    #     answer = next((m for m in zones if m in t), None)
+    #     if answer is not None:
+    #         answer2 = next((m for m in zones if t in m), None)
+    #         if answer2 is not None:
+    #             return True
+    #         else:
+    #             return False
+    # return False
     text_norm = text.translate(str.maketrans(string.punctuation+"0123456789", " "*(len(string.punctuation)+10))).strip()
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my season lists
-    zones = ["AST","EST","EDT","CST","CDT","MST","MDT","PST","PDT","AKST","HST","HAST","HADT","SST","SDT","GMT","CHST","UTC"]
-    
-    for t in text_list:
-        answer = next((m for m in zones if m in t), None)
-        if answer is not None:
-            answer2 = next((m for m in zones if t in m), None)
-            if answer2 is not None:
-                return True
-            else:
-                return False
+    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK)', text_norm)
+
+    if tz:
+        return True
+    else:
+        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+        if tz:
+            return True
     return False
 ####
 #END_MODULE
