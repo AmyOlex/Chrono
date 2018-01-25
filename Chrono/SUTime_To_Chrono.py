@@ -2050,15 +2050,17 @@ def hasAMPM(suentity):
 ####
 
 ## Takes in a single sutime entity and determines if it has a time zone specified in the text.
-# @author Amy Olex
+# @author Amy Olex and Luke Maffey
 # @param suentity The SUTime entity object being parsed
 # @return Outputs the regex object or None
 def hasTimeZone(suentity):
     text = suentity.getText()
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
-    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK)', text_norm)
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    tz = re.search('(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK|AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
 
-    if tz is None:
+    if tz is not None:
+        return True, tz.group(1), tz.start(1), tz.end(1)
+    '''    
         tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
         if tz is None:
             return False, None, None, None
@@ -2072,8 +2074,8 @@ def hasTimeZone(suentity):
         return True, tz.group(), tz.start(), tz.end()
     elif len(tz.group()) == 5 or len(tz.group()) == 7:
         return True, tz.group()[-3:], tz.end()-3, tz.end()
-    else:
-        return False, None, None, None
+    '''
+    return False, None, None, None
 
 
 ####
