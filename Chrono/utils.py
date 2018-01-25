@@ -402,10 +402,11 @@ def getTemporalPhrases(chroList, doctime):
             # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
-                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
-                id_counter = id_counter + 1
-                tmpPhrase = []
-                inphrase = False
+                if inphrase:
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
             else:
                 s1,e1 = chroList[n].getSpan()
                 print("MYN: " + str(len(chroList)) + ":" + str(n))
@@ -434,10 +435,11 @@ def getTemporalPhrases(chroList, doctime):
             # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
-                phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
-                id_counter = id_counter + 1
-                tmpPhrase = []
-                inphrase = False
+                if inphrase:
+                    phrases.append(createSUentity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
