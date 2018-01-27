@@ -27,6 +27,7 @@
 
 import argparse
 import os
+import pickle
 
 from chronoML import DecisionTree as DTree
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
@@ -34,6 +35,7 @@ from Chrono import SUTime_To_Chrono
 from Chrono import createMLTrainingMatrix
 from Chrono import referenceToken
 from Chrono import utils
+from keras.models import load_model
 
 debug=False
 ## This is the driver method to run all of Chrono.
@@ -57,6 +59,7 @@ if __name__ == "__main__":
     parser.add_argument('-w', metavar='windowSize', type=str, help='An integer representing the window size for context feature extraction. Default is 3.', required=False, default=3)
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
+    parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -84,19 +87,34 @@ if __name__ == "__main__":
         print("Completed creating ML training matrix.")
     ## Get training data for ML methods by importing pre-made boolean matrix
     else:
+        
         ## Train ML methods on training data
-        if(args.m == "DT"):
+        if(args.m == "DT" and args.M is None):
             ## Train the decision tree classifier and save in the classifier variable
             classifier, feats = DTree.build_dt_model(args.d, args.c)
+            with open('DT1_model.pkl', 'wb') as mod:  
+                pickle.dump([classifier, feats], mod)
 
-        elif(args.m == "NN"):
+        elif(args.m == "NN" and args.M is None):
             ## Train the neural network classifier and save in the classifier variable
             classifier = ChronoKeras.build_model(args.d, args.c)
             feats = utils.get_features(args.d)
-        else:
+            classifier.save('NN_model.h5')
+            
+        elif(args.M is None):
             ## Train the naive bayes classifier and save in the classifier variable
             classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
             classifier.show_most_informative_features(20)
+            with open('NB1_model.pkl', 'wb') as mod:  
+                pickle.dump([classifier, feats], mod)
+        elif(args.M is not None):
+            if args.m == "NB" or args.m == "DT":
+                with open(args.M, 'rb') as mod:
+                    print(args.M)
+                    classifier, feats = pickle.load(mod)
+            elif args.m == "NN":
+                classifier = load_model(args.M)
+                feats = utils.get_features(args.d)
         
         ## Pass the ML classifier through to the parse SUTime entities method.
   
