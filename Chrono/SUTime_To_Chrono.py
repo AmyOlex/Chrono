@@ -459,13 +459,13 @@ def buildThis(s, chrono_id, chrono_list):
 def buildNumericDate(s, chrono_id, chrono_list, flags):
     
     text = s.getText().strip(".,")
-    ## See if there is a 4 digit number and assume it is a year if between 1800 and 2050
+    ## See if there is a 4 digit number and assume it is a year if between 1500 and 2050
     ## Note that 24hour times in this range will be interpreted as years.  However, if a timezone like 1800EDT is attached it will not be parsed here.
     if len(text) == 4:
         
         num = utils.getNumberFromText(text)
         if num is not None:
-            if  (num >= 1800) and (num <= 2050):
+            if  (num >= 1500) and (num <= 2050):
                 flags["loneDigitYear"] = True    
                 ## build year
                 ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -481,7 +481,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
         m = utils.getNumberFromText(text[4:6])
         d = utils.getNumberFromText(text[6:8])
         if y is not None:
-            if  (y >= 1800) and (y <= 2050) and (m <= 12) and (d <= 31):   
+            if  (y >= 1500) and (y <= 2050) and (m <= 12) and (d <= 31):   
                 ref_StartSpan, ref_EndSpan = s.getSpan()
                 #add year
                 chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+4, value=y)
@@ -504,7 +504,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                 m2 = utils.getNumberFromText(text[0:2])
                 d2 = utils.getNumberFromText(text[2:4])
                 if y2 is not None:
-                    if  (y2 >= 1800) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
+                    if  (y2 >= 1500) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
                         ref_StartSpan, ref_EndSpan = s.getSpan()
                         #add year
                         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+8, value=y)
@@ -1037,7 +1037,7 @@ def isTextYear(suentity):
         val = utils.getNumberFromText(text)
         
         if val is not None:
-            if val >= 1000 and val <= 3000:
+            if val >= 1500 and val <= 2050:
                 r = re.search(text1, suentity.getText())
                 start, end = r.span(0)
                 return True, val, start, end
@@ -2478,7 +2478,7 @@ def hasYear(suentity, flags):
                 if r is not None:
                     rval = utils.getNumberFromText(r.group(1))
                     if rval is not None:
-                        if rval >=1000 and rval<=3000:
+                        if rval >=1500 and rval<=2050:
                             start_idx, end_idx = r.span(1)
                             return True, rval, start_idx, end_idx, flags
                         
