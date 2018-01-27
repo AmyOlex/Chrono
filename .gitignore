@@ -1,3 +1,6 @@
+resultsEvaluation/*
+resultsDebug/*
+resultsOfficialTrain/*
 data/*
 .DS_Store
 *.pyc
