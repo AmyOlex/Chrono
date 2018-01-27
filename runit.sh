@@ -10,11 +10,15 @@ ML=$1
 
 ## Run the program and save results in ./results folder
 echo "Running Chrono on Test files....."
-python run_chrono.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+#python run_chrono.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 #python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 
+#python run_chrono.py -i ./data/SemEval-OfficialTrain/ -r ./data/SemEval-OfficialTrain/ -o ./resultsOfficialTrain -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 
-#python run_chrono.py -i ./data/Debugging/data/ -r ./data/Debugging/gold/ -o ./resultsDebug/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+python run_chrono.py -i ./data/SemEval-Task6-Evaluation/ -x ".txt" -r ./data/SemEval-Task6-Evaluation/ -o ./resultsEvaluation -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
+
+
+#python run_chrono.py -i ./data/Debugging/data/ -r ./data/Debugging/gold/ -o ./resultsDebug/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c  "./data/aquaint_train_class_TrainWin3.csv"
 
 ## Run the following if you want to create a new training data matrix
 #python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -t "my_train_matrix" -w 3 -m $ML 
@@ -24,8 +28,10 @@ cd anaforatools
 
 ## run the evaluation script
 echo "Evaluating Chrono Test Results..."
-python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event Before After Modifier
+#python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event After Before Modifier
 #python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before Modifier
+
+#python -m anafora.evaluate -r ../data/SemEval-OfficialTrain/ -p ../resultsOfficialTrain/ --exclude Event After Before Modifier
 
 #python -m anafora.evaluate -r ../data/Debugging/gold/ -p ../resultsDebug/ --exclude Event After Before  --include Next --per-document
 

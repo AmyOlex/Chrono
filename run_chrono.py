@@ -47,6 +47,7 @@ if __name__ == "__main__":
     ## Parse input arguments
     parser = argparse.ArgumentParser(description='Parse a directory of files to identify and normalize temporal information.')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
+    parser.add_argument('-x', metavar='fileExt', type=str, help='input file extension if exists. Default is and empty string', required=False, default="")
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
     parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
     parser.add_argument('-t', metavar='trainML', type=str, help='A string representing the file name that triggers the training data file to be generated using the input data set in the -i option.', required=False, default=False)
@@ -68,8 +69,9 @@ if __name__ == "__main__":
     goldfiles = []
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
+           
           indirs.append(os.path.join(root, name))
-          infiles.append(os.path.join(root, name,name))
+          infiles.append(os.path.join(root,name,name))
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
           goldfiles.append(os.path.join(args.r,name,"period-interval.gold.csv"))
@@ -109,7 +111,7 @@ if __name__ == "__main__":
         if(debug) : print(doctime)
         
         ## parse out reference tokens
-        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f])
+        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
         if(debug) :
