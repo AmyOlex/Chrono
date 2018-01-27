@@ -80,55 +80,56 @@ if __name__ == "__main__":
     
     ## Create the training data matrix and write to a file
     if(args.t):
-        train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.j, False, args.t, int(args.w))
+        train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.x, False, args.t, int(args.w))
+        print("Completed creating ML training matrix.")
     ## Get training data for ML methods by importing pre-made boolean matrix
-   
-    ## Train ML methods on training data
-    if(args.m == "DT"):
-        ## Train the decision tree classifier and save in the classifier variable
-        classifier, feats = DTree.build_dt_model(args.d, args.c)
-
-    elif(args.m == "NN"):
-        ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model(args.d, args.c)
-        feats = utils.get_features(args.d)
     else:
-        ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
-        classifier.show_most_informative_features(20)
+        ## Train ML methods on training data
+        if(args.m == "DT"):
+            ## Train the decision tree classifier and save in the classifier variable
+            classifier, feats = DTree.build_dt_model(args.d, args.c)
+
+        elif(args.m == "NN"):
+            ## Train the neural network classifier and save in the classifier variable
+            classifier = ChronoKeras.build_model(args.d, args.c)
+            feats = utils.get_features(args.d)
+        else:
+            ## Train the naive bayes classifier and save in the classifier variable
+            classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
+            classifier.show_most_informative_features(20)
         
-    ## Pass the ML classifier through to the parse SUTime entities method.
+        ## Pass the ML classifier through to the parse SUTime entities method.
   
-    ## Loop through each file and parse
-    for f in range(0,len(infiles)) :
-        print("Parsing "+ infiles[f] +" ...")
-        ## Init the ChronoEntity list
-        my_chronoentities = []
-        my_chrono_ID_counter = 1
+        ## Loop through each file and parse
+        for f in range(0,len(infiles)) :
+            print("Parsing "+ infiles[f] +" ...")
+            ## Init the ChronoEntity list
+            my_chronoentities = []
+            my_chrono_ID_counter = 1
         
-        ## parse out the doctime
-        doctime = utils.getDocTime(infiles[f] + ".dct")
-        if(debug) : print(doctime)
+            ## parse out the doctime
+            doctime = utils.getDocTime(infiles[f] + ".dct")
+            if(debug) : print(doctime)
         
-        ## parse out reference tokens
-        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
-        #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in my_refToks : print(tok)
+            ## parse out reference tokens
+            text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
+            #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
+            my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
+            if(debug) :
+                print("REFERENCE TOKENS:\n")
+                for tok in my_refToks : print(tok)
         
-        ## mark all ref tokens if they are numeric or temporal
-        chroList = utils.markTemporal(my_refToks)
-        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+            ## mark all ref tokens if they are numeric or temporal
+            chroList = utils.markTemporal(my_refToks)
+            tempPhrases = utils.getTemporalPhrases(chroList, doctime)
         
-        #for c in chroList:
-        #    print(c)
+            #for c in chroList:
+            #    print(c)
         
 
-        chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+            chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
-        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-        utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+            print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+            utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
     
     
