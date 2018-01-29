@@ -16,6 +16,7 @@ import sys
 # @param path The path to the main folder where all the gold standard files are stored. Assumption is one folder per gold standard with only one xml file present in each folder.
 def parseGoldEntities(path):
     # walk through all the folders to collect the xml file names
+    print
     dirs = []
     files = []
     for root, dirs, files in os.walk(path, topdown=True):
@@ -55,7 +56,7 @@ def extractPeriodCalInterval(path, file):
 
 ############
 
-#path='/Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/data/SemEval-Task6-Gold/'
+path='/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/SemEval-OfficialTrain/'
 
 #print(path)
-#parseGoldEntities(path)
+parseGoldEntities(path)

@@ -44,7 +44,7 @@ debug = False
 ## Only import the gold standard files that are in the training files
 ## The infiles variable need to contain the full path to the input files.
 
-def createMLTrainingMatrix(infiles, gold_folder, jars, save = False, output = "aquaint_train", window = 3):
+def createMLTrainingMatrix(infiles, gold_folder, ext="", save = False, output = "aquaint_train", window = 3):
     ### Algorithm
     ## For each input file:
     ##      1) parse text to refTokens list
@@ -74,29 +74,13 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False, output = "a
         if(debug) : print(doctime)
         
         ## parse out reference tokens
-        text, tokens, spans = utils.getWhitespaceTokens(infiles[f])
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in my_refToks : print(tok)
+        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+ext)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
         
-        ## Replace all punctuation with spaces
-        my_refToks = referenceToken.replacePunctuation(my_refToks)
         
-        ## Convert to lowercase
-        my_refToks = referenceToken.lowercase(my_refToks)
+        ## mark all ref tokens if they are numeric or temporal
+        chroList = utils.markTemporal(my_refToks)
         
-        ## parse out SUTime entities
-        json_str = sutime_wrapper.callSUTimeParse(infiles[f], jars)
-        suList = sutimeEntity.import_SUTime(sut_json=json_str, doctime=doctime)
-        if(debug) : 
-            print("SUTIME ENTITIES:\n")
-            for s in suList : print(s)
-        
-        ## mark all reference tokens that overlap with the sutime spans
-        my_refToks = utils.markTemporalRefToks(my_refToks, suList)
-        if(debug) : 
-            for tok in my_refToks : print(tok)
         
         ## import gold standard data
         gold_file = os.path.join(gold_folder + os.path.split(infiles[f])[1],"period-interval.gold.csv")
@@ -113,8 +97,8 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False, output = "a
                         outfile.write("\n"+str(row))
     
             ## loop through each reftoken term and see if it overlaps with a gold token
-            for r in range(0,len(my_refToks)):
-                reftok = my_refToks[r]
+            for r in range(0,len(chroList)):
+                reftok = chroList[r]
                 ref_s, ref_e = reftok.getSpan()
                 # loop through each gold instance and find the one that overlaps with the current reftok.
                 for g in gold_list:
@@ -124,22 +108,22 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False, output = "a
                         # if the gold token overlaps with the current reftok we need to extract the features from the reftok and add it to the list
                         
                         if(save):
-                            outfile.write("\nPrevious Token: " + str(my_refToks[max(r-1, 0)]))
+                            outfile.write("\nPrevious Token: " + str(chroList[max(r-1, 0)]))
                             outfile.write("\nTarget Token: "+str(reftok))
                             #print("Length: "+ str(len(my_refToks)) + "Last: "+str(min(r+1, len(my_refToks))))
-                            outfile.write("\nNext Token: " + str(my_refToks[min(r+1, len(my_refToks)-1)])+"\n")
+                            outfile.write("\nNext Token: " + str(chroList[min(r+1, len(my_refToks)-1)])+"\n")
                         
                         ### Identify Temporal features
-                        this_obs = extract_temp_features(my_refToks, r, 3, this_obs)
+                        this_obs = extract_temp_features(chroList, r, 3, this_obs)
                         
                         ### Extract all words within a N-word window
-                        this_obs, observations = extract_bow_features(my_refToks, r, window, features, this_obs)
+                        this_obs, observations = extract_bow_features(chroList, r, window, features, this_obs)
                         
                         ### Determine if there is a numeric before or after the target word.
-                        this_obs = extract_numeric_feature(my_refToks, r, this_obs)
+                        this_obs = extract_numeric_feature(chroList, r, this_obs)
                         
                         ### Stem and extract the actual word
-                        this_obs, observations = extract_stem_feature(my_refToks[r], features, this_obs)
+                        this_obs, observations = extract_stem_feature(chroList[r], features, this_obs)
                         
                         ### Get the correct type 
                         if(g['type']=='Period'):
@@ -188,8 +172,8 @@ def createMLTrainingMatrix(infiles, gold_folder, jars, save = False, output = "a
 # Note: Add in this method to extract any potential numbers from a merged phrase.  E.g. "twoweeks" needs to extract "two"
 # and add it to the dictionary.  Need to convert it to a number as well before adding.
 def extract_stem_feature(reftok, obs_dict, obs_list):
-    my_str = reftok.getText()
-    for r in ["day","week","year","month","hour","minute","second"]:
+    my_str = reftok.getText().lower()
+    for r in ["quarter","decades","decade","yesterday","yesterdays","today","todays","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]:
         idx = my_str.find(r)
         if(idx >= 0):
             obs_dict.update({r:0})
