@@ -31,6 +31,7 @@ import pickle
 
 from chronoML import DecisionTree as DTree
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
+from chronoML import SVM_classifier as SVMclass
 from Chrono import SUTime_To_Chrono
 from Chrono import createMLTrainingMatrix
 from Chrono import referenceToken
@@ -92,7 +93,7 @@ if __name__ == "__main__":
         if(args.m == "DT" and args.M is None):
             ## Train the decision tree classifier and save in the classifier variable
             classifier, feats = DTree.build_dt_model(args.d, args.c)
-            with open('DT1_model.pkl', 'wb') as mod:  
+            with open('DT_model.pkl', 'wb') as mod:  
                 pickle.dump([classifier, feats], mod)
 
         elif(args.m == "NN" and args.M is None):
@@ -101,12 +102,19 @@ if __name__ == "__main__":
             feats = utils.get_features(args.d)
             classifier.save('NN_model.h5')
             
+        if(args.m == "SVM" and args.M is None):
+            ## Train the SVM classifier and save in the classifier variable
+            classifier, feats = SVMclass.build_model(args.d, args.c)
+            with open('SVM_model.pkl', 'wb') as mod:  
+                pickle.dump([classifier, feats], mod)
+            
         elif(args.M is None):
             ## Train the naive bayes classifier and save in the classifier variable
             classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
             classifier.show_most_informative_features(20)
-            with open('NB1_model.pkl', 'wb') as mod:  
+            with open('NB_model.pkl', 'wb') as mod:  
                 pickle.dump([classifier, feats], mod)
+                
         elif(args.M is not None):
             if args.m == "NB" or args.m == "DT":
                 with open(args.M, 'rb') as mod:
