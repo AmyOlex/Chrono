@@ -28,3 +28,5 @@ data/SemEval-Task6-GUTime-TrainResults
 GitWorkflowInstructions.txt
 official_train_MLmatrix_012618_class.csv
 official_train_MLmatrix_012618_data.csv
+*.pkl
+*.h5
