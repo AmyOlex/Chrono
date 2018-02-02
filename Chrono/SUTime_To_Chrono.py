@@ -1330,7 +1330,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         if(classifier[1] == "NN"):
             my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-        if(classifier[1] == "SVM"):
+        elif(classifier[1] == "SVM"):
             feat_array = [int(i) for i in my_features.values()]
             my_class = classifier[0].predict([feat_array])[0]
         else:

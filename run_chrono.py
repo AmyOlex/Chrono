@@ -92,23 +92,27 @@ if __name__ == "__main__":
         ## Train ML methods on training data
         if(args.m == "DT" and args.M is None):
             ## Train the decision tree classifier and save in the classifier variable
+            print("Got DT")
             classifier, feats = DTree.build_dt_model(args.d, args.c)
             with open('DT_model.pkl', 'wb') as mod:  
                 pickle.dump([classifier, feats], mod)
 
         elif(args.m == "NN" and args.M is None):
+            print("Got NN")
             ## Train the neural network classifier and save in the classifier variable
             classifier = ChronoKeras.build_model(args.d, args.c)
             feats = utils.get_features(args.d)
             classifier.save('NN_model.h5')
             
-        if(args.m == "SVM" and args.M is None):
+        elif(args.m == "SVM" and args.M is None):
+            print("Got SVM")
             ## Train the SVM classifier and save in the classifier variable
             classifier, feats = SVMclass.build_model(args.d, args.c)
             with open('SVM_model.pkl', 'wb') as mod:  
                 pickle.dump([classifier, feats], mod)
             
         elif(args.M is None):
+            print("Got NB")
             ## Train the naive bayes classifier and save in the classifier variable
             classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
             classifier.show_most_informative_features(20)
@@ -116,6 +120,7 @@ if __name__ == "__main__":
                 pickle.dump([classifier, feats], mod)
                 
         elif(args.M is not None):
+            print("use saved model")
             if args.m == "NB" or args.m == "DT":
                 with open(args.M, 'rb') as mod:
                     print(args.M)
