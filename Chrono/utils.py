@@ -409,7 +409,6 @@ def getTemporalPhrases(chroList, doctime):
                     inphrase = False
             else:
                 s1,e1 = chroList[n].getSpan()
-                print("MYN: " + str(len(chroList)) + ":" + str(n))
                 s2,e2 = chroList[n+1].getSpan()
                 if e1+1 != s2 and inphrase:
                     phrases.append(createSUentity(tmpPhrase, id_counter, doctime))

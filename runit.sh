@@ -17,14 +17,14 @@ echo "Running Chrono on Test files....."
 
 #python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
 #python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./official_train_MLmatrix_Win3_012618_data.csv" -c "./official_train_MLmatrix_Win3_012618_class.csv"
-python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./official_train_MLmatrix_Win5_012618_data.csv" -c "./official_train_MLmatrix_Win5_012618_class.csv"
+#python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./official_train_MLmatrix_Win5_012618_data.csv" -c "./official_train_MLmatrix_Win5_012618_class.csv"
 
 #python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m $ML -d "./official_train_MLmatrix_Win5_012618_data.csv" -c "./official_train_MLmatrix_Win5_012618_class.csv"
 
 
 #python run_chrono.py -i ./data/SemEval-OfficialTrain/ -r ./data/SemEval-OfficialTrain/ -o ./resultsOfficialTrain -m $ML -d "./official_train_MLmatrix_012618_data.csv" -c "./official_train_MLmatrix_012618_class.csv"
 
-#python run_chrono.py -i ./data/SemEval-Task6-Evaluation/ -x ".txt" -r ./data/SemEval-Task6-Evaluation/ -o ./resultsEvaluation -m $ML -d "./official_train_MLmatrix_Win5_012618_data.csv" -c "./official_train_MLmatrix_Win5_012618_class.csv"
+python run_chrono.py -i ./data/SemEval-Task6-Evaluation/ -x ".txt" -r ./data/SemEval-Task6-Evaluation/ -o ./resultsEvaluation -m $ML -d "./official_train_MLmatrix_Win5_012618_data.csv" -c "./official_train_MLmatrix_Win5_012618_class.csv"
 
 
 #python run_chrono.py -i ./data/Debugging/data/ -r ./data/Debugging/gold/ -o ./resultsDebug/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c  "./data/aquaint_train_class_TrainWin3.csv"
@@ -38,7 +38,7 @@ cd anaforatools
 ## run the evaluation script
 echo "Evaluating Chrono Test Results..."
 #python -m anafora.evaluate -r ../data/SemEval-Task6-TestGold/ -p ../resultsTest/ --exclude Event After Before Modifier
-python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before Modifier
+#python -m anafora.evaluate -r ../data/SemEval-Task6-TrainGold/ -p ../resultsTrain/ --exclude Event After Before Modifier
 
 #python -m anafora.evaluate -r ../data/SemEval-OfficialTrain/ -p ../resultsOfficialTrain/ --exclude Event After Before Modifier
 
