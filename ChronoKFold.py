@@ -11,16 +11,20 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 # used to copy files according to each fold
+from Chrono import createMLTrainingMatrix
+
+
 def copy_files(df, directory):
     destination_directory = "./kfold/" + directory +"/"
+    gold_destination = "./kfold/" + directory + "Gold/"
 
     print("copying {} files to {}...".format(directory, destination_directory))
 
     # remove all files from previous fold
     if os.path.exists(destination_directory):
         shutil.rmtree(destination_directory)
-    if os.path.exists("./kfold/TestGold/"):
-        shutil.rmtree("./kfold/TestGold/")
+    if os.path.exists(gold_destination):
+        shutil.rmtree(gold_destination)
 
     # create folder for files from this fold
     if not os.path.exists(destination_directory):
@@ -38,7 +42,7 @@ def copy_files(df, directory):
             path_from = "./data/SemEval-Task6-Train/" + row['filename']
             path_to = destination_directory + row['filename']
             gold_from = "./data/SemEval-Task6-TrainGold/" + row['filename']
-            gold_to = "./kfold/TestGold/" + row['filename']
+            gold_to = gold_destination + row['filename']
 
             # move from folder keeping all files to training, test, or validation folder (the "directory" argument)
             shutil.copytree(path_from, path_to)
@@ -67,18 +71,19 @@ for i, (train_index, test_index) in enumerate(skf.split(df_x, df_y)):
     test = pd.concat([x_test, y_test], axis = 1)
 
     # take 20% of the training data from this fold for validation during training
-    validation = train.sample(frac = 0.2)
+    # validation = train.sample(frac = 0.2)
 
     # make sure validation data does not include training data
-    train = train[~train['filename'].isin(list(validation['filename']))]
+    # train = train[~train['filename'].isin(list(validation['filename']))]
 
     # copy the images according to the fold
     copy_files(train, 'training')
-    copy_files(validation, 'validation')
+    # copy_files(validation, 'validation')
     copy_files(test, 'test')
 
     print('**** Running fold '+ str(i))
-    run_chrono = "python run_chrono.py -i ./kfold/test/ -r ./kfold/TestGold/ -o ./kfold/TestResults -m NN -d ./official_train_MLmatrix_Win5_012618_data.csv -c ./official_train_MLmatrix_Win5_012618_class.csv"
+    createMLTrainingMatrix.createMLTrainingMatrix("./kfold/Training/","./kfold/TrainingGold/",window=5, output="./kfold/kfoldML")
+    run_chrono = "python run_chrono.py -i ./kfold/test/ -r ./kfold/TestGold/ -o ./kfold/TestResults -m NN -d ./kfold/kfoldMLdata.csv -c ./kfold/kfoldMLclass.csv"
     eval_chrono = "python -m anafora.evaluate -r ../kfold/TestGold/ -p ../kfold/TestResults/ --exclude Event Modifier"
     import subprocess
     process = subprocess.Popen(run_chrono.split(), stdout=subprocess.PIPE)
