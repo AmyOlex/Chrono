@@ -82,7 +82,10 @@ for i, (train_index, test_index) in enumerate(skf.split(df_x, df_y)):
     copy_files(test, 'test')
 
     print('**** Running fold '+ str(i))
-    createMLTrainingMatrix.createMLTrainingMatrix("./kfold/Training/","./kfold/TrainingGold/",window=5, output="./kfold/kfoldML")
+    mltrain = []
+    for x in train['filename'].values.tolist():
+        mltrain.append("./kfold/training/" + x + "/" + x)
+    createMLTrainingMatrix.createMLTrainingMatrix(mltrain,"./kfold/TrainingGold/",window=5, output="./kfold/kfoldML")
     run_chrono = "python run_chrono.py -i ./kfold/test/ -r ./kfold/TestGold/ -o ./kfold/TestResults -m NN -d ./kfold/kfoldMLdata.csv -c ./kfold/kfoldMLclass.csv"
     eval_chrono = "python -m anafora.evaluate -r ../kfold/TestGold/ -p ../kfold/TestResults/ --exclude Event Modifier"
     import subprocess
