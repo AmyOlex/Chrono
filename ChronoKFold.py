@@ -1,4 +1,7 @@
 # From https://stackoverflow.com/questions/41214527/k-fold-cross-validation-using-keras
+# Usage: python ChronoKFold.py > kfoldoutput.txt
+# use sed '/\*/!d' kfoldoutput.txt to see just scores
+# Luke Maffey
 
 import numpy as np
 import os
