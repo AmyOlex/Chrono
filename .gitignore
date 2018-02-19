@@ -1,3 +1,5 @@
+Chrono_TempEval2018_Post-Competition_Submissions/*
+Chrono_TempEval2018_Submission_NN/*
 resultsEvaluation/*
 resultsDebug/*
 resultsOfficialTrain/*
@@ -30,3 +32,5 @@ official_train_MLmatrix_012618_class.csv
 official_train_MLmatrix_012618_data.csv
 *.pkl
 *.h5
+official_train_MLmatrix_Win2_012618_class.csv
+official_train_MLmatrix_Win2_012618_data.csv
