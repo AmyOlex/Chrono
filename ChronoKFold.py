@@ -39,9 +39,11 @@ def copy_files(df, directory):
     for i, row in df.iterrows():
         try:
             # this is the path to all of your file kept together in a separate folder
-            path_from = "./data/SemEval-Task6-Train/" + row['filename']
+            #path_from = "./data/SemEval-Task6-Train/" + row['filename']
+            path_from = "./data/SemEval-OfficialTrain/" + row['filename']
             path_to = destination_directory + row['filename']
-            gold_from = "./data/SemEval-Task6-TrainGold/" + row['filename']
+            #gold_from = "./data/SemEval-Task6-TrainGold/" + row['filename']
+            gold_from = "./data/SemEval-OfficialTrain/" + row['filename']
             gold_to = gold_destination + row['filename']
 
             # move from folder keeping all files to training, test, or validation folder (the "directory" argument)
@@ -51,7 +53,7 @@ def copy_files(df, directory):
             print("Error when copying {}: {}".format(row['filename'], str(e)))
 
 # dataframe containing the filenames of the files (e.g., GUID filenames) and the classes
-df = pd.read_csv('kfold_files_new.csv', names=['filename','class'])
+df = pd.read_csv('kfold_files_new_official.csv', names=['filename','class'])
 df_y = df['class']
 df_x = df
 del df_x['class']
@@ -85,9 +87,9 @@ for i, (train_index, test_index) in enumerate(skf.split(df_x, df_y)):
     mltrain = []
     for x in train['filename'].values.tolist():
         mltrain.append("./kfold/training/" + x + "/" + x)
-    createMLTrainingMatrix.createMLTrainingMatrix(mltrain,"./kfold/TrainingGold/",window=5, output="./kfold/kfoldML")
-    run_chrono = "python run_chrono.py -i ./kfold/test/ -r ./kfold/TestGold/ -o ./kfold/TestResults -m NN -d ./kfold/kfoldMLdata.csv -c ./kfold/kfoldMLclass.csv"
-    eval_chrono = "python -m anafora.evaluate -r ../kfold/TestGold/ -p ../kfold/TestResults/ --exclude Event Modifier"
+    createMLTrainingMatrix.createMLTrainingMatrix(mltrain,"./kfold/trainingGold/",window=5, output="./kfold/kfoldML")
+    run_chrono = "python run_chrono.py -i ./kfold/test/ -r ./kfold/testGold/ -o ./kfold/TestResults -m SVM -d ./kfold/kfoldML_data.csv -c ./kfold/kfoldML_class.csv"
+    eval_chrono = "python -m anafora.evaluate -r ../kfold/testGold/ -p ../kfold/TestResults/ --exclude Event Modifier"
     import subprocess
     process = subprocess.Popen(run_chrono.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
