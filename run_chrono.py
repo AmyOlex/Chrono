@@ -13,7 +13,7 @@
 ## 5) For each FILE:
 ##      a) parse with stanford parser to get whitespace tokens and associated spans
 ##      b) import this into a refToken object list
-##      c) parse with SUTime and import into a sutimeEntity list
+##      c) parse with SUTime and import into a temporalEntity list
 ##      d) Compare SUTime spans with the refToken spans to mark which refToken has temporal information.
 ##      e) EITHER 1) parse all SUTime entities into T6Entities OR parse all temporally tagged refTokens into T6Entities. << not sure which is better at the moment.
 ## 6) Print out the ChronoEntity list to an XML file
