@@ -47,7 +47,7 @@ Full documentation available at documentation/index.html
  author, SUTime_To_Chrono.py method contributer, utils.py author, referenceToken.py author, presentation preparation, 
  README co-author, installation co-author and tester, literature review, naive bayes implementation, ML algorithm integration, lead feature vector developer and parsing implementation, gold standard parsing createMLTrainingMatrix.py author, gold_standard_utils.py author.
  - *Luke Maffey:* Doxygen code documentation lead, ChronoEntities.py author, stopword identification/editing and method 
- implementation, presentation preparation, README co-author, installation co-author and tester, literature review, GUTime testing, presentation preparation, neural network implementation, code cleanup and standardization.
+ implementation, presentation preparation, README co-author, installation co-author and tester, literature review, GUTime testing, presentation preparation, neural network implementation, k-fold cross-validation implementation, code cleanup and standardization.
  - *Nicholas Morton:* SUTime installation and implementation lead, HeidelTime/GUTime baseline implementation lead, SUTime python wrapper author, workflow development, SUTime_To_Chrono.py author, README co-author, installation co-author and tester, literature review, GUTime integration and testing, decision tree implementation.
 
 ---
