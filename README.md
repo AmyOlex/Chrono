@@ -26,9 +26,9 @@ Input argument selects the type of machine learning algorithm to use:
 * DT - Decision Tree
 
 ### Training Data Matrix Generation
-The ML methods require 2 files, a data matrix and a class file, in order to be trained.  While we provide a file that searches the context with a window size of 3, you can also create your own training file with different window sizes.  To create your own training file do the following:
+The ML methods require two files, a data matrix and a class file, in order to be trained.  While we provide a file that searches the context with a window size of three, you can also create your own training file with different window sizes.  To create your own training file do the following:
 
-> 1) ensure all the gold standard data you want parsed into the training format is in one folder.
+> 1) Ensure all the gold standard data you want parsed into the training format is in one folder.
 > 2) Run the python run_chrono.py script as follows: 
 ```bash
 >> python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m NB -t "my_train_matrix" -w 3 -m NB
