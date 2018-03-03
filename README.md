@@ -4,7 +4,7 @@ output:
   pdf_document: default
 --->
 
-# Chrono - Parsing Time Normalizations inti the SCATE Schema
+# Chrono - Parsing Time Normalizations into the SCATE Schema
 
 ### Amy Olex, Luke Maffey, Nicholas Morton, and Bridget McInnes
 
@@ -48,8 +48,8 @@ Navigate to the Chrono folder.  For a description of all available options use:
 
 Prior to running Chrono you must have:
 
-1) The input text files organized into the Anafora XML Directory Structure.
-2) A machine learning (ML) training matrix and class information.
+> 1) The input text files organized into the Anafora XML Directory Structure.
+> 2) A machine learning (ML) training matrix and class information.
 
 The ML matrix files utilized by Chrono in the SemEval 2018 Task 6 challenge are included in the "sample_files" directory provided with this system.  You may use these, or create your own using the "Create ML Matrix" instructions below. 
 
@@ -65,9 +65,9 @@ To run Chrono without evaluation against a gold standard all you need in the inp
 
 To evaluate Chrono performance you must have:
 
-1) The gold standard Anafora Annotations for your input files organized in the Anafora XML Directory Structure with the gold standard XML file being named the same as the input file with an extension formatted as ".\*.completed.\*.xml".  These gold standard files may be located in the same directory as the associated input file (as long as there is only one xml file present), which means your gold standard directory is also your input directory.
+> 1) The gold standard Anafora Annotations for your input files organized in the Anafora XML Directory Structure with the gold standard XML file being named the same as the input file with an extension formatted as ".\*.completed.\*.xml".  These gold standard files may be located in the same directory as the associated input file (as long as there is only one xml file present), which means your gold standard directory is also your input directory.
 
-2) You must have Anafora Tools installed <https://github.com/bethard/anaforatools>.
+> 2) You must have Anafora Tools installed <https://github.com/bethard/anaforatools>.
 
 The following assumes your gold standard xml files are stored in the same directory as your input files.  If otherwise, adjust the paths as needed.  It also assumes AnaforaTools is installed locally in the directory "./anaforatools".  Change paths as needed if this is not the case.
 
@@ -84,24 +84,21 @@ The evaluation can be customized to focus on specific entities. Read the Anafora
 
 
 #### Training Data Matrix Generation
-The Ml methods require 2 files, a data matrix and a class file, in order to be trained.  While we provide a file that searches the context with a window size of 3, you can also create your own training file with different window sizes.  To create your own training file do the following:
 
-> 1) ensure all the gold standard data you want parsed into the training format is in one folder.
-> 2) Run the python run_chrono.py script as follows: 
+The machine learning methods require two files to operate: a data matrix and a class file.  We provide a file that utilizes a window size of 5, you can also create your own training file with different window sizes and on different subsets of training data.  To create your own training file do the following:
+
+> 1) Ensure all the gold standard data you want to utilize for training is in a separate directory structure than your testing data.
+> 2) Run the python Chrono.py script utilizing the -g and -t options as follows: 
+
 ```bash
->> python run_chrono.py -i ./data/SemEval-Task6-Train/ -r ./data/SemEval-Task6-TrainGold/ -o ./resultsTrain/ -m NB -t "my_train_matrix" -w 3 -m NB
+>> python Chrono.py -i ./data/my_training_input/ -r ./data/my_training_input/ -o ./results/my_output/ -m NB -t "my_train_matrix" -w 5
 ```
-The *-m* option allows you to choose the Ml algorithm you want to use. The *-t* option should be the file name base you want your training data matrix files to be saved to, and the *-w* option is the context window size, which is 3 by default.
-> 3) After your data files have been generated you can run the command again, but this time point to the new data and class files for the ML algorihtm training.
-```bash
->> python run_chrono.py -i ./data/SemEval-Task6-Test/ -r ./data/SemEval-Task6-TestGold/ -o ./resultsTest/ -m $ML -d "./data/aquaint_train_data_TrainWin3.csv" -c "./data/aquaint_train_class_TrainWin3.csv"
-```
-The *-d* option provides the path and file name of the file that the gold standard matrix should be saved.  Finally, *-c* option indicates the file name with the class information in it.
+
+The *-t* option should be the file name base you want your training data matrix files to be saved to, and the *-w* option is the context window size, which is 3 by default.  The output from this script are two ".csv" files that can be used as input into Chrono.
 
 
 ### Anafora XML Directory Structure
-In the Anafora XML Directory Structure each input file is in a folder by itself with the folder named the same as the file without an extension.  There is also an additional text file that contains the document time that is named that same as the input file, but has the extension ".dct".  
-
+In the Anafora XML Directory Structure each input file is in a folder by itself with the folder named the same as the file without an extension.  There is also an additional text file that contains the document time that is named that same as the input file, but has the extension ".dct".  This DCT file only contains the document date. The Anafora XML Directory Structure can contain the raw input file as well as the Anafora Annotation XML file that is used as a gold standard.  It should NOT contain the result XML files generated by Chrono.  Results should be saved in a separate directory.
 
 
 ---
