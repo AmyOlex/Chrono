@@ -62,8 +62,8 @@ if __name__ == "__main__":
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
     parser.add_argument('-r', metavar='refdir', type=str, help='path to the gold standard directory.', required=True)
     parser.add_argument('-t', metavar='trainML', type=str, help='A string representing the file name that triggers the training data file to be generated using the input data set in the -i option.', required=False, default=False)
-    parser.add_argument('-m', metavar='MLmethod', type=str, help='The machine learning method to use. Must be one of NN (neural network), DT (decision tree), NB (naive bayes, default). If option is not provided, or is not NN or DT, the default is NB is used.', required=False, default='NB')
-    parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
+    parser.add_argument('-m', metavar='MLmethod', type=str, help='The machine learning method to use. Must be one of NN (neural network), DT (decision tree), SVM (support vector machine), NB (naive bayes, default).', required=False, default='NB')
+    #parser.add_argument('-j', metavar='jardir', type=str, help='path to the directory with all the SUTime required jar files. Default is ./jars', required=False, default="./jars")
     parser.add_argument('-a', metavar='anaforatooldir', type=str, help='path to the top level directory of anaforatools package. Default is ./anaforatools', required=False, default="./anaforatools")
     parser.add_argument('-w', metavar='windowSize', type=str, help='An integer representing the window size for context feature extraction. Default is 3.', required=False, default=3)
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
@@ -100,27 +100,27 @@ if __name__ == "__main__":
         ## Train ML methods on training data
         if(args.m == "DT" and args.M is None):
             ## Train the decision tree classifier and save in the classifier variable
-            print("Got DT")
+            #print("Got DT")
             classifier, feats = DTree.build_dt_model(args.d, args.c)
             with open('DT_model.pkl', 'wb') as mod:  
                 pickle.dump([classifier, feats], mod)
 
         elif(args.m == "NN" and args.M is None):
-            print("Got NN")
+            #print("Got NN")
             ## Train the neural network classifier and save in the classifier variable
             classifier = ChronoKeras.build_model(args.d, args.c)
             feats = utils.get_features(args.d)
             classifier.save('NN_model.h5')
             
         elif(args.m == "SVM" and args.M is None):
-            print("Got SVM")
+            #print("Got SVM")
             ## Train the SVM classifier and save in the classifier variable
             classifier, feats = SVMclass.build_model(args.d, args.c)
             with open('SVM_model.pkl', 'wb') as mod:  
                 pickle.dump([classifier, feats], mod)
             
         elif(args.M is None):
-            print("Got NB")
+            #print("Got NB")
             ## Train the naive bayes classifier and save in the classifier variable
             classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
             classifier.show_most_informative_features(20)
@@ -128,7 +128,7 @@ if __name__ == "__main__":
                 pickle.dump([classifier, feats], mod)
                 
         elif(args.M is not None):
-            print("use saved model")
+            #print("use saved model")
             if args.m == "NB" or args.m == "DT":
                 with open(args.M, 'rb') as mod:
                     print(args.M)
