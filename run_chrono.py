@@ -1,29 +1,37 @@
-## This is the Task6 main method.  The parsing of a full directory will be done from running this program.
+# Copyright (c) 2018 
+# Amy L. Olex, Virginia Commonwealth University
+# alolex at vcu.edu
 #
-# Date: 9/23/17
+# Luke Maffey, Virginia Commonwealth University
+# maffeyl at vcu.edu
 #
-# Programmer Name: Amy Olex
+# Nicholas Morton,  Virginia Commonwealth University 
+# nmorton at vcu.edu
+#
+# Bridget T. McInnes, Virginia Commonwealth University
+# btmcinnes at vcu.edu
+#
+# This file is part of Chrono
+#
+# Chrono is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 3
+# of the License, or (at your option) any later version.
+#
+# Chrono is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Chrono; if not, write to 
+#
+# The Free Software Foundation, Inc., 
+# 59 Temple Place - Suite 330, 
+# Boston, MA  02111-1307, USA.
 
-###### Workflow ######
-##
-## 1) get location of files to parse (DONE)
-## 2) get location of output directory/create output directories (DONE)
-## 3) Initilize the ChronoEntity list
-## 4) Initilize the globally unique ID counter
-## 5) For each FILE:
-##      a) parse with stanford parser to get whitespace tokens and associated spans
-##      b) import this into a refToken object list
-##      c) parse with SUTime and import into a sutimeEntity list
-##      d) Compare SUTime spans with the refToken spans to mark which refToken has temporal information.
-##      e) EITHER 1) parse all SUTime entities into T6Entities OR parse all temporally tagged refTokens into T6Entities. << not sure which is better at the moment.
-## 6) Print out the ChronoEntity list to an XML file
-## 7) Run the evaluation code and print out precision and recall **need to import this code into our package**
-##
-## To test run:
-## python run_chrono.py -i /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_test -o /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_eval -r /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/TempEval-2013_test -j /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/CMSC516-SemEval2018-Task6/Chrono/jars/ -a /Users/alolex/Desktop/VCU_PhD_Work/CMSC516/project/anaforatools/
 
-
-
+## This is the main driver program that runs Chrono.  
 
 import argparse
 import os
