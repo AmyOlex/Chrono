@@ -42,6 +42,11 @@ The *-d* option provides the path and file name of the file that the gold standa
 
 Full documentation available at documentation/index.html
 
+### K-Fold Cross-Validation
+```bash
+>> python ChronoKFold.py > kfoldoutput.txt
+
+
 ### Roles and Contributions
  - *Amy Olex:* Team lead, workflow development lead, framework implementation, run_task6.py author, sutimeEntity.py 
  author, SUTime_To_Chrono.py method contributer, utils.py author, referenceToken.py author, presentation preparation, 
