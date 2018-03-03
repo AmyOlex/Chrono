@@ -11,7 +11,7 @@ from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
 import dateutil.parser
 import datetime
-from Chrono import SUTime_To_Chrono
+from Chrono import TimePhrase_to_Chrono
 from Chrono import sutimeEntity as su
 import re
 import csv
