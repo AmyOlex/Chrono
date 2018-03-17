@@ -73,7 +73,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in TimePhraseList:
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
@@ -165,9 +165,9 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         
         if e_type == "Two-Digit-Year" or e_type == "Year":
             year = e
-            print("YEAR VALUE: " + str(chrono_list[e].get_value()))
+            # print("YEAR VALUE: " + str(chrono_list[e].get_value()))
         elif e_type == "Month-Of-Year":
-            print("FOUND Month")
+            # print("FOUND Month")
             month = e
         elif e_type == "Day-Of-Month":
             day = e
@@ -188,7 +188,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         elif e_type == "NthFromStart":
             nth = e
         elif e_type == "This" or e_type == "Next" or e_type == "Last":
-            print("FOUND Mod")
+            # print("FOUND Mod")
             mod = e
         elif e_type == "Time-Zone":
             tz = e
@@ -238,14 +238,14 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
                             #past tense so put as a last
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
                             chrono_id = chrono_id + 1
-                            print("FOUND DAYWEEK LAST")
+                            # print("FOUND DAYWEEK LAST")
                         elif ref_list[ref].getPos() in ["VB","VBG","VBP","VBZ"]:
                             #present tense so put as a next
                             chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
                             chrono_id = chrono_id + 1  
-                            print("FOUND DAYWEEK NEXT")
+                            # print("FOUND DAYWEEK NEXT")
                         vb = True
-                    print("Ref Tok: " + str(ref))
+                    # print("Ref Tok: " + str(ref))
                     ref-=1
                 
                 '''
@@ -291,10 +291,10 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         del chrono_list[tz]
     
     if nth is not None and period is not None:
-        print("Adding period sub-interval")
+        # print("Adding period sub-interval")
         chrono_list[nth].set_period(chrono_list[period].get_id())
     elif nth is not None and interval is not None:
-        print("Adding interval sub-interval")
+        # print("Adding interval sub-interval")
         chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
     ##### Notes: This next bit is complicated.  If I include it I remove some False Positives, but I also create some False Negatives.
     ##### I think more complex parsing is needed here to figure out if the ordinal is an NthFromStart or not.  
@@ -507,7 +507,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
             if num is not None:
                 if  (num >= 1500) and (num <= 2050):
                     flags["loneDigitYear"] = True  
-                    print("Found Lone Digit Year")  
+                    # print("Found Lone Digit Year")  
                     ## build year
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     start_idx, end_idx = re.search(text, s.getText()).span(0)
@@ -1214,7 +1214,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                     chrono_id = chrono_id + 1
                 
                 if mod_type == "Last":
-                    print("FOUND LAST")
+                    # print("FOUND LAST")
                     chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_month_entity.get_id(), semantics="Interval-Not-Included"))
                     chrono_id = chrono_id + 1
         
@@ -1600,7 +1600,7 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
             hour = int(val[0:2])
             minute = int(val[2:4])
         except ValueError:
-            print("Skipping, not a 24hour time")
+            # print("Skipping, not a 24hour time")
             return chrono_list, chrono_id, flags
             # hour = w2n.number_formation(val[0:2])
             # minute = w2n.word_to_num(val[2:4])
@@ -1623,7 +1623,7 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
         
         ## build minute entity
         min_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart + 2, end_span=ref_Sspan + idxstart + 4, value=minute)
-        print("24Minute Value Added: " + str(min_entity.get_value()))
+        # print("24Minute Value Added: " + str(min_entity.get_value()))
         chrono_list.append(min_entity)
         chrono_id = chrono_id + 1
         
@@ -1631,7 +1631,7 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
         #     hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
         # else:
         hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
-        print("24Hour Value Added: " + str(hour_entity.get_value()))
+        # print("24Hour Value Added: " + str(hour_entity.get_value()))
         hour_entity.set_sub_interval(min_entity.get_id())
         chrono_list.append(hour_entity)
         chrono_id = chrono_id + 1
@@ -2464,7 +2464,7 @@ def has24HourTime(tpentity, flags):
                             return True, text, start_idx, end_idx
             elif tz_format is not None:
                 time = tz_format[0]
-                print("THIS TIME: {}".format(time))
+                # print("THIS TIME: {}".format(time))
                 hour = utils.getNumberFromText(time[0:2])
                 minute = utils.getNumberFromText(time[2:4])
                 # if (minute > 60) or (hour > 24):
@@ -2609,7 +2609,7 @@ def hasMonthOfYear(tpentity):
                 if int(twodigitstart[1]) <= 12:
                     # assume mm/dd/yy
                     start_idx, end_idx = getSpan(text,twodigitstart[1]) #twodigitstart.span(1)  #
-                    print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(1)[0]+text_start) + " : " + str(twodigitstart.group(1)))
+                    # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(1)[0]+text_start) + " : " + str(twodigitstart.group(1)))
                     ##### Trying to DEBUG string formats like AP-JN-08-16-90 ##########
                     return True, twodigitstart[1], text_start+start_idx, text_start+end_idx
                 elif int(twodigitstart[1]) > 12:
@@ -2659,7 +2659,7 @@ def hasDayOfMonth(tpentity):
                 #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
                 #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
                 if int(twodigitstart[1]) <= 12:
-                    print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
+                    # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
                     # assume mm/dd/yy
                     start_idx, end_idx = getSpan(text,twodigitstart[2])
                     return True, twodigitstart[2], text_start+start_idx, text_start+end_idx
