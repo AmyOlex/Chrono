@@ -27,7 +27,6 @@ resultsTrain
 Chrono/sutime
 data/SemEval-Task6-GUTime-TestResults
 data/SemEval-Task6-GUTime-TrainResults
-
 GitWorkflowInstructions.txt
 official_train_MLmatrix_012618_class.csv
 official_train_MLmatrix_012618_data.csv
@@ -35,3 +34,37 @@ official_train_MLmatrix_012618_data.csv
 *.h5
 official_train_MLmatrix_Win2_012618_class.csv
 official_train_MLmatrix_Win2_012618_data.csv
+BASELINES.md
+BaselineCode/GUTime/GUTime ReadME
+BaselineCode/GUTime/GUTimeEntity.py
+BaselineCode/GUTime/GUTime_To_T6.py
+BaselineCode/GUTime/run_baseline_code.py
+BaselineCode/GUTime/t6Entities.py
+BaselineCode/HeidelTime/Baseline ReadMe.MD
+BaselineCode/HeidelTime/BuildTimex3List.py
+BaselineCode/HeidelTime/HeidEntity.py
+BaselineCode/HeidelTime/HeidTime_To_T6.py
+BaselineCode/HeidelTime/HeidTime_Wrapper.py
+BaselineCode/HeidelTime/config.props
+BaselineCode/HeidelTime/de.unihd.dbs.heideltime.standalone.jar
+BaselineCode/HeidelTime/run_baseline_code.py
+BaselineCode/HeidelTime/t6Entities.py
+INSTALL.md
+ORIGINS.md
+anaforatools/README.md
+anaforatools/anafora/__init__.py
+anaforatools/anafora/cleanup.py
+anaforatools/anafora/copy_text.py
+anaforatools/anafora/evaluate.py
+anaforatools/anafora/heuristic.py
+anaforatools/anafora/regex.py
+anaforatools/anafora/select.py
+anaforatools/anafora/timeml.py
+anaforatools/anafora/validate.py
+kfold_files_new.csv
+kfold_files_new_official.csv
+official_train_MLmatrix_Win3_012618_class.csv
+official_train_MLmatrix_Win3_012618_data.csv
+official_train_MLmatrix_Win5_012618_class.csv
+official_train_MLmatrix_Win5_012618_data.csv
+runit.sh
