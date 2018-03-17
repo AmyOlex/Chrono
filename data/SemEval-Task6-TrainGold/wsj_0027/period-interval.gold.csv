@@ -1,6 +1,0 @@
-type,start,end,value
-Calendar-Interval,1085,1094,Day
-Calendar-Interval,1006,1010,Week
-Calendar-Interval,913,922,Quarter-Year
-Calendar-Interval,1253,1257,Year
-Calendar-Interval,853,858,Year

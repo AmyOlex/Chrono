@@ -1,6 +1,0 @@
-type,start,end,value
-Calendar-Interval,839,843,Year
-Calendar-Interval,642,649,Quarter-Year
-Calendar-Interval,249,256,Quarter-Year
-Period,541,545,Years
-Period,101,107,Unknown
