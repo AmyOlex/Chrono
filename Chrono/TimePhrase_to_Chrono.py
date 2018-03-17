@@ -327,9 +327,9 @@ def buildTimeZone(s, chrono_id, chrono_list):
     return chrono_list, chrono_id
 
 
-## Takes in a Chrono entity and identifies if it has an NthFromStart entity
+## Takes in a TimePhraseEntity and identifies if it has an NthFromStart entity
 # @author Amy Olex
-# @param s The chrono entity to parse 
+# @param s The TimePhraseEntity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -378,9 +378,9 @@ def hasNthFromStart(tpentity, ref_list):
     
     
 
-## Takes in a Chrono entity and identifies if it should be annotated as a After entity
+## Takes in a TimePhraseEntity and identifies if it should be annotated as a After entity
 # @author Amy Olex
-# @param s The chrono entity to parse 
+# @param s The TimePhraseEntity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -416,9 +416,9 @@ def buildBeforeAfter(s, chrono_id, chrono_list):
 ####
 
 
-## Takes in a Chrono entity and identifies if it should be annotated as a This entity
+## Takes in a TimePhraseEntity and identifies if it should be annotated as a This entity
 # @author Amy Olex
-# @param s The chrono entity to parse 
+# @param s The TimePhraseEntity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -479,9 +479,9 @@ def buildThis(s, chrono_id, chrono_list):
 #END_MODULE
 ####
 
-## Takes in a Chrono entity and identifies if it is a numeric date format
+## Takes in a TimePhraseEntity and identifies if it is a numeric date format
 # @author Amy Olex
-# @param s The chrono entity to parse 
+# @param s The TimePhraseEntity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1042,9 +1042,9 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
 #END_MODULE
 ####    
 
-## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
+## Parses a TimePhraseEntity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The Chrono entity to parse 
+# @param s The TimePhraseEntity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1090,9 +1090,9 @@ def isTextYear(tpentity):
     return False, None, None, None
 
 
-## Parses a chrono entity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
+## Parses a TimePhraseEntity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The Chrono entity to parse 
+# @param s The TimePhraseEntity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.

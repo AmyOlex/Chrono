@@ -43,7 +43,7 @@ from Chrono import temporalTest as tt
 import dateutil.parser
 import datetime
 from Chrono import TimePhrase_to_Chrono
-from Chrono import temporalEntity as su
+from Chrono import temporalEntity as tp
 import re
 import csv
 from collections import OrderedDict
@@ -95,16 +95,16 @@ def write_xml(chrono_list, outfile):
  ####   
 
 
-## Marks all the reference tokens that show up in the SUTime entity list.
+## Marks all the reference tokens that show up in the TimePhrase entity list.
 # @author Amy Olex
 # @param refToks The list of reference Tokens
-# @param suList The list of SUtime entities to compare against
+# @param tpList The list of TimePhrase entities to compare against
 ### I don't think we need/use this any longer.  Maybe can be recycled for something else.
-#def markTemporalRefToks(refToks, suList):
+#def markTemporalRefToks(refToks, tpList):
 #    for ref in refToks:
-#        for su in suList:
-#            suStart, suEnd = su.getSpan()
-#            if ref.spanOverlap(suStart, suEnd):
+#        for tp in tpList:
+#            tpStart, tpEnd = tp.getSpan()
+#            if ref.spanOverlap(tpStart, tpEnd):
 #                ref.setTemporal(True)
 #        if ref.isTemporal() is None:
 #            ref.setTemporal(False)
@@ -418,7 +418,7 @@ def getTemporalPhrases(chroList, doctime):
     #temporalEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime)
     id_counter = 0
     
-    phrases = [] #the empty phrases list of sutime entities
+    phrases = [] #the empty phrases list of TimePhrase entities
     tmpPhrase = [] #the temporary phrases list.
     inphrase = False
     for n in range(0,len(chroList)):
@@ -483,7 +483,7 @@ def getTemporalPhrases(chroList, doctime):
             #current element is not temporal, check to see if inphrase
             #print("Not Temporal, or numeric " + str(chroList[n]))
             if inphrase:
-                #set to False, add tmpPhrase as sutime entitiy to phrases, then reset tmpPhrase
+                #set to False, add tmpPhrase as TimePhrase entitiy to phrases, then reset tmpPhrase
                 inphrase = False
                 #check to see if only a single element and element is numeric, then do not add.
                 if len(tmpPhrase) != 1:
@@ -516,9 +516,9 @@ def getTemporalPhrases(chroList, doctime):
 ## Takes in a list of reference tokens identified as a temporal phrase and returns one temporalEntity.
 # @author Amy Olex
 # @param items The list of reference tokesn
-# @param counter The ID this sutime entity should have
+# @param counter The ID this TimePhrase entity should have
 # @param doctime The document time.
-# @return A single sutime entity with the text span and string concatenated.
+# @return A single TimePhrase entity with the text span and string concatenated.
 def createTempEntity(items, counter, doctime):
     start_span, tmp = items[0].getSpan()
     tmp, end_span = items[len(items)-1].getSpan()
@@ -526,7 +526,7 @@ def createTempEntity(items, counter, doctime):
     for i in items:
         text = text + ' ' + i.getText()
     
-    return su.temporalEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
+    return tp.temporalEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
 
 ####
 #END_MODULE

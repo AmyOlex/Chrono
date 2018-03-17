@@ -31,10 +31,7 @@
 # Boston, MA  02111-1307, USA.
 
 
-
-
 ## Class definitions to represent a temporal phrase
-
 
 import json
 
