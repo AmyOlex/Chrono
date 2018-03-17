@@ -51,19 +51,19 @@ from Chrono import utils
 from Chrono import w2ny as w2n
 
 
-#Example SUTime List
+#Example TimePhrase List
 #Wsj_0152
 #0 11/02/89 <12,20> DATE 1989-11-02
 #1 Nov. 9 11/02/89 <145,160> DATE 1989-11-02
 #2 5 p.m. EST Nov. 9 <393,410> TIME 2017-11-09T17:00-0500
 #3 Nov. 6 <536,542> DATE 2017-11-06
 
-## Takes in list of SUTime output and converts to ChronoEntity
+## Takes in list of TimePhrase output and converts to ChronoEntity
 # @author Nicholas Morton
-# @param list of SUTime Output
+# @param list of TimePhrase Output
 # @param document creation time (optional)
 # @return List of Chrono entities and the ChronoID
-def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, dct=None):
+def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeatures, dct=None):
     chrono_list = []
     
     ## Do some further pre-processing on the ref token list
@@ -72,7 +72,7 @@ def buildChronoList(suTimeList, chrono_id, ref_list, PIclassifier, PIfeatures, d
     ## Convert to lowercase
     ref_list = referenceToken.lowercase(ref_list)
     
-    for s in suTimeList :
+    for s in TimePhraseList:
         print(s)
         chrono_tmp_list = []
         
@@ -348,18 +348,18 @@ def buildNthFromStart(s, chrono_id, chrono_list, ref_list):
         
     return chrono_list, chrono_id
     
-def hasNthFromStart(suentity, ref_list):
+def hasNthFromStart(tpentity, ref_list):
     
-    refStart_span, refEnd_span = suentity.getSpan()
+    refStart_span, refEnd_span = tpentity.getSpan()
     
     #convert to all lower
-    text = suentity.getText().lower()
+    text = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
     text_list = text_norm.split(" ")
     
-    ## if the term does not exist by itself it may be a substring. Go through each word in the SUTime string and see if a substring matches.
+    ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
         val = utils.isOrdinal(t)
         
@@ -623,9 +623,9 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 
 
 
-## Takes in list of SUTime output and converts to ChronoEntity
+## Takes in list of TimePhrase output and converts to ChronoEntity
 # @author Nicholas Morton and Amy Olex
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chrono_id The current chrono_id to increment as new chronoEntities are added to list.
 # @param chrono_list The list of Chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -718,9 +718,9 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to ChronoEntity
+## Takes in list of TimePhrase output and converts to ChronoEntity
 # @author Nicholas Morton
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -810,9 +810,9 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to chronoEntity
+## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -833,9 +833,9 @@ def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to chronoEntity
+## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -857,9 +857,9 @@ def buildChronoDayOfMonth(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to chronoEntity
+## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -879,9 +879,9 @@ def buildChronoHourOfDay(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to chronoEntity
+## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -902,9 +902,9 @@ def buildChronoMinuteOfHour(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
-## Takes in list of SUTime output and converts to chronoEntity
+## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
-# @param s The sutime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -925,9 +925,9 @@ def buildChronoSecondOfMinute(s, chrono_id, chrono_list, flags):
 ####
 
 
-## Parses a sutime entity's text field to determine if it contains a day of the week written out in text form, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a day of the week written out in text form, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -970,9 +970,9 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
 #END_MODULE
 #### 
 
-## Parses a sutime entity's text field to determine if it contains a season of the year written out in text form, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a season of the year written out in text form, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1063,9 +1063,9 @@ def buildTextYear(s, chrono_id, chrono_list):
 
     return chrono_list, chrono_id
 
-def isTextYear(suentity):
+def isTextYear(tpentity):
     #remove ending punctuation
-    text1 = suentity.getText().strip(",.")
+    text1 = tpentity.getText().strip(",.")
     #replace all other punctuation and replace with spaces
     text = text1.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #make sure it is all letters
@@ -1080,7 +1080,7 @@ def isTextYear(suentity):
         
         if val is not None:
             if val >= 1500 and val <= 2050:
-                r = re.search(text1, suentity.getText())
+                r = re.search(text1, tpentity.getText())
                 start, end = r.span(0)
                 return True, val, start, end
             else:
@@ -1226,9 +1226,9 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
 #END_MODULE
 ####
  
-## Parses a sutime entity's text field to determine if it contains a AM or PM time indication, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a AM or PM time indication, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1256,7 +1256,7 @@ def buildAMPM(s, chrono_id, chrono_list):
             am_flag = False
 
         #check to see if it has a time associated with it.  We assume the time comes before the AMPM string
-        #We could parse out the time from the sutime normalized value.  The problem is getting the correct span.
+        #We could parse out the time from the TimePhrase normalized value.  The problem is getting the correct span.
         #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
         if idxstart > 0:
             substr = s.getText()[0:idxstart]
@@ -1313,19 +1313,19 @@ def buildAMPM(s, chrono_id, chrono_list):
 ####
 
 
-## Parses a sutime entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning of the string from sutime represents the number.  If this is not the case the spans may be off.
-###### More Issues: I created the training data incorrectly to remove the SUTime entity from consideration.  In order to classify from scratch we would need multiple classes: period, interval, everything else.  I only have a binary classifier here, so I need to narrow it down before trying to classify.
+###### ISSUES: This method assumes the number is immediatly before the interval type. There is some concern about if the spans are going to be correct.  I do test for numbers written out as words, but this assumes the entire beginning of the string from TimePhrase represents the number.  If this is not the case the spans may be off.
+###### More Issues: I created the training data incorrectly to remove the TimePhrase entity from consideration.  In order to classify from scratch we would need multiple classes: period, interval, everything else.  I only have a binary classifier here, so I need to narrow it down before trying to classify.
 def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    #print("SUTime Text: " + s.getText())
+    #print("TimePhrase Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
 
     # FIND YESTERDAYS!
@@ -1501,7 +1501,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         
             #Extract the number and idetify the span of numstr
             
-            substr = s.getText()[:idxstart] ## extract entire first part of SUTime phrase
+            substr = s.getText()[:idxstart] ## extract entire first part of TimePhrase phrase
             m = re.search('([0-9]{1,2})', substr) #search for an integer in the subphrase and extract it's coordinates
             if m is not None :
                 num_val = m.group(0)
@@ -1538,9 +1538,9 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 #END_MODULE
 ####
 
-## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1561,9 +1561,9 @@ def buildPartOfDay(s, chrono_id, chrono_list):
 #END_MODULE
 ####    
 
-## Parses a sutime entity's text field to determine if it contains a part of the week expression, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a part of the week expression, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1584,9 +1584,9 @@ def buildPartOfWeek(s, chrono_id, chrono_list):
 #END_MODULE
 #### 
 
-## Parses a sutime entity's text field to determine if it contains a 24-hour time expression, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a 24-hour time expression, then builds the associated chronoentity list
 # @author Amy Olex
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1643,12 +1643,12 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
 #### 
 
 
-## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
 # @author Nicholas Morton
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
-# @return SUTime Duration Entity
+# @return TimePhrase Duration Entity
 def buildDuration(s, chrono_id, chrono_list): 
 
     #if hasExactDuration(s):  #3 days -> P3D
@@ -1663,12 +1663,12 @@ def buildDuration(s, chrono_id, chrono_list):
 #END_MODULE
 #### 
 
-## Parses a sutime entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
 # @author Nicholas Morton
-# @param s The SUtime entity to parse 
+# @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
-# @return SUTime Set Entity
+# @return TimePhrase Set Entity
 def buildSet(s, chrono_id, chrono_list):
 
     return chrono_list, chrono_id
@@ -1678,9 +1678,9 @@ def buildSet(s, chrono_id, chrono_list):
 #END_MODULE
 ####
 
-## Parses a sutime entity's text field to determine if it contains a modifier text expression, then builds the associated chronoentity list
+## Parses a TimePhrase entity's text field to determine if it contains a modifier text expression, then builds the associated chronoentity list
 # @author Luke Maffey
-# @param s The SUtime entity to parse
+# @param s The TimePhrase entity to parse
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
@@ -1749,11 +1749,11 @@ def buildModifierText(s, chrono_id, chrono_list):
 # @param text The text to be parsed
 # @return value The normalized string value for the day of week, or None if no Day of week found.
 # @ISSUE If there are multiple days of week in the temporal phrase it only captures one of them.
-def hasDayOfWeek(suentity):
+def hasDayOfWeek(tpentity):
     
     #print("Before:" + text)
     #convert to all lower
-    text_lower = suentity.getText().lower()
+    text_lower = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
     #print("After:" + text_norm)
@@ -1830,12 +1830,12 @@ def hasDayOfWeek(suentity):
 
 ## Takes in a single text string and identifies if it has any Before or After phrases
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasBeforeAfter(suentity):
+def hasBeforeAfter(tpentity):
     
     #convert to all lower
-    text_lower = suentity.getText().lower()
+    text_lower = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
@@ -1872,12 +1872,12 @@ def hasBeforeAfter(suentity):
 
 ## Takes in a single text string and identifies if it has any modufying phrases
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasModifier(suentity):
+def hasModifier(tpentity):
     
     #convert to all lower
-    text_lower = suentity.getText().lower()
+    text_lower = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
@@ -1939,15 +1939,15 @@ def hasModifier(suentity):
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
-# @param suentity The entity to parse
+# @param tpentity The entity to parse
 # @return value The normalized string value for the month of the year, or None if no month of year found.
 # @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
-def hasTextMonth(suentity, ref_list):
+def hasTextMonth(tpentity, ref_list):
     
-    refStart_span, refEnd_span = suentity.getSpan()
+    refStart_span, refEnd_span = tpentity.getSpan()
     
     #convert to all lower
-    text_lower = suentity.getText().lower()
+    text_lower = tpentity.getText().lower()
     #remove all punctuation
     #text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
     text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
@@ -2052,13 +2052,13 @@ def hasTextMonth(suentity, ref_list):
 
 ## Takes in a single text string and identifies if it has any AM or PM phrases
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasAMPM(suentity):
+def hasAMPM(tpentity):
     
     #convert to all lower
-    #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    #text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
     #remove all punctuation
     text_norm = text.translate(str.maketrans("", "", ","))
     #convert to list
@@ -2094,12 +2094,12 @@ def hasAMPM(suentity):
 #END_MODULE
 ####
 
-## Takes in a single sutime entity and determines if it has a time zone specified in the text.
+## Takes in a single TimePhrase entity and determines if it has a time zone specified in the text.
 # @author Amy Olex and Luke Maffey
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs the regex object or None
-def hasTimeZone(suentity):
-    text = suentity.getText()
+def hasTimeZone(tpentity):
+    text = tpentity.getText()
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     tz = re.search('(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK|AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
 
@@ -2127,15 +2127,15 @@ def hasTimeZone(suentity):
 #END_MODULE
 ####
 
-## Takes in a SUTime entity and identifies if it has any calendar interval phrases like "week" or "days"
+## Takes in a TimePhrase entity and identifies if it has any calendar interval phrases like "week" or "days"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean
-def hasCalendarInterval(suentity):
+def hasCalendarInterval(tpentity):
     
     #convert to all lower
-    #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    #text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
     #remove all punctuation
     text_norm = text.translate(str.maketrans("", "", string.punctuation))
     #convert to list
@@ -2183,16 +2183,16 @@ def hasCalendarInterval(suentity):
 #END_MODULE
 ####
 
-## Takes in a SUTime entity and identifies if it has any calendar interval phrases like "week" or "days"
+## Takes in a TimePhrase entity and identifies if it has any calendar interval phrases like "week" or "days"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 5 values: Boolean Flag, Value text, start index, end index, numeric string
 # Note: this should be called after everything else is checked.  The numeric string will need to have it's span and value identified by the calling method.
-def hasEmbeddedPeriodInterval(suentity):
+def hasEmbeddedPeriodInterval(tpentity):
     
     #convert to all lower
-    #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    #text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
     #remove all punctuation
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #convert to list
@@ -2201,7 +2201,7 @@ def hasEmbeddedPeriodInterval(suentity):
     #define my period/interval term lists
     terms = ["decades","decade","today","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
     
-    ## if the term does not exist by itself it may be a substring. Go through each word in the SUTime string and see if a substring matches.
+    ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
         for r in terms:
             ## see if r is a substring of t
@@ -2268,16 +2268,16 @@ def getPeriodValue(val):
         return(val)
 
 
-## Takes in a SUTime entity and identifies if it has any part of day terms, like "overnight" or "morning"
+## Takes in a TimePhrase entity and identifies if it has any part of day terms, like "overnight" or "morning"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 #############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
-def hasPartOfDay(suentity):
+def hasPartOfDay(tpentity):
     
     #convert to all lower
-    text = suentity.getText().lower()
-    #text = suentity.getText()
+    text = tpentity.getText().lower()
+    #text = tpentity.getText()
     #remove all punctuation
     text_norm = text.translate(str.maketrans("", "", string.punctuation))
     #convert to list
@@ -2321,17 +2321,17 @@ def hasPartOfDay(suentity):
 #END_MODULE
 ####
 
-## Takes in a SUTime entity and identifies if it has any season terms, like "summer" or "fall"
+## Takes in a TimePhrase entity and identifies if it has any season terms, like "summer" or "fall"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasSeasonOfYear(suentity, ref_list):
+def hasSeasonOfYear(tpentity, ref_list):
     
-    refStart_span, refEnd_span = suentity.getSpan()
+    refStart_span, refEnd_span = tpentity.getSpan()
     
     #convert to all lower
-    #text_lower = suentity.getText().lower()
-    text = suentity.getText().lower()
+    #text_lower = tpentity.getText().lower()
+    text = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     
@@ -2395,16 +2395,16 @@ def hasSeasonOfYear(suentity, ref_list):
 #END_MODULE
 ####
 
-## Takes in a SUTime entity and identifies if it has any part of week terms, like "weekend"
+## Takes in a TimePhrase entity and identifies if it has any part of week terms, like "weekend"
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 #############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
-def hasPartOfWeek(suentity):
+def hasPartOfWeek(tpentity):
     
     #convert to all lower
-    #text_lower = suentity.getText().lower()
-    text = suentity.getText()
+    #text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
     #remove all punctuation
     text_norm = text.translate(str.maketrans("", "", string.punctuation))
     #convert to list
@@ -2435,16 +2435,16 @@ def hasPartOfWeek(suentity):
 
 ## Takes in a single text string and identifies if it has any 4 digit 24-hour time phrases
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 # Note: This need to be called after it has checked for years
-def has24HourTime(suentity, flags):
+def has24HourTime(tpentity, flags):
     
-    #text_lower = suentity.getText().lower() 
+    #text_lower = tpentity.getText().lower() 
     #remove all punctuation
     #text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
-    stext = suentity.getText()
+    stext = tpentity.getText()
     text_list = stext.split(" ")
 
     if not flags["loneDigitYear"]:
@@ -2480,11 +2480,11 @@ def has24HourTime(suentity, flags):
 
 ## Takes in a single text string and identifies if it has any 4 digit year phrases
 # @author Nicholas Morton and Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasYear(suentity, flags):
+def hasYear(tpentity, flags):
     
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
     #convert to list
@@ -2538,11 +2538,11 @@ def hasYear(suentity, flags):
 
 ## Takes in a single text string and identifies if it has any 2 digit year phrases
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def has2DigitYear(suentity):
+def has2DigitYear(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(",", " "))
     #convert to list
@@ -2577,11 +2577,11 @@ def has2DigitYear(suentity):
 
 ## Takes in a single text string and identifies if it has a month of year
 # @author Nicholas Morton and Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasMonthOfYear(suentity):
+def hasMonthOfYear(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(",", " "))
     #convert to list
@@ -2630,11 +2630,11 @@ def hasMonthOfYear(suentity):
 
 ## Takes in a single text string and identifies if it has a day of the month in numeric format
 # @author Nicholas Morton and Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasDayOfMonth(suentity):
+def hasDayOfMonth(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(",", " "))
     #convert to list
@@ -2684,11 +2684,11 @@ def hasDayOfMonth(suentity):
 
 ## Takes in a single text string and identifies if it has a hh:mm:ss
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasTimeString(suentity):
+def hasTimeString(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
@@ -2718,11 +2718,11 @@ def hasTimeString(suentity):
 
 ## Takes in a single text string and identifies if it has a hour of a day
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasHourOfDay(suentity):
+def hasHourOfDay(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
@@ -2753,11 +2753,11 @@ def hasHourOfDay(suentity):
 
 ## Takes in a single text string and identifies if it has a minute of an hour
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasMinuteOfHour(suentity):
+def hasMinuteOfHour(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
@@ -2785,11 +2785,11 @@ def hasMinuteOfHour(suentity):
 
 ## Takes in a single text string and identifies if it has a second of an minute
 # @author Nicholas Morton
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasSecondOfMinute(suentity):
+def hasSecondOfMinute(tpentity):
 
-    text_lower = suentity.getText().lower() 
+    text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
@@ -2816,9 +2816,9 @@ def hasSecondOfMinute(suentity):
 ####
 
 # @author Amy Olex
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag
-def hasExactDuration(suentity):
+def hasExactDuration(tpentity):
     
     if "P#D":
         return True    
@@ -2831,11 +2831,11 @@ def hasExactDuration(suentity):
 
 ## Takes in a single text string and identifies if it has a modifier text
 # @author Luke Maffey
-# @param suentity The SUTime entity object being parsed
+# @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasModifierText(suentity):
+def hasModifierText(tpentity):
 
-    text_lower = suentity.getText().lower()
+    text_lower = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
     #convert to list
@@ -2868,7 +2868,7 @@ def hasModifierText(suentity):
 # @param text The text to be searched
 # @param search_text The text to search for.
 # @return The start index and end index of the search_text string.
-######## ISSUE: This needs to be re-named here and in all the above usages.  Probably should also move this to the utils class.  Dont delete the s.getSpan() as those are from the sutime entity class.
+######## ISSUE: This needs to be re-named here and in all the above usages.  Probably should also move this to the utils class.  Dont delete the s.getSpan() as those are from the TimePhrase entity class.
 def getSpan(text, search_text):
     try:
         start_idx = text.index(search_text)
