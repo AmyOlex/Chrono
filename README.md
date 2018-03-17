@@ -49,6 +49,7 @@ Navigate to the Chrono folder.  For a description of all available options use:
 Prior to running Chrono you must have:
 
 > 1) The input text files organized into the Anafora XML Directory Structure.
+
 > 2) A machine learning (ML) training matrix and class information.
 
 The ML matrix files utilized by Chrono in the SemEval 2018 Task 6 challenge are included in the "sample_files" directory provided with this system.  You may use these, or create your own using the "Create ML Matrix" instructions below. 
@@ -87,6 +88,7 @@ The evaluation can be customized to focus on specific entities. Read the Anafora
 The machine learning methods require two files to operate: a data matrix and a class file.  We provide a file that utilizes a window size of 5 in the "sample_files" directory, you can also create your own training file with different window sizes and on different subsets of training data.  To create your own training file do the following:
 
 > 1) Ensure all the gold standard data you want to utilize for training is in a separate directory structure than your testing data.
+
 > 2) Run the python script Chrono_createMLTrainingMatrix.py script as follows (assuming your input text files and the gold standard XML files are in the same directory named "./data/my_input"): 
 
 ```bash
