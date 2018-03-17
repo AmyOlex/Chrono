@@ -54,15 +54,15 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='1.0.0',
 
-    description='A class project from CMSC516 to parse and normalize temporal expression per the SemEval2018 Task6 competition.',
+    description='Chrono is a hybrid rule-based and machine learning system that identifies temporal expressions in text and normalizes them into the Semantically Compositional Annotations for Temporal Expressions (SCATE) schema developed by Bethard and Parker. Chrono has emerged as the top performing system for SemEval 2018 Task 6: Parsing Time Normalizations.',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/AmyOlex/CMSC516-SemEval2018-Task6',
+    url='https://github.com/AmyOlex/Chrono',
 
     # Author details
-    author='Amy Olex, Nick Morton, Luke Maffey',
-    author_email='alolex@vcu.edu, mortonn@vcu.edu, maffeyl@mymail.vcu.edu',
+    author='Amy Olex, Luke Maffey, Nick Morton, and Bridget McInnes',
+    author_email='alolex@vcu.edu, maffeyl@vcu.edu, mortonn@vcu.edu, btmcinnes@vcu.edu',
 
     # Choose your license
     license='GPLv3',
@@ -73,7 +73,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
 
         # Indicate who your project is intended for
         'Intended Audience :: Science/Research',
@@ -84,7 +84,6 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
     ],
 
@@ -103,7 +102,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['nltk'],
+    install_requires=['nltk', 'python-dateutil', 'numpy', 'sklearn'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
