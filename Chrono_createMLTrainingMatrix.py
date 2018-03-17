@@ -338,7 +338,7 @@ if __name__ == "__main__":
           infiles.append(os.path.join(root,name,name))
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
-          goldfiles.append(os.path.join(args.r,name,"period-interval.gold.csv"))
+          goldfiles.append(os.path.join(args.g,name,"period-interval.gold.csv"))
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
     
