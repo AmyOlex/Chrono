@@ -1,3 +1,8 @@
+kfoldoutput_official.txt
+kfoldoutput_official_DT.txt
+kfoldoutput_official_NB.txt
+kfoldoutput_official_NN.txt
+kfoldoutput_official_SVM.txt
 Chrono_TempEval2018_Post-Competition_Submissions/*
 Chrono_TempEval2018_Submission_NN/*
 resultsEvaluation/*

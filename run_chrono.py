@@ -13,7 +13,7 @@
 ## 5) For each FILE:
 ##      a) parse with stanford parser to get whitespace tokens and associated spans
 ##      b) import this into a refToken object list
-##      c) parse with SUTime and import into a sutimeEntity list
+##      c) parse with SUTime and import into a temporalEntity list
 ##      d) Compare SUTime spans with the refToken spans to mark which refToken has temporal information.
 ##      e) EITHER 1) parse all SUTime entities into T6Entities OR parse all temporally tagged refTokens into T6Entities. << not sure which is better at the moment.
 ## 6) Print out the ChronoEntity list to an XML file
@@ -32,7 +32,7 @@ import pickle
 from chronoML import DecisionTree as DTree
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from chronoML import SVM_classifier as SVMclass
-from Chrono import SUTime_To_Chrono
+from Chrono import TimePhrase_to_Chrono
 from Chrono import createMLTrainingMatrix
 from Chrono import referenceToken
 from Chrono import utils
@@ -158,7 +158,7 @@ if __name__ == "__main__":
             #    print(c)
         
 
-            chrono_master_list, my_chrono_ID_counter = SUTime_To_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+            chrono_master_list, my_chrono_ID_counter = TimePhrase_to_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
             print("Number of Chrono Entities: " + str(len(chrono_master_list)))
             utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
