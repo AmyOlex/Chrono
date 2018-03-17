@@ -84,16 +84,16 @@ The evaluation can be customized to focus on specific entities. Read the Anafora
 
 #### Training Data Matrix Generation
 
-The machine learning methods require two files to operate: a data matrix and a class file.  We provide a file that utilizes a window size of 5, you can also create your own training file with different window sizes and on different subsets of training data.  To create your own training file do the following:
+The machine learning methods require two files to operate: a data matrix and a class file.  We provide a file that utilizes a window size of 5 in the "sample_files" directory, you can also create your own training file with different window sizes and on different subsets of training data.  To create your own training file do the following:
 
 > 1) Ensure all the gold standard data you want to utilize for training is in a separate directory structure than your testing data.
-> 2) Run the python Chrono.py script utilizing the -g and -t options as follows: 
+> 2) Run the python script Chrono_createMLTrainingMatrix.py script as follows (assuming your input text files and the gold standard XML files are in the same directory named "./data/my_input"): 
 
 ```bash
->> python Chrono.py -i ./data/my_training_input/ -r ./data/my_training_input/ -o ./results/my_output/ -m NB -t "my_train_matrix" -w 5
+>> python Chrono_createMLTrainingMatrix.py -i ./data/my_input/ -g ./data/my_input/ -o MLTrainingMatrix_Win5 -w 5
 ```
 
-The *-t* option should be the file name base you want your training data matrix files to be saved to, and the *-w* option is the context window size, which is 3 by default.  The output from this script are two ".csv" files that can be used as input into Chrono.
+The *-o* option should be the file name base you want your training data matrix files to be saved to, and the *-w* option is the context window size, which is 3 by default.  The output from this script are two ".csv" files that can be used as input into Chrono. 
 
 #### K-Fold Cross-Validation
 In order to thouroughly test the perfomance of a machine learning method, modify ChronoKFold.py to use the appropriate -m option and then run:
