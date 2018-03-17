@@ -40,7 +40,6 @@ from chronoML import DecisionTree as DTree
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from chronoML import SVM_classifier as SVMclass
 from Chrono import TimePhrase_to_Chrono
-from Chrono import createMLTrainingMatrix
 from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
@@ -59,8 +58,6 @@ if __name__ == "__main__":
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-x', metavar='fileExt', type=str, help='input file extension if exists. Default is and empty string', required=False, default="")
     parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
-    parser.add_argument('-g', metavar='goldStandard', type=str, help='path to the gold standard directory.', required=False, default="")
-    parser.add_argument('-t', metavar='trainML', type=str, help='A string representing the file name that triggers the training data file to be generated using the input data set in the -i option.', required=False, default=False)
     parser.add_argument('-m', metavar='MLmethod', type=str, help='The machine learning method to use. Must be one of NN (neural network), DT (decision tree), SVM (support vector machine), NB (naive bayes, default).', required=False, default='NB')
     parser.add_argument('-w', metavar='windowSize', type=str, help='An integer representing the window size for context feature extraction. Default is 3.', required=False, default=3)
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
@@ -75,7 +72,6 @@ if __name__ == "__main__":
     infiles = []
     outfiles = []
     outdirs = []
-    goldfiles = []
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
            
@@ -83,89 +79,82 @@ if __name__ == "__main__":
           infiles.append(os.path.join(root,name,name))
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
-          goldfiles.append(os.path.join(args.r,name,"period-interval.gold.csv"))
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
     
-    ## Create the training data matrix and write to a file
-    if(args.t):
-        train_data, train_class = createMLTrainingMatrix.createMLTrainingMatrix(infiles, args.r, args.x, False, args.t, int(args.w))
-        print("Completed creating ML training matrix.")
     ## Get training data for ML methods by importing pre-made boolean matrix
-    else:
-        
-        ## Train ML methods on training data
-        if(args.m == "DT" and args.M is None):
-            ## Train the decision tree classifier and save in the classifier variable
-            #print("Got DT")
-            classifier, feats = DTree.build_dt_model(args.d, args.c)
-            with open('DT_model.pkl', 'wb') as mod:  
-                pickle.dump([classifier, feats], mod)
-
-        elif(args.m == "NN" and args.M is None):
-            #print("Got NN")
-            ## Train the neural network classifier and save in the classifier variable
-            classifier = ChronoKeras.build_model(args.d, args.c)
-            feats = utils.get_features(args.d)
-            classifier.save('NN_model.h5')
+    ## Train ML methods on training data
+    if(args.m == "DT" and args.M is None):
+        ## Train the decision tree classifier and save in the classifier variable
+        #print("Got DT")
+        classifier, feats = DTree.build_dt_model(args.d, args.c)
+        with open('DT_model.pkl', 'wb') as mod:  
+            pickle.dump([classifier, feats], mod)
+    
+    elif(args.m == "NN" and args.M is None):
+        #print("Got NN")
+        ## Train the neural network classifier and save in the classifier variable
+        classifier = ChronoKeras.build_model(args.d, args.c)
+        feats = utils.get_features(args.d)
+        classifier.save('NN_model.h5')
             
-        elif(args.m == "SVM" and args.M is None):
-            #print("Got SVM")
-            ## Train the SVM classifier and save in the classifier variable
-            classifier, feats = SVMclass.build_model(args.d, args.c)
-            with open('SVM_model.pkl', 'wb') as mod:  
-                pickle.dump([classifier, feats], mod)
+    elif(args.m == "SVM" and args.M is None):
+        #print("Got SVM")
+        ## Train the SVM classifier and save in the classifier variable
+        classifier, feats = SVMclass.build_model(args.d, args.c)
+        with open('SVM_model.pkl', 'wb') as mod:  
+            pickle.dump([classifier, feats], mod)
             
-        elif(args.M is None):
-            #print("Got NB")
-            ## Train the naive bayes classifier and save in the classifier variable
-            classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
-            classifier.show_most_informative_features(20)
-            with open('NB_model.pkl', 'wb') as mod:  
-                pickle.dump([classifier, feats], mod)
+    elif(args.M is None):
+        #print("Got NB")
+        ## Train the naive bayes classifier and save in the classifier variable
+        classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
+        classifier.show_most_informative_features(20)
+        with open('NB_model.pkl', 'wb') as mod:  
+            pickle.dump([classifier, feats], mod)
                 
-        elif(args.M is not None):
-            #print("use saved model")
-            if args.m == "NB" or args.m == "DT":
-                with open(args.M, 'rb') as mod:
-                    print(args.M)
-                    classifier, feats = pickle.load(mod)
-            elif args.m == "NN":
-                classifier = load_model(args.M)
-                feats = utils.get_features(args.d)
-        
-        ## Pass the ML classifier through to the parse SUTime entities method.
+    elif(args.M is not None):
+        #print("use saved model")
+        if args.m == "NB" or args.m == "DT":
+            with open(args.M, 'rb') as mod:
+                print(args.M)
+                classifier, feats = pickle.load(mod)
+        elif args.m == "NN":
+            classifier = load_model(args.M)
+            feats = utils.get_features(args.d)
+    
+    ## Pass the ML classifier through to the parse SUTime entities method.
   
-        ## Loop through each file and parse
-        for f in range(0,len(infiles)) :
-            print("Parsing "+ infiles[f] +" ...")
-            ## Init the ChronoEntity list
-            my_chronoentities = []
-            my_chrono_ID_counter = 1
+    ## Loop through each file and parse
+    for f in range(0,len(infiles)) :
+        print("Parsing "+ infiles[f] +" ...")
+        ## Init the ChronoEntity list
+        my_chronoentities = []
+        my_chrono_ID_counter = 1
         
-            ## parse out the doctime
-            doctime = utils.getDocTime(infiles[f] + ".dct")
-            if(debug) : print(doctime)
+        ## parse out the doctime
+        doctime = utils.getDocTime(infiles[f] + ".dct")
+        if(debug) : print(doctime)
+    
+        ## parse out reference tokens
+        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
+        #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
         
-            ## parse out reference tokens
-            text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
-            #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-            my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
-            if(debug) :
-                print("REFERENCE TOKENS:\n")
-                for tok in my_refToks : print(tok)
+        if(debug) :
+            print("REFERENCE TOKENS:\n")
+            for tok in my_refToks : print(tok)
+    
+        ## mark all ref tokens if they are numeric or temporal
+        chroList = utils.markTemporal(my_refToks)
+        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+    
+        #for c in chroList:
+        #    print(c)
+    
+        chrono_master_list, my_chrono_ID_counter = TimePhrase_to_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
-            ## mark all ref tokens if they are numeric or temporal
-            chroList = utils.markTemporal(my_refToks)
-            tempPhrases = utils.getTemporalPhrases(chroList, doctime)
-        
-            #for c in chroList:
-            #    print(c)
-        
-
-            chrono_master_list, my_chrono_ID_counter = TimePhrase_to_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
-        
-            print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-            utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+        utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
     
     
