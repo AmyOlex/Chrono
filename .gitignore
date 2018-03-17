@@ -65,6 +65,4 @@ kfold_files_new.csv
 kfold_files_new_official.csv
 official_train_MLmatrix_Win3_012618_class.csv
 official_train_MLmatrix_Win3_012618_data.csv
-official_train_MLmatrix_Win5_012618_class.csv
-official_train_MLmatrix_Win5_012618_data.csv
 runit.sh
