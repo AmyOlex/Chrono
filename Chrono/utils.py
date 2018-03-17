@@ -43,7 +43,7 @@ from Chrono import temporalTest as tt
 import dateutil.parser
 import datetime
 from Chrono import TimePhrase_to_Chrono
-from Chrono import temporalEntity as tp
+from Chrono import TimePhraseEntity as tp
 import re
 import csv
 from collections import OrderedDict
@@ -415,7 +415,7 @@ def temporalTest(tok):
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
 def getTemporalPhrases(chroList, doctime):
-    #temporalEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime)
+    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime)
     id_counter = 0
     
     phrases = [] #the empty phrases list of TimePhrase entities
@@ -434,7 +434,7 @@ def getTemporalPhrases(chroList, doctime):
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
                 if inphrase:
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -442,7 +442,7 @@ def getTemporalPhrases(chroList, doctime):
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
                 if e1+1 != s2 and inphrase:
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -466,7 +466,7 @@ def getTemporalPhrases(chroList, doctime):
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
                 if inphrase:
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -475,7 +475,7 @@ def getTemporalPhrases(chroList, doctime):
                 s2,e2 = chroList[n+1].getSpan()
                 if e1+1 != s2 and inphrase:
                     print("has new line: " + str(chroList[n]))
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -488,17 +488,17 @@ def getTemporalPhrases(chroList, doctime):
                 #check to see if only a single element and element is numeric, then do not add.
                 if len(tmpPhrase) != 1:
                     #print("multi element phrase ")
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif not tmpPhrase[0].isNumeric():
                     #print("not numeric: " + str(chroList[n-1]))
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif tmpPhrase[0].isNumeric() and tmpPhrase[0].isTemporal():
                     #print("temporal and numeric: " + str(chroList[n-1]))
-                    phrases.append(createTempEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 else:
@@ -513,20 +513,20 @@ def getTemporalPhrases(chroList, doctime):
 #### 
 
 
-## Takes in a list of reference tokens identified as a temporal phrase and returns one temporalEntity.
+## Takes in a list of reference tokens identified as a temporal phrase and returns one TimePhraseEntity.
 # @author Amy Olex
 # @param items The list of reference tokesn
 # @param counter The ID this TimePhrase entity should have
 # @param doctime The document time.
 # @return A single TimePhrase entity with the text span and string concatenated.
-def createTempEntity(items, counter, doctime):
+def createTPEntity(items, counter, doctime):
     start_span, tmp = items[0].getSpan()
     tmp, end_span = items[len(items)-1].getSpan()
     text = ""
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.temporalEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
 
 ####
 #END_MODULE
