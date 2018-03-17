@@ -42,7 +42,7 @@
 ## 3) For each FILE:
 ##      a) parse with stanford parser to get whitespace tokens and associated spans
 ##      b) import this into a refToken object list
-##      c) parse with SUTime and import into a sutimeEntity list
+##      c) parse with SUTime and import into a temporalEntity list
 ##      d) Compare SUTime spans with the refToken spans to mark which refToken has temporal information.
 ##      e) Loop through refTokens to find those in the positive list of Periods and Calendar Intervals.
 ##      f) Extract out features from the reftoken once we hit a period of interval and save to a global array.
@@ -58,7 +58,7 @@ from nltk.stem.snowball import SnowballStemmer
 from copy import deepcopy
 from Chrono import chronoEntities
 from Chrono import utils
-from Chrono import sutimeEntity
+from Chrono import temporalEntity
 from Chrono import referenceToken
 
 debug = False

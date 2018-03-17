@@ -38,30 +38,30 @@
 
 import json
 
-## Class to define a SUTime entity parsed from the json output of SUTime
+## Class to define a temporalTime entity parsed from the json output of temporalTime
 # @author Amy Olex
 # @param id Unique numerical ID
-# @param text The text parsed out by SUTime
+# @param text The text parsed out by temporalTime
 # @param start_span The location of the first character
 # @param end_span The location of the last character
-# @param type The type of temporal entity parsed by SUTime.  Can be one of DATE, TIME, SET, DURATION, RANGE...I think!
-# @param value The normalized date/time value from SUTime.
-class sutimeEntity :
+# @param type The type of temporal entity parsed by temporalTime.  Can be one of DATE, TIME, SET, DURATION, RANGE...I think!
+# @param value The normalized date/time value from temporalTime.
+class temporalEntity :
     
     ## The constructor
-    def __init__(self, id, text, start_span, end_span, sutype, suvalue, doctime) :
+    def __init__(self, id, text, start_span, end_span, temptype, tempvalue, doctime) :
         self.id = id
         self.text = text
         self.start_span = start_span
         self.end_span = end_span
-        self.sutype = sutype
-        self.suvalue = suvalue
+        self.temptype = temptype
+        self.tempvalue = tempvalue
         self.doctime = doctime
       
     ## String representation    
     def __str__(self) :
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
-        return(str(self.id) + " " + str(self.text) + span_str + str(self.sutype)  + " " + str(self.suvalue) + " " + str(self.doctime))
+        return(str(self.id) + " " + str(self.text) + span_str + str(self.temptype) + " " + str(self.tempvalue) + " " + str(self.doctime))
     
 
     #### Methods to SET properties ###
@@ -84,14 +84,14 @@ class sutimeEntity :
         self.end_span = end
         
     ## Sets the entity's type
-    #  @param sutype The type of SUTime temporal expression
-    def setType(self, sutype) :
-        self.sutype = sutype
+    #  @param temptype The type of temporalTime temporal expression
+    def setType(self, temptype) :
+        self.temptype = temptype
         
-    ## Sets the entity's SUTime normalized value
-    #  @param suvalue The entities normalized SUTime value
-    def setValue(self, suvalue) :
-        self.suvalue = suvalue
+    ## Sets the entity's temporalTime normalized value
+    #  @param tempvalue The entities normalized temporalTime value
+    def setValue(self, tempvalue) :
+        self.tempvalue = tempvalue
     
     def setDoctime(self, doctime) :
         self.doctime = doctime
@@ -110,28 +110,28 @@ class sutimeEntity :
     def getSpan(self) :
         return(self.start_span, self.end_span)
         
-    ## Gets the entity's sutype
+    ## Gets the entity's temptype
     def getType(self) :
-        return(self.sutype)
+        return(self.temptype)
         
-    ## Gets the entity's suvalue
+    ## Gets the entity's tempvalue
     def getValue(self) :
-        return(self.suvalue)
+        return(self.tempvalue)
     
     ## Gets the entity's doctime
     def getDoctime(self):
         return(self.doctime)
 
-## Function to convert json output of sutime to a list of sutimeEntities
+## Function to convert json output of temporaltime to a list of temporaltimeEntities
 # @author Amy Olex
-# @param sut_json The SUTime parsed json string (required)
+# @param tempt_json The TemporalTime parsed json string (required)
 # @param id_counter The number the ID counter should start at. Default is 0.
-# @return A list of sutimeEntity objects in the same order as the input json list.
-def import_SUTime(sut_json, doctime = None, id_counter=0) :
-    su_list = []
-    for j in sut_json:
-        su_list.append(sutimeEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], sutype=j['type'], suvalue=j['value'], doctime=doctime))
+# @return A list of temporalEntity objects in the same order as the input json list.
+def import_TemporalTime(tempt_json, doctime = None, id_counter=0) :
+    temp_list = []
+    for j in tempt_json:
+        temp_list.append(temporalEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime))
         id_counter = id_counter +1
         
-    return su_list
+    return temp_list
 

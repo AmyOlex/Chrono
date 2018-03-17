@@ -82,7 +82,6 @@ The evaluation can be customized to focus on specific entities. Read the Anafora
 >> python -m anafora.evaluate -h
 ```
 
-
 #### Training Data Matrix Generation
 
 The machine learning methods require two files to operate: a data matrix and a class file.  We provide a file that utilizes a window size of 5, you can also create your own training file with different window sizes and on different subsets of training data.  To create your own training file do the following:
