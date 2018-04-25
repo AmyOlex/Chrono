@@ -38,11 +38,11 @@
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem.snowball import SnowballStemmer
-from Chrono import chronoEntities as t6
+# from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
 import dateutil.parser
-import datetime
-from Chrono import TimePhrase_to_Chrono
+# import datetime
+# from Chrono import TimePhrase_to_Chrono
 from Chrono import TimePhraseEntity as tp
 import re
 import csv
