@@ -79,13 +79,53 @@ def test_hasNoPartOfWeek():
     assert tt.hasPartOfWeek("year") == False
 
 
-
 # Season Tests
 def test_hasSeason():
     assert tt.hasSeasonOfYear("winter") == True
+
+# def test_hasCapitalSeason():
+#     assert tt.hasSeasonOfYear("Winter") == True
 
 def test_hasNoSeason():
     assert tt.hasSeasonOfYear("weekend") == False
 
 def test_hasEmptySeason():
     assert tt.hasSeasonOfYear("") == False
+
+
+# Part of Day tests
+def test_hasPartOfDay():
+    assert tt.hasPartOfDay("morning") == True
+
+def test_hasNoPartOfDay():
+    assert tt.hasPartOfDay("weekend") == False
+
+
+# Timezone tests
+def test_hasTimeZone3():
+    assert tt.hasTimeZone("EST") == True
+
+def test_hasTimeZone4():
+    assert tt.hasTimeZone("EEST") == True
+
+# def test_hasNoTimeZone():
+#     assert tt.hasTimeZone("EBST") == False
+
+def test_hasNoTimeZone():
+    assert tt.hasTimeZone("ABCD") == False
+
+
+# Temp text tests
+def test_hasTempText():
+    assert tt.hasTempText("This past week") == True
+
+def test_hasNoTempText():
+    assert tt.hasTempText("In another year") == False
+
+
+# Modifier text tests
+def test_hasModifierText():
+    assert tt.hasModifierText("Almost there now") == True
+
+def test_hasNoModifierText():
+    assert tt.hasModifierText("This time last year") == False
