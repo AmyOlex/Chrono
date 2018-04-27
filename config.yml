@@ -1,0 +1,15 @@
+# config.yml
+
+module: Chrono.temporalTest
+
+baseline: 10
+#timeout: 30
+
+exclude-modules: chronoEntities
+
+test-runner:
+  name: pytest
+  args: tests\
+
+execution-engine:
+  name: local
