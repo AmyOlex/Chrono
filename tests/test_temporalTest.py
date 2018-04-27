@@ -53,10 +53,25 @@ def test_no24HourTime():
 def test_no24HourTime2():
     assert tt.has24HourTime("I went to the store in 1986!") == False
 
+def test_no24HourTime5():
+    assert tt.has24HourTime("I went to the store in 23471!") == False
+
+def test_no24HourTime3():
+    assert tt.has24HourTime("I went to the store in 234!") == False
+
+def test_24HourTime24():
+    assert tt.has24HourTime("I went to the store in 2430!") == True
+
 
 # Date or Time tests
 def test_hasDateOrTime():
     assert tt.hasDateOrTime("1986") == True
+
+def test_hasNoDateOrTime5():
+    assert tt.hasDateOrTime("18999") == False
+
+def test_hasNoDateOrTime3():
+    assert tt.hasDateOrTime("189") == False
 
 def test_hasDateOrTimeText():
     assert tt.hasDateOrTime("nineteen eighty six") == True
@@ -69,6 +84,9 @@ def test_hasDateOrTimeEight():
 
 def test_hasNoDateOrTime():
     assert tt.hasDateOrTime("060519867") == False
+
+def test_hasDateOrTime2050():
+    assert tt.hasDateOrTime("2050") == True
 
 
 # Part of Week tests
