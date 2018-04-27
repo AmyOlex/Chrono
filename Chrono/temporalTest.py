@@ -185,7 +185,7 @@ def has24HourTime(text):
                     hour = utils.getNumberFromText(text[:2])
                     minute = utils.getNumberFromText(text[2:])
                     if (hour is not None) and (minute is not None):
-                        if (minute > 60) or (hour >= 24):
+                        if (minute >= 60) or (hour >= 24):
                             return False
                         else:
                             return True
