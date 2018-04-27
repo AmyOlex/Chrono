@@ -39,13 +39,16 @@ def test_noPeriodInterval():
 def test_hasAMPM():
     assert tt.hasAMPM("in the a.m.!") == True
 
+def test_hasAMPMSentence():
+    assert tt.hasAMPM("I am going at 10 am and 3 pm") == True
+
 def test_noAMPM():
     assert tt.hasAMPM("last 24 cupcakes") == False
 
 
 # 24 hour time tests
 def test_has24HourTime():
-    assert tt.has24HourTime("I went to the store at 2347!") == True
+    assert tt.has24HourTime("I went to the store at 2359!") == True
 
 def test_no24HourTime():
     assert tt.has24HourTime("I went to the store at 11:47pm!") == False
@@ -60,7 +63,16 @@ def test_no24HourTime3():
     assert tt.has24HourTime("I went to the store in 234!") == False
 
 def test_24HourTime24():
-    assert tt.has24HourTime("I went to the store in 2430!") == True
+    assert tt.has24HourTime("I went to the store in 2430!") == False
+
+def test_24HourTime60():
+    assert tt.has24HourTime("I went to the store in 1160!") == False
+
+def test_24HourTimeSingle():
+    assert tt.has24HourTime("0039") == True
+
+def test_24HourTimeEmpty():
+    assert tt.has24HourTime("") == False
 
 
 # Date or Time tests
@@ -82,11 +94,25 @@ def test_hasDateOrTimeSix():
 def test_hasDateOrTimeEight():
     assert tt.hasDateOrTime("06051986") == True
 
-def test_hasNoDateOrTime():
+def test_hasNoDateOrTime9():
     assert tt.hasDateOrTime("060519867") == False
 
 def test_hasDateOrTime2050():
     assert tt.hasDateOrTime("2050") == True
+
+def test_hasDateOrTimeNull():
+    assert tt.hasDateOrTime("") == False
+
+def test_hasDateOrTime2051():
+    assert tt.hasDateOrTime("2051") == False
+
+def test_hasDateOrTime1799():
+    assert tt.hasDateOrTime("1799") == False
+
+def test_hasDateOrTime1800():
+    assert tt.hasDateOrTime("1800") == True
+
+
 
 
 # Part of Week tests
@@ -101,6 +127,7 @@ def test_hasNoPartOfWeek():
 def test_hasSeason():
     assert tt.hasSeasonOfYear("winter") == True
 
+# Implement after bug fix
 # def test_hasCapitalSeason():
 #     assert tt.hasSeasonOfYear("Winter") == True
 
@@ -126,11 +153,15 @@ def test_hasTimeZone3():
 def test_hasTimeZone4():
     assert tt.hasTimeZone("EEST") == True
 
+# Implement after bug fix
 # def test_hasNoTimeZone():
 #     assert tt.hasTimeZone("EBST") == False
 
 def test_hasNoTimeZone():
     assert tt.hasTimeZone("ABCD") == False
+
+def test_hasEmptyTimeZone():
+    assert tt.hasTimeZone("") == False
 
 
 # Temp text tests
