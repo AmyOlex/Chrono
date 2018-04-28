@@ -12,8 +12,22 @@ def test_hasTextMonthFull():
 def test_hasTextMonthAbbr():
     assert tt.hasTextMonth("Jan.") == True
 
+def test_hasTextMonthPart():
+    assert tt.hasTextMonth("Ja") == False
+
+#TODO Bugfix
+# def test_hasTextMonthFull():
+#     assert tt.hasTextMonth("Januaryly") == False
+
+# TODO Bugfix
+# def test_hasTweakedTextMonthAbbr():
+#     assert tt.hasTextMonth("Jan.t") == False
+
 def test_hasNoTextMonth():
     assert tt.hasTextMonth("Cold") == False
+
+def test_hasEmptyTextMonth():
+    assert tt.hasTextMonth("") == False
 
 
 # Day of week tests
@@ -23,8 +37,15 @@ def test_hasDayOfWeekFull():
 def test_hasDayOfWeekAbbr():
     assert tt.hasDayOfWeek("Mon.") == True
 
-def test_hasNoTextMonth():
+# #TODO Bugfix
+# def test_hasTweakedTextDayAbbr():
+#     assert tt.hasDayOfWeek("Sun.t") == False
+
+def test_hasNoTextWeek():
     assert tt.hasDayOfWeek("Cold") == False
+
+def test_hasEmptyTextWeek():
+    assert tt.hasDayOfWeek("") == False
 
 
 # Period Interval tests
@@ -33,6 +54,9 @@ def test_hasPeriodInterval():
 
 def test_noPeriodInterval():
     assert tt.hasPeriodInterval("last 24 cupcakes") == False
+
+def test_emptyPeriodInterval():
+    assert tt.hasPeriodInterval("") == False
 
 
 # AMPM tests
@@ -44,6 +68,12 @@ def test_hasAMPMSentence():
 
 def test_noAMPM():
     assert tt.hasAMPM("last 24 cupcakes") == False
+
+def test_noTweakedAMPM():
+    assert tt.hasAMPM("use the pam") == False
+
+def test_emptyAMPM():
+    assert tt.hasAMPM("") == False
 
 
 # 24 hour time tests
@@ -73,6 +103,9 @@ def test_24HourTimeSingle():
 
 def test_24HourTimeEmpty():
     assert tt.has24HourTime("") == False
+
+def test_24HourTime25():
+    assert tt.has24HourTime("I went to the store in 2530!") == False
 
 
 # Date or Time tests
@@ -119,20 +152,29 @@ def test_hasDateOrTime1800():
 def test_hasPartOfWeek():
     assert tt.hasPartOfWeek("weekend") == True
 
+def test_hasTweakedPartOfWeek():
+    assert tt.hasPartOfWeek("weekender") == True
+
 def test_hasNoPartOfWeek():
     assert tt.hasPartOfWeek("year") == False
+
+def test_hasEmptyPartOfWeek():
+    assert tt.hasPartOfWeek("") == False
 
 
 # Season Tests
 def test_hasSeason():
     assert tt.hasSeasonOfYear("winter") == True
 
-# Implement after bug fix
+#TODO Implement after bug fix
 # def test_hasCapitalSeason():
 #     assert tt.hasSeasonOfYear("Winter") == True
 
 def test_hasNoSeason():
     assert tt.hasSeasonOfYear("weekend") == False
+
+def test_hasNoSeasonSentence():
+    assert tt.hasSeasonOfYear("I have fallen") == False
 
 def test_hasEmptySeason():
     assert tt.hasSeasonOfYear("") == False
@@ -145,6 +187,13 @@ def test_hasPartOfDay():
 def test_hasNoPartOfDay():
     assert tt.hasPartOfDay("weekend") == False
 
+#TODO Do we want to catch this?
+def test_hasNoTweakedPartOfDay():
+    assert tt.hasPartOfDay("Nightly") == True
+
+def test_hasEmptyPartOfDay():
+    assert tt.hasPartOfDay("") == False
+
 
 # Timezone tests
 def test_hasTimeZone3():
@@ -153,7 +202,11 @@ def test_hasTimeZone3():
 def test_hasTimeZone4():
     assert tt.hasTimeZone("EEST") == True
 
-# Implement after bug fix
+# Its getting EEST because it has EST as a substring
+def test_hasTimeZoneHADT():
+    assert tt.hasTimeZone("HADT") == True
+
+#TODO Implement after bug fix
 # def test_hasNoTimeZone():
 #     assert tt.hasTimeZone("EBST") == False
 
@@ -171,6 +224,13 @@ def test_hasTempText():
 def test_hasNoTempText():
     assert tt.hasTempText("In another year") == False
 
+#TODO Should we catch this?
+def test_hasNoTweakedTempText():
+    assert tt.hasTempText("Quarternary") == False
+
+def test_emptyTempText():
+    assert tt.hasTempText("") == False
+
 
 # Modifier text tests
 def test_hasModifierText():
@@ -178,3 +238,9 @@ def test_hasModifierText():
 
 def test_hasNoModifierText():
     assert tt.hasModifierText("This time last year") == False
+
+def test_hasTweakedModifierText():
+    assert tt.hasModifierText("I'm fiscally responsible") == False
+
+def test_hasEmptyModifierText():
+    assert tt.hasModifierText("") == False
