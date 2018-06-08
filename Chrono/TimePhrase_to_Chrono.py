@@ -2510,7 +2510,7 @@ def hasYear(tpentity, flags):
             ## look for year at start of date
             ## added by Amy Olex
             elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
-                result = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)
+                result = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text).group(0)
                 if  len(result.split("/")) == 3:
                     start_idx, end_idx = getSpan(result,re.compile("/").split(result)[0])    
                     return True, re.compile("/").split(result)[0], text_start+start_idx, text_start+end_idx, flags
