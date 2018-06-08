@@ -176,19 +176,18 @@ def has24HourTime(text):
     text_list = text_norm.split(' ')
     
 
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            if len(text) == 4:
-                num = utils.getNumberFromText(text)
-                if num is not None:
-                    hour = utils.getNumberFromText(text[:2])
-                    minute = utils.getNumberFromText(text[2:])
-                    if (hour is not None) and (minute is not None):
-                        if (minute > 60) or (hour > 24):
-                            return False
-                        else:
-                            return True
+    #loop through list looking for expression
+    for text in text_list:
+        if len(text) == 4:
+            num = utils.getNumberFromText(text)
+            if num is not None:
+                hour = utils.getNumberFromText(text[:2])
+                minute = utils.getNumberFromText(text[2:])
+                if (hour is not None) and (minute is not None):
+                    if (minute >= 60) or (hour >= 24):
+                        return False
+                    else:
+                        return True
 
     return False
     
@@ -208,23 +207,22 @@ def hasDateOrTime(text):
     text_list = text_norm.split(' ')
     
 
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            if len(text) == 4:
-                num = utils.getNumberFromText(text)
-                if (num >= 1800) and (num <= 2050):
-                    ## for 4 digit years, but not all 4 digit numbers will be temporal. I set a specific range for 4-digit years.
-                    return True
-            if len(text) == 6:
-                ## could be yymmdd or mmddyy
-                ## possible ranges for the year: 00 - 99
-                ## possible ranges for the month: 01-12
-                ## possible ranges for the day: 01-31
-                ## It will be hard to narrow down these ranges at this point without context.
+    #loop through list looking for expression
+    for text in text_list:
+        if len(text) == 4:
+            num = utils.getNumberFromText(text)
+            if (num >= 1800) and (num <= 2050):
+                ## for 4 digit years, but not all 4 digit numbers will be temporal. I set a specific range for 4-digit years.
                 return True
-            if len(text) == 8:
-                return True
+        if len(text) == 6:
+            ## could be yymmdd or mmddyy
+            ## possible ranges for the year: 00 - 99
+            ## possible ranges for the month: 01-12
+            ## possible ranges for the day: 01-31
+            ## It will be hard to narrow down these ranges at this point without context.
+            return True
+        if len(text) == 8:
+            return True
 
     return False
     
