@@ -2495,26 +2495,28 @@ def hasYear(tpentity, flags):
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
             text_start, text_end = getSpan(text_norm, text)
-
+            
             #define regular expression to find a 4-digit year from the date format
             if(re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text)):
-                if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text,re.compile("/").split(text)[2])    
-                    return True, re.compile("/").split(text)[2], text_start+start_idx, text_start+end_idx, flags
-                elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text,re.compile("-").split(text)[2])    
-                    return True, re.compile("-").split(text)[2], text_start+start_idx, text_start+end_idx, flags
+                result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})',text).group(0)
+                if  len(result.split("/")) == 3:
+                    start_idx, end_idx = getSpan(result,re.compile("/").split(result)[2])    
+                    return True, re.compile("/").split(result)[2], text_start+start_idx, text_start+end_idx, flags
+                elif len(result.split("-")) == 3:
+                    start_idx, end_idx = getSpan(result,re.compile("-").split(result)[2])    
+                    return True, re.compile("-").split(result)[2], text_start+start_idx, text_start+end_idx, flags
                 else:
                    return False, None, None, None, flags
             ## look for year at start of date
             ## added by Amy Olex
             elif(re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)):
-                if  len(text.split("/")) == 3:
-                    start_idx, end_idx = getSpan(text,re.compile("/").split(text)[0])    
-                    return True, re.compile("/").split(text)[0], text_start+start_idx, text_start+end_idx, flags
-                elif len(text.split("-")) == 3:
-                    start_idx, end_idx = getSpan(text,re.compile("-").split(text)[0])    
-                    return True, re.compile("-").split(text)[0], text_start+start_idx, text_start+end_idx, flags
+                result = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text).group(0)
+                if  len(result.split("/")) == 3:
+                    start_idx, end_idx = getSpan(result,re.compile("/").split(result)[0])    
+                    return True, re.compile("/").split(result)[0], text_start+start_idx, text_start+end_idx, flags
+                elif len(result.split("-")) == 3:
+                    start_idx, end_idx = getSpan(result,re.compile("-").split(result)[0])    
+                    return True, re.compile("-").split(result)[0], text_start+start_idx, text_start+end_idx, flags
                 else:
                    return False, None, None, None, flags
             ## special case to look for c.yyyy
