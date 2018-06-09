@@ -2719,7 +2719,7 @@ def hasTimeString(tpentity):
 ####
 
 ## Takes in a single text string and identifies if it has a hour of a day
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasHourOfDay(tpentity):
@@ -2735,14 +2735,11 @@ def hasHourOfDay(tpentity):
         for text in text_list:
             #define regular expression to find a numeric hour
             if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                if len(text.split(":")) == 3:
+                if len(text.split(":")) == 2 OR len(text.split(":")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[0]) 
                     return True, re.compile(":").split(text)[0], start_idx, end_idx                    
                 else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return fa
-
-
-                    # lse
+                    return False, None, None, None #if no 2 digit hour expressions were found return false
 
         return False, None, None, None #if no 2 digit hour expressions were found return false            
     else:
@@ -2770,7 +2767,7 @@ def hasMinuteOfHour(tpentity):
         for text in text_list:
             #define regular expression to find a 2-digit minute
             if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                if len(text.split(":")) == 3:
+                if len(text.split(":")) == 2 OR len(text.split(":")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[1]) 
                     return True, re.compile(":").split(text)[1], start_idx, end_idx                    
                 else:
