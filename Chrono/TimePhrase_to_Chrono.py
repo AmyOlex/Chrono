@@ -2734,8 +2734,9 @@ def hasHourOfDay(tpentity):
         #loop through list looking for expression
         for text in text_list:
             #define regular expression to find a numeric hour
-            match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
-            if(match):  #checks for HH:MM:SS String
+            
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
                 if len(match.split(":")) == 2 or len(match.split(":")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[0]) 
                     return True, re.compile(":").split(match)[0], start_idx, end_idx                    
@@ -2767,8 +2768,9 @@ def hasMinuteOfHour(tpentity):
         #loop through list looking for expression
         for text in text_list:
             #define regular expression to find a 2-digit minute
-            match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
-            if(match):  #checks for HH:MM:SS String
+            
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
                 if len(match.split(":")) == 2 or len(match.split(":")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[1]) 
                     return True, re.compile(":").split(match)[1], start_idx, end_idx                    
@@ -2800,8 +2802,9 @@ def hasSecondOfMinute(tpentity):
         #loop through list looking for expression
         for text in text_list:
             #define regular expression to find a 2-digit minute
-            match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
-            if(match):  #checks for HH:MM:SS String
+            
+            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
                 if len(match.split(":")) == 3:
                     start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[2]) 
                     return True, re.compile(":").split(match)[2], start_idx, end_idx                    
