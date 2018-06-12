@@ -2054,31 +2054,17 @@ def hasAMPM(tpentity):
     #convert to list
     text_list = text_norm.split(" ")
     
-    #define my day lists
-    am = ["AM","am","A.M.","AM.","a.m.","am."]
-    pm = ["PM","pm","P.M.","p.m.","pm.","PM."]
-    
-    ampm = am+pm
-    
-    #figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(ampm))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        #test if the intersect list contains which days.
-        if len(list(set(intersect) & set (am))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (am))[0])
-            return True, "AM", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (pm))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (pm))[0])
-            return True, "PM", start_idx, end_idx
-       
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
+    if len(text_list) > 0:
+        for text in text_list:
+            if(re.search('AM|A\.M\.|am|a\.m\.',text)):
+                match = re.search('AM|A\.M\.|am|a\.m\.',text).group(0)
+                start_idx, end_idx = getSpan(text_norm, match) 
+                return True, "AM", start_idx, end_idx
+            elif(re.search('PM|P\.M\.|pm|p\.m\.',text)):
+                match = re.search('PM|P\.M\.|pm|p\.m\.',text).group(0)
+                start_idx, end_idx = getSpan(text_norm, match)      
+                return True, "PM", start_idx, end_idx
+    return False, None, None, None
     
 ####
 #END_MODULE
