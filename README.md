@@ -6,7 +6,7 @@ output:
 
 # Chrono - Parsing Time Normalizations into the SCATE Schema
 
-### Amy Olex, Luke Maffey, Nicholas Morton, and Bridget McInnes
+### Amy Olex, Luke Maffey, Nicholas Morton, and Bridget McInnes FORKING TEST
 
 ---
 
