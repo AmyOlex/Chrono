@@ -161,7 +161,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     #print("in Build Subintervals") 
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
-        print(chrono_list[e].get_id())
+        #print(chrono_list[e].get_id())
         e_type = chrono_list[e].get_type()
         #print("E-type: " + e_type)
         
@@ -290,14 +290,30 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[dayweek].set_sub_interval(chrono_list[daypart].get_id())
     if day is not None and daypart is not None and hour is None:
         chrono_list[day].set_sub_interval(chrono_list[daypart].get_id())
+    if nth is not None and period is not None:
+        # print("Adding period sub-interval")
+        chrono_list[nth].set_period(chrono_list[period].get_id())
+    elif nth is not None and interval is not None:
+        # print("Adding interval sub-interval")
+        chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
     
+    reindex = False
     if ampm is not None and hour is not None:
         chrono_list[hour].set_ampm(chrono_list[ampm].get_id())
     elif ampm is not None and hour is None:
         # Delete the AMPM entity if not hour associated with it.
         print("Deleting AMPM")
         del chrono_list[ampm]
+        reindex = True
     
+    if reindex:
+        for e in range(0,len(chrono_list)):
+            #print(chrono_list[e].get_id())
+            e_type = chrono_list[e].get_type()
+            if e_type == "Time-Zone":
+                print("Reindexing Time Zone Value: " + str(chrono_list[e]))
+                tz = e
+        
     if tz is not None and hour is not None:
         chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
     elif tz is not None and hour is None:
@@ -305,12 +321,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         print("Deleting TimeZone")
         del chrono_list[tz]
     
-    if nth is not None and period is not None:
-        # print("Adding period sub-interval")
-        chrono_list[nth].set_period(chrono_list[period].get_id())
-    elif nth is not None and interval is not None:
-        # print("Adding interval sub-interval")
-        chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
+    
     ##### Notes: This next bit is complicated.  If I include it I remove some False Positives, but I also create some False Negatives.
     ##### I think more complex parsing is needed here to figure out if the ordinal is an NthFromStart or not.  
     ##### I think implementing a machine learning method here may help.
