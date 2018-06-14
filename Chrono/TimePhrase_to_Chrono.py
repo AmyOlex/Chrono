@@ -73,7 +73,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in TimePhraseList:
-        #print(s)
+        print(s)
         chrono_tmp_list = []
         
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
@@ -161,7 +161,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     #print("in Build Subintervals") 
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
-        #print(chrono_list[e].get_id())
+        print(chrono_list[e].get_id())
         e_type = chrono_list[e].get_type()
         #print("E-type: " + e_type)
         
@@ -193,8 +193,10 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
             # print("FOUND Mod")
             mod = e
         elif e_type == "Time-Zone":
+            print("Time Zone Value: " + str(chrono_list[e]))
             tz = e
         elif e_type == "AMPM-Of-Day":
+            print("AMPM Value: " + str(chrono_list[e]))
             ampm = e
         
     ## Now identify all NEXT and LAST entities
@@ -274,7 +276,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     if second is not None and minute is not None:
         chrono_list[minute].set_sub_interval(chrono_list[second].get_id())
     if minute is not None and hour is not None:
-        print("Linking entities " + str(minute) + " and " + str(hour))
+        #print("Linking entities " + str(minute) + " and " + str(hour))
         chrono_list[hour].set_sub_interval(chrono_list[minute].get_id())
     if hour is not None and day is not None:
         chrono_list[day].set_sub_interval(chrono_list[hour].get_id())
@@ -293,12 +295,14 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[hour].set_ampm(chrono_list[ampm].get_id())
     elif ampm is not None and hour is None:
         # Delete the AMPM entity if not hour associated with it.
+        print("Deleting AMPM")
         del chrono_list[ampm]
     
     if tz is not None and hour is not None:
         chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
     elif tz is not None and hour is None:
         # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
+        print("Deleting TimeZone")
         del chrono_list[tz]
     
     if nth is not None and period is not None:
