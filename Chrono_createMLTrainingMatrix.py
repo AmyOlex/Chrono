@@ -113,8 +113,12 @@ def createMLTrainingMatrix(infiles, gold_folder, ext="", save = False, output = 
         
         
         ## import gold standard data
-        gold_file = os.path.join(gold_folder + os.path.split(infiles[f])[1],"period-interval.gold.csv")
+        gold_file = os.path.join(gold_folder,os.path.split(infiles[f])[1],"period-interval.gold.csv")
         gold_list=[]
+
+        if not os.path.exists(gold_file):
+            print(gold_file + " DOES NOT EXISTS")
+            break
          
         if os.path.exists(gold_file):
             if(save):
@@ -341,7 +345,9 @@ if __name__ == "__main__":
           goldfiles.append(os.path.join(args.g,name,"period-interval.gold.csv"))
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
-    
+          if not os.path.exists(os.path.join(args.i,name)):
+              print(str(os.path.join(args.i,name)) + " DOES NOT EXISTS")
+              break    
     ## Create the training data matrix and write to a file
     train_data, train_class = createMLTrainingMatrix(infiles, args.g, args.x, False, args.o, int(args.w))
     print("Completed creating ML training matrix files.")   
