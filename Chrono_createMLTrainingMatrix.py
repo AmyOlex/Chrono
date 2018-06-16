@@ -343,8 +343,8 @@ if __name__ == "__main__":
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
           goldfiles.append(os.path.join(args.g,name,"period-interval.gold.csv"))
-          if not os.path.exists(os.path.join(args.o,name)):
-              os.makedirs(os.path.join(args.o,name))
+          #if not os.path.exists(os.path.join(args.o,name)):
+          #    os.makedirs(os.path.join(args.o,name))
           if not os.path.exists(os.path.join(args.i,name)):
               print(str(os.path.join(args.i,name)) + " DOES NOT EXISTS")
               break    
