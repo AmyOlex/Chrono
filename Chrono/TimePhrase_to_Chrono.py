@@ -73,7 +73,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in TimePhraseList:
-        #print(s)
+        print(s)
         chrono_tmp_list = []
         
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
@@ -105,7 +105,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         
         chrono_tmp_list, chrono_id = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
-        chrono_tmp_list, chrono_id = buildAMPM(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         chrono_tmp_list, chrono_id = buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
@@ -156,7 +156,9 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     nth = None
     mod = None
     tz = None
-    
+    ampm = None
+   
+    #print("in Build Subintervals") 
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
         #print(chrono_list[e].get_id())
@@ -191,7 +193,11 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
             # print("FOUND Mod")
             mod = e
         elif e_type == "Time-Zone":
+            print("Time Zone Value: " + str(chrono_list[e]))
             tz = e
+        elif e_type == "AMPM-Of-Day":
+            print("AMPM Value: " + str(chrono_list[e]))
+            ampm = e
         
     ## Now identify all NEXT and LAST entities
     ## Need to edit to figure out if a modifier word exists first, then test for year, etc.
@@ -270,6 +276,7 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
     if second is not None and minute is not None:
         chrono_list[minute].set_sub_interval(chrono_list[second].get_id())
     if minute is not None and hour is not None:
+        #print("Linking entities " + str(minute) + " and " + str(hour))
         chrono_list[hour].set_sub_interval(chrono_list[minute].get_id())
     if hour is not None and day is not None:
         chrono_list[day].set_sub_interval(chrono_list[hour].get_id())
@@ -283,19 +290,38 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[dayweek].set_sub_interval(chrono_list[daypart].get_id())
     if day is not None and daypart is not None and hour is None:
         chrono_list[day].set_sub_interval(chrono_list[daypart].get_id())
-
-    if tz is not None and hour is not None:
-        chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
-    elif tz is not None and hour is None:
-        # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
-        del chrono_list[tz]
-    
     if nth is not None and period is not None:
         # print("Adding period sub-interval")
         chrono_list[nth].set_period(chrono_list[period].get_id())
     elif nth is not None and interval is not None:
         # print("Adding interval sub-interval")
         chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
+    
+    reindex = False
+    if ampm is not None and hour is not None:
+        chrono_list[hour].set_ampm(chrono_list[ampm].get_id())
+    elif ampm is not None and hour is None:
+        # Delete the AMPM entity if not hour associated with it.
+        print("Deleting AMPM")
+        del chrono_list[ampm]
+        reindex = True
+    
+    if reindex:
+        for e in range(0,len(chrono_list)):
+            #print(chrono_list[e].get_id())
+            e_type = chrono_list[e].get_type()
+            if e_type == "Time-Zone":
+                print("Reindexing Time Zone Value: " + str(chrono_list[e]))
+                tz = e
+        
+    if tz is not None and hour is not None:
+        chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
+    elif tz is not None and hour is None:
+        # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
+        print("Deleting TimeZone")
+        del chrono_list[tz]
+    
+    
     ##### Notes: This next bit is complicated.  If I include it I remove some False Positives, but I also create some False Negatives.
     ##### I think more complex parsing is needed here to figure out if the ordinal is an NthFromStart or not.  
     ##### I think implementing a machine learning method here may help.
@@ -667,6 +693,7 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
                 #Check for Hour in same element
                 bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
                 if bHour and not flags["hour"]:
+                    #print("Found Hour in Year")
                     flags["hour"] = True
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
@@ -759,6 +786,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
                 #Check for Hour in same element
                 bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
                 if bHour and not flags["hour"]:
+                    #print("Found Hour in 2-digit year")
                     flags["hour"] = True
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
@@ -866,6 +894,7 @@ def buildChronoDayOfMonth(s, chrono_id, chrono_list, flags):
 def buildChronoHourOfDay(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasHourOfDay(s)
     if b and not flags["hour"]:
+        #print("Found Hour in buildChronoHour")
         flags["hour"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
@@ -1232,7 +1261,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildAMPM(s, chrono_id, chrono_list):
+def buildAMPM(s, chrono_id, chrono_list, flags):
     am_flag = True
     ref_Sspan, ref_Espan = s.getSpan()
     ## Identify if a time zone string exists
@@ -1247,41 +1276,27 @@ def buildAMPM(s, chrono_id, chrono_list):
     boo, val, idxstart, idxend = hasAMPM(s)
     if boo:
         if val == "PM":
-            abs_Sspan = ref_Sspan + idxstart
-            abs_Espan = ref_Sspan + idxend
-            my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                          end_span=abs_Espan, ampm_type=val)
-            chrono_id = chrono_id + 1
-            chrono_list.append(my_AMPM_entity)
             am_flag = False
+
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, ampm_type=val)
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_AMPM_entity)
 
         #check to see if it has a time associated with it.  We assume the time comes before the AMPM string
         #We could parse out the time from the TimePhrase normalized value.  The problem is getting the correct span.
         #idx_start is the first index of the ampm.  If there are any characters before it, it will be greater than 0.
-        if idxstart > 0:
+        if idxstart > 0 and not flags['hour']:
             substr = s.getText()[0:idxstart]
             m = re.search('([0-9]{1,2})', substr)
             if m is not None :
-                if am_flag:
-                    abs_Sspan = ref_Sspan + idxstart
-                    abs_Espan = ref_Sspan + idxend
-                    my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                                  end_span=abs_Espan, ampm_type=val)
-                    chrono_id = chrono_id + 1
-                    chrono_list.append(my_AMPM_entity)
-
                 hour_val = m.group(0)
                 abs_Sspan = ref_Sspan + m.span(0)[0]
                 abs_Espan = ref_Sspan + m.span(0)[1]
-            
+                #print("Adding Hour in AMPM")
                 my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=hour_val, ampm=my_AMPM_entity.get_id())
-                 
                 chrono_id = chrono_id + 1
-                 
-                # if my_tz_entity is not None:
-                #     my_hour_entity.set_time_zone(my_tz_entity.get_id())
-            
-                #add the hour entity to the list
                 chrono_list.append(my_hour_entity)
             
             #else search for a text number
@@ -1289,21 +1304,11 @@ def buildAMPM(s, chrono_id, chrono_list):
                 texNumVal = utils.getNumberFromText(substr)
                 
                 if texNumVal is not None:
-                    if am_flag:
-                        abs_Sspan = ref_Sspan + idxstart
-                        abs_Espan = ref_Sspan + idxend
-                        my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity",
-                                                                      start_span=abs_Sspan,
-                                                                      end_span=abs_Espan, ampm_type=val)
-                        chrono_id = chrono_id + 1
-                        chrono_list.append(my_AMPM_entity)
                     #create the hour entity
-                    my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal, ampm=my_AMPM_entity.get_id())
-                    chrono_id = chrono_id + 1
-                    # if my_tz_entity is not None:
-                    #     my_hour_entity.set_time_zone(my_tz_entity.get_id())
-                    #append to list
-                    chrono_list.append(my_hour_entity)
+                    if not flags['hour']:
+                        my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal, ampm=my_AMPM_entity.get_id())
+                        chrono_id = chrono_id + 1
+                        chrono_list.append(my_hour_entity)
 
 
     return chrono_list, chrono_id
@@ -2064,31 +2069,17 @@ def hasAMPM(tpentity):
     #convert to list
     text_list = text_norm.split(" ")
     
-    #define my day lists
-    am = ["AM","am","A.M.","AM.","a.m.","am."]
-    pm = ["PM","pm","P.M.","p.m.","pm.","PM."]
-    
-    ampm = am+pm
-    
-    #figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(ampm))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        #test if the intersect list contains which days.
-        if len(list(set(intersect) & set (am))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (am))[0])
-            return True, "AM", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (pm))) == 1:
-            start_idx, end_idx = getSpan(text_norm, list(set(intersect) & set (pm))[0])
-            return True, "PM", start_idx, end_idx
-       
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
+    if len(text_list) > 0:
+        for text in text_list:
+            if(re.search('AM|A\.M\.|am|a\.m\.',text)):
+                match = re.search('AM|A\.M\.|am|a\.m\.',text).group(0)
+                start_idx, end_idx = getSpan(text_norm, match) 
+                return True, "AM", start_idx, end_idx
+            elif(re.search('PM|P\.M\.|pm|p\.m\.',text)):
+                match = re.search('PM|P\.M\.|pm|p\.m\.',text).group(0)
+                start_idx, end_idx = getSpan(text_norm, match)      
+                return True, "PM", start_idx, end_idx
+    return False, None, None, None
     
 ####
 #END_MODULE
@@ -2718,7 +2709,7 @@ def hasTimeString(tpentity):
 ####
 
 ## Takes in a single text string and identifies if it has a hour of a day
-# @author Nicholas Morton
+# @author Nicholas Morton and Amy Olex
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasHourOfDay(tpentity):
@@ -2733,15 +2724,14 @@ def hasHourOfDay(tpentity):
         #loop through list looking for expression
         for text in text_list:
             #define regular expression to find a numeric hour
+            
             if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                if len(text.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[0]) 
-                    return True, re.compile(":").split(text)[0], start_idx, end_idx                    
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
+                if len(match.split(":")) == 2 or len(match.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[0]) 
+                    return True, re.compile(":").split(match)[0], start_idx, end_idx                    
                 else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return fa
-
-
-                    # lse
+                    return False, None, None, None #if no 2 digit hour expressions were found return false
 
         return False, None, None, None #if no 2 digit hour expressions were found return false            
     else:
@@ -2768,10 +2758,12 @@ def hasMinuteOfHour(tpentity):
         #loop through list looking for expression
         for text in text_list:
             #define regular expression to find a 2-digit minute
+            
             if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                if len(text.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[1]) 
-                    return True, re.compile(":").split(text)[1], start_idx, end_idx                    
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
+                if len(match.split(":")) == 2 or len(match.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[1]) 
+                    return True, re.compile(":").split(match)[1], start_idx, end_idx                    
                 else:
                     return False, None, None, None #if no 2 digit hour expressions were found return false
 
@@ -2800,10 +2792,12 @@ def hasSecondOfMinute(tpentity):
         #loop through list looking for expression
         for text in text_list:
             #define regular expression to find a 2-digit minute
+            
             if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                if len(text.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[2]) 
-                    return True, re.compile(":").split(text)[2], start_idx, end_idx                    
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
+                if len(match.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[2]) 
+                    return True, re.compile(":").split(match)[2], start_idx, end_idx                    
                 else:
                     return False, None, None, None #if no 2 digit hour expressions were found return false
 

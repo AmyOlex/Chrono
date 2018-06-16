@@ -149,8 +149,8 @@ if __name__ == "__main__":
         chroList = utils.markTemporal(my_refToks)
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
     
-        #for c in chroList:
-        #    print(c)
+#        for c in tempPhrases:
+#            print(c)
     
         chrono_master_list, my_chrono_ID_counter = TimePhrase_to_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
