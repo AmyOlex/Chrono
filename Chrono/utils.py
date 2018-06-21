@@ -62,6 +62,9 @@ import copy
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
+    ## Testing the replacement of all "=" signs by spaces before tokenizing.
+    text = text.translate(str.maketrans("=", ' ')).strip()
+    
     span_generator = WhitespaceTokenizer().span_tokenize(text)
     spans = [span for span in span_generator]
     tokenized_text = WhitespaceTokenizer().tokenize(text)
