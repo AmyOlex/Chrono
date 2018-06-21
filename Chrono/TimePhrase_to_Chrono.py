@@ -104,7 +104,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id, chrono_time_flags = build24HourTime(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         
         chrono_tmp_list, chrono_id = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, chrono_time_flags, dct, ref_list)
         chrono_tmp_list, chrono_id = buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         chrono_tmp_list, chrono_id = buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
@@ -531,12 +531,13 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
         
             num = utils.getNumberFromText(text)
             if num is not None:
-                if  (num >= 1500) and (num <= 2050):
+                if  (num >= 1500) and (num <= 2050) and not flags["fourdigityear"] and not flags["loneDigitYear"]:
                     flags["loneDigitYear"] = True  
                     # print("Found Lone Digit Year")  
                     ## build year
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     start_idx, end_idx = re.search(text, s.getText()).span(0)
+                    print("Adding a Year: " + str(num))
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+start_idx, end_span=ref_StartSpan+end_idx, value=num)
                     chrono_id = chrono_id + 1
                     chrono_list.append(chrono_year_entity)
@@ -551,6 +552,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                 if  (y >= 1500) and (y <= 2050) and (m <= 12) and (d <= 31):   
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     #add year
+                    print("Adding a Year: " + str(y))
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+4, value=y)
                     chrono_id = chrono_id + 1
                     #add month
@@ -574,6 +576,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                         if  (y2 >= 1500) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             #add year
+                            print("Adding a Year: " + str(y2))
                             chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+8, value=y)
                             chrono_id = chrono_id + 1
                             #add month
@@ -664,6 +667,7 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        print("Adding a Year: " + str(text))
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))
         chrono_id = chrono_id + 1
         flags["fourdigityear"] = True
@@ -1085,7 +1089,7 @@ def buildTextYear(s, chrono_id, chrono_list):
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
-
+        print("Adding a Year in buildTextYear " + str(val))
         my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(my_year_entity)
@@ -1128,9 +1132,10 @@ def isTextYear(tpentity):
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 # ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
 #        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
-def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
+def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=None):
     boo, val, idxstart, idxend = hasTextMonth(s, ref_list)
-    if boo:
+    if boo and not flags["month"]:
+        flags["month"] = True
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
@@ -1163,7 +1168,8 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
 
             num = utils.getNumberFromText(substr)
             if num is not None:
-                if num <= 31:
+                if num <= 31 and not flags["day"]:
+                    flags["day"] = True
                     day_startidx, day_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
@@ -1183,10 +1189,12 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                         elif this_dct < dct:
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
-                elif num >=1000 and num <=2100:
+                elif num >=1500 and num <=2050 and not flags["fourdigityear"] and not flags["loneDigitYear"]:
+                    flags["fourdigityear"] = True
                     year_startidx, year_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + year_startidx
                     abs_Espan = ref_Sspan + year_endidx
+                    print("Adding a Year in buildTextMonthAndDay1: " + str(num))
                     my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                     chrono_list.append(my_year_entity)
                     my_year_entity.set_sub_interval(my_month_entity.get_id())
@@ -1220,10 +1228,12 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                                 elif this_dct < dct:
                                     chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                                     chrono_id = chrono_id + 1
-                        elif num >=1000 and num <=2100:
+                        elif num >=1500 and num <=2050 and not flags["fourdigityear"] and not flags["loneDigitYear"]:
+                            flags["fourdigityear"] = True
                             year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
                             abs_Sspan = ref_Sspan + year_startidx
                             abs_Espan = ref_Sspan + year_endidx
+                            print("Adding a Year buildTextMonthAndDay2: " + str(num))
                             my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                             chrono_list.append(my_year_entity)
                             my_year_entity.set_sub_interval(my_month_entity.get_id())
@@ -1250,7 +1260,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
         chrono_list.append(my_month_entity)
     
         
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
