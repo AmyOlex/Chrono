@@ -1099,7 +1099,7 @@ def isTextYear(tpentity):
     text = text1.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #make sure it is all letters
     m = re.search('[a-z,A-Z,-,\s]*', text)
-    if m[0] is not '':
+    if m.group(0) is not '':
         ##split on spaces
         tokenized_text = WhitespaceTokenizer().tokenize(text)
         for t in tokenized_text:
