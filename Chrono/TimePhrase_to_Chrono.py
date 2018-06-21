@@ -661,13 +661,12 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
 
 def buildChronoYear(s, chrono_id, chrono_list, flags):
-
+    
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
-        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
-        print("Adding a Year: " + str(text))
+        abs_EndSpan = ref_StartSpan + endSpan
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))
         chrono_id = chrono_id + 1
         flags["fourdigityear"] = True
@@ -1089,7 +1088,6 @@ def buildTextYear(s, chrono_id, chrono_list):
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
-        print("Adding a Year in buildTextYear " + str(val))
         my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(my_year_entity)
@@ -1133,8 +1131,10 @@ def isTextYear(tpentity):
 # ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
 #        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
 def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=None):
+    print("In TextMonthAndDay")
     boo, val, idxstart, idxend = hasTextMonth(s, ref_list)
     if boo and not flags["month"]:
+        print("Found a Month!")
         flags["month"] = True
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -1194,7 +1194,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                     year_startidx, year_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + year_startidx
                     abs_Espan = ref_Sspan + year_endidx
-                    print("Adding a Year in buildTextMonthAndDay1: " + str(num))
+                    
                     my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                     chrono_list.append(my_year_entity)
                     my_year_entity.set_sub_interval(my_month_entity.get_id())
@@ -1233,7 +1233,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                             year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
                             abs_Sspan = ref_Sspan + year_startidx
                             abs_Espan = ref_Sspan + year_endidx
-                            print("Adding a Year buildTextMonthAndDay2: " + str(num))
+                            
                             my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                             chrono_list.append(my_year_entity)
                             my_year_entity.set_sub_interval(my_month_entity.get_id())
@@ -2056,6 +2056,52 @@ def hasTextMonth(tpentity, ref_list):
                     elif answer2 in ["dec."]:
                         return True, "December", start_idx, end_idx
     
+    
+    #run for abbr month without punctuation
+    abbr_month = ["jan","feb","mar","apr","jun","jul","aug","sept","sep","oct","nov","dec"]
+    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
+    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' '*len(adj_punc))).strip()
+    #convert to list
+    text_list2 = text_norm2.split(" ")
+    
+    t_flag = False
+    for tok in text_list2:
+        answer = next((m for m in abbr_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in abbr_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["jan"]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["feb"]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["mar"]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["apr"]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["jun"]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["jul"]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["aug"]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["sept", "sep"]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["oct"]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["nov"]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["dec"]:
+                        return True, "December", start_idx, end_idx
+    
+    
     return False, None, None, None
 
     
@@ -2484,7 +2530,6 @@ def has24HourTime(tpentity, flags):
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasYear(tpentity, flags):
-    
     text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
@@ -2496,14 +2541,15 @@ def hasYear(tpentity, flags):
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
             text_start, text_end = getSpan(text_norm, text)
-
+            
             result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})', text)
+            
             #define regular expression to find a 4-digit year from the date format
             if result :
                 result = result.group(0)
-                split_result = re.split("/-:", result)
+                split_result = re.split('[/:-]', result)
                 if len(split_result) == 3:
-                    start_idx, end_idx = getSpan(result,split_result[2])
+                    start_idx, end_idx = getSpan(text,split_result[2])
                     return True, split_result[2], text_start+start_idx, text_start+end_idx, flags
                 else:
                    return False, None, None, None, flags
@@ -2513,7 +2559,7 @@ def hasYear(tpentity, flags):
                 result = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)
                 if result :
                     result = result.group(0)
-                    split_result = re.split("/-:", result)
+                    split_result = re.split('[/:-]', result)
                     if len(split_result) == 3:
                         start_idx, end_idx = getSpan(result, split_result[0])
                         return True, split_result[0], text_start + start_idx, text_start + end_idx, flags
