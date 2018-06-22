@@ -2290,7 +2290,7 @@ def hasPartOfDay(tpentity):
             return True, "Morning", start_idx, end_idx
         if term == "dawn":
             return True, "Dawn", start_idx, end_idx
-        elif term == "evening" or term == "dusk" or term == "evenings":
+        elif term == "evening" or term == "dusk" or term == "evenings" or term == "eve":
             return True, "Evening", start_idx, end_idx
         elif term == "afternoon" or term == "afternoons":
             return True, "Afternoon", start_idx, end_idx 
@@ -2299,11 +2299,9 @@ def hasPartOfDay(tpentity):
         elif term == "noon":
             return True, "Noon", start_idx, end_idx
         elif term == "bedtime":
-            return True, "Bedtime", start_idx, end_idx
+            return True, "Unknown", start_idx, end_idx
         elif term == "midnight":
             return True, "Midnight", start_idx, end_idx
-        elif term == "eve":
-            return True, "Eve", start_idx, end_idx
         elif term == "night" or term == "overnight" or term == "tonight":
             m = re.search("night", text_norm)
             sidx = m.span(0)[0]
