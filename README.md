@@ -36,7 +36,8 @@ Installation has been tested on Mac OSX, Linux, and Windows 10 platforms.
 
  - Download or clone this git repo to your computer.  If using Git and SSH you can type ">> git clone git@github.com:AmyOlex/Chrono.git" into your terminal.
 
- - Run ```bash
+ - Run
+```bash
 >> python setup.py install
 ```
 
