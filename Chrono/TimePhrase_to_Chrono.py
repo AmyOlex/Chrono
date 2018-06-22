@@ -2275,7 +2275,7 @@ def hasPartOfDay(tpentity):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon"]
+    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon", "bedtime","midnight","eve"]
     
     #figure out if any of the tokens in the text_list are also in the ampm list
     intersect = list(set(text_list) & set(partofday))
@@ -2297,7 +2297,13 @@ def hasPartOfDay(tpentity):
         elif term == "nights":
             return True, "Night", start_idx, end_idx
         elif term == "noon":
-            return True, "Noon", start_idx, end_idx  
+            return True, "Noon", start_idx, end_idx
+        elif term == "bedtime":
+            return True, "bedtime", start_idx, end_idx
+        elif term == "midnight":
+            return True, "midnight", start_idx, end_idx
+        elif term == "eve":
+            return True, "eve", start_idx, end_idx
         elif term == "night" or term == "overnight" or term == "tonight":
             m = re.search("night", text_norm)
             sidx = m.span(0)[0]
