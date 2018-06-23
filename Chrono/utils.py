@@ -211,7 +211,14 @@ def isOrdinal(text):
 # @author Amy Olex  
 # @param text The text string to be converted to an integer.
 def getMonthNumber(text):
-    month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12}
+    month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12,
+                  'JANUARY':1, 'FEBRUARY':2, 'MARCH':3, 'APRIL':4, 'MAY':5, 'JUNE':6, 'JULY':7, 'AUGUST':8, 'SEPTEMBER':9, 'OCTOBER':10,'NOVEMBER':11, 'DECEMBER':12, 
+                  'january':1, 'february':2, 'march':3, 'april':4, 'june':6, 'july':7, 'august':8, 'september':9, 'october':10,'november':11, 'december':12,
+                  'Jan':1, 'Feb':2, 'Mar':3, 'Apr':4, 'Jun':6, 'Jul':7, 'Aug':8, 'Sept':9, 'Sep':9, 'Oct':10,'Nov':11, 'Dec':12,
+                  'jan':1, 'feb':2, 'mar':3, 'apr':4, 'jun':6, 'jul':7, 'aug':8, 'sept':9, 'sep':9, 'oct':10,'nov':11, 'dec':12,
+                  'JAN':1, 'FEB':2, 'MAR':3, 'APR':4, 'JUN':6, 'JUL':7, 'AUG':8, 'SEPT':9, 'SEP':9, 'OCT':10,'NOV':11, 'DEC':12,
+                  '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, '11':11, '12':12,
+                  '01':1, '02':2, '03':3, '04':4, '05':5, '06':6, '07':7, '08':8, '09':9, '10':10, '11':11, '12':12}
     return month_dict[text]
    
 ## Function to determine if the input span overlaps this objects span

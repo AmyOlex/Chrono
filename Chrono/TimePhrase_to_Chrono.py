@@ -580,7 +580,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                             chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+8, value=y)
                             chrono_id = chrono_id + 1
                             #add month
-                            chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m])
+                            chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m2])
                             chrono_id = chrono_id + 1
                             chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
                             #add day
@@ -678,8 +678,9 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
-            if(int(textMonth) <= 12):
-                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])
+            m = utils.getMonthNumber(textMonth)
+            if(m <= 12):
+                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[m])
                 chrono_id = chrono_id + 1
                 chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
 
@@ -771,8 +772,9 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
-            if(int(textMonth) <= 12):
-                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])
+            m = utils.getMonthNumber(textMonth)
+            if(m <= 12):
+                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[m])
                 chrono_id = chrono_id + 1
                 chrono_2_digit_year_entity.set_sub_interval(chrono_month_entity.get_id())
 
@@ -856,7 +858,7 @@ def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
         if(int(text) <= 12):
-            chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[int(text)])
+            chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[utils.getMonthNumber(text)])
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
                          
@@ -2629,9 +2631,10 @@ def has2DigitYear(tpentity):
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasMonthOfYear(tpentity):
 
-    text_lower = tpentity.getText().lower() 
+    #text_lower = tpentity.getText().lower() 
+    thisText = tpentity.getText()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", " "))
+    text_norm = thisText.translate(str.maketrans(",", " "))
     #convert to list
     text_list = text_norm.split(" ")
 
