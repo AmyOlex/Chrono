@@ -1172,7 +1172,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
             if num is not None:
                 if num <= 31 and not flags["day"]:
                     flags["day"] = True
-                    day_startidx, day_endidx = getSpan(s.getText(), substr)
+                    day_startidx, day_endidx = getSpan(s.getText(), str(num))#substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
                     my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
@@ -2709,8 +2709,17 @@ def hasDayOfMonth(tpentity):
             elif(twodigitstart):
                 #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
                 #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                #check to see if the middle is text, if yes then treat the first 2 digits as a day
+                if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12):
+                    # if the second entity is all characters and is a valid text month get the first number as the day
+                    if int(twodigitstart[1]) <= 31:
+                        start_idx, end_idx = getSpan(text,twodigitstart[1])
+                        return True, twodigitstart[1], text_start+start_idx, text_start+end_idx
+                    else:
+                        return False, None, None, None
+                    
                 #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
-                if int(twodigitstart[1]) <= 12:
+                elif int(twodigitstart[1]) <= 12:
                     # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
                     # assume mm/dd/yy
                     start_idx, end_idx = getSpan(text,twodigitstart[2])
