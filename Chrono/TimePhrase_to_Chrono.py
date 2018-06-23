@@ -537,7 +537,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                     ## build year
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     start_idx, end_idx = re.search(text, s.getText()).span(0)
-                    print("Adding a Year: " + str(num))
+                    
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+start_idx, end_span=ref_StartSpan+end_idx, value=num)
                     chrono_id = chrono_id + 1
                     chrono_list.append(chrono_year_entity)
@@ -552,7 +552,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                 if  (y >= 1500) and (y <= 2050) and (m <= 12) and (d <= 31):   
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     #add year
-                    print("Adding a Year: " + str(y))
+                    
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+4, value=y)
                     chrono_id = chrono_id + 1
                     #add month
@@ -576,7 +576,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                         if  (y2 >= 1500) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             #add year
-                            print("Adding a Year: " + str(y2))
+                            
                             chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+8, value=y)
                             chrono_id = chrono_id + 1
                             #add month
@@ -664,6 +664,7 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
     
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
+        print("Found a Year: " + text)
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = ref_StartSpan + endSpan
@@ -1131,10 +1132,8 @@ def isTextYear(tpentity):
 # ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
 #        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
 def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=None):
-    print("In TextMonthAndDay")
     boo, val, idxstart, idxend = hasTextMonth(s, ref_list)
     if boo and not flags["month"]:
-        print("Found a Month!")
         flags["month"] = True
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -2542,12 +2541,13 @@ def hasYear(tpentity, flags):
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
             text_start, text_end = getSpan(text_norm, text)
             
-            result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})', text)
+            result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{4})', text)
             
             #define regular expression to find a 4-digit year from the date format
             if result :
                 result = result.group(0)
                 split_result = re.split('[/:-]', result)
+
                 if len(split_result) == 3:
                     start_idx, end_idx = getSpan(text,split_result[2])
                     return True, split_result[2], text_start+start_idx, text_start+end_idx, flags
@@ -2556,7 +2556,7 @@ def hasYear(tpentity, flags):
             ## look for year at start of date
             ## added by Amy Olex
             elif len(text) > 7:
-                result = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)
+                result = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{1,2})',text)
                 if result :
                     result = result.group(0)
                     split_result = re.split('[/:-]', result)
@@ -2603,7 +2603,7 @@ def has2DigitYear(tpentity):
             text_start, text_end = getSpan(text_norm, text)
             
             #define regular expression to find a 2-digit year
-            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
             if regex and len(regex.group(0))==8:
                 if  len(regex.group(0).split("/")) == 3:
                     start_idx, end_idx = getSpan(text,re.compile("/").split(regex.group(0))[2])    
@@ -2643,8 +2643,8 @@ def hasMonthOfYear(tpentity):
             
             
             #define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
             
             if(fourdigitstart):
                 #If start with 4 digits then assum the format yyyy/mm/dd
@@ -2695,8 +2695,8 @@ def hasDayOfMonth(tpentity):
             text_start, text_end = getSpan(text_norm, text)
             
             #define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
             
             if(fourdigitstart):
                 #If start with 4 digits then assum the format yyyy/mm/dd
