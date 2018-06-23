@@ -664,7 +664,6 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
     
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
-        print("Found a Year: " + text)
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = ref_StartSpan + endSpan
@@ -679,6 +678,7 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
             m = utils.getMonthNumber(textMonth)
+
             if(m <= 12):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[m])
                 chrono_id = chrono_id + 1
@@ -773,6 +773,7 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
             m = utils.getMonthNumber(textMonth)
+
             if(m <= 12):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[m])
                 chrono_id = chrono_id + 1

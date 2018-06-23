@@ -219,7 +219,12 @@ def getMonthNumber(text):
                   'JAN':1, 'FEB':2, 'MAR':3, 'APR':4, 'JUN':6, 'JUL':7, 'AUG':8, 'SEPT':9, 'SEP':9, 'OCT':10,'NOV':11, 'DEC':12,
                   '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, '11':11, '12':12,
                   '01':1, '02':2, '03':3, '04':4, '05':5, '06':6, '07':7, '08':8, '09':9, '10':10, '11':11, '12':12}
-    return month_dict[text]
+    try:
+        value = month_dict[text]
+    except KeyError:
+        value = 100
+    
+    return value
    
 ## Function to determine if the input span overlaps this objects span
 # @author Amy Olex
