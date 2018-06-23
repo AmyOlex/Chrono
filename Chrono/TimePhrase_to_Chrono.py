@@ -2710,7 +2710,7 @@ def hasDayOfMonth(tpentity):
                 #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
                 #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
                 #check to see if the middle is text, if yes then treat the first 2 digits as a day
-                if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12):
+                if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12:
                     # if the second entity is all characters and is a valid text month get the first number as the day
                     if int(twodigitstart[1]) <= 31:
                         start_idx, end_idx = getSpan(text,twodigitstart[1])
