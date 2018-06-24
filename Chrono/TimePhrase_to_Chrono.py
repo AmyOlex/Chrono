@@ -1172,7 +1172,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
             if num is not None:
                 if num <= 31 and not flags["day"]:
                     flags["day"] = True
-                    day_startidx, day_endidx = getSpan(s.getText(), str(num))#substr)
+                    day_startidx, day_endidx = getSpan(s.getText(), substr) # str(num))#substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
                     my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
