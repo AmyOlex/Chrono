@@ -1345,29 +1345,27 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     print("In builsPeriodInterval(), TimePhrase Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
-    # FIND YESTERDAYS!
-    # print("***************{}**************".format(s.getText()))
-    if s.getText() == "yesterday":
+    # FIND terms that are always marked as calendar intervals!
+    if s.getText() in ["yesterday"]:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
                                                         end_span=abs_Espan, calendar_type=val, number=None)
         chrono_id = chrono_id + 1
         my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                   end_span=abs_Espan,
-                                                   repeating_interval=str(chrono_id - 1) + "entity")
+                                                   end_span=abs_Espan, repeating_interval=str(chrono_id - 1) + "entity")
         chrono_id = chrono_id + 1
         chrono_list.append(my_last_entity)
-        # print("**************Yesterday!*****************")
         chrono_list.append(my_entity)
-    # elif s.getText() == "recently":
-    #     abs_Sspan = ref_Sspan + idxstart
-    #     abs_Espan = ref_Sspan + idxend
-    #     my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan)
-    #     chrono_id = chrono_id + 1
-    #     chrono_list.append(my_last_entity)
-    #     print("**************Yesterday!*****************==============================================")
 
+    # FIND terms that are always marked as periods!
+    elif s.getText() in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                        end_span=abs_Espan, period_type=val, number=None)
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_entity)
 
     elif boo:
         abs_Sspan = ref_Sspan + idxstart
@@ -2185,13 +2183,17 @@ def hasPeriodInterval(tpentity):
     #convert to all lower
     #text_lower = tpentity.getText().lower()
     text = tpentity.getText().lower()
+    print("In hasPeriod text: ", text)
     #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     #convert to list
     text_list = text_norm.split(" ")
+    print("text list: " + str(text_list))
     
     #define my period lists
-    terms = ["decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
+    terms = ["decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century",
+    "minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours",
+    "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
     
     #figure out if any of the tokens in the text_list are also in the interval list
     intersect = list(set(text_list) & set(terms))
@@ -2222,6 +2224,8 @@ def hasPeriodInterval(tpentity):
                 return True, "Second", start_idx, end_idx, False
             elif this_term == "hour" or this_term == "hourly" or this_term == "hours":
                 return True, "Hour", start_idx, end_idx, False
+            elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+                return True, "Unknown", start_idx, end_idx, False
               
         else :
             return False, None, None, None, None
