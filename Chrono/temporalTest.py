@@ -116,7 +116,9 @@ def hasPeriodInterval(text):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    terms = ["quarter","decades","decade","yesterday","yesterdays","today","todays","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]#,"recently"]
+    terms = ["quarter","decades","decade","yesterday","yesterdays","today","todays","day","week","month","year",
+    "daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years",
+    "centuries", "minutes","seconds","hours", "half century", "quarter century"]#,"recently"]
     ## possibly add in abbreviations like yr, sec, min, etc.
     
     answer = next((m for m in terms if m in text_norm), None)
@@ -352,7 +354,7 @@ def hasTimeZone(text):
 ####
 
 
-## Takes in a string and identifies if it contains the temporal word "now"
+## Takes in a string and identifies if it contains other misc temporal tokens
 # @author Amy Olex
 # @param text String being parsed
 # @return Outputs True if it contains "now"
@@ -363,7 +365,9 @@ def hasTempText(text):
     #convert to list
     text_list = text_norm.split(" ")
     
-    temp_text = ["this","now", "current", "last", "before", "previously", "ago", "pre", "after", "later", "earlier", "until", "quarter", "time", "next", "previous", "coming", "past"]
+    temp_text = ["this","now", "current", "last", "before", "previously", "ago", "pre", "after", "later", 
+    "earlier", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
+    "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length"]
     
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
