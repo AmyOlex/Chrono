@@ -1172,7 +1172,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
             if num is not None:
                 if num <= 31 and not flags["day"]:
                     flags["day"] = True
-                    day_startidx, day_endidx = getSpan(s.getText(), substr) # str(num))#substr)
+                    day_startidx, day_endidx = getSpan(s.getText(), str(num))#substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
                     my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
@@ -1342,8 +1342,8 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    #print("TimePhrase Text: " + s.getText())
-    boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
+    print("In builsPeriodInterval(), TimePhrase Text: " + s.getText())
+    boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND YESTERDAYS!
     # print("***************{}**************".format(s.getText()))
@@ -2176,15 +2176,15 @@ def hasTimeZone(tpentity):
 #END_MODULE
 ####
 
-## Takes in a TimePhrase entity and identifies if it has any calendar interval phrases like "week" or "days"
+## Takes in a TimePhrase entity and identifies if it has any period or calendar interval phrases like "week" or "days"
 # @author Amy Olex
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean
-def hasCalendarInterval(tpentity):
+def hasPeriodInterval(tpentity):
     
     #convert to all lower
     #text_lower = tpentity.getText().lower()
-    text = tpentity.getText()
+    text = tpentity.getText().lower()
     #remove all punctuation
     text_norm = text.translate(str.maketrans("", "", string.punctuation))
     #convert to list
