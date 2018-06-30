@@ -63,8 +63,8 @@ def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
     ## Testing the replacement of all "=" signs by spaces before tokenizing.
-    text = text.translate(str.maketrans("=", ' ')).strip()
-    
+    text = text.translate(str.maketrans("=", ' '))
+    text = text.replace("\n", ' OLEXAMY ')
     span_generator = WhitespaceTokenizer().span_tokenize(text)
     spans = [span for span in span_generator]
     tokenized_text = WhitespaceTokenizer().tokenize(text)
@@ -456,7 +456,9 @@ def getTemporalPhrases(chroList, doctime):
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
-                if e1+1 != s2 and inphrase:
+                
+                #if e1+1 != s2 and inphrase:
+                if chroList[n+1].getText()=="OLEXAMY" and inphrase:
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
@@ -488,7 +490,9 @@ def getTemporalPhrases(chroList, doctime):
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
-                if e1+1 != s2 and inphrase:
+                
+                #if e1+1 != s2 and inphrase:
+                if chroList[n+1].getText()=="OLEXAMY" and inphrase:
                     # print("has new line: " + str(chroList[n]))
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
