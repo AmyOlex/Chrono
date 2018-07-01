@@ -2237,18 +2237,25 @@ def hasPeriodInterval(tpentity):
             return False, None, None, None, None
     
     elif len(intersect) > 1:
-        this_term = list(set(intersect) & set(["daily", "weekly", "monthly", "yearly"]))[0]
-        start_idx, end_idx = getSpan(text_norm, this_term)
+        this_term = list(set(intersect) & set(["daily", "weekly", "monthly", "yearly", "weeks", "days", "months", "years"]))
         
-        if "daily" in intersect:
-            print("Returning a Daily")
-            return True, "Day", start_idx, end_idx, False
-        elif "weekly" in intersect:
-            return True, "Week", start_idx, end_idx, False
-        elif "monthly" in intersect:
-            return True, "Month", start_idx, end_idx, False
-        elif "yearly" in intersect:
-            return True, "Year", start_idx, end_idx, False
+        if(this_term):
+            if(len(this_term) == 1):
+                start_idx, end_idx = getSpan(text_norm, this_term)
+        
+                if this_term in ["daily", "days"]:
+                    print("Returning a Daily")
+                    return True, "Day", start_idx, end_idx, False
+                elif this_term in ["weekly", "weeks"]:
+                    return True, "Week", start_idx, end_idx, False
+                elif this_term in ["monthly", "months"]:
+                    return True, "Month", start_idx, end_idx, False
+                elif this_term in ["yearly", "years"]:
+                    return True, "Year", start_idx, end_idx, False
+                else:
+                    return False, None, None, None, None
+            else:
+                return False, None, None, None, None
         else:
             return False, None, None, None, None
 
