@@ -1346,7 +1346,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
-    if s.getText() in ["yesterday"]:
+    if boo and s.getText() in ["yesterday", "yesterdays", "tomorrow","tomorrows","today","todays"]:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
@@ -1359,7 +1359,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         chrono_list.append(my_entity)
 
     # FIND terms that are always marked as periods!
-    elif s.getText() in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+    elif boo and s.getText() in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
@@ -2183,7 +2183,13 @@ def hasPeriodInterval(tpentity):
     #convert to all lower
     #text_lower = tpentity.getText().lower()
     text = tpentity.getText().lower()
-    print("In hasPeriod text: ", text)
+    print("In hasPeriodInterval text: ", text)
+    
+    reg = re.search("date/time", text)  ##we don't want to annotate these specific types of mentions
+    if reg:  
+        print("Found date/time, returning FALSE")
+        return False, None, None, None, None
+        
     #remove all punctuation
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     #convert to list
@@ -2191,44 +2197,61 @@ def hasPeriodInterval(tpentity):
     print("text list: " + str(text_list))
     
     #define my period lists
-    terms = ["decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century",
-    "minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours",
-    "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
+    terms = ["decades","decade","yesterday","yesterdays","today","todays","tomorrow","tomorrows","day","week","month","year",
+    "daily","weekly","monthly","yearly","century", "minute","second","hour","hourly","days","weeks","months","years",
+    "centuries", "century", "minutes","seconds","hours", "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
     
     #figure out if any of the tokens in the text_list are also in the interval list
     intersect = list(set(text_list) & set(terms))
+    
+    print("My intersection: " + str(intersect))
     
     #only proceed if the intersect list has a length of 1 or more.
     #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
     if len(intersect) == 1 :
         #test if the intersect list contains plural or singular period.
         
-        if len(list(set(intersect) & set (terms))) == 1:
-            this_term = list(set(intersect) & set (terms))[0]
-            start_idx, end_idx = getSpan(text_norm, this_term)
-            if this_term == "day" or this_term == "daily" or this_term == "days" or this_term == "yesterday":
-                return True, "Day", start_idx, end_idx, False
-            elif this_term == "week" or this_term == "weekly" or this_term == "weeks":
-                return True, "Week", start_idx, end_idx, False
-            elif this_term == "month" or this_term == "monthly" or this_term == "months":
-                return True, "Month", start_idx, end_idx, False
-            elif this_term == "year" or this_term == "yearly" or this_term == "years":
-                return True, "Year", start_idx, end_idx, False
-            elif this_term == "century" or this_term == "centuries":
-                return True, "Century", start_idx, end_idx, False
-            elif this_term == "decade" or this_term == "decades":
-                return True, "Decade", start_idx, end_idx, False
-            elif this_term == "minute" or this_term == "minutes":
-                return True, "Minute", start_idx, end_idx, False
-            elif this_term == "second" or this_term == "seconds":
-                return True, "Second", start_idx, end_idx, False
-            elif this_term == "hour" or this_term == "hourly" or this_term == "hours":
-                return True, "Hour", start_idx, end_idx, False
-            elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
-                return True, "Unknown", start_idx, end_idx, False
-              
+        this_term = list(set(intersect) & set (terms))[0]
+        start_idx, end_idx = getSpan(text_norm, this_term)
+        if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
+            return True, "Day", start_idx, end_idx, False
+        elif this_term in ["week", "weekly", "weeks"]:
+            return True, "Week", start_idx, end_idx, False
+        elif this_term in ["month", "monthly", "months"]:
+            return True, "Month", start_idx, end_idx, False
+        elif this_term in ["year", "yearly", "years"]:
+            return True, "Year", start_idx, end_idx, False
+        elif this_term in ["century", "centuries"]:
+            return True, "Century", start_idx, end_idx, False
+        elif this_term in ["decade", "decades"]:
+            return True, "Decade", start_idx, end_idx, False
+        elif this_term in ["minute", "minutes"]:
+            return True, "Minute", start_idx, end_idx, False
+        elif this_term in ["second", "seconds"]:
+            return True, "Second", start_idx, end_idx, False
+        elif this_term in ["hour", "hourly", "hours"]:
+            return True, "Hour", start_idx, end_idx, False
+        elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+            return True, "Unknown", start_idx, end_idx, False
         else :
             return False, None, None, None, None
+    
+    elif len(intersect) > 1:
+        this_term = list(set(intersect) & set(["daily", "weekly", "monthly", "yearly"]))[0]
+        start_idx, end_idx = getSpan(text_norm, this_term)
+        
+        if "daily" in intersect:
+            print("Returning a Daily")
+            return True, "Day", start_idx, end_idx, False
+        elif "weekly" in intersect:
+            return True, "Week", start_idx, end_idx, False
+        elif "monthly" in intersect:
+            return True, "Month", start_idx, end_idx, False
+        elif "yearly" in intersect:
+            return True, "Year", start_idx, end_idx, False
+        else:
+            return False, None, None, None, None
+
     else :          
         return False, None, None, None, None
     
@@ -2252,7 +2275,9 @@ def hasEmbeddedPeriodInterval(tpentity):
     text_list = text_norm.split(" ")
     
     #define my period/interval term lists
-    terms = ["decades","decade","today","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
+    terms = ["decades","decade","yesterday","yesterdays","today","todays","tomorrow","tomorrows","day","week","month","year",
+    "daily","weekly","monthly","yearly","century", "minute","second","hour","hourly","days","weeks","months","years",
+    "centuries", "century", "minutes","seconds","hours", "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
     
     ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
@@ -2269,24 +2294,27 @@ def hasEmbeddedPeriodInterval(tpentity):
                     # if it is a number then test to figure out what sub2 is.
                     this_term = sub2
                     start_idx, end_idx = getSpan(text_norm, this_term)
-                    if this_term == "day" or this_term == "daily" or this_term == "days" or this_term == "yesterday":
+                    if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
                         return True, "Day", start_idx, end_idx, sub1
-                    elif this_term == "week" or this_term == "weekly" or this_term == "weeks":
+                    elif this_term in ["week", "weekly", "weeks"]:
                         return True, "Week", start_idx, end_idx, sub1
-                    elif this_term == "month" or this_term == "monthly" or this_term == "months":
+                    elif this_term in ["month", "monthly", "months"]:
                         return True, "Month", start_idx, end_idx, sub1
-                    elif this_term == "year" or this_term == "yearly" or this_term == "years":
+                    elif this_term in ["year", "yearly", "years"]:
                         return True, "Year", start_idx, end_idx, sub1
-                    elif this_term == "century" or this_term == "centuries":
+                    elif this_term in ["century", "centuries"]:
                         return True, "Century", start_idx, end_idx, sub1
-                    elif this_term == "decade" or this_term == "decades":
+                    elif this_term in ["decade", "decades"]:
                         return True, "Decade", start_idx, end_idx, sub1
-                    elif this_term == "minute" or this_term == "minutes":
+                    elif this_term in ["minute", "minutes"]:
                         return True, "Minute", start_idx, end_idx, sub1
-                    elif this_term == "second" or this_term == "seconds":
+                    elif this_term in ["second", "seconds"]:
                         return True, "Second", start_idx, end_idx, sub1
-                    elif this_term == "hour" or this_term == "hourly" or this_term == "hours":
+                    elif this_term in ["hour", "hourly", "hours"]:
                         return True, "Hour", start_idx, end_idx, sub1
+                    elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+                        return True, "Unknown", start_idx, end_idx, sub1
+                        
                 else :
                     return False, None, None, None, None
     return False, None, None, None, None
