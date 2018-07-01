@@ -2241,6 +2241,7 @@ def hasPeriodInterval(tpentity):
         
         if(this_term):
             if(len(this_term) == 1):
+                this_term = this_term[0]
                 start_idx, end_idx = getSpan(text_norm, this_term)
         
                 if this_term in ["daily", "days"]:
