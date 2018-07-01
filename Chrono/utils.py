@@ -37,6 +37,7 @@
 
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
+from nltk.tokenize import sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
 # from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
@@ -64,12 +65,56 @@ def getWhitespaceTokens(file_path):
     text = file.read()
     ## Testing the replacement of all "=" signs by spaces before tokenizing.
     text = text.translate(str.maketrans("=", ' '))
-    text = text.replace("\n", ' OLEXAMY ')
+    
     span_generator = WhitespaceTokenizer().span_tokenize(text)
     spans = [span for span in span_generator]
     tokenized_text = WhitespaceTokenizer().tokenize(text)
     tags = nltk.pos_tag(tokenized_text)
-    return text, tokenized_text, spans, tags
+    #print(tokenized_text)
+    
+    sent_tokenize_list = sent_tokenize(text)
+    sent_boundaries = [0] * len(tokenized_text)
+    
+    ## figure out which tokens are at the end of a sentence
+    tok_counter = 0
+    
+    #print("\nLength of tokenized_text: " + str(len(tokenized_text)) + "\n")
+    #print("Starting value of tok_counter: " + str(tok_counter))
+    #print("Number of tokenized sentences: " + str(len(sent_tokenize_list)))
+    
+    for s in range(0,len(sent_tokenize_list)):
+        sent = sent_tokenize_list[s]
+        #print("Sentence #" + str(s) + "::::" + sent)
+        
+        if "\n" in sent:
+            #print("Found Newline in Sentence #" + str(s))
+            sent_newline = sent.split("\n")
+            #print("Sentence #" + str(s) + " has " + str(len(sent_newline)) + " new lines.")
+            for sn in sent_newline:
+                sent_split = WhitespaceTokenizer().tokenize(sn)
+                #print("Newline string :::: " + sn)
+                #print("Length of newline string: " + str(len(sent_split)))
+                nw_idx = len(sent_split) + tok_counter - 1
+                #print("Absolute index of last token in newline string: " + str(len(sent_split)) + "+" + str(tok_counter) + "-1 = " + str(nw_idx))
+                sent_boundaries[nw_idx] = 1
+                #print("New sent_boundaries: " + str(sent_boundaries))
+                tok_counter = tok_counter + len(sent_split)
+                #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
+                
+                
+        else:
+            sent_split = WhitespaceTokenizer().tokenize(sent)
+            #print("No new lines. tok_counter: " + str(tok_counter))
+            #print("Length of sentence: " + str(len(sent_split)))
+            #print("Tokenized sentence #" + str(s) + ":::: " + str(sent_split))
+            nw_idx = len(sent_split) + tok_counter - 1
+            #print("New idx: " + str(nw_idx))
+            sent_boundaries[nw_idx] = 1
+            #print("New sent_boundaries: " + str(sent_boundaries))
+            tok_counter = tok_counter + len(sent_split)
+            #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
+    
+    return text, tokenized_text, spans, tags, sent_boundaries
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
@@ -458,7 +503,8 @@ def getTemporalPhrases(chroList, doctime):
                 s2,e2 = chroList[n+1].getSpan()
                 
                 #if e1+1 != s2 and inphrase:
-                if chroList[n+1].getText()=="OLEXAMY" and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    #print("Found Sentence Boundary Word!!!!!!!!!")
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
@@ -492,8 +538,8 @@ def getTemporalPhrases(chroList, doctime):
                 s2,e2 = chroList[n+1].getSpan()
                 
                 #if e1+1 != s2 and inphrase:
-                if chroList[n+1].getText()=="OLEXAMY" and inphrase:
-                    # print("has new line: " + str(chroList[n]))
+                if chroList[n].getSentBoundary() and inphrase:
+                    #print("Found Sentence Boundary Word!!!!!!!!!")
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
