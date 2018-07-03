@@ -104,7 +104,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id, chrono_time_flags = build24HourTime(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         
         chrono_tmp_list, chrono_id = buildDayOfWeek(s, chrono_id, chrono_tmp_list)
-        chrono_tmp_list, chrono_id = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, dct, ref_list)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, chrono_time_flags, dct, ref_list)
         chrono_tmp_list, chrono_id = buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         chrono_tmp_list, chrono_id = buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = buildPartOfWeek(s, chrono_id, chrono_tmp_list)
@@ -531,12 +531,13 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
         
             num = utils.getNumberFromText(text)
             if num is not None:
-                if  (num >= 1500) and (num <= 2050):
+                if  (num >= 1500) and (num <= 2050) and not flags["fourdigityear"] and not flags["loneDigitYear"]:
                     flags["loneDigitYear"] = True  
                     # print("Found Lone Digit Year")  
                     ## build year
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     start_idx, end_idx = re.search(text, s.getText()).span(0)
+                    
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+start_idx, end_span=ref_StartSpan+end_idx, value=num)
                     chrono_id = chrono_id + 1
                     chrono_list.append(chrono_year_entity)
@@ -551,6 +552,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                 if  (y >= 1500) and (y <= 2050) and (m <= 12) and (d <= 31):   
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     #add year
+                    
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+4, value=y)
                     chrono_id = chrono_id + 1
                     #add month
@@ -574,10 +576,11 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                         if  (y2 >= 1500) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
                             ref_StartSpan, ref_EndSpan = s.getSpan()
                             #add year
+                            
                             chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan+4, end_span=ref_StartSpan+8, value=y)
                             chrono_id = chrono_id + 1
                             #add month
-                            chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m])
+                            chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=ref_StartSpan, end_span=ref_StartSpan+2, month_type=calendar.month_name[m2])
                             chrono_id = chrono_id + 1
                             chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
                             #add day
@@ -658,12 +661,12 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
 
 def buildChronoYear(s, chrono_id, chrono_list, flags):
-
+    
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
-        abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
+        abs_EndSpan = ref_StartSpan + endSpan
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=int(text))
         chrono_id = chrono_id + 1
         flags["fourdigityear"] = True
@@ -674,8 +677,10 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
-            if(int(textMonth) <= 12):
-                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])
+            m = utils.getMonthNumber(textMonth)
+
+            if(m <= 12):
+                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[m])
                 chrono_id = chrono_id + 1
                 chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
 
@@ -767,8 +772,10 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
-            if(int(textMonth) <= 12):
-                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[int(textMonth)])
+            m = utils.getMonthNumber(textMonth)
+
+            if(m <= 12):
+                chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpanMonth, end_span=abs_EndSpanMonth, month_type=calendar.month_name[m])
                 chrono_id = chrono_id + 1
                 chrono_2_digit_year_entity.set_sub_interval(chrono_month_entity.get_id())
 
@@ -852,7 +859,7 @@ def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
         if(int(text) <= 12):
-            chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[int(text)])
+            chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, month_type=calendar.month_name[utils.getMonthNumber(text)])
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
                          
@@ -1085,7 +1092,6 @@ def buildTextYear(s, chrono_id, chrono_list):
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
-
         my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(my_year_entity)
@@ -1099,7 +1105,7 @@ def isTextYear(tpentity):
     text = text1.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     #make sure it is all letters
     m = re.search('[a-z,A-Z,-,\s]*', text)
-    if m[0] is not '':
+    if m.group(0) is not '':
         ##split on spaces
         tokenized_text = WhitespaceTokenizer().tokenize(text)
         for t in tokenized_text:
@@ -1128,9 +1134,10 @@ def isTextYear(tpentity):
 # ISSUE: This method assumes the day appears after the month, but that may not always be the case as in "sixth of November"
 # ISSUE: This method has much to be desired. It will not catch all formats, and will not be able to make the correct connections for sub-intervals.
 #        It also will not be able to identify formats like "January 6, 1996" or "January third, nineteen ninety-six".  
-def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
+def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=None):
     boo, val, idxstart, idxend = hasTextMonth(s, ref_list)
-    if boo:
+    if boo and not flags["month"]:
+        flags["month"] = True
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
@@ -1163,8 +1170,9 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
 
             num = utils.getNumberFromText(substr)
             if num is not None:
-                if num <= 31:
-                    day_startidx, day_endidx = getSpan(s.getText(), substr)
+                if num <= 31 and not flags["day"]:
+                    flags["day"] = True
+                    day_startidx, day_endidx = getSpan(s.getText(), str(num))#substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
                     my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
@@ -1183,10 +1191,12 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                         elif this_dct < dct:
                             chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
-                elif num >=1000 and num <=2100:
+                elif num >=1500 and num <=2050 and not flags["fourdigityear"] and not flags["loneDigitYear"]:
+                    flags["fourdigityear"] = True
                     year_startidx, year_endidx = getSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + year_startidx
                     abs_Espan = ref_Sspan + year_endidx
+                    
                     my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                     chrono_list.append(my_year_entity)
                     my_year_entity.set_sub_interval(my_month_entity.get_id())
@@ -1220,10 +1230,12 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
                                 elif this_dct < dct:
                                     chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                                     chrono_id = chrono_id + 1
-                        elif num >=1000 and num <=2100:
+                        elif num >=1500 and num <=2050 and not flags["fourdigityear"] and not flags["loneDigitYear"]:
+                            flags["fourdigityear"] = True
                             year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
                             abs_Sspan = ref_Sspan + year_startidx
                             abs_Espan = ref_Sspan + year_endidx
+                            
                             my_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
                             chrono_list.append(my_year_entity)
                             my_year_entity.set_sub_interval(my_month_entity.get_id())
@@ -1250,7 +1262,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, dct=None, ref_list=None):
         chrono_list.append(my_month_entity)
     
         
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, flags
 ####
 #END_MODULE
 ####
@@ -1330,32 +1342,30 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    #print("TimePhrase Text: " + s.getText())
-    boo, val, idxstart, idxend, plural = hasCalendarInterval(s)
+    print("In builsPeriodInterval(), TimePhrase Text: " + s.getText())
+    boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
-    # FIND YESTERDAYS!
-    # print("***************{}**************".format(s.getText()))
-    if s.getText() == "yesterday":
+    # FIND terms that are always marked as calendar intervals!
+    if boo and s.getText() in ["yesterday", "yesterdays", "tomorrow","tomorrows","today","todays"]:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
                                                         end_span=abs_Espan, calendar_type=val, number=None)
         chrono_id = chrono_id + 1
         my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                   end_span=abs_Espan,
-                                                   repeating_interval=str(chrono_id - 1) + "entity")
+                                                   end_span=abs_Espan, repeating_interval=str(chrono_id - 1) + "entity")
         chrono_id = chrono_id + 1
         chrono_list.append(my_last_entity)
-        # print("**************Yesterday!*****************")
         chrono_list.append(my_entity)
-    # elif s.getText() == "recently":
-    #     abs_Sspan = ref_Sspan + idxstart
-    #     abs_Espan = ref_Sspan + idxend
-    #     my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan)
-    #     chrono_id = chrono_id + 1
-    #     chrono_list.append(my_last_entity)
-    #     print("**************Yesterday!*****************==============================================")
 
+    # FIND terms that are always marked as periods!
+    elif boo and s.getText() in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+        abs_Sspan = ref_Sspan + idxstart
+        abs_Espan = ref_Sspan + idxend
+        my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                        end_span=abs_Espan, period_type=val, number=None)
+        chrono_id = chrono_id + 1
+        chrono_list.append(my_entity)
 
     elif boo:
         abs_Sspan = ref_Sspan + idxstart
@@ -2046,6 +2056,52 @@ def hasTextMonth(tpentity, ref_list):
                     elif answer2 in ["dec."]:
                         return True, "December", start_idx, end_idx
     
+    
+    #run for abbr month without punctuation
+    abbr_month = ["jan","feb","mar","apr","jun","jul","aug","sept","sep","oct","nov","dec"]
+    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
+    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' '*len(adj_punc))).strip()
+    #convert to list
+    text_list2 = text_norm2.split(" ")
+    
+    t_flag = False
+    for tok in text_list2:
+        answer = next((m for m in abbr_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in abbr_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["jan"]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["feb"]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["mar"]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["apr"]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["jun"]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["jul"]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["aug"]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["sept", "sep"]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["oct"]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["nov"]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["dec"]:
+                        return True, "December", start_idx, end_idx
+    
+    
     return False, None, None, None
 
     
@@ -2118,55 +2174,92 @@ def hasTimeZone(tpentity):
 #END_MODULE
 ####
 
-## Takes in a TimePhrase entity and identifies if it has any calendar interval phrases like "week" or "days"
+## Takes in a TimePhrase entity and identifies if it has any period or calendar interval phrases like "week" or "days"
 # @author Amy Olex
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean
-def hasCalendarInterval(tpentity):
+def hasPeriodInterval(tpentity):
     
     #convert to all lower
     #text_lower = tpentity.getText().lower()
-    text = tpentity.getText()
+    text = tpentity.getText().lower()
+    print("In hasPeriodInterval text: ", text)
+    
+    reg = re.search("date/time", text)  ##we don't want to annotate these specific types of mentions
+    if reg:  
+        print("Found date/time, returning FALSE")
+        return False, None, None, None, None
+        
     #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
     #convert to list
     text_list = text_norm.split(" ")
+    print("text list: " + str(text_list))
     
     #define my period lists
-    terms = ["decades","decade","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
+    terms = ["decades","decade","yesterday","yesterdays","today","todays","tomorrow","tomorrows","day","week","month","year",
+    "daily","weekly","monthly","yearly","century", "minute","second","hour","hourly","days","weeks","months","years",
+    "centuries", "century", "minutes","seconds","hours", "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
     
     #figure out if any of the tokens in the text_list are also in the interval list
     intersect = list(set(text_list) & set(terms))
+    
+    print("My intersection: " + str(intersect))
     
     #only proceed if the intersect list has a length of 1 or more.
     #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
     if len(intersect) == 1 :
         #test if the intersect list contains plural or singular period.
         
-        if len(list(set(intersect) & set (terms))) == 1:
-            this_term = list(set(intersect) & set (terms))[0]
-            start_idx, end_idx = getSpan(text_norm, this_term)
-            if this_term == "day" or this_term == "daily" or this_term == "days" or this_term == "yesterday":
-                return True, "Day", start_idx, end_idx, False
-            elif this_term == "week" or this_term == "weekly" or this_term == "weeks":
-                return True, "Week", start_idx, end_idx, False
-            elif this_term == "month" or this_term == "monthly" or this_term == "months":
-                return True, "Month", start_idx, end_idx, False
-            elif this_term == "year" or this_term == "yearly" or this_term == "years":
-                return True, "Year", start_idx, end_idx, False
-            elif this_term == "century" or this_term == "centuries":
-                return True, "Century", start_idx, end_idx, False
-            elif this_term == "decade" or this_term == "decades":
-                return True, "Decade", start_idx, end_idx, False
-            elif this_term == "minute" or this_term == "minutes":
-                return True, "Minute", start_idx, end_idx, False
-            elif this_term == "second" or this_term == "seconds":
-                return True, "Second", start_idx, end_idx, False
-            elif this_term == "hour" or this_term == "hourly" or this_term == "hours":
-                return True, "Hour", start_idx, end_idx, False
-              
+        this_term = list(set(intersect) & set (terms))[0]
+        start_idx, end_idx = getSpan(text_norm, this_term)
+        if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
+            return True, "Day", start_idx, end_idx, False
+        elif this_term in ["week", "weekly", "weeks"]:
+            return True, "Week", start_idx, end_idx, False
+        elif this_term in ["month", "monthly", "months"]:
+            return True, "Month", start_idx, end_idx, False
+        elif this_term in ["year", "yearly", "years"]:
+            return True, "Year", start_idx, end_idx, False
+        elif this_term in ["century", "centuries"]:
+            return True, "Century", start_idx, end_idx, False
+        elif this_term in ["decade", "decades"]:
+            return True, "Decade", start_idx, end_idx, False
+        elif this_term in ["minute", "minutes"]:
+            return True, "Minute", start_idx, end_idx, False
+        elif this_term in ["second", "seconds"]:
+            return True, "Second", start_idx, end_idx, False
+        elif this_term in ["hour", "hourly", "hours"]:
+            return True, "Hour", start_idx, end_idx, False
+        elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+            return True, "Unknown", start_idx, end_idx, False
         else :
             return False, None, None, None, None
+    
+    elif len(intersect) > 1:
+        this_term = list(set(intersect) & set(["daily", "weekly", "monthly", "yearly", "weeks", "days", "months", "years"]))
+        
+        if(this_term):
+            if(len(this_term) == 1):
+                this_term = this_term[0]
+                start_idx, end_idx = getSpan(text_norm, this_term)
+        
+                if this_term in ["daily", "days"]:
+                    print("Returning a Daily")
+                    return True, "Day", start_idx, end_idx, False
+                elif this_term in ["weekly", "weeks"]:
+                    return True, "Week", start_idx, end_idx, False
+                elif this_term in ["monthly", "months"]:
+                    return True, "Month", start_idx, end_idx, False
+                elif this_term in ["yearly", "years"]:
+                    return True, "Year", start_idx, end_idx, False
+                else:
+                    return False, None, None, None, None
+            else:
+                return False, None, None, None, None
+        else:
+            return False, None, None, None, None
+
     else :          
         return False, None, None, None, None
     
@@ -2190,7 +2283,9 @@ def hasEmbeddedPeriodInterval(tpentity):
     text_list = text_norm.split(" ")
     
     #define my period/interval term lists
-    terms = ["decades","decade","today","yesterday","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]
+    terms = ["decades","decade","yesterday","yesterdays","today","todays","tomorrow","tomorrows","day","week","month","year",
+    "daily","weekly","monthly","yearly","century", "minute","second","hour","hourly","days","weeks","months","years",
+    "centuries", "century", "minutes","seconds","hours", "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
     
     ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
@@ -2207,24 +2302,27 @@ def hasEmbeddedPeriodInterval(tpentity):
                     # if it is a number then test to figure out what sub2 is.
                     this_term = sub2
                     start_idx, end_idx = getSpan(text_norm, this_term)
-                    if this_term == "day" or this_term == "daily" or this_term == "days" or this_term == "yesterday":
+                    if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
                         return True, "Day", start_idx, end_idx, sub1
-                    elif this_term == "week" or this_term == "weekly" or this_term == "weeks":
+                    elif this_term in ["week", "weekly", "weeks"]:
                         return True, "Week", start_idx, end_idx, sub1
-                    elif this_term == "month" or this_term == "monthly" or this_term == "months":
+                    elif this_term in ["month", "monthly", "months"]:
                         return True, "Month", start_idx, end_idx, sub1
-                    elif this_term == "year" or this_term == "yearly" or this_term == "years":
+                    elif this_term in ["year", "yearly", "years"]:
                         return True, "Year", start_idx, end_idx, sub1
-                    elif this_term == "century" or this_term == "centuries":
+                    elif this_term in ["century", "centuries"]:
                         return True, "Century", start_idx, end_idx, sub1
-                    elif this_term == "decade" or this_term == "decades":
+                    elif this_term in ["decade", "decades"]:
                         return True, "Decade", start_idx, end_idx, sub1
-                    elif this_term == "minute" or this_term == "minutes":
+                    elif this_term in ["minute", "minutes"]:
                         return True, "Minute", start_idx, end_idx, sub1
-                    elif this_term == "second" or this_term == "seconds":
+                    elif this_term in ["second", "seconds"]:
                         return True, "Second", start_idx, end_idx, sub1
-                    elif this_term == "hour" or this_term == "hourly" or this_term == "hours":
+                    elif this_term in ["hour", "hourly", "hours"]:
                         return True, "Hour", start_idx, end_idx, sub1
+                    elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+                        return True, "Unknown", start_idx, end_idx, sub1
+                        
                 else :
                     return False, None, None, None, None
     return False, None, None, None, None
@@ -2478,7 +2576,6 @@ def has24HourTime(tpentity, flags):
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasYear(tpentity, flags):
-    
     text_lower = tpentity.getText().lower() 
     #remove all punctuation
     text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
@@ -2490,24 +2587,26 @@ def hasYear(tpentity, flags):
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
             text_start, text_end = getSpan(text_norm, text)
-
-            result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{4})', text)
+            
+            result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{4})', text)
+            
             #define regular expression to find a 4-digit year from the date format
             if result :
                 result = result.group(0)
-                split_result = re.split("/-:", result)
+                split_result = re.split('[/:-]', result)
+
                 if len(split_result) == 3:
-                    start_idx, end_idx = getSpan(result,split_result[2])
+                    start_idx, end_idx = getSpan(text,split_result[2])
                     return True, split_result[2], text_start+start_idx, text_start+end_idx, flags
                 else:
                    return False, None, None, None, flags
             ## look for year at start of date
             ## added by Amy Olex
             elif len(text) > 7:
-                result = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{1,2})',text)
+                result = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{1,2})',text)
                 if result :
                     result = result.group(0)
-                    split_result = re.split("/-:", result)
+                    split_result = re.split('[/:-]', result)
                     if len(split_result) == 3:
                         start_idx, end_idx = getSpan(result, split_result[0])
                         return True, split_result[0], text_start + start_idx, text_start + end_idx, flags
@@ -2551,7 +2650,7 @@ def has2DigitYear(tpentity):
             text_start, text_end = getSpan(text_norm, text)
             
             #define regular expression to find a 2-digit year
-            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
             if regex and len(regex.group(0))==8:
                 if  len(regex.group(0).split("/")) == 3:
                     start_idx, end_idx = getSpan(text,re.compile("/").split(regex.group(0))[2])    
@@ -2577,9 +2676,10 @@ def has2DigitYear(tpentity):
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasMonthOfYear(tpentity):
 
-    text_lower = tpentity.getText().lower() 
+    #text_lower = tpentity.getText().lower() 
+    thisText = tpentity.getText()
     #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", " "))
+    text_norm = thisText.translate(str.maketrans(",", " "))
     #convert to list
     text_list = text_norm.split(" ")
 
@@ -2591,8 +2691,8 @@ def hasMonthOfYear(tpentity):
             
             
             #define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
             
             if(fourdigitstart):
                 #If start with 4 digits then assum the format yyyy/mm/dd
@@ -2643,8 +2743,8 @@ def hasDayOfMonth(tpentity):
             text_start, text_end = getSpan(text_norm, text)
             
             #define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2})[-/:]([0-9]{2})',text)
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
             
             if(fourdigitstart):
                 #If start with 4 digits then assum the format yyyy/mm/dd
@@ -2653,8 +2753,17 @@ def hasDayOfMonth(tpentity):
             elif(twodigitstart):
                 #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
                 #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                #check to see if the middle is text, if yes then treat the first 2 digits as a day
+                if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12:
+                    # if the second entity is all characters and is a valid text month get the first number as the day
+                    if int(twodigitstart[1]) <= 31:
+                        start_idx, end_idx = getSpan(text,twodigitstart[1])
+                        return True, twodigitstart[1], text_start+start_idx, text_start+end_idx
+                    else:
+                        return False, None, None, None
+                    
                 #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
-                if int(twodigitstart[1]) <= 12:
+                elif int(twodigitstart[1]) <= 12:
                     # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
                     # assume mm/dd/yy
                     start_idx, end_idx = getSpan(text,twodigitstart[2])

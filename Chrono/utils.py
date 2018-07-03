@@ -37,6 +37,7 @@
 
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
+from nltk.tokenize import sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
 # from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
@@ -62,11 +63,58 @@ import copy
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
+    ## Testing the replacement of all "=" signs by spaces before tokenizing.
+    text = text.translate(str.maketrans("=", ' '))
+    
     span_generator = WhitespaceTokenizer().span_tokenize(text)
     spans = [span for span in span_generator]
     tokenized_text = WhitespaceTokenizer().tokenize(text)
     tags = nltk.pos_tag(tokenized_text)
-    return text, tokenized_text, spans, tags
+    #print(tokenized_text)
+    
+    sent_tokenize_list = sent_tokenize(text)
+    sent_boundaries = [0] * len(tokenized_text)
+    
+    ## figure out which tokens are at the end of a sentence
+    tok_counter = 0
+    
+    #print("\nLength of tokenized_text: " + str(len(tokenized_text)) + "\n")
+    #print("Starting value of tok_counter: " + str(tok_counter))
+    #print("Number of tokenized sentences: " + str(len(sent_tokenize_list)))
+    
+    for s in range(0,len(sent_tokenize_list)):
+        sent = sent_tokenize_list[s]
+        #print("Sentence #" + str(s) + "::::" + sent)
+        
+        if "\n" in sent:
+            #print("Found Newline in Sentence #" + str(s))
+            sent_newline = sent.split("\n")
+            #print("Sentence #" + str(s) + " has " + str(len(sent_newline)) + " new lines.")
+            for sn in sent_newline:
+                sent_split = WhitespaceTokenizer().tokenize(sn)
+                #print("Newline string :::: " + sn)
+                #print("Length of newline string: " + str(len(sent_split)))
+                nw_idx = len(sent_split) + tok_counter - 1
+                #print("Absolute index of last token in newline string: " + str(len(sent_split)) + "+" + str(tok_counter) + "-1 = " + str(nw_idx))
+                sent_boundaries[nw_idx] = 1
+                #print("New sent_boundaries: " + str(sent_boundaries))
+                tok_counter = tok_counter + len(sent_split)
+                #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
+                
+                
+        else:
+            sent_split = WhitespaceTokenizer().tokenize(sent)
+            #print("No new lines. tok_counter: " + str(tok_counter))
+            #print("Length of sentence: " + str(len(sent_split)))
+            #print("Tokenized sentence #" + str(s) + ":::: " + str(sent_split))
+            nw_idx = len(sent_split) + tok_counter - 1
+            #print("New idx: " + str(nw_idx))
+            sent_boundaries[nw_idx] = 1
+            #print("New sent_boundaries: " + str(sent_boundaries))
+            tok_counter = tok_counter + len(sent_split)
+            #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
+    
+    return text, tokenized_text, spans, tags, sent_boundaries
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
@@ -208,8 +256,20 @@ def isOrdinal(text):
 # @author Amy Olex  
 # @param text The text string to be converted to an integer.
 def getMonthNumber(text):
-    month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12}
-    return month_dict[text]
+    month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12,
+                  'JANUARY':1, 'FEBRUARY':2, 'MARCH':3, 'APRIL':4, 'MAY':5, 'JUNE':6, 'JULY':7, 'AUGUST':8, 'SEPTEMBER':9, 'OCTOBER':10,'NOVEMBER':11, 'DECEMBER':12, 
+                  'january':1, 'february':2, 'march':3, 'april':4, 'june':6, 'july':7, 'august':8, 'september':9, 'october':10,'november':11, 'december':12,
+                  'Jan':1, 'Feb':2, 'Mar':3, 'Apr':4, 'Jun':6, 'Jul':7, 'Aug':8, 'Sept':9, 'Sep':9, 'Oct':10,'Nov':11, 'Dec':12,
+                  'jan':1, 'feb':2, 'mar':3, 'apr':4, 'jun':6, 'jul':7, 'aug':8, 'sept':9, 'sep':9, 'oct':10,'nov':11, 'dec':12,
+                  'JAN':1, 'FEB':2, 'MAR':3, 'APR':4, 'JUN':6, 'JUL':7, 'AUG':8, 'SEPT':9, 'SEP':9, 'OCT':10,'NOV':11, 'DEC':12,
+                  '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, '11':11, '12':12,
+                  '01':1, '02':2, '03':3, '04':4, '05':5, '06':6, '07':7, '08':8, '09':9, '10':10, '11':11, '12':12}
+    try:
+        value = month_dict[text]
+    except KeyError:
+        value = 100
+    
+    return value
    
 ## Function to determine if the input span overlaps this objects span
 # @author Amy Olex
@@ -441,7 +501,10 @@ def getTemporalPhrases(chroList, doctime):
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
-                if e1+1 != s2 and inphrase:
+                
+                #if e1+1 != s2 and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    #print("Found Sentence Boundary Word!!!!!!!!!")
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
@@ -473,8 +536,10 @@ def getTemporalPhrases(chroList, doctime):
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
-                if e1+1 != s2 and inphrase:
-                    # print("has new line: " + str(chroList[n]))
+                
+                #if e1+1 != s2 and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    #print("Found Sentence Boundary Word!!!!!!!!!")
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []

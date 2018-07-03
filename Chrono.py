@@ -137,9 +137,9 @@ if __name__ == "__main__":
         if(debug) : print(doctime)
     
         ## parse out reference tokens
-        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
+        text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
         
         if(debug) :
             print("REFERENCE TOKENS:\n")

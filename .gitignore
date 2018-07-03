@@ -70,3 +70,5 @@ runit.sh
 *.xml
 Chrono_SemEval2018_PostEvalSubmission_NB_NewswireModel_060818/Chrono_TempEval2018_PostEvalSubmission_NB_060818.zip
 *.tiff
+*.dct
+SemEval-OfficialTrain/*
