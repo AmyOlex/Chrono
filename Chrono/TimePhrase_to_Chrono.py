@@ -1359,7 +1359,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         chrono_list.append(my_entity)
 
     # FIND terms that are always marked as periods!
-    elif boo and s.getText() in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+    elif boo and val == "Unknown" :
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
