@@ -81,19 +81,19 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False, "fourdigityear":False}
 
         #Parse out Year function
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Two-Digit Year 
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChrono2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = build2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Month-of-Year
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Day-of-Month
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out HourOfDay
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out MinuteOfHour
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out SecondOfMinute
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
 
         
         #Parse modifier text
@@ -122,7 +122,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     #        print(e)
         
         
-        tmplist, chrono_id = buildChronoSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
+        tmplist, chrono_id = buildSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
         chrono_list = chrono_list+tmplist
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
@@ -142,7 +142,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
 # @author Amy Olex
 # @param list of ChronoEntities
 # @return List of ChronoEntities with sub-intervals assigned
-def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
+def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
     year = None
     month = None
     day = None
@@ -335,9 +335,6 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
 ####
 #END_MODULE
 ####
-
-#################### Start buildX() Methods #######################
-
 
 def buildTimeZone(s, chrono_id, chrono_list):
     boo, val, startSpan, endSpan = hasTimeZone(s)
@@ -738,7 +735,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
 
-def buildChronoYear(s, chrono_id, chrono_list, flags):
+def buildYear(s, chrono_id, chrono_list, flags):
     
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
@@ -895,7 +892,7 @@ def hasYear(tpentity, flags):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
+def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b and not flags["fourdigityear"]:
         #In most cases this will be at the end of the Span
@@ -1029,7 +1026,7 @@ def has2DigitYear(tpentity):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
+def buildMonthOfYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMonthOfYear(s)
     if b and not flags["month"]:
         flags["month"] = True
@@ -1106,7 +1103,7 @@ def hasMonthOfYear(tpentity):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoDayOfMonth(s, chrono_id, chrono_list, flags):
+def buildDayOfMonth(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasDayOfMonth(s)
     if b and not flags["day"]:
         flags["day"] = True
@@ -1192,7 +1189,7 @@ def hasDayOfMonth(tpentity):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoHourOfDay(s, chrono_id, chrono_list, flags):
+def buildHourOfDay(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasHourOfDay(s)
     if b and not flags["hour"]:
         #print("Found Hour in buildChronoHour")
@@ -1249,7 +1246,7 @@ def hasHourOfDay(tpentity):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoMinuteOfHour(s, chrono_id, chrono_list, flags):
+def buildMinuteOfHour(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
     
     if b and not flags["minute"]:
@@ -1307,7 +1304,7 @@ def hasMinuteOfHour(tpentity):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoSecondOfMinute(s, chrono_id, chrono_list, flags):
+def buildSecondOfMinute(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
     if b and not flags["second"]:
         flags["second"] = True
