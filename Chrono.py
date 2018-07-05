@@ -37,6 +37,7 @@ import os
 import pickle
 
 from chronoML import DecisionTree as DTree
+from chronoML import RF_classifier as RandomForest
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from chronoML import SVM_classifier as SVMclass
 from Chrono import TimePhrase_to_Chrono
@@ -89,6 +90,13 @@ if __name__ == "__main__":
         #print("Got DT")
         classifier, feats = DTree.build_dt_model(args.d, args.c)
         with open('DT_model.pkl', 'wb') as mod:  
+            pickle.dump([classifier, feats], mod)
+
+    if(args.m == "RF" and args.M is None):
+        ## Train the decision tree classifier and save in the classifier variable
+        # print("Got RF")
+        classifier, feats = RandomForest.build_model(args.d, args.c)
+        with open('RF_model.pkl', 'wb') as mod:
             pickle.dump([classifier, feats], mod)
     
     elif(args.m == "NN" and args.M is None):

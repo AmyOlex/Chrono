@@ -157,6 +157,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
     mod = None
     tz = None
     ampm = None
+    modifier = None
    
     #print("in Build Subintervals") 
     ## loop through all entities and pull out the approriate IDs
@@ -198,6 +199,9 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         elif e_type == "AMPM-Of-Day":
             print("AMPM Value: " + str(chrono_list[e]))
             ampm = e
+        elif e_type == "Modifier":
+            print("Modifier Value: " + str(chrono_list[e]))
+            modifier = e
         
     ## Now identify all NEXT and LAST entities
     ## Need to edit to figure out if a modifier word exists first, then test for year, etc.
@@ -320,6 +324,16 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
         print("Deleting TimeZone")
         del chrono_list[tz]
+
+    # Link modifiers
+    if modifier is not None and period is not None:
+        chrono_list[period].set_modifier(chrono_list[modifier].get_id())
+    elif modifier is not None and interval is not None:
+        chrono_list[interval].set_modifier(chrono_list[modifier].get_id())
+    elif modifier is not None and period is None and interval is None:
+        # Delete the modifier entity if there is no period or interval to link it to.  Not sure if this will work for all cases.
+        print("Deleting Modifier")
+        del chrono_list[modifier]
     
     
     ##### Notes: This next bit is complicated.  If I include it I remove some False Positives, but I also create some False Negatives.
@@ -2149,10 +2163,10 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
         
         # classify into period or interval
-        if(classifier[1] == "NN"):
+        if classifier[1] == "NN":
             my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-        elif(classifier[1] == "SVM"):
+        elif classifier[1] in ("SVM", "RF"):
             feat_array = [int(i) for i in my_features.values()]
             my_class = classifier[0].predict([feat_array])[0]
         else:
@@ -2160,7 +2174,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
 
         # if 1 then it is a period, if 0 then it is an interval  
-        if(my_class == 1):
+        if my_class == 1:
             my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
             chrono_id = chrono_id + 1
             ### Check to see if this calendar interval has a "this" in front of it
@@ -2808,11 +2822,11 @@ def buildModifierText(s, chrono_id, chrono_list):
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         if val is not None:
-            if val == "nearly" or val == "almost":
+            if val in ("nearly", "almost", "<"):
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, modifier="Less-Than")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
-            elif val == "about":
+            elif val in ("about", "approximately"):
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Approx")
                 chrono_list.append(my_modifier_entity)
@@ -2832,12 +2846,12 @@ def buildModifierText(s, chrono_id, chrono_list):
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Fiscal")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
-            # elif val == "over":
-            #     my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
-            #                                                start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
-            #     chrono_list.append(my_modifier_entity)
-            #     chrono_id = chrono_id + 1
-            elif val == "early":
+            elif val == "over":
+                my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
+                                                           start_span=abs_Sspan, end_span=abs_Espan, modifier="More-Than")
+                chrono_list.append(my_modifier_entity)
+                chrono_id = chrono_id + 1
+            elif val in ("early", "beginning"):
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Start")
                 chrono_list.append(my_modifier_entity)
@@ -2870,7 +2884,7 @@ def hasModifierText(tpentity):
 
     if len(text_list)>0:
         #loop through list looking for expression
-        temp_text = ["nearly", "almost", "late", "mid", "fiscal", "fy", "over", "early"]
+        temp_text = ["nearly", "almost", "<", "late", "mid", "fiscal", "fy", "over", "early", "approximately", "beginning"]
 
         for t in text_list:
             answer = next((m for m in temp_text if m in t), None)
