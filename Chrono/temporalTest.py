@@ -384,23 +384,23 @@ def hasTempText(text):
 # @author Luke Maffey
 # @param text String being parsed
 # @return Outputs True if it contains a modifier
-def hasModifierText(text):
-    # remove all punctuation and convert to lowercase
-    text_norm = text.translate(str.maketrans(string.punctuation, " " * len(string.punctuation))).strip().lower()
-    # convert to list
-    text_list = text_norm.split(" ")
-
-    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few"]
-
-    for t in text_list:
-        answer = next((m for m in temp_text if m in t), None)
-        if answer is not None:
-            answer2 = next((m for m in temp_text if t in m), None)
-            if answer2 is not None:
-                return True
-            else:
-                return False
-    return False
+# def hasModifierText(text):
+#     # remove all punctuation and convert to lowercase
+#     text_norm = text.translate(str.maketrans(string.punctuation, " " * len(string.punctuation))).strip().lower()
+#     # convert to list
+#     text_list = text_norm.split(" ")
+#
+#     temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few", "approximately"]
+#
+#     for t in text_list:
+#         answer = next((m for m in temp_text if m in t), None)
+#         if answer is not None:
+#             answer2 = next((m for m in temp_text if t in m), None)
+#             if answer2 is not None:
+#                 return True
+#             else:
+#                 return False
+#     return False
 ####
 #END_MODULE
 ####
