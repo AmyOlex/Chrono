@@ -2149,20 +2149,18 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
         
         # classify into period or interval
-        if(classifier[1] == "NN"):
+        if classifier[1] == "NN":
             my_class = ChronoKeras.keras_classify(classifier[0], np.array(list(my_features.values())))
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
-        elif(classifier[1] == "SVM"):
+        elif classifier[1] in ("SVM", "RF"):
             feat_array = [int(i) for i in my_features.values()]
             my_class = classifier[0].predict([feat_array])[0]
-        elif (classifier[1] == "RF"):
-            my_class = classifier[0].predict(my_features)
         else:
             my_class = classifier[0].classify(my_features)
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
 
         # if 1 then it is a period, if 0 then it is an interval  
-        if(my_class == 1):
+        if my_class == 1:
             my_entity = chrono.ChronoPeriodEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, period_type=getPeriodValue(val), number=None)
             chrono_id = chrono_id + 1
             ### Check to see if this calendar interval has a "this" in front of it
