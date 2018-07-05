@@ -55,7 +55,7 @@ def build_model(data_file, class_file):
     for row in data_list:
         X.append([int(i) for i in row.values()])
     
-    classifier = RandomForestClassifier(n_estimators=10, n_jobs=-1)
+    classifier = RandomForestClassifier(n_estimators=100, n_jobs=-1)
     classifier.fit(X, y)
     
     dict_keys = data_list[0].keys()

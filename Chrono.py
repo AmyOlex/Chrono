@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
     if(args.m == "RF" and args.M is None):
         ## Train the decision tree classifier and save in the classifier variable
-        print("Got RF")
+        # print("Got RF")
         classifier, feats = RandomForest.build_model(args.d, args.c)
         with open('RF_model.pkl', 'wb') as mod:
             pickle.dump([classifier, feats], mod)
