@@ -2808,11 +2808,11 @@ def buildModifierText(s, chrono_id, chrono_list):
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         if val is not None:
-            if val == "nearly" or val == "almost":
+            if val in ("nearly", "almost", "<"):
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, modifier="Less-Than")
                 chrono_list.append(my_modifier_entity)
                 chrono_id = chrono_id + 1
-            elif val == "about":
+            elif val in ("about", "approximately"):
                 my_modifier_entity = chrono.ChronoModifier(str(chrono_id) + "entity",
                                                            start_span=abs_Sspan, end_span=abs_Espan, modifier="Approx")
                 chrono_list.append(my_modifier_entity)
@@ -2870,7 +2870,7 @@ def hasModifierText(tpentity):
 
     if len(text_list)>0:
         #loop through list looking for expression
-        temp_text = ["nearly", "almost", "late", "mid", "fiscal", "fy", "over", "early"]
+        temp_text = ["nearly", "almost", "<", "late", "mid", "fiscal", "fy", "over", "early", "approximately"]
 
         for t in text_list:
             answer = next((m for m in temp_text if m in t), None)
