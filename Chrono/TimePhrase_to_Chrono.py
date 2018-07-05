@@ -81,19 +81,19 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False, "fourdigityear":False}
 
         #Parse out Year function
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Two-Digit Year 
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChrono2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = build2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Month-of-Year
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Day-of-Month
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out HourOfDay
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out MinuteOfHour
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildMinuteOfHour(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out SecondOfMinute
-        chrono_tmp_list, chrono_id, chrono_time_flags = buildChronoSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        chrono_tmp_list, chrono_id, chrono_time_flags = buildSecondOfMinute(s, chrono_id, chrono_tmp_list, chrono_time_flags)
 
         
         #Parse modifier text
@@ -122,7 +122,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     #        print(e)
         
         
-        tmplist, chrono_id = buildChronoSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
+        tmplist, chrono_id = buildSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
         chrono_list = chrono_list+tmplist
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
@@ -142,7 +142,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
 # @author Amy Olex
 # @param list of ChronoEntities
 # @return List of ChronoEntities with sub-intervals assigned
-def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
+def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
     year = None
     month = None
     day = None
@@ -336,8 +336,6 @@ def buildChronoSubIntervals(chrono_list, chrono_id, dct, ref_list):
 #END_MODULE
 ####
 
-#################### Start buildX() Methods #######################
-
 def buildTimeZone(s, chrono_id, chrono_list):
     boo, val, startSpan, endSpan = hasTimeZone(s)
 
@@ -351,6 +349,42 @@ def buildTimeZone(s, chrono_id, chrono_list):
         chrono_list.append(chrono_tz_entity)
 
     return chrono_list, chrono_id
+
+####
+#END_MODULE
+####
+
+## Takes in a single TimePhrase entity and determines if it has a time zone specified in the text.
+# @author Amy Olex and Luke Maffey
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs the regex object or None
+def hasTimeZone(tpentity):
+    text = tpentity.getText()
+    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+    tz = re.search('(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK|AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+
+    if tz is not None:
+        return True, tz.group(1), tz.start(1), tz.end(1)
+    '''    
+        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+        if tz is None:
+            return False, None, None, None
+        elif len(tz.group()) == 4:
+            return True, tz.group(), tz.start(), tz.end()
+        elif len(tz.group()) == 6 or len(tz.group()) == 8:
+            return True, tz.group()[-4:], tz.end()-4, tz.end()
+        else:
+            return False, None, None, None
+    elif len(tz.group()) == 3:
+        return True, tz.group(), tz.start(), tz.end()
+    elif len(tz.group()) == 5 or len(tz.group()) == 7:
+        return True, tz.group()[-3:], tz.end()-3, tz.end()
+    '''
+    return False, None, None, None
+
+####
+#END_MODULE
+####
 
 
 ## Takes in a TimePhraseEntity and identifies if it has an NthFromStart entity
@@ -441,6 +475,47 @@ def buildBeforeAfter(s, chrono_id, chrono_list):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has any Before or After phrases
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasBeforeAfter(tpentity):
+    # convert to all lower
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation)))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my day lists
+    b_words = ["before", "ago", "pre", "previously", "earlier", "until"]
+    a_words = ["after", "later"]
+    ba_words = b_words + a_words
+
+    # figure out if any of the tokens in the text_list are also in the modifiers list
+    intersect = list(set(text_list) & set(ba_words))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    # I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1:
+        # test if the intersect list contains which days.
+        if len(list(set(intersect) & set(b_words))) == 1:
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set(b_words))[0])
+            return True, "Before", start_idx, end_idx
+
+        if len(list(set(intersect) & set(a_words))) == 1:
+            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set(a_words))[0])
+            return True, "After", start_idx, end_idx
+
+        else:
+            return False, None, None, None
+    else:
+        return False, None, None, None
+
+
+####
+# END_MODULE
+####
 
 ## Takes in a TimePhraseEntity and identifies if it should be annotated as a This entity
 # @author Amy Olex
@@ -660,7 +735,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
 
-def buildChronoYear(s, chrono_id, chrono_list, flags):
+def buildYear(s, chrono_id, chrono_list, flags):
     
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
@@ -750,13 +825,74 @@ def buildChronoYear(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has any 4 digit year phrases
+# @author Nicholas Morton and Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasYear(tpentity, flags):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+
+            result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{4})', text)
+
+            # define regular expression to find a 4-digit year from the date format
+            if result:
+                result = result.group(0)
+                split_result = re.split('[/:-]', result)
+
+                if len(split_result) == 3:
+                    start_idx, end_idx = getSpan(text, split_result[2])
+                    return True, split_result[2], text_start + start_idx, text_start + end_idx, flags
+                else:
+                    return False, None, None, None, flags
+            ## look for year at start of date
+            ## added by Amy Olex
+            elif len(text) > 7:
+                result = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{1,2})', text)
+                if result:
+                    result = result.group(0)
+                    split_result = re.split('[/:-]', result)
+                    if len(split_result) == 3:
+                        start_idx, end_idx = getSpan(result, split_result[0])
+                        return True, split_result[0], text_start + start_idx, text_start + end_idx, flags
+                    else:
+                        return False, None, None, None, flags
+            ## special case to look for c.yyyy
+            elif len(text) == 6:
+                result = re.search("c\.([0-9]{4})", text)
+                if result:
+                    rval = utils.getNumberFromText(result.group(1))
+                    if rval:
+                        if rval >= 1500 and rval <= 2050:
+                            start_idx, end_idx = result.span(1)
+                            return True, rval, start_idx, end_idx, flags
+
+        return False, None, None, None, flags  # if no 4 digit year expressions were found return false
+
+    else:
+        return False, None, None, None, flags  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
+
 ## Takes in list of TimePhrase output and converts to ChronoEntity
 # @author Nicholas Morton
 # @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
+def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b and not flags["fourdigityear"]:
         #In most cases this will be at the end of the Span
@@ -845,13 +981,52 @@ def buildChrono2DigitYear(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has any 2 digit year phrases
+# @author Nicholas Morton
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def has2DigitYear(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans(",", " "))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+
+            # define regular expression to find a 2-digit year
+            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
+            if regex and len(regex.group(0)) == 8:
+                if len(regex.group(0).split("/")) == 3:
+                    start_idx, end_idx = getSpan(text, re.compile("/").split(regex.group(0))[2])
+                    return True, re.compile("/").split(regex.group(0))[2], text_start + start_idx, text_start + end_idx
+                elif len(regex.group(0).split("-")) == 3:
+                    start_idx, end_idx = getSpan(text, re.compile("-").split(regex.group(0))[2])
+                    return True, re.compile("-").split(regex.group(0))[2], text_start + start_idx, text_start + end_idx
+                else:
+                    return False, None, None, None
+
+        return False, None, None, None  # if no 2 digit year expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
+
 ## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
 # @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
+def buildMonthOfYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMonthOfYear(s)
     if b and not flags["month"]:
         flags["month"] = True
@@ -868,13 +1043,67 @@ def buildChronoMonthOfYear(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has a month of year
+# @author Nicholas Morton and Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasMonthOfYear(tpentity):
+    # text_lower = tpentity.getText().lower()
+    thisText = tpentity.getText()
+    # remove all punctuation
+    text_norm = thisText.translate(str.maketrans(",", " "))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+
+            # define regular expression to find a 2-digit month
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
+
+            if (fourdigitstart):
+                # If start with 4 digits then assum the format yyyy/mm/dd
+                start_idx, end_idx = getSpan(text, fourdigitstart[2])
+                return True, fourdigitstart[2], text_start + start_idx, text_start + end_idx
+            elif (twodigitstart):
+                # If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
+                # Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                # check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
+                if int(twodigitstart[1]) <= 12:
+                    # assume mm/dd/yy
+                    start_idx, end_idx = getSpan(text, twodigitstart[1])  # twodigitstart.span(1)  #
+                    # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(1)[0]+text_start) + " : " + str(twodigitstart.group(1)))
+                    ##### Trying to DEBUG string formats like AP-JN-08-16-90 ##########
+                    return True, twodigitstart[1], text_start + start_idx, text_start + end_idx
+                elif int(twodigitstart[1]) > 12:
+                    # assume yy/mm/dd
+                    start_idx, end_idx = getSpan(text, twodigitstart[
+                        2])  # twodigitstart.span(2) #getSpan(text_norm,twodigitstart[2])
+                    return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
+                else:
+                    return False, None, None, None
+
+        return False, None, None, None  # if no 2 digit month expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
+
 ## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
 # @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoDayOfMonth(s, chrono_id, chrono_list, flags):
+def buildDayOfMonth(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasDayOfMonth(s)
     if b and not flags["day"]:
         flags["day"] = True
@@ -892,13 +1121,75 @@ def buildChronoDayOfMonth(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has a day of the month in numeric format
+# @author Nicholas Morton and Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasDayOfMonth(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans(",", " "))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+
+            # define regular expression to find a 2-digit month
+            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
+            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
+
+            if (fourdigitstart):
+                # If start with 4 digits then assum the format yyyy/mm/dd
+                start_idx, end_idx = getSpan(text, fourdigitstart[3])
+                return True, fourdigitstart[3], text_start + start_idx, text_start + end_idx
+            elif (twodigitstart):
+                # If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
+                # Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
+                # check to see if the middle is text, if yes then treat the first 2 digits as a day
+                if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12:
+                    # if the second entity is all characters and is a valid text month get the first number as the day
+                    if int(twodigitstart[1]) <= 31:
+                        start_idx, end_idx = getSpan(text, twodigitstart[1])
+                        return True, twodigitstart[1], text_start + start_idx, text_start + end_idx
+                    else:
+                        return False, None, None, None
+
+                # check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
+                elif int(twodigitstart[1]) <= 12:
+                    # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
+                    # assume mm/dd/yy
+                    start_idx, end_idx = getSpan(text, twodigitstart[2])
+                    return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
+                elif int(twodigitstart[1]) > 12:
+                    # assume yy/mm/dd
+                    start_idx, end_idx = getSpan(text, twodigitstart[3])
+                    return True, twodigitstart[3], text_start + start_idx, text_start + end_idx
+                else:
+                    return False, None, None, None
+
+        return False, None, None, None  # if no 2 digit month expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
+
 ## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
 # @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoHourOfDay(s, chrono_id, chrono_list, flags):
+def buildHourOfDay(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasHourOfDay(s)
     if b and not flags["hour"]:
         #print("Found Hour in buildChronoHour")
@@ -915,13 +1206,47 @@ def buildChronoHourOfDay(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has a hour of a day
+# @author Nicholas Morton and Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasHourOfDay(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # define regular expression to find a numeric hour
+
+            if (re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text)):  # checks for HH:MM:SS String
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text).group(0)
+                if len(match.split(":")) == 2 or len(match.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm, re.compile(":").split(match)[0])
+                    return True, re.compile(":").split(match)[0], start_idx, end_idx
+                else:
+                    return False, None, None, None  # if no 2 digit hour expressions were found return false
+
+        return False, None, None, None  # if no 2 digit hour expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
+
 ## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton
 # @param s The TimePhrase entity to parse 
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoMinuteOfHour(s, chrono_id, chrono_list, flags):
+def buildMinuteOfHour(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMinuteOfHour(s)
     
     if b and not flags["minute"]:
@@ -934,8 +1259,43 @@ def buildChronoMinuteOfHour(s, chrono_id, chrono_list, flags):
         chrono_id = chrono_id + 1
                          
     return chrono_list, chrono_id, flags
+
 ####
 #END_MODULE
+####
+
+## Takes in a single text string and identifies if it has a minute of an hour
+# @author Nicholas Morton
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasMinuteOfHour(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # define regular expression to find a 2-digit minute
+
+            if (re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text)):  # checks for HH:MM:SS String
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text).group(0)
+                if len(match.split(":")) == 2 or len(match.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm, re.compile(":").split(match)[1])
+                    return True, re.compile(":").split(match)[1], start_idx, end_idx
+                else:
+                    return False, None, None, None  # if no 2 digit hour expressions were found return false
+
+        return False, None, None, None  # if no 2 digit day expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
 ####
 
 ## Takes in list of TimePhrase output and converts to chronoEntity
@@ -944,7 +1304,7 @@ def buildChronoMinuteOfHour(s, chrono_id, chrono_list, flags):
 # @param chronoID The current chronoID to increment as new chronoentities are added to list.
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
-def buildChronoSecondOfMinute(s, chrono_id, chrono_list, flags):
+def buildSecondOfMinute(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasSecondOfMinute(s)
     if b and not flags["second"]:
         flags["second"] = True
@@ -956,10 +1316,77 @@ def buildChronoSecondOfMinute(s, chrono_id, chrono_list, flags):
         chrono_id = chrono_id + 1
                           
     return chrono_list, chrono_id, flags
+
 ####
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has a second of an minute
+# @author Nicholas Morton
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasSecondOfMinute(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # define regular expression to find a 2-digit minute
+
+            if (re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text)):  # checks for HH:MM:SS String
+                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text).group(0)
+                if len(match.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm, re.compile(":").split(match)[2])
+                    return True, re.compile(":").split(match)[2], start_idx, end_idx
+                else:
+                    return False, None, None, None  # if no 2 digit hour expressions were found return false
+
+        return False, None, None, None  # if no 2 digit day expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
+
+## Takes in a single text string and identifies if it has a hh:mm:ss
+# @author Nicholas Morton
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasTimeString(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", ","))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # define regular expression to find a numeric hour
+            if (re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text)):  # checks for HH:MM:SS String
+                if len(text.split(":")) == 3:
+                    start_idx, end_idx = getSpan(text_norm, re.compile(":").split(text)[0])
+                    return True, text, start_idx, end_idx
+
+                else:
+                    return False, None, None, None  # if no 2 digit hour expressions were found return false
+
+        return False, None, None, None  # if no 2 digit hour expressions were found return false
+    else:
+
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+
+####
+# END_MODULE
+####
 
 ## Parses a TimePhrase entity's text field to determine if it contains a day of the week written out in text form, then builds the associated chronoentity list
 # @author Amy Olex
@@ -1005,6 +1432,88 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
 ####
 #END_MODULE
 #### 
+
+## Takes in a single text string and identifies if it is a day of week
+# @author Amy Olex
+# @param text The text to be parsed
+# @return value The normalized string value for the day of week, or None if no Day of week found.
+# @ISSUE If there are multiple days of week in the temporal phrase it only captures one of them.
+def hasDayOfWeek(tpentity):
+    # print("Before:" + text)
+    # convert to all lower
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
+    # print("After:" + text_norm)
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my day lists
+    M = ["monday", "mon", "m"]
+    T = ["tuesday", "tue", "tues", "t"]
+    W = ["wednesday", "wed", "w"]
+    TR = ["thursday", "thur", "tr", "th"]
+    F = ["friday", "fri", "f"]
+    S = ["saturday", "sat", "s"]
+    SU = ["sunday", "sun", "su"]
+    days_of_week = M + T + W + TR + F + S + SU
+
+    # figure out if any of the tokens in the text_list are also in the days of week list
+    intersect = list(set(text_list) & set(days_of_week))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    if len(intersect) >= 1:
+        # test if the intersect list contains which days.
+        if len(list(set(intersect) & set(M))) == 1:
+            day_text = list(set(intersect) & set(M))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Monday", start_idx, end_idx
+
+        if len(list(set(intersect) & set(T))) == 1:
+            day_text = list(set(intersect) & set(T))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Tuesday", start_idx, end_idx
+
+        if len(list(set(intersect) & set(W))) == 1:
+            day_text = list(set(intersect) & set(W))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Wednesday", start_idx, end_idx
+
+        if len(list(set(intersect) & set(TR))) == 1:
+            day_text = list(set(intersect) & set(TR))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Thursday", start_idx, end_idx
+
+        if len(list(set(intersect) & set(F))) == 1:
+            day_text = list(set(intersect) & set(F))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Friday", start_idx, end_idx
+
+        if len(list(set(intersect) & set(S))) == 1:
+            day_text = list(set(intersect) & set(S))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Saturday", start_idx, end_idx
+
+        if len(list(set(intersect) & set(SU))) == 1:
+            day_text = list(set(intersect) & set(SU))[0]
+            start_idx = text_norm.index(day_text)
+            end_idx = start_idx + len(day_text)
+            return True, "Sunday", start_idx, end_idx
+        else:
+            return False, None, None, None
+    else:
+        return False, None, None, None
+
+
+####
+# END_MODULE
+####
 
 ## Parses a TimePhrase entity's text field to determine if it contains a season of the year written out in text form, then builds the associated chronoentity list
 # @author Amy Olex
@@ -1076,7 +1585,80 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
     return chrono_list, chrono_id
 ####
 #END_MODULE
-####    
+####
+
+## Takes in a TimePhrase entity and identifies if it has any season terms, like "summer" or "fall"
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasSeasonOfYear(tpentity, ref_list):
+    refStart_span, refEnd_span = tpentity.getSpan()
+
+    # convert to all lower
+    # text_lower = tpentity.getText().lower()
+    text = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation))).strip()
+
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my period lists
+    seasonofyear = ["summer", "winter", "fall", "spring", "summers", "falls", "winters", "springs"]
+
+    # figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(seasonofyear))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    # For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1:
+
+        term = intersect[0]
+        start_idx, end_idx = getSpan(text_norm, term)
+        if term == "summer" or term == "summers":
+            start_idx, end_idx = getSpan(text_norm, "summer")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+            if postag == "NN":
+                return True, "Summer", start_idx, end_idx
+
+        elif term == "winter" or term == "winters":
+            start_idx, end_idx = getSpan(text_norm, "winter")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+            if postag == "NN":
+                return True, "Winter", start_idx, end_idx
+
+        elif term == "fall" or term == "falls":
+            start_idx, end_idx = getSpan(text_norm, "fall")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+            if postag == "NN":
+                return True, "Fall", start_idx, end_idx
+
+        elif term == "spring" or term == "springs":
+            start_idx, end_idx = getSpan(text_norm, "spring")
+            absStart = refStart_span + start_idx
+            absEnd = refStart_span + end_idx
+            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+            if postag == "NN":
+                return True, "Spring", start_idx, end_idx
+
+        else:
+            return False, None, None, None
+
+    return False, None, None, None
+
+####
+# END_MODULE
+####
 
 ## Parses a TimePhraseEntity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
 # @author Amy Olex
@@ -1260,11 +1842,166 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                     chrono_id = chrono_id + 1
         
         chrono_list.append(my_month_entity)
-    
         
     return chrono_list, chrono_id, flags
+
 ####
 #END_MODULE
+####
+
+## Takes in a single text string and identifies if it is a month of the year
+# @author Amy Olex
+# @param tpentity The entity to parse
+# @return value The normalized string value for the month of the year, or None if no month of year found.
+# @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
+def hasTextMonth(tpentity, ref_list):
+    refStart_span, refEnd_span = tpentity.getSpan()
+
+    # convert to all lower
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    # text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation))).strip()
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my month lists
+    full_month = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
+                  "november", "december"]
+
+    # run for full month
+    t_flag = False
+    for tok in text_list:
+        answer = next((m for m in full_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in full_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                # answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["january"]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["february"]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["march"]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["april"]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["may"]:
+                        return True, "May", start_idx, end_idx
+                    elif answer2 in ["june"]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["july"]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["august"]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["september"]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["october"]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["november"]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["december"]:
+                        return True, "December", start_idx, end_idx
+
+    # run for abbr month
+    abbr_month = ["jan.", "feb.", "mar.", "apr.", "jun.", "jul.", "aug.", "sept.", "sep.", "oct.", "nov.", "dec."]
+    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
+    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' ' * len(adj_punc))).strip()
+    # convert to list
+    text_list2 = text_norm2.split(" ")
+
+    t_flag = False
+    for tok in text_list2:
+        answer = next((m for m in abbr_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in abbr_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                # answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["jan."]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["feb."]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["mar."]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["apr."]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["jun."]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["jul."]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["aug."]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["sept.", "sep."]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["oct."]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["nov."]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["dec."]:
+                        return True, "December", start_idx, end_idx
+
+    # run for abbr month without punctuation
+    abbr_month = ["jan", "feb", "mar", "apr", "jun", "jul", "aug", "sept", "sep", "oct", "nov", "dec"]
+    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
+    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' ' * len(adj_punc))).strip()
+    # convert to list
+    text_list2 = text_norm2.split(" ")
+
+    t_flag = False
+    for tok in text_list2:
+        answer = next((m for m in abbr_month if tok in m), None)
+        if answer is not None and not t_flag:
+            answer2 = next((m for m in abbr_month if m in tok), None)
+            if answer2 is not None and not t_flag:
+                t_flag = True
+                # answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
+                start_idx, end_idx = getSpan(text_lower, answer2)
+                absStart = refStart_span + start_idx
+                absEnd = refStart_span + end_idx
+                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+
+                if postag == "NNP":
+                    if answer2 in ["jan"]:
+                        return True, "January", start_idx, end_idx
+                    elif answer2 in ["feb"]:
+                        return True, "February", start_idx, end_idx
+                    elif answer2 in ["mar"]:
+                        return True, "March", start_idx, end_idx
+                    elif answer2 in ["apr"]:
+                        return True, "April", start_idx, end_idx
+                    elif answer2 in ["jun"]:
+                        return True, "June", start_idx, end_idx
+                    elif answer2 in ["jul"]:
+                        return True, "July", start_idx, end_idx
+                    elif answer2 in ["aug"]:
+                        return True, "August", start_idx, end_idx
+                    elif answer2 in ["sept", "sep"]:
+                        return True, "September", start_idx, end_idx
+                    elif answer2 in ["oct"]:
+                        return True, "October", start_idx, end_idx
+                    elif answer2 in ["nov"]:
+                        return True, "November", start_idx, end_idx
+                    elif answer2 in ["dec"]:
+                        return True, "December", start_idx, end_idx
+
+    return False, None, None, None
+
+
+####
+# END_MODULE
 ####
  
 ## Parses a TimePhrase entity's text field to determine if it contains a AM or PM time indication, then builds the associated chronoentity list
@@ -1329,6 +2066,34 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has any AM or PM phrases
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasAMPM(tpentity):
+    # convert to all lower
+    # text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
+    # remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", ","))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        for text in text_list:
+            if (re.search('AM|A\.M\.|am|a\.m\.', text)):
+                match = re.search('AM|A\.M\.|am|a\.m\.', text).group(0)
+                start_idx, end_idx = getSpan(text_norm, match)
+                return True, "AM", start_idx, end_idx
+            elif (re.search('PM|P\.M\.|pm|p\.m\.', text)):
+                match = re.search('PM|P\.M\.|pm|p\.m\.', text).group(0)
+                start_idx, end_idx = getSpan(text_norm, match)
+                return True, "PM", start_idx, end_idx
+    return False, None, None, None
+
+####
+# END_MODULE
+####
 
 ## Parses a TimePhrase entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated chronoentity list
 # @author Amy Olex
@@ -1553,6 +2318,201 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 #END_MODULE
 ####
 
+## Takes in a TimePhrase entity and identifies if it has any period or calendar interval phrases like "week" or "days"
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean
+def hasPeriodInterval(tpentity):
+    # convert to all lower
+    # text_lower = tpentity.getText().lower()
+    text = tpentity.getText().lower()
+    print("In hasPeriodInterval text: ", text)
+
+    reg = re.search("date/time", text)  ##we don't want to annotate these specific types of mentions
+    if reg:
+        print("Found date/time, returning FALSE")
+        return False, None, None, None, None
+
+    # remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation))).strip()
+    # convert to list
+    text_list = text_norm.split(" ")
+    print("text list: " + str(text_list))
+
+    # define my period lists
+    terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
+             "month", "year",
+             "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", "days", "weeks",
+             "months", "years",
+             "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", "soon", "briefly", "awhile",
+             "future", "lately"]
+
+    # figure out if any of the tokens in the text_list are also in the interval list
+    intersect = list(set(text_list) & set(terms))
+
+    print("My intersection: " + str(intersect))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    # For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1:
+        # test if the intersect list contains plural or singular period.
+
+        this_term = list(set(intersect) & set(terms))[0]
+        start_idx, end_idx = getSpan(text_norm, this_term)
+        if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
+            return True, "Day", start_idx, end_idx, False
+        elif this_term in ["week", "weekly", "weeks"]:
+            return True, "Week", start_idx, end_idx, False
+        elif this_term in ["month", "monthly", "months"]:
+            return True, "Month", start_idx, end_idx, False
+        elif this_term in ["year", "yearly", "years"]:
+            return True, "Year", start_idx, end_idx, False
+        elif this_term in ["century", "centuries"]:
+            return True, "Century", start_idx, end_idx, False
+        elif this_term in ["decade", "decades"]:
+            return True, "Decade", start_idx, end_idx, False
+        elif this_term in ["minute", "minutes"]:
+            return True, "Minute", start_idx, end_idx, False
+        elif this_term in ["second", "seconds"]:
+            return True, "Second", start_idx, end_idx, False
+        elif this_term in ["hour", "hourly", "hours"]:
+            return True, "Hour", start_idx, end_idx, False
+        elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+            return True, "Unknown", start_idx, end_idx, False
+        else:
+            return False, None, None, None, None
+
+    elif len(intersect) > 1:
+        this_term = list(
+            set(intersect) & set(["daily", "weekly", "monthly", "yearly", "weeks", "days", "months", "years"]))
+
+        if (this_term):
+            if (len(this_term) == 1):
+                this_term = this_term[0]
+                start_idx, end_idx = getSpan(text_norm, this_term)
+
+                if this_term in ["daily", "days"]:
+                    print("Returning a Daily")
+                    return True, "Day", start_idx, end_idx, False
+                elif this_term in ["weekly", "weeks"]:
+                    return True, "Week", start_idx, end_idx, False
+                elif this_term in ["monthly", "months"]:
+                    return True, "Month", start_idx, end_idx, False
+                elif this_term in ["yearly", "years"]:
+                    return True, "Year", start_idx, end_idx, False
+                else:
+                    return False, None, None, None, None
+            else:
+                return False, None, None, None, None
+        else:
+            return False, None, None, None, None
+
+    else:
+        return False, None, None, None, None
+
+
+####
+# END_MODULE
+####
+
+## Takes in a TimePhrase entity and identifies if it has any calendar interval phrases like "week" or "days"
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 5 values: Boolean Flag, Value text, start index, end index, numeric string
+# Note: this should be called after everything else is checked.  The numeric string will need to have it's span and value identified by the calling method.
+def hasEmbeddedPeriodInterval(tpentity):
+    # convert to all lower
+    # text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
+    # remove all punctuation
+    text_norm = text.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation)))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my period/interval term lists
+    terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
+             "month", "year",
+             "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", "days", "weeks",
+             "months", "years",
+             "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", "soon", "briefly", "awhile",
+             "future", "lately"]
+
+    ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
+    for t in text_list:
+        for r in terms:
+            ## see if r is a substring of t
+            ## if yes and the substring is at the end, extract the first substring and test to see if it is a number.
+            idx = t.find(r)
+            if (idx > 0):
+                # then the r term is not the first substring.  Extract and test.
+                sub1 = t[:idx]
+                sub2 = t[idx:]
+                # sub1 should be a number
+                if (isinstance(utils.getNumberFromText(sub1), (int))):
+                    # if it is a number then test to figure out what sub2 is.
+                    this_term = sub2
+                    start_idx, end_idx = getSpan(text_norm, this_term)
+                    if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows",
+                                     "today", "todays"]:
+                        return True, "Day", start_idx, end_idx, sub1
+                    elif this_term in ["week", "weekly", "weeks"]:
+                        return True, "Week", start_idx, end_idx, sub1
+                    elif this_term in ["month", "monthly", "months"]:
+                        return True, "Month", start_idx, end_idx, sub1
+                    elif this_term in ["year", "yearly", "years"]:
+                        return True, "Year", start_idx, end_idx, sub1
+                    elif this_term in ["century", "centuries"]:
+                        return True, "Century", start_idx, end_idx, sub1
+                    elif this_term in ["decade", "decades"]:
+                        return True, "Decade", start_idx, end_idx, sub1
+                    elif this_term in ["minute", "minutes"]:
+                        return True, "Minute", start_idx, end_idx, sub1
+                    elif this_term in ["second", "seconds"]:
+                        return True, "Second", start_idx, end_idx, sub1
+                    elif this_term in ["hour", "hourly", "hours"]:
+                        return True, "Hour", start_idx, end_idx, sub1
+                    elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+                        return True, "Unknown", start_idx, end_idx, sub1
+
+                else:
+                    return False, None, None, None, None
+    return False, None, None, None, None
+
+
+####
+# END_MODULE
+####
+
+## Takes in a string that is a Calendar-Interval value and returns the associated Period value
+# @author Amy Olex
+# @param val The Calendar-Interval string
+# @return The Period value string
+def getPeriodValue(val):
+    if val == "Day":
+        return("Days")
+    elif val == "Week":
+        return("Weeks")
+    elif val == "Month":
+        return("Months")
+    elif val == "Year":
+        return("Years")
+    elif val == "Century":
+        return("Centuries")
+    elif val == "Decade":
+        return("Decades")
+    elif val == "Hour":
+        return("Hours")
+    elif val == "Minute":
+        return("Minutes")
+    elif val == "Second":
+        return("Seconds")
+    else:
+        return(val)
+
+####
+# END_MODULE
+####
+
 ## Parses a TimePhrase entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
 # @author Amy Olex
 # @param s The TimePhrase entity to parse 
@@ -1574,7 +2534,64 @@ def buildPartOfDay(s, chrono_id, chrono_list):
     return chrono_list, chrono_id
 ####
 #END_MODULE
-####    
+####
+
+## Takes in a TimePhrase entity and identifies if it has any part of day terms, like "overnight" or "morning"
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+#############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
+def hasPartOfDay(tpentity):
+    # convert to all lower
+    text = tpentity.getText().lower()
+    # text = tpentity.getText()
+    # remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my period lists
+    partofday = ["morning", "evening", "afternoon", "night", "dawn", "dusk", "tonight", "overnight", "nights",
+                 "mornings", "evening", "afternoons", "noon", "bedtime", "midnight", "eve"]
+
+    # figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(partofday))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    # For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1:
+
+        term = intersect[0]
+        start_idx, end_idx = getSpan(text_norm, term)
+        if term == "morning" or term == "mornings":
+            return True, "Morning", start_idx, end_idx
+        if term == "dawn":
+            return True, "Dawn", start_idx, end_idx
+        elif term == "evening" or term == "dusk" or term == "evenings" or term == "eve":
+            return True, "Evening", start_idx, end_idx
+        elif term == "afternoon" or term == "afternoons":
+            return True, "Afternoon", start_idx, end_idx
+        elif term == "nights":
+            return True, "Night", start_idx, end_idx
+        elif term == "noon":
+            return True, "Noon", start_idx, end_idx
+        elif term == "bedtime":
+            return True, "Unknown", start_idx, end_idx
+        elif term == "midnight":
+            return True, "Midnight", start_idx, end_idx
+        elif term == "night" or term == "overnight" or term == "tonight":
+            m = re.search("night", text_norm)
+            sidx = m.span(0)[0]
+            eidx = m.span(0)[1]
+            return True, "Night", sidx, eidx
+        else:
+            return False, None, None, None
+    else:
+        return False, None, None, None
+
+####
+# END_MODULE
+####
 
 ## Parses a TimePhrase entity's text field to determine if it contains a part of the week expression, then builds the associated chronoentity list
 # @author Amy Olex
@@ -1597,7 +2614,44 @@ def buildPartOfWeek(s, chrono_id, chrono_list):
     return chrono_list, chrono_id
 ####
 #END_MODULE
-#### 
+####
+
+## Takes in a TimePhrase entity and identifies if it has any part of week terms, like "weekend"
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+#############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
+def hasPartOfWeek(tpentity):
+    # convert to all lower
+    # text_lower = tpentity.getText().lower()
+    text = tpentity.getText()
+    # remove all punctuation
+    text_norm = text.translate(str.maketrans("", "", string.punctuation))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my period lists
+    partofday = ["weekend", "weekends"]
+
+    # figure out if any of the tokens in the text_list are also in the ampm list
+    intersect = list(set(text_list) & set(partofday))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    # For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1:
+
+        term = intersect[0]
+        start_idx, end_idx = getSpan(text_norm, term)
+        if term == "weekend" or term == "weekends":
+            return True, "Weekend", start_idx, end_idx
+        else:
+            return False, None, None, None
+    else:
+        return False, None, None, None
+
+####
+# END_MODULE
+####
 
 ## Parses a TimePhrase entity's text field to determine if it contains a 24-hour time expression, then builds the associated chronoentity list
 # @author Amy Olex
@@ -1653,10 +2707,58 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
 
  
     return chrono_list, chrono_id, flags
+
 ####
 #END_MODULE
-#### 
+####
 
+## Takes in a single text string and identifies if it has any 4 digit 24-hour time phrases
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+# Note: This need to be called after it has checked for years
+def has24HourTime(tpentity, flags):
+    # text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    # text_norm = text_lower.translate(str.maketrans("", "", ","))
+    # convert to list
+    stext = tpentity.getText()
+    text_list = stext.split(" ")
+
+    if not flags["loneDigitYear"]:
+        # loop through list looking for expression
+        for text in text_list:
+            tz_format = re.search(
+                '\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text)
+            if len(text) == 4:
+                num = utils.getNumberFromText(text)
+                if num is not None:
+                    hour = utils.getNumberFromText(text[:2])
+                    minute = utils.getNumberFromText(text[2:])
+                    if (hour is not None) and (minute is not None):
+                        if (minute > 60) or (hour > 24):
+                            return False, None, None, None
+                        else:
+                            start_idx, end_idx = getSpan(stext, text)
+                            return True, text, start_idx, end_idx
+            elif tz_format is not None:
+                time = tz_format[0]
+                # print("THIS TIME: {}".format(time))
+                hour = utils.getNumberFromText(time[0:2])
+                minute = utils.getNumberFromText(time[2:4])
+                # if (minute > 60) or (hour > 24):
+                #     return False, None, None, None
+                # else:
+                start_idx, end_idx = getSpan(stext, time)
+                return True, time, start_idx, end_idx
+
+        return False, None, None, None  # if no 4 digit year expressions were found return false
+    else:
+        return False, None, None, None  # if loneDigitYearFlag has already been set
+
+####
+#END_MODULE
+####
 
 ## Parses a TimePhrase entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list
 # @author Nicholas Morton
@@ -1750,1191 +2852,8 @@ def buildModifierText(s, chrono_id, chrono_list):
 
     return chrono_list, chrono_id
 
-
 ####
 # END_MODULE
-####
-
-
-############# Start hasX() Methods ##################
-
-
-## Takes in a single text string and identifies if it is a day of week
-# @author Amy Olex
-# @param text The text to be parsed
-# @return value The normalized string value for the day of week, or None if no Day of week found.
-# @ISSUE If there are multiple days of week in the temporal phrase it only captures one of them.
-def hasDayOfWeek(tpentity):
-    
-    #print("Before:" + text)
-    #convert to all lower
-    text_lower = tpentity.getText().lower()
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", string.punctuation))
-    #print("After:" + text_norm)
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my day lists
-    M = ["monday","mon","m"]
-    T = ["tuesday","tue","tues","t"]
-    W = ["wednesday","wed","w"]
-    TR = ["thursday","thur","tr","th"]
-    F = ["friday","fri","f"]
-    S = ["saturday","sat","s"]
-    SU = ["sunday","sun","su"]
-    days_of_week = M+T+W+TR+F+S+SU
-    
-    #figure out if any of the tokens in the text_list are also in the days of week list
-    intersect = list(set(text_list) & set(days_of_week))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    if len(intersect) >= 1 :
-        #test if the intersect list contains which days.
-        if len(list(set(intersect) & set (M))) == 1:
-            day_text = list(set(intersect) & set (M))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)
-            return True, "Monday", start_idx, end_idx
-            
-            
-        if len(list(set(intersect) & set (T))) == 1:
-            day_text = list(set(intersect) & set (T))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)  
-            return True, "Tuesday", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (W))) == 1:
-            day_text = list(set(intersect) & set (W))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)
-            return True, "Wednesday", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (TR))) == 1:
-            day_text = list(set(intersect) & set (TR))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)
-            return True, "Thursday", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (F))) == 1:
-            day_text = list(set(intersect) & set (F))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)
-            return True, "Friday", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (S))) == 1:
-            day_text = list(set(intersect) & set (S))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)
-            return True, "Saturday", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (SU))) == 1:
-            day_text = list(set(intersect) & set (SU))[0]
-            start_idx = text_norm.index(day_text)
-            end_idx = start_idx + len(day_text)
-            return True, "Sunday", start_idx, end_idx
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-
-## Takes in a single text string and identifies if it has any Before or After phrases
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasBeforeAfter(tpentity):
-    
-    #convert to all lower
-    text_lower = tpentity.getText().lower()
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my day lists
-    b_words = ["before", "ago", "pre", "previously", "earlier", "until"]
-    a_words = ["after", "later"]
-    ba_words = b_words + a_words
-    
-    #figure out if any of the tokens in the text_list are also in the modifiers list
-    intersect = list(set(text_list) & set(ba_words))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        #test if the intersect list contains which days.
-        if len(list(set(intersect) & set (b_words))) == 1:
-            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (b_words))[0])
-            return True, "Before", start_idx, end_idx
-            
-        if len(list(set(intersect) & set (a_words))) == 1:
-            start_idx, end_idx = getSpan(text_lower, list(set(intersect) & set (a_words))[0])
-            return True, "After", start_idx, end_idx
-        
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has any modufying phrases
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasModifier(tpentity):
-    
-    #convert to all lower
-    text_lower = tpentity.getText().lower()
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my day lists
-    modifiers = ["this","next","last","a","each","between","from"]
-    
-    #figure out if any of the tokens in the text_list are also in the modifiers list
-    intersect = list(set(text_list) & set(modifiers))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        #test if the intersect list contains which days.
-        if intersect[0] == "this":
-            start_idx = text_norm.index("this")
-            end_idx = start_idx + len("this")
-            return True, "This", start_idx, end_idx
-            
-        if intersect[0] == "next":
-            start_idx = text_norm.index("next")
-            end_idx = start_idx + len("next")
-            return True, "Next", start_idx, end_idx
-            
-        if intersect[0] == "last":
-            start_idx = text_norm.index("last")
-            end_idx = start_idx + len("last")
-            return True, "Last", start_idx, end_idx
-            
-        if intersect[0] == "a":
-            start_idx = text_norm.index("a")
-            end_idx = start_idx + len("a")
-            return True, "Period", start_idx, end_idx
-         
-        if intersect[0] == "each":
-            start_idx = text_norm.index("each")
-            end_idx = start_idx + len("each")
-            return True, "Period", start_idx, end_idx
-        
-        if intersect[0] == "between":
-            start_idx = text_norm.index("between")
-            end_idx = start_idx + len("between")
-            return True, "Period", start_idx, end_idx  
-            
-        if intersect[0] == "from":
-            start_idx = text_norm.index("from")
-            end_idx = start_idx + len("from")
-            return True, "Period", start_idx, end_idx  
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-
-## Takes in a single text string and identifies if it is a month of the year
-# @author Amy Olex
-# @param tpentity The entity to parse
-# @return value The normalized string value for the month of the year, or None if no month of year found.
-# @ISSUE If there are multiple months of the year in the temporal phrase it only captures one of them.
-def hasTextMonth(tpentity, ref_list):
-    
-    refStart_span, refEnd_span = tpentity.getSpan()
-    
-    #convert to all lower
-    text_lower = tpentity.getText().lower()
-    #remove all punctuation
-    #text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
-    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my month lists
-    full_month = ["january","february","march","april","may","june","july","august","september","october","november","december"]
-     
-    #run for full month
-    t_flag = False
-    for tok in text_list:
-        answer = next((m for m in full_month if tok in m), None)
-        if answer is not None and not t_flag:
-            answer2 = next((m for m in full_month if m in tok), None)
-            if answer2 is not None and not t_flag:
-                t_flag = True
-                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
-                start_idx, end_idx = getSpan(text_lower, answer2)
-                absStart = refStart_span + start_idx
-                absEnd = refStart_span + end_idx
-                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-
-                if postag == "NNP":
-                    if answer2 in ["january"]:
-                        return True, "January", start_idx, end_idx
-                    elif answer2 in ["february"]:
-                        return True, "February", start_idx, end_idx
-                    elif answer2 in ["march"]:
-                        return True, "March", start_idx, end_idx
-                    elif answer2 in ["april"]:
-                        return True, "April", start_idx, end_idx
-                    elif answer2 in ["may"]:
-                        return True, "May", start_idx, end_idx
-                    elif answer2 in ["june"]:
-                        return True, "June", start_idx, end_idx
-                    elif answer2 in ["july"]:
-                        return True, "July", start_idx, end_idx
-                    elif answer2 in ["august"]:
-                        return True, "August", start_idx, end_idx
-                    elif answer2 in ["september"]:
-                        return True, "September", start_idx, end_idx
-                    elif answer2 in ["october"]:
-                        return True, "October", start_idx, end_idx
-                    elif answer2 in ["november"]:
-                        return True, "November", start_idx, end_idx
-                    elif answer2 in ["december"]:
-                        return True, "December", start_idx, end_idx
-          
-    #run for abbr month
-    abbr_month = ["jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","sep.","oct.","nov.","dec."]
-    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
-    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' '*len(adj_punc))).strip()
-    #convert to list
-    text_list2 = text_norm2.split(" ")
-    
-    t_flag = False
-    for tok in text_list2:
-        answer = next((m for m in abbr_month if tok in m), None)
-        if answer is not None and not t_flag:
-            answer2 = next((m for m in abbr_month if m in tok), None)
-            if answer2 is not None and not t_flag:
-                t_flag = True
-                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
-                start_idx, end_idx = getSpan(text_lower, answer2)
-                absStart = refStart_span + start_idx
-                absEnd = refStart_span + end_idx
-                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-
-                if postag == "NNP":
-                    if answer2 in ["jan."]:
-                        return True, "January", start_idx, end_idx
-                    elif answer2 in ["feb."]:
-                        return True, "February", start_idx, end_idx
-                    elif answer2 in ["mar."]:
-                        return True, "March", start_idx, end_idx
-                    elif answer2 in ["apr."]:
-                        return True, "April", start_idx, end_idx
-                    elif answer2 in ["jun."]:
-                        return True, "June", start_idx, end_idx
-                    elif answer2 in ["jul."]:
-                        return True, "July", start_idx, end_idx
-                    elif answer2 in ["aug."]:
-                        return True, "August", start_idx, end_idx
-                    elif answer2 in ["sept.", "sep."]:
-                        return True, "September", start_idx, end_idx
-                    elif answer2 in ["oct."]:
-                        return True, "October", start_idx, end_idx
-                    elif answer2 in ["nov."]:
-                        return True, "November", start_idx, end_idx
-                    elif answer2 in ["dec."]:
-                        return True, "December", start_idx, end_idx
-    
-    
-    #run for abbr month without punctuation
-    abbr_month = ["jan","feb","mar","apr","jun","jul","aug","sept","sep","oct","nov","dec"]
-    adj_punc = '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
-    text_norm2 = text_lower.translate(str.maketrans(adj_punc, ' '*len(adj_punc))).strip()
-    #convert to list
-    text_list2 = text_norm2.split(" ")
-    
-    t_flag = False
-    for tok in text_list2:
-        answer = next((m for m in abbr_month if tok in m), None)
-        if answer is not None and not t_flag:
-            answer2 = next((m for m in abbr_month if m in tok), None)
-            if answer2 is not None and not t_flag:
-                t_flag = True
-                #answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
-                start_idx, end_idx = getSpan(text_lower, answer2)
-                absStart = refStart_span + start_idx
-                absEnd = refStart_span + end_idx
-                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-
-                if postag == "NNP":
-                    if answer2 in ["jan"]:
-                        return True, "January", start_idx, end_idx
-                    elif answer2 in ["feb"]:
-                        return True, "February", start_idx, end_idx
-                    elif answer2 in ["mar"]:
-                        return True, "March", start_idx, end_idx
-                    elif answer2 in ["apr"]:
-                        return True, "April", start_idx, end_idx
-                    elif answer2 in ["jun"]:
-                        return True, "June", start_idx, end_idx
-                    elif answer2 in ["jul"]:
-                        return True, "July", start_idx, end_idx
-                    elif answer2 in ["aug"]:
-                        return True, "August", start_idx, end_idx
-                    elif answer2 in ["sept", "sep"]:
-                        return True, "September", start_idx, end_idx
-                    elif answer2 in ["oct"]:
-                        return True, "October", start_idx, end_idx
-                    elif answer2 in ["nov"]:
-                        return True, "November", start_idx, end_idx
-                    elif answer2 in ["dec"]:
-                        return True, "December", start_idx, end_idx
-    
-    
-    return False, None, None, None
-
-    
-####
-#END_MODULE
-####
-
-
-
-## Takes in a single text string and identifies if it has any AM or PM phrases
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasAMPM(tpentity):
-    
-    #convert to all lower
-    #text_lower = tpentity.getText().lower()
-    text = tpentity.getText()
-    #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", ","))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    if len(text_list) > 0:
-        for text in text_list:
-            if(re.search('AM|A\.M\.|am|a\.m\.',text)):
-                match = re.search('AM|A\.M\.|am|a\.m\.',text).group(0)
-                start_idx, end_idx = getSpan(text_norm, match) 
-                return True, "AM", start_idx, end_idx
-            elif(re.search('PM|P\.M\.|pm|p\.m\.',text)):
-                match = re.search('PM|P\.M\.|pm|p\.m\.',text).group(0)
-                start_idx, end_idx = getSpan(text_norm, match)      
-                return True, "PM", start_idx, end_idx
-    return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-## Takes in a single TimePhrase entity and determines if it has a time zone specified in the text.
-# @author Amy Olex and Luke Maffey
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs the regex object or None
-def hasTimeZone(tpentity):
-    text = tpentity.getText()
-    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    tz = re.search('(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK|AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
-
-    if tz is not None:
-        return True, tz.group(1), tz.start(1), tz.end(1)
-    '''    
-        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
-        if tz is None:
-            return False, None, None, None
-        elif len(tz.group()) == 4:
-            return True, tz.group(), tz.start(), tz.end()
-        elif len(tz.group()) == 6 or len(tz.group()) == 8:
-            return True, tz.group()[-4:], tz.end()-4, tz.end()
-        else:
-            return False, None, None, None
-    elif len(tz.group()) == 3:
-        return True, tz.group(), tz.start(), tz.end()
-    elif len(tz.group()) == 5 or len(tz.group()) == 7:
-        return True, tz.group()[-3:], tz.end()-3, tz.end()
-    '''
-    return False, None, None, None
-
-
-####
-#END_MODULE
-####
-
-## Takes in a TimePhrase entity and identifies if it has any period or calendar interval phrases like "week" or "days"
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 5 values: Boolean Flag, Value text, start index, end index, pluralBoolean
-def hasPeriodInterval(tpentity):
-    
-    #convert to all lower
-    #text_lower = tpentity.getText().lower()
-    text = tpentity.getText().lower()
-    print("In hasPeriodInterval text: ", text)
-    
-    reg = re.search("date/time", text)  ##we don't want to annotate these specific types of mentions
-    if reg:  
-        print("Found date/time, returning FALSE")
-        return False, None, None, None, None
-        
-    #remove all punctuation
-    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
-    #convert to list
-    text_list = text_norm.split(" ")
-    print("text list: " + str(text_list))
-    
-    #define my period lists
-    terms = ["decades","decade","yesterday","yesterdays","today","todays","tomorrow","tomorrows","day","week","month","year",
-    "daily","weekly","monthly","yearly","century", "minute","second","hour","hourly","days","weeks","months","years",
-    "centuries", "century", "minutes","seconds","hours", "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
-    
-    #figure out if any of the tokens in the text_list are also in the interval list
-    intersect = list(set(text_list) & set(terms))
-    
-    print("My intersection: " + str(intersect))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        #test if the intersect list contains plural or singular period.
-        
-        this_term = list(set(intersect) & set (terms))[0]
-        start_idx, end_idx = getSpan(text_norm, this_term)
-        if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
-            return True, "Day", start_idx, end_idx, False
-        elif this_term in ["week", "weekly", "weeks"]:
-            return True, "Week", start_idx, end_idx, False
-        elif this_term in ["month", "monthly", "months"]:
-            return True, "Month", start_idx, end_idx, False
-        elif this_term in ["year", "yearly", "years"]:
-            return True, "Year", start_idx, end_idx, False
-        elif this_term in ["century", "centuries"]:
-            return True, "Century", start_idx, end_idx, False
-        elif this_term in ["decade", "decades"]:
-            return True, "Decade", start_idx, end_idx, False
-        elif this_term in ["minute", "minutes"]:
-            return True, "Minute", start_idx, end_idx, False
-        elif this_term in ["second", "seconds"]:
-            return True, "Second", start_idx, end_idx, False
-        elif this_term in ["hour", "hourly", "hours"]:
-            return True, "Hour", start_idx, end_idx, False
-        elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
-            return True, "Unknown", start_idx, end_idx, False
-        else :
-            return False, None, None, None, None
-    
-    elif len(intersect) > 1:
-        this_term = list(set(intersect) & set(["daily", "weekly", "monthly", "yearly", "weeks", "days", "months", "years"]))
-        
-        if(this_term):
-            if(len(this_term) == 1):
-                this_term = this_term[0]
-                start_idx, end_idx = getSpan(text_norm, this_term)
-        
-                if this_term in ["daily", "days"]:
-                    print("Returning a Daily")
-                    return True, "Day", start_idx, end_idx, False
-                elif this_term in ["weekly", "weeks"]:
-                    return True, "Week", start_idx, end_idx, False
-                elif this_term in ["monthly", "months"]:
-                    return True, "Month", start_idx, end_idx, False
-                elif this_term in ["yearly", "years"]:
-                    return True, "Year", start_idx, end_idx, False
-                else:
-                    return False, None, None, None, None
-            else:
-                return False, None, None, None, None
-        else:
-            return False, None, None, None, None
-
-    else :          
-        return False, None, None, None, None
-    
-####
-#END_MODULE
-####
-
-## Takes in a TimePhrase entity and identifies if it has any calendar interval phrases like "week" or "days"
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 5 values: Boolean Flag, Value text, start index, end index, numeric string
-# Note: this should be called after everything else is checked.  The numeric string will need to have it's span and value identified by the calling method.
-def hasEmbeddedPeriodInterval(tpentity):
-    
-    #convert to all lower
-    #text_lower = tpentity.getText().lower()
-    text = tpentity.getText()
-    #remove all punctuation
-    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my period/interval term lists
-    terms = ["decades","decade","yesterday","yesterdays","today","todays","tomorrow","tomorrows","day","week","month","year",
-    "daily","weekly","monthly","yearly","century", "minute","second","hour","hourly","days","weeks","months","years",
-    "centuries", "century", "minutes","seconds","hours", "time", "shortly", "soon", "briefly", "awhile", "future", "lately"]
-    
-    ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
-    for t in text_list:
-        for r in terms:
-            ## see if r is a substring of t
-            ## if yes and the substring is at the end, extract the first substring and test to see if it is a number.
-            idx = t.find(r)
-            if(idx > 0):
-                # then the r term is not the first substring.  Extract and test.
-                sub1 = t[:idx]
-                sub2 = t[idx:]
-                # sub1 should be a number
-                if(isinstance(utils.getNumberFromText(sub1), (int))):
-                    # if it is a number then test to figure out what sub2 is.
-                    this_term = sub2
-                    start_idx, end_idx = getSpan(text_norm, this_term)
-                    if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
-                        return True, "Day", start_idx, end_idx, sub1
-                    elif this_term in ["week", "weekly", "weeks"]:
-                        return True, "Week", start_idx, end_idx, sub1
-                    elif this_term in ["month", "monthly", "months"]:
-                        return True, "Month", start_idx, end_idx, sub1
-                    elif this_term in ["year", "yearly", "years"]:
-                        return True, "Year", start_idx, end_idx, sub1
-                    elif this_term in ["century", "centuries"]:
-                        return True, "Century", start_idx, end_idx, sub1
-                    elif this_term in ["decade", "decades"]:
-                        return True, "Decade", start_idx, end_idx, sub1
-                    elif this_term in ["minute", "minutes"]:
-                        return True, "Minute", start_idx, end_idx, sub1
-                    elif this_term in ["second", "seconds"]:
-                        return True, "Second", start_idx, end_idx, sub1
-                    elif this_term in ["hour", "hourly", "hours"]:
-                        return True, "Hour", start_idx, end_idx, sub1
-                    elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
-                        return True, "Unknown", start_idx, end_idx, sub1
-                        
-                else :
-                    return False, None, None, None, None
-    return False, None, None, None, None
-####
-#END_MODULE
-####
-
-## Takes in a string that is a Calendar-Interval value and returns the associated Period value
-# @author Amy Olex
-# @param val The Calendar-Interval string
-# @return The Period value string
-def getPeriodValue(val):
-    if val == "Day":
-        return("Days")
-    elif val == "Week":
-        return("Weeks")
-    elif val == "Month":
-        return("Months")
-    elif val == "Year":
-        return("Years")
-    elif val == "Century":
-        return("Centuries")
-    elif val == "Decade":
-        return("Decades")
-    elif val == "Hour":
-        return("Hours")
-    elif val == "Minute":
-        return("Minutes")
-    elif val == "Second":
-        return("Seconds")
-    else:
-        return(val)
-
-
-## Takes in a TimePhrase entity and identifies if it has any part of day terms, like "overnight" or "morning"
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-#############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
-def hasPartOfDay(tpentity):
-    
-    #convert to all lower
-    text = tpentity.getText().lower()
-    #text = tpentity.getText()
-    #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my period lists
-    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon", "bedtime","midnight","eve"]
-    
-    #figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(partofday))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        
-        term = intersect[0]
-        start_idx, end_idx = getSpan(text_norm, term)
-        if term == "morning" or term == "mornings":
-            return True, "Morning", start_idx, end_idx
-        if term == "dawn":
-            return True, "Dawn", start_idx, end_idx
-        elif term == "evening" or term == "dusk" or term == "evenings" or term == "eve":
-            return True, "Evening", start_idx, end_idx
-        elif term == "afternoon" or term == "afternoons":
-            return True, "Afternoon", start_idx, end_idx 
-        elif term == "nights":
-            return True, "Night", start_idx, end_idx
-        elif term == "noon":
-            return True, "Noon", start_idx, end_idx
-        elif term == "bedtime":
-            return True, "Unknown", start_idx, end_idx
-        elif term == "midnight":
-            return True, "Midnight", start_idx, end_idx
-        elif term == "night" or term == "overnight" or term == "tonight":
-            m = re.search("night", text_norm)
-            sidx = m.span(0)[0]
-            eidx = m.span(0)[1]
-            return True, "Night", sidx, eidx  
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-## Takes in a TimePhrase entity and identifies if it has any season terms, like "summer" or "fall"
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasSeasonOfYear(tpentity, ref_list):
-    
-    refStart_span, refEnd_span = tpentity.getSpan()
-    
-    #convert to all lower
-    #text_lower = tpentity.getText().lower()
-    text = tpentity.getText().lower()
-    #remove all punctuation
-    text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation))).strip()
-    
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my period lists
-    seasonofyear = ["summer", "winter", "fall", "spring", "summers", "falls", "winters", "springs"]
-    
-    #figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(seasonofyear))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        
-        term = intersect[0]
-        start_idx, end_idx = getSpan(text_norm, term)
-        if term == "summer" or term == "summers":
-            start_idx, end_idx = getSpan(text_norm, "summer")
-            absStart = refStart_span + start_idx
-            absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-            
-            if postag == "NN":
-                return True, "Summer", start_idx, end_idx
-                
-        elif term == "winter" or term == "winters":
-            start_idx, end_idx = getSpan(text_norm, "winter")
-            absStart = refStart_span + start_idx
-            absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-            
-            if postag == "NN":
-                return True, "Winter", start_idx, end_idx
-                
-        elif term == "fall" or term == "falls":
-            start_idx, end_idx = getSpan(text_norm, "fall")
-            absStart = refStart_span + start_idx
-            absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-            
-            if postag == "NN":
-                return True, "Fall", start_idx, end_idx
-            
-        elif term == "spring" or term == "springs":
-            start_idx, end_idx = getSpan(text_norm, "spring")
-            absStart = refStart_span + start_idx
-            absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
-            
-            if postag == "NN":
-                return True, "Spring", start_idx, end_idx   
-            
-        else :
-            return False, None, None, None
-    
-    return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-## Takes in a TimePhrase entity and identifies if it has any part of week terms, like "weekend"
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-#############ISSUE: I've coded this to return the sub-span of the "value".  For example, the span returned for "overnight" is just for the "night" portion.  This seems to be how the gold standard xml does it, which I think is silly, but that is what it does.
-def hasPartOfWeek(tpentity):
-    
-    #convert to all lower
-    #text_lower = tpentity.getText().lower()
-    text = tpentity.getText()
-    #remove all punctuation
-    text_norm = text.translate(str.maketrans("", "", string.punctuation))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    #define my period lists
-    partofday = ["weekend", "weekends"]
-    
-    #figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(partofday))
-    
-    #only proceed if the intersect list has a length of 1 or more.
-    #For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
-    if len(intersect) == 1 :
-        
-        term = intersect[0]
-        start_idx, end_idx = getSpan(text_norm, term)
-        if term == "weekend" or term == "weekends":
-            return True, "Weekend", start_idx, end_idx
-        else :
-            return False, None, None, None
-    else :
-        return False, None, None, None
-    
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has any 4 digit 24-hour time phrases
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-# Note: This need to be called after it has checked for years
-def has24HourTime(tpentity, flags):
-    
-    #text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    #text_norm = text_lower.translate(str.maketrans("", "", ","))
-    #convert to list
-    stext = tpentity.getText()
-    text_list = stext.split(" ")
-
-    if not flags["loneDigitYear"]:
-        #loop through list looking for expression
-        for text in text_list:
-            tz_format = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text)
-            if len(text) == 4:
-                num = utils.getNumberFromText(text)
-                if num is not None:
-                    hour = utils.getNumberFromText(text[:2])
-                    minute = utils.getNumberFromText(text[2:])
-                    if (hour is not None) and (minute is not None):
-                        if (minute > 60) or (hour > 24):
-                            return False, None, None, None
-                        else:
-                            start_idx, end_idx = getSpan(stext, text)    
-                            return True, text, start_idx, end_idx
-            elif tz_format is not None:
-                time = tz_format[0]
-                # print("THIS TIME: {}".format(time))
-                hour = utils.getNumberFromText(time[0:2])
-                minute = utils.getNumberFromText(time[2:4])
-                # if (minute > 60) or (hour > 24):
-                #     return False, None, None, None
-                # else:
-                start_idx, end_idx = getSpan(stext, time)
-                return True, time, start_idx, end_idx
-
-        return False, None, None, None #if no 4 digit year expressions were found return false            
-    else:
-        return False, None, None, None #if loneDigitYearFlag has already been set
-
-
-## Takes in a single text string and identifies if it has any 4 digit year phrases
-# @author Nicholas Morton and Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasYear(tpentity, flags):
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", ' ')).strip()
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = getSpan(text_norm, text)
-            
-            result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{4})', text)
-            
-            #define regular expression to find a 4-digit year from the date format
-            if result :
-                result = result.group(0)
-                split_result = re.split('[/:-]', result)
-
-                if len(split_result) == 3:
-                    start_idx, end_idx = getSpan(text,split_result[2])
-                    return True, split_result[2], text_start+start_idx, text_start+end_idx, flags
-                else:
-                   return False, None, None, None, flags
-            ## look for year at start of date
-            ## added by Amy Olex
-            elif len(text) > 7:
-                result = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{1,2})',text)
-                if result :
-                    result = result.group(0)
-                    split_result = re.split('[/:-]', result)
-                    if len(split_result) == 3:
-                        start_idx, end_idx = getSpan(result, split_result[0])
-                        return True, split_result[0], text_start + start_idx, text_start + end_idx, flags
-                    else:
-                        return False, None, None, None, flags
-            ## special case to look for c.yyyy
-            elif len(text) == 6 :
-                result = re.search("c\.([0-9]{4})", text)
-                if result :
-                    rval = utils.getNumberFromText(result.group(1))
-                    if rval :
-                        if rval >=1500 and rval<=2050:
-                            start_idx, end_idx = result.span(1)
-                            return True, rval, start_idx, end_idx, flags
-                        
-        return False, None, None, None, flags #if no 4 digit year expressions were found return false            
-
-    else:
-        return False, None, None, None, flags #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has any 2 digit year phrases
-# @author Nicholas Morton
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def has2DigitYear(tpentity):
-
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", " "))
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = getSpan(text_norm, text)
-            
-            #define regular expression to find a 2-digit year
-            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
-            if regex and len(regex.group(0))==8:
-                if  len(regex.group(0).split("/")) == 3:
-                    start_idx, end_idx = getSpan(text,re.compile("/").split(regex.group(0))[2])    
-                    return True, re.compile("/").split(regex.group(0))[2], text_start+start_idx, text_start+end_idx
-                elif len(regex.group(0).split("-")) == 3:
-                    start_idx, end_idx = getSpan(text,re.compile("-").split(regex.group(0))[2])    
-                    return True, re.compile("-").split(regex.group(0))[2], text_start+start_idx, text_start+end_idx
-                else:
-                   return False, None, None, None
-
-        return False, None, None, None #if no 2 digit year expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has a month of year
-# @author Nicholas Morton and Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasMonthOfYear(tpentity):
-
-    #text_lower = tpentity.getText().lower() 
-    thisText = tpentity.getText()
-    #remove all punctuation
-    text_norm = thisText.translate(str.maketrans(",", " "))
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = getSpan(text_norm, text)
-            
-            
-            #define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
-            
-            if(fourdigitstart):
-                #If start with 4 digits then assum the format yyyy/mm/dd
-                start_idx, end_idx = getSpan(text,fourdigitstart[2])
-                return True, fourdigitstart[2], text_start+start_idx, text_start+end_idx
-            elif(twodigitstart):
-                #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
-                #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
-                #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
-                if int(twodigitstart[1]) <= 12:
-                    # assume mm/dd/yy
-                    start_idx, end_idx = getSpan(text,twodigitstart[1]) #twodigitstart.span(1)  #
-                    # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(1)[0]+text_start) + " : " + str(twodigitstart.group(1)))
-                    ##### Trying to DEBUG string formats like AP-JN-08-16-90 ##########
-                    return True, twodigitstart[1], text_start+start_idx, text_start+end_idx
-                elif int(twodigitstart[1]) > 12:
-                    # assume yy/mm/dd
-                    start_idx, end_idx = getSpan(text,twodigitstart[2]) #twodigitstart.span(2) #getSpan(text_norm,twodigitstart[2])
-                    return True, twodigitstart[2], text_start+start_idx, text_start+end_idx
-                else:
-                    return False, None, None, None
-
-        return False, None, None, None #if no 2 digit month expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has a day of the month in numeric format
-# @author Nicholas Morton and Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasDayOfMonth(tpentity):
-
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", " "))
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = getSpan(text_norm, text)
-            
-            #define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})',text)
-            
-            if(fourdigitstart):
-                #If start with 4 digits then assum the format yyyy/mm/dd
-                start_idx, end_idx = getSpan(text,fourdigitstart[3])
-                return True, fourdigitstart[3], text_start+start_idx, text_start+end_idx
-            elif(twodigitstart):
-                #If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
-                #Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
-                #check to see if the middle is text, if yes then treat the first 2 digits as a day
-                if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12:
-                    # if the second entity is all characters and is a valid text month get the first number as the day
-                    if int(twodigitstart[1]) <= 31:
-                        start_idx, end_idx = getSpan(text,twodigitstart[1])
-                        return True, twodigitstart[1], text_start+start_idx, text_start+end_idx
-                    else:
-                        return False, None, None, None
-                    
-                #check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
-                elif int(twodigitstart[1]) <= 12:
-                    # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
-                    # assume mm/dd/yy
-                    start_idx, end_idx = getSpan(text,twodigitstart[2])
-                    return True, twodigitstart[2], text_start+start_idx, text_start+end_idx
-                elif int(twodigitstart[1]) > 12:
-                    # assume yy/mm/dd
-                    start_idx, end_idx = getSpan(text,twodigitstart[3])
-                    return True, twodigitstart[3], text_start+start_idx, text_start+end_idx
-                else:
-                    return False, None, None, None
-
-        return False, None, None, None #if no 2 digit month expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has a hh:mm:ss
-# @author Nicholas Morton
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasTimeString(tpentity):
-
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            #define regular expression to find a numeric hour
-            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                if len(text.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(text)[0]) 
-                    return True, text, start_idx, end_idx
-                    
-                else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return false            
-                
-
-        return False, None, None, None #if no 2 digit hour expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has a hour of a day
-# @author Nicholas Morton and Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasHourOfDay(tpentity):
-
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            #define regular expression to find a numeric hour
-            
-            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
-                if len(match.split(":")) == 2 or len(match.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[0]) 
-                    return True, re.compile(":").split(match)[0], start_idx, end_idx                    
-                else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return false
-
-        return False, None, None, None #if no 2 digit hour expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has a minute of an hour
-# @author Nicholas Morton
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasMinuteOfHour(tpentity):
-
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
-    #convert to list
-    text_list = text_norm.split(" ")
-    
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            #define regular expression to find a 2-digit minute
-            
-            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
-                if len(match.split(":")) == 2 or len(match.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[1]) 
-                    return True, re.compile(":").split(match)[1], start_idx, end_idx                    
-                else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return false
-
-        return False, None, None, None #if no 2 digit day expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-## Takes in a single text string and identifies if it has a second of an minute
-# @author Nicholas Morton
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasSecondOfMinute(tpentity):
-
-    text_lower = tpentity.getText().lower() 
-    #remove all punctuation
-    text_norm = text_lower.translate(str.maketrans("", "", ","))
-    #convert to list
-    text_list = text_norm.split(" ")
-
-    if len(text_list)>0:
-        #loop through list looking for expression
-        for text in text_list:
-            #define regular expression to find a 2-digit minute
-            
-            if(re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text)):  #checks for HH:MM:SS String
-                match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$',text).group(0)
-                if len(match.split(":")) == 3:
-                    start_idx, end_idx = getSpan(text_norm,re.compile(":").split(match)[2]) 
-                    return True, re.compile(":").split(match)[2], start_idx, end_idx                    
-                else:
-                    return False, None, None, None #if no 2 digit hour expressions were found return false
-
-        return False, None, None, None #if no 2 digit day expressions were found return false            
-    else:
-
-        return False, None, None, None #if the text_list does not have any entries, return false
-
-####
-#END_MODULE
-####
-
-# @author Amy Olex
-# @param tpentity The TimePhrase entity object being parsed
-# @return Outputs 4 values: Boolean Flag
-def hasExactDuration(tpentity):
-    
-    if "P#D":
-        return True    
-    else:
-        return False
-
-####
-#END_MODULE
 ####
 
 ## Takes in a single text string and identifies if it has a modifier text
@@ -2970,6 +2889,70 @@ def hasModifierText(tpentity):
 #END_MODULE
 ####
 
+## Takes in a single text string and identifies if it has any modufying phrases
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag, Value text, start index, end index
+def hasModifier(tpentity):
+    # convert to all lower
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation)))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    # define my day lists
+    modifiers = ["this", "next", "last", "a", "each", "between", "from"]
+
+    # figure out if any of the tokens in the text_list are also in the modifiers list
+    intersect = list(set(text_list) & set(modifiers))
+
+    # only proceed if the intersect list has a length of 1 or more.
+    # I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
+    if len(intersect) == 1:
+        # test if the intersect list contains which days.
+        if intersect[0] == "this":
+            start_idx = text_norm.index("this")
+            end_idx = start_idx + len("this")
+            return True, "This", start_idx, end_idx
+
+        if intersect[0] == "next":
+            start_idx = text_norm.index("next")
+            end_idx = start_idx + len("next")
+            return True, "Next", start_idx, end_idx
+
+        if intersect[0] == "last":
+            start_idx = text_norm.index("last")
+            end_idx = start_idx + len("last")
+            return True, "Last", start_idx, end_idx
+
+        if intersect[0] == "a":
+            start_idx = text_norm.index("a")
+            end_idx = start_idx + len("a")
+            return True, "Period", start_idx, end_idx
+
+        if intersect[0] == "each":
+            start_idx = text_norm.index("each")
+            end_idx = start_idx + len("each")
+            return True, "Period", start_idx, end_idx
+
+        if intersect[0] == "between":
+            start_idx = text_norm.index("between")
+            end_idx = start_idx + len("between")
+            return True, "Period", start_idx, end_idx
+
+        if intersect[0] == "from":
+            start_idx = text_norm.index("from")
+            end_idx = start_idx + len("from")
+            return True, "Period", start_idx, end_idx
+        else:
+            return False, None, None, None
+    else:
+        return False, None, None, None
+
+####
+# END_MODULE
+####
 
 ## Identifies the local span of the serach_text in the input "text"
 # @author Amy Olex
@@ -2983,5 +2966,20 @@ def getSpan(text, search_text):
         end_idx = start_idx + len(search_text)
     except ValueError:
         return None, None
-        
+
     return start_idx, end_idx
+
+# @author Amy Olex
+# @param tpentity The TimePhrase entity object being parsed
+# @return Outputs 4 values: Boolean Flag
+# def hasExactDuration(tpentity):
+#
+#     if "P#D":
+#         return True
+#     else:
+#         return False
+
+####
+#END_MODULE
+####
+
