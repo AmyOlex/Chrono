@@ -329,7 +329,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[period].set_modifier(chrono_list[modifier].get_id())
     elif modifier and interval:
         chrono_list[interval].set_modifier(chrono_list[modifier].get_id())
-    else:
+    elif modifier:
         # Delete the modifier entity if there is no period or interval to link it to.  Not sure if this will work for all cases.
         print("Deleting Modifier")
         del chrono_list[modifier]
