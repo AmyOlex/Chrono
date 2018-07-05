@@ -200,6 +200,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
             print("AMPM Value: " + str(chrono_list[e]))
             ampm = e
         elif e_type == "Modifier":
+            print("Modifier Value: " + str(chrono_list[e]))
             modifier = e
         
     ## Now identify all NEXT and LAST entities
@@ -325,11 +326,11 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         del chrono_list[tz]
 
     # Link modifiers
-    if modifier and period:
+    if modifier is not None and period is not None:
         chrono_list[period].set_modifier(chrono_list[modifier].get_id())
-    elif modifier and interval:
+    elif modifier is not None and interval is not None:
         chrono_list[interval].set_modifier(chrono_list[modifier].get_id())
-    elif modifier:
+    elif modifier is not None and period is None and interval is None:
         # Delete the modifier entity if there is no period or interval to link it to.  Not sure if this will work for all cases.
         print("Deleting Modifier")
         del chrono_list[modifier]
