@@ -390,7 +390,7 @@ def hasModifierText(text):
     # convert to list
     text_list = text_norm.split(" ")
 
-    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few", "approximately"]
+    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few", "approximately", "<"]
 
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)

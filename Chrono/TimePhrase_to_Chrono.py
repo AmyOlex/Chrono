@@ -157,6 +157,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
     mod = None
     tz = None
     ampm = None
+    modifier = None
    
     #print("in Build Subintervals") 
     ## loop through all entities and pull out the approriate IDs
@@ -198,6 +199,8 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         elif e_type == "AMPM-Of-Day":
             print("AMPM Value: " + str(chrono_list[e]))
             ampm = e
+        elif e_type == "Modifier":
+            modifier = e
         
     ## Now identify all NEXT and LAST entities
     ## Need to edit to figure out if a modifier word exists first, then test for year, etc.
@@ -320,6 +323,16 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
         print("Deleting TimeZone")
         del chrono_list[tz]
+
+    # Link modifiers
+    if modifier and period:
+        chrono_list[period].set_modifier(chrono_list[modifier].get_id())
+    elif modifier and interval:
+        chrono_list[interval].set_modifier(chrono_list[modifier].get_id())
+    else:
+        # Delete the modifier entity if there is no period or interval to link it to.  Not sure if this will work for all cases.
+        print("Deleting Modifier")
+        del chrono_list[modifier]
     
     
     ##### Notes: This next bit is complicated.  If I include it I remove some False Positives, but I also create some False Negatives.

@@ -461,8 +461,8 @@ def temporalTest(tok):
         return True
     if tt.hasTempText(tok):
         return True
-    # if tt.hasModifierText(tok):
-    #     return True
+    if tt.hasModifierText(tok):
+        return True
     
     
 ####
