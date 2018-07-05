@@ -2155,6 +2155,8 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         elif(classifier[1] == "SVM"):
             feat_array = [int(i) for i in my_features.values()]
             my_class = classifier[0].predict([feat_array])[0]
+        elif (classifier[1] == "RF"):
+            my_class = classifier[0].predict(my_features)
         else:
             my_class = classifier[0].classify(my_features)
             #print("Class: " + str(my_class) + " : Start: " + str(abs_Sspan) + " : End: "+ str(abs_Espan))
