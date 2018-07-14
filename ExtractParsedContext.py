@@ -68,19 +68,28 @@ if __name__ == "__main__":
     
     def writeTargetSpans(infile, entitylist, context, outfile):
         linestring = open(infile, 'r').read()
+        term_set = set()
         
         for entity in entitylist:
             start = max(0,int(entity[2])-context)
             end = min(len(linestring), int(entity[3])+context)
-            outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + "), Value: " + linestring[entity[2]:entity[3]] + "\n")
-            outfile.write(linestring[start:end])
+            
+            if context > 0:
+                outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + "), Value: " + linestring[entity[2]:entity[3]])
+                outfile.write("\n" + linestring[start:end])
         
+            else:
+                term_set = term_set.union({linestring[start:end].lower()})
+        
+        return(term_set)
     
     
     
     ## Loop over each file in the file list and parse it
     out = open(args.o, 'w')
     inputfiles = open(args.i, 'r').read().split("\n")
+    terms = set()
+    
     for f in inputfiles:
         
         ## Open the XML file and parse it
@@ -95,10 +104,22 @@ if __name__ == "__main__":
             ## Pass this information to extract the text segments and write to file
             path2 = args.t + "/" + f + "/" + f
             if(os.path.isfile(path2)):
-                out.write("\n\n*****\nFile: " + f)
-                writeTargetSpans(path2, myElist, int(args.c), out)
+                if int(args.c) > 0:
+                    out.write("\n\n*****\nFile: " + f)
+                
+                tmp_terms = writeTargetSpans(path2, myElist, int(args.c), out)
+                #print("my tmp_terms: " + str(tmp_terms))
+                
+                terms = terms.union(tmp_terms)
+                #print("my terms: " + str(terms))
         else:
-            out.write("\n\n*****\nSkipping File: " + f)
+            if int(args.c) > 0:
+                out.write("\n\n*****\nSkipping File: " + f)
+    
+    if int(args.c) == 0:
+        for t in sorted(terms):
+            out.write("\n" + t)
+    
     out.close()
     print("Completed!")
     
