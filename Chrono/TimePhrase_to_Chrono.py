@@ -2125,7 +2125,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
-    if boo and re.search("yesterday|yesterdays|tomorrow|tomorrows|today|todays|daily", s.getText()):
+    if boo and re.search("yesterday|yesterdays|tomorrow|tomorrows|today|todays|daily|/min|/week", s.getText()):
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
