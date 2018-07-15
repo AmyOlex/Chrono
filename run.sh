@@ -64,6 +64,58 @@ then
 
 
 	fi
+	
+	if [ $LOC = "willow" ]
+	then
+		ANAFORA_DIR="/home/alolex/ChronoAnalysis_031918/anaforatools"
+
+		if [ $DATASET = "test" ]
+		then
+			DATA_DIR="/home/share/data/THYME/ColonTrainData/input"
+			OUT_DIR="/home/alolex/ChronoAnalysis_031918/ChronoResults/colonTrain_baselineTest"
+			ML_DATA_DIR="/home/alolex/ChronoAnalysis_031918/Chrono/sample_files"
+		fi
+		if [ $DATASET = "train" ]
+		then
+			DATA_DIR="/home/alolex/THYME_Data/THYMEColonFinal_Train/input"
+			OUT_DIR="/home/alolex/ChronoAnalysis_031918/ChronoResults/colonTrain_dev2"
+			ML_DATA_DIR="/home/alolex/ChronoAnalysis_031918/Chrono/sample_files"
+		fi
+		if [ $ML_DATA = "news5" ]
+		then
+			ML_DATA_FILE="official_train_MLmatrix_Win5_012618_data.csv"
+			ML_CLASS_FILE="official_train_MLmatrix_Win5_012618_class.csv"
+		fi
+		if [ $ML_DATA = "newsclin5" ]
+		then
+			ML_DATA_FILE="Newswire-THYMEColon_train_Win5_data.csv"
+			ML_CLASS_FILE="Newswire-THYMEColon_train_Win5_class.csv"
+		
+		fi
+		if [ $ML_DATA = "clin5" ]
+		then
+			ML_DATA_FILE="THYMEColon_train_Win5_data.csv"
+                        ML_CLASS_FILE="THYMEColon_train_Win5_class.csv"
+		fi
+		if [ $ML_DATA = "newsclin3" ]
+                then
+                        ML_DATA_FILE="Newswire-THYMEColon_train_Win3_data.csv"
+                        ML_CLASS_FILE="Newswire-THYMEColon_train_Win3_class.csv"
+
+                fi
+		if [ $ML_DATA = "news3" ]
+                then
+                        ML_DATA_FILE="official_train_MLmatrix_Win3_data.csv"
+                        ML_CLASS_FILE="official_train_MLmatrix_Win3_class.csv"
+                fi
+
+
+	fi
+	
+	
+	
+	
+	
 	python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 
 	cd $ANAFORA_DIR
