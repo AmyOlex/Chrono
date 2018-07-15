@@ -2121,11 +2121,11 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    print("In builsPeriodInterval(), TimePhrase Text: " + s.getText())
+    print("In buildPeriodInterval(), TimePhrase Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
-    if boo and s.getText() in ["yesterday", "yesterdays", "tomorrow", "tomorrows", "today", "todays", "daily"]:
+    if boo and re.search("yesterday|yesterdays|tomorrow|tomorrows|today|todays|daily", s.getText()):
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
@@ -2293,7 +2293,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, calendar_type=val)
                 chrono_id = chrono_id + 1
         
-            #Extract the number and idetify the span of numstr
+            #Extract the number and identify the span of numstr
             
             substr = s.getText()[:idxstart] ## extract entire first part of TimePhrase phrase
             m = re.search('([0-9]{1,2})', substr) #search for an integer in the subphrase and extract it's coordinates
@@ -2443,11 +2443,9 @@ def hasEmbeddedPeriodInterval(tpentity):
 
     # define my period/interval term lists
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
-             "month", "year",
-             "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", "days", "weeks",
-             "months", "years",
-             "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", "soon", "briefly", "awhile",
-             "future", "lately"]
+             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
+             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
+             "soon", "briefly", "awhile", "future", "lately", "annual", "date", "hr", "hrs", "min", "mins", "quarter"]
 
     ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
@@ -2466,6 +2464,7 @@ def hasEmbeddedPeriodInterval(tpentity):
                     start_idx, end_idx = getSpan(text_norm, this_term)
                     if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows",
                                      "today", "todays"]:
+                        print("ACK! Found an Embedded Day")
                         return True, "Day", start_idx, end_idx, sub1
                     elif this_term in ["week", "weekly", "weeks"]:
                         return True, "Week", start_idx, end_idx, sub1
