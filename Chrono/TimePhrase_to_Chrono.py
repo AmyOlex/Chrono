@@ -2125,7 +2125,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
-    if boo and s.getText() in ["yesterday", "yesterdays", "tomorrow","tomorrows","today","todays"]:
+    if boo and s.getText() in ["yesterday", "yesterdays", "tomorrow", "tomorrows", "today", "todays", "daily"]:
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
@@ -2355,11 +2355,9 @@ def hasPeriodInterval(tpentity):
 
     # define my period lists
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
-             "month", "year",
-             "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", "days", "weeks",
-             "months", "years",
-             "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", "soon", "briefly", "awhile",
-             "future", "lately"]
+             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
+             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
+             "soon", "briefly", "awhile", "future", "lately", "annual", "date", "hr", "hrs", "min", "mins", "quarter"]
 
     # figure out if any of the tokens in the text_list are also in the interval list
     intersect = list(set(text_list) & set(terms))
@@ -2379,19 +2377,19 @@ def hasPeriodInterval(tpentity):
             return True, "Week", start_idx, end_idx, False
         elif this_term in ["month", "monthly", "months"]:
             return True, "Month", start_idx, end_idx, False
-        elif this_term in ["year", "yearly", "years"]:
+        elif this_term in ["year", "yearly", "years", "annual"]:
             return True, "Year", start_idx, end_idx, False
         elif this_term in ["century", "centuries"]:
             return True, "Century", start_idx, end_idx, False
         elif this_term in ["decade", "decades"]:
             return True, "Decade", start_idx, end_idx, False
-        elif this_term in ["minute", "minutes"]:
+        elif this_term in ["minute", "minutes", "min", "mins"]:
             return True, "Minute", start_idx, end_idx, False
         elif this_term in ["second", "seconds"]:
             return True, "Second", start_idx, end_idx, False
-        elif this_term in ["hour", "hourly", "hours"]:
+        elif this_term in ["hour", "hourly", "hours", "hr", "hrs"]:
             return True, "Hour", start_idx, end_idx, False
-        elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately"]:
+        elif this_term in ["time", "shortly", "soon", "briefly", "awhile", "future", "lately", "quarter"]:
             return True, "Unknown", start_idx, end_idx, False
         else:
             return False, None, None, None, None

@@ -60,9 +60,20 @@ if __name__ == "__main__":
             eid = item.getElementsByTagName('id')[0].firstChild.data
             espan = item.getElementsByTagName('span')[0].firstChild.data
             etype = item.getElementsByTagName('type')[0].firstChild.data
+            eproperties = item.getElementsByTagName('properties')
+            
+            if(len(eproperties[0].getElementsByTagName('Number')) == 1):
+                tmp = eproperties[0].getElementsByTagName('Number')[0].firstChild
+                if tmp is not None:
+                    enumber = eproperties[0].getElementsByTagName('Number')[0].firstChild.data
+                else:
+                    enumber = "None"
+            else:
+                enumber = ""
+            
             if etype == entity:
                 start, end = espan.split(",")
-                entitylist.append([eid, etype, int(start), int(end)])
+                entitylist.append([eid, etype, int(start), int(end), enumber])
         return(entitylist)
     
     
@@ -75,7 +86,7 @@ if __name__ == "__main__":
             end = min(len(linestring), int(entity[3])+context)
             
             if context > 0:
-                outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + "), Value: " + linestring[entity[2]:entity[3]])
+                outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + "), Value: " + linestring[entity[2]:entity[3]] + ", Number: " + entity[4])
                 outfile.write("\n" + linestring[start:end])
         
             else:
