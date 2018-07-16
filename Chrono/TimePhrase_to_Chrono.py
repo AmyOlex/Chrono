@@ -194,13 +194,13 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
             # print("FOUND Mod")
             mod = e
         elif e_type == "Time-Zone":
-            print("Time Zone Value: " + str(chrono_list[e]))
+            #print("Time Zone Value: " + str(chrono_list[e]))
             tz = e
         elif e_type == "AMPM-Of-Day":
-            print("AMPM Value: " + str(chrono_list[e]))
+            #print("AMPM Value: " + str(chrono_list[e]))
             ampm = e
         elif e_type == "Modifier":
-            print("Modifier Value: " + str(chrono_list[e]))
+            #print("Modifier Value: " + str(chrono_list[e]))
             modifier = e
         
     ## Now identify all NEXT and LAST entities
@@ -306,7 +306,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[hour].set_ampm(chrono_list[ampm].get_id())
     elif ampm is not None and hour is None:
         # Delete the AMPM entity if not hour associated with it.
-        print("Deleting AMPM")
+        #print("Deleting AMPM")
         del chrono_list[ampm]
         reindex = True
     
@@ -315,14 +315,14 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
             #print(chrono_list[e].get_id())
             e_type = chrono_list[e].get_type()
             if e_type == "Time-Zone":
-                print("Reindexing Time Zone Value: " + str(chrono_list[e]))
+                #print("Reindexing Time Zone Value: " + str(chrono_list[e]))
                 tz = e
         
     if tz is not None and hour is not None:
         chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
     elif tz is not None and hour is None:
         # Delete the tz entity if there is no hour to link it to.  Not sure if this will work for all cases.
-        print("Deleting TimeZone")
+        #print("Deleting TimeZone")
         del chrono_list[tz]
 
     # Link modifiers
@@ -332,7 +332,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         chrono_list[interval].set_modifier(chrono_list[modifier].get_id())
     elif modifier is not None and period is None and interval is None:
         # Delete the modifier entity if there is no period or interval to link it to.  Not sure if this will work for all cases.
-        print("Deleting Modifier")
+        #print("Deleting Modifier")
         del chrono_list[modifier]
     
     
@@ -2121,7 +2121,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    print("In buildPeriodInterval(), TimePhrase Text: " + s.getText())
+    #print("In buildPeriodInterval(), TimePhrase Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
@@ -2340,29 +2340,29 @@ def hasPeriodInterval(tpentity):
     # convert to all lower
     # text_lower = tpentity.getText().lower()
     text = tpentity.getText().lower()
-    print("In hasPeriodInterval text: ", text)
+    #print("In hasPeriodInterval text: ", text)
 
     reg = re.search("date/time", text)  ##we don't want to annotate these specific types of mentions
     if reg:
-        print("Found date/time, returning FALSE")
+        #print("Found date/time, returning FALSE")
         return False, None, None, None, None
 
     # remove all punctuation
     text_norm = text.translate(str.maketrans(string.punctuation, ' ' * len(string.punctuation))).strip()
     # convert to list
     text_list = text_norm.split(" ")
-    print("text list: " + str(text_list))
+    #print("text list: " + str(text_list))
 
     # define my period lists
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
              "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
              "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
-             "soon", "briefly", "awhile", "future", "lately", "annual", "date", "hr", "hrs", "min", "mins", "quarter"]
+             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"]  #, "date"]
 
     # figure out if any of the tokens in the text_list are also in the interval list
     intersect = list(set(text_list) & set(terms))
 
-    print("My intersection: " + str(intersect))
+    #print("My intersection: " + str(intersect))
 
     # only proceed if the intersect list has a length of 1 or more.
     # For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.
@@ -2404,7 +2404,7 @@ def hasPeriodInterval(tpentity):
                 start_idx, end_idx = getSpan(text_norm, this_term)
 
                 if this_term in ["daily", "days"]:
-                    print("Returning a Daily")
+                    #print("Returning a Daily")
                     return True, "Day", start_idx, end_idx, False
                 elif this_term in ["weekly", "weeks"]:
                     return True, "Week", start_idx, end_idx, False
@@ -2445,7 +2445,7 @@ def hasEmbeddedPeriodInterval(tpentity):
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
              "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
              "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
-             "soon", "briefly", "awhile", "future", "lately", "annual", "date", "hr", "hrs", "min", "mins", "quarter"]
+             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
 
     ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
@@ -2464,7 +2464,7 @@ def hasEmbeddedPeriodInterval(tpentity):
                     start_idx, end_idx = getSpan(text_norm, this_term)
                     if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows",
                                      "today", "todays"]:
-                        print("ACK! Found an Embedded Day")
+                        #print("ACK! Found an Embedded Day")
                         return True, "Day", start_idx, end_idx, sub1
                     elif this_term in ["week", "weekly", "weeks"]:
                         return True, "Week", start_idx, end_idx, sub1
