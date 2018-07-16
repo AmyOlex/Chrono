@@ -2131,10 +2131,14 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
                                                         end_span=abs_Espan, calendar_type=val, number=None)
         chrono_id = chrono_id + 1
-        my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+        
+        if re.search("yesterday|yesterdays", s.getText()):
+            
+            my_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
                                                    end_span=abs_Espan, repeating_interval=str(chrono_id - 1) + "entity")
-        chrono_id = chrono_id + 1
-        chrono_list.append(my_last_entity)
+            chrono_id = chrono_id + 1
+            chrono_list.append(my_last_entity)
+        
         chrono_list.append(my_entity)
 
     # FIND terms that are always marked as periods!
