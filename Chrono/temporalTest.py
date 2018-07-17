@@ -367,8 +367,9 @@ def hasTempText(text):
     text_list = text_norm.split(" ")
     
     temp_text = ["this","now", "current", "last", "before", "previously", "ago", "pre", "after", "later", 
-    "earlier", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
-    "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length"]
+    "earlier", "early", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
+    "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length", "final", "latest", "prior", "recent",
+    "recently"]
     
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
