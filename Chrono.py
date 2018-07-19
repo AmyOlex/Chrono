@@ -45,7 +45,7 @@ from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
 
-debug=True
+debug=False
 ## This is the driver method to run all of Chrono.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.

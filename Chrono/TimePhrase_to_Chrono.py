@@ -73,12 +73,12 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in TimePhraseList:
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
         # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
-        chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False, "fourdigityear":False}
+        chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False, "fourdigityear":False, "twodigityear":False}
 
         #Parse out Year function
         chrono_tmp_list, chrono_id, chrono_time_flags = buildYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
@@ -155,10 +155,14 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
     interval = None
     period = None
     nth = None
-    mod = None
+    nxt = None
+    this = None
     tz = None
     ampm = None
     modifier = None
+    last = None
+    
+    entity_count = 0
    
     #print("in Build Subintervals") 
     ## loop through all entities and pull out the approriate IDs
@@ -169,47 +173,68 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         
         if e_type == "Two-Digit-Year" or e_type == "Year":
             year = e
+            entity_count = entity_count + 1
             # print("YEAR VALUE: " + str(chrono_list[e].get_value()))
         elif e_type == "Month-Of-Year":
             # print("FOUND Month")
             month = e
+            entity_count = entity_count + 1
         elif e_type == "Day-Of-Month":
             day = e
+            entity_count = entity_count + 1
         elif e_type == "Hour-Of-Day":
             hour = e
+            entity_count = entity_count + 1
         elif e_type == "Minute-Of-Hour":
             minute = e
+            entity_count = entity_count + 1
         elif e_type == "Second-Of-Minute":
             second = e
+            entity_count = entity_count + 1
         elif e_type == "Part-Of-Day":
             daypart = e
+            entity_count = entity_count + 1
         elif e_type == "Day-Of-Week":
             dayweek = e
+            entity_count = entity_count + 1
         elif e_type == "Calendar-Interval":
             interval = e
+            entity_count = entity_count + 1
         elif e_type == "Period":
             period = e
+            entity_count = entity_count + 1
         elif e_type == "NthFromStart":
             nth = e
-        elif e_type == "This" or e_type == "Next" or e_type == "Last":
-            # print("FOUND Mod")
-            mod = e
-        elif e_type == "Time-Zone":
-            #print("Time Zone Value: " + str(chrono_list[e]))
-            tz = e
-        elif e_type == "AMPM-Of-Day":
-            #print("AMPM Value: " + str(chrono_list[e]))
-            ampm = e
-        elif e_type == "Modifier":
-            #print("Modifier Value: " + str(chrono_list[e]))
-            modifier = e
+            entity_count = entity_count + 1
+        elif e_type == "Next":
+            nxt = e
+            entity_count = entity_count + 1
+        elif e_type == "This":
+            this = e
+            entity_count = entity_count + 1
         
-    ## Now identify all NEXT and LAST entities
+        elif e_type == "Time-Zone":
+            tz = e
+            entity_count = entity_count + 1
+        elif e_type == "AMPM-Of-Day":
+            ampm = e
+            entity_count = entity_count + 1
+        elif e_type == "Modifier":
+            modifier = e
+            entity_count = entity_count + 1
+        elif e_type == "Last":
+            last = e
+            entity_count = entity_count + 1
+            
+        
+        
+    ## Now add additional NEXT and LAST entities where needed
     ## Need to edit to figure out if a modifier word exists first, then test for year, etc.
     ## need to look specifically for modifier words in the other methods.  This method catches full dates that are next or last with no modifier words.
+    ## update: I now have a buildLast() method that identifies the modifier words.
     if year is None:
         if dct is not None:
-            if month is not None and mod is None:                
+            if month is not None and this is None and nxt is None and last is None:                
                 mStart = chrono_list[month].get_start_span()
                 mEnd = chrono_list[month].get_end_span()
                 
@@ -235,7 +260,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
             ##having a problem where a past day is being referenced without it being explicit.  
             ##need to look at the closest preceding verb tense to see if it is past or present I think.
             ##will need the reference list to do this.
-            if dayweek is not None and mod is None:                
+            if dayweek is not None and this is None and nxt is None and last is None:                
                 mStart = chrono_list[dayweek].get_start_span()
                 mEnd = chrono_list[dayweek].get_end_span()
                 
@@ -302,15 +327,24 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
         # print("Adding interval sub-interval")
         chrono_list[nth].set_repeating_interval(chrono_list[interval].get_id())
     
+    
+    ## Test to see if we have a Last entity AND the entity count is only 1
+    ## If yes, then remove the Last entity
+    ## Current not implementing this, but may need to add it in the future.  This removal of entities reduced our recall by half
+#    if last is not None and entity_count == 1:
+#        print("Found a Last without a temporal entity")
+#        del chrono_list[last]
+        
     reindex = False
     if ampm is not None and hour is not None:
         chrono_list[hour].set_ampm(chrono_list[ampm].get_id())
     elif ampm is not None and hour is None:
-        # Delete the AMPM entity if not hour associated with it.
+        # Delete the AMPM entity if no hour associated with it.
         #print("Deleting AMPM")
         del chrono_list[ampm]
         reindex = True
-    
+
+    ## I know I need to reindex here, but I honestly forgot exactly why.
     if reindex:
         for e in range(0,len(chrono_list)):
             #print(chrono_list[e].get_id())
@@ -318,6 +352,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
             if e_type == "Time-Zone":
                 #print("Reindexing Time Zone Value: " + str(chrono_list[e]))
                 tz = e
+                    
         
     if tz is not None and hour is not None:
         chrono_list[hour].set_time_zone(chrono_list[tz].get_id())
@@ -947,7 +982,11 @@ def hasYear(tpentity, flags):
 def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b and not flags["fourdigityear"]:
+        
+        print("Found a 2-digit year phrase: " + str(s))
+        print("The year is: " + text)
         #In most cases this will be at the end of the Span
+        flags["twodigityear"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan-startSpan)
@@ -1051,6 +1090,36 @@ def has2DigitYear(tpentity):
             text_start, text_end = getSpan(text_norm, text)
 
             # define regular expression to find a 2-digit year
+            result = re.search('([0-9]{1,2})[-/]([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2})', text)
+            
+            if result:
+                result = result.group(0) 
+                split_result = re.split('[/-]', result)
+                if len(split_result) == 3:
+                    start_idx, end_idx = getSpan(result, split_result[2])
+                    return True, split_result[2], text_start + start_idx, text_start + end_idx
+                else:
+                    return False, None, None, None
+
+        return False, None, None, None  # if no 2 digit year expressions were found return false
+    else:
+        return False, None, None, None  # if the text_list does not have any entries, return false
+
+'''''
+def has2DigitYear(tpentity):
+    text_lower = tpentity.getText().lower()
+    # remove all punctuation
+    text_norm = text_lower.translate(str.maketrans(",", " "))
+    # convert to list
+    text_list = text_norm.split(" ")
+
+    if len(text_list) > 0:
+        # loop through list looking for expression
+        for text in text_list:
+            # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
+            text_start, text_end = getSpan(text_norm, text)
+
+            # define regular expression to find a 2-digit year
             regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
             if regex and len(regex.group(0)) == 8:
                 if len(regex.group(0).split("/")) == 3:
@@ -1066,8 +1135,7 @@ def has2DigitYear(tpentity):
     else:
 
         return False, None, None, None  # if the text_list does not have any entries, return false
-
-
+'''
 ####
 # END_MODULE
 ####
