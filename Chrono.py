@@ -45,7 +45,7 @@ from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
 
-debug=False
+debug=True
 ## This is the driver method to run all of Chrono.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -149,12 +149,15 @@ if __name__ == "__main__":
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
         
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in my_refToks : print(tok)
+
     
         ## mark all ref tokens if they are numeric or temporal
         chroList = utils.markTemporal(my_refToks)
+        
+        if(debug) :
+            print("REFERENCE TOKENS:\n")
+            for tok in chroList : print(tok)
+            
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
     
 #        for c in tempPhrases:
