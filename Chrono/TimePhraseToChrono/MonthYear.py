@@ -3,7 +3,10 @@ import re
 import Chrono.utils
 from Chrono import chronoEntities as chrono
 from Chrono import utils
-
+from Chrono.TimePhraseToChrono.DayOfMonth import hasDayOfMonth
+from Chrono.TimePhraseToChrono.HourOfDay import hasHourOfDay
+from Chrono.TimePhraseToChrono.MinuteOfHour import hasMinuteOfHour
+from Chrono.TimePhraseToChrono.SecondOfMinute import hasSecondOfMinute
 
 ## Takes in list of TimePhrase output and converts to ChronoEntity
 # @author Nicholas Morton and Amy Olex
