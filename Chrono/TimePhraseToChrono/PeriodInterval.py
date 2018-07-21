@@ -4,7 +4,7 @@ import string
 import numpy as np
 
 from Chrono import chronoEntities as chrono, utils
-from Chrono.BuildEntities import hasModifier
+from Chrono.TimePhraseToChrono.Modifier import hasModifier
 from Chrono.utils import calculateSpan
 from chronoML import ChronoKeras
 

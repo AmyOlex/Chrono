@@ -1,3 +1,4 @@
+import Chrono.TimePhraseToChrono.Modifier
 from Chrono import chronoEntities as chrono
 import string
 from Chrono import BuildEntities as be
@@ -19,7 +20,7 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
         chrono_list.append(my_entity)
         chrono_id = chrono_id + 1
         # check here to see if it has a modifier
-        hasMod, mod_type, mod_start, mod_end = be.hasModifier(s)
+        hasMod, mod_type, mod_start, mod_end = Chrono.TimePhraseToChrono.Modifier.hasModifier(s)
         if (hasMod):
             if mod_type == "This":
                 chrono_list.append(chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
