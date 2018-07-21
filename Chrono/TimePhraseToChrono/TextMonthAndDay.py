@@ -4,7 +4,8 @@ import string
 from nltk import WhitespaceTokenizer
 
 from Chrono import chronoEntities as chrono, utils
-from Chrono.BuildEntities import getSpan, hasModifier
+from Chrono.BuildEntities import hasModifier
+from Chrono.utils import calculateSpan
 
 
 ## Parses a TimePhraseEntity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
@@ -54,7 +55,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
             if num is not None:
                 if num <= 31 and not flags["day"]:
                     flags["day"] = True
-                    day_startidx, day_endidx = getSpan(s.getText(), str(num))#substr)
+                    day_startidx, day_endidx = calculateSpan(s.getText(), str(num))#substr)
                     abs_Sspan = ref_Sspan + day_startidx
                     abs_Espan = ref_Sspan + day_endidx
                     my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
@@ -75,7 +76,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                             chrono_id = chrono_id + 1
                 elif num >=1500 and num <=2050 and not flags["fourdigityear"] and not flags["loneDigitYear"]:
                     flags["fourdigityear"] = True
-                    year_startidx, year_endidx = getSpan(s.getText(), substr)
+                    year_startidx, year_endidx = calculateSpan(s.getText(), substr)
                     abs_Sspan = ref_Sspan + year_startidx
                     abs_Espan = ref_Sspan + year_endidx
 
@@ -93,7 +94,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                     num = utils.getNumberFromText(tokenized_text[i])
                     if num is not None:
                         if num <= 31:
-                            day_startidx, day_endidx = getSpan(s.getText(), tokenized_text[i])
+                            day_startidx, day_endidx = calculateSpan(s.getText(), tokenized_text[i])
                             abs_Sspan = ref_Sspan + day_startidx
                             abs_Espan = ref_Sspan + day_endidx
                             my_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num)
@@ -114,7 +115,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                                     chrono_id = chrono_id + 1
                         elif num >=1500 and num <=2050 and not flags["fourdigityear"] and not flags["loneDigitYear"]:
                             flags["fourdigityear"] = True
-                            year_startidx, year_endidx = getSpan(s.getText(), tokenized_text[i])
+                            year_startidx, year_endidx = calculateSpan(s.getText(), tokenized_text[i])
                             abs_Sspan = ref_Sspan + year_startidx
                             abs_Espan = ref_Sspan + year_endidx
 
@@ -175,7 +176,7 @@ def hasTextMonth(tpentity, ref_list):
             if answer2 is not None and not t_flag:
                 t_flag = True
                 # answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
-                start_idx, end_idx = getSpan(text_lower, answer2)
+                start_idx, end_idx = calculateSpan(text_lower, answer2)
                 absStart = refStart_span + start_idx
                 absEnd = refStart_span + end_idx
                 postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
@@ -221,7 +222,7 @@ def hasTextMonth(tpentity, ref_list):
             if answer2 is not None and not t_flag:
                 t_flag = True
                 # answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
-                start_idx, end_idx = getSpan(text_lower, answer2)
+                start_idx, end_idx = calculateSpan(text_lower, answer2)
                 absStart = refStart_span + start_idx
                 absEnd = refStart_span + end_idx
                 postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
@@ -265,7 +266,7 @@ def hasTextMonth(tpentity, ref_list):
             if answer2 is not None and not t_flag:
                 t_flag = True
                 # answer2 should contain the element that matches.  We need to find the span in the original phrase and return the correct value
-                start_idx, end_idx = getSpan(text_lower, answer2)
+                start_idx, end_idx = calculateSpan(text_lower, answer2)
                 absStart = refStart_span + start_idx
                 absEnd = refStart_span + end_idx
                 postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()

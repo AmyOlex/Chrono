@@ -1,3 +1,4 @@
+import Chrono.utils
 from Chrono import chronoEntities as chrono
 import re
 from Chrono import BuildEntities as be
@@ -47,7 +48,7 @@ def hasSecondOfMinute(tpentity):
             if (re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text)):  # checks for HH:MM:SS String
                 match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text).group(0)
                 if len(match.split(":")) == 3:
-                    start_idx, end_idx = be.getSpan(text_norm, re.compile(":").split(match)[2])
+                    start_idx, end_idx = Chrono.utils.calculateSpan(text_norm, re.compile(":").split(match)[2])
                     return True, re.compile(":").split(match)[2], start_idx, end_idx
                 else:
                     return False, None, None, None  # if no 2 digit hour expressions were found return false

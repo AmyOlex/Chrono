@@ -1,3 +1,4 @@
+import Chrono.utils
 from Chrono import chronoEntities as chrono
 from Chrono import utils
 from Chrono import BuildEntities as be
@@ -13,7 +14,7 @@ def buildDayOfMonth(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasDayOfMonth(s)
     if b and not flags["day"]:
         flags["day"] = True
-        ref_StartSpan, ref_EndSpan = s.be.getSpan()
+        ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         if (int(text) <= 31):
@@ -44,7 +45,7 @@ def hasDayOfMonth(tpentity):
         # loop through list looking for expression
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = be.getSpan(text_norm, text)
+            text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
 
             # define regular expression to find a 2-digit month
             twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
@@ -52,7 +53,7 @@ def hasDayOfMonth(tpentity):
 
             if (fourdigitstart):
                 # If start with 4 digits then assum the format yyyy/mm/dd
-                start_idx, end_idx = be.getSpan(text, fourdigitstart[3])
+                start_idx, end_idx = Chrono.utils.calculateSpan(text, fourdigitstart[3])
                 return True, fourdigitstart[3], text_start + start_idx, text_start + end_idx
             elif (twodigitstart):
                 # If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
@@ -61,7 +62,7 @@ def hasDayOfMonth(tpentity):
                 if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12:
                     # if the second entity is all characters and is a valid text month get the first number as the day
                     if int(twodigitstart[1]) <= 31:
-                        start_idx, end_idx = be.getSpan(text, twodigitstart[1])
+                        start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[1])
                         return True, twodigitstart[1], text_start + start_idx, text_start + end_idx
                     else:
                         return False, None, None, None
@@ -70,11 +71,11 @@ def hasDayOfMonth(tpentity):
                 elif int(twodigitstart[1]) <= 12:
                     # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(2)[0]+text_start) + " : " + str(twodigitstart.group(2)))
                     # assume mm/dd/yy
-                    start_idx, end_idx = be.getSpan(text, twodigitstart[2])
+                    start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[2])
                     return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
                 elif int(twodigitstart[1]) > 12:
                     # assume yy/mm/dd
-                    start_idx, end_idx = be.getSpan(text, twodigitstart[3])
+                    start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[3])
                     return True, twodigitstart[3], text_start + start_idx, text_start + end_idx
                 else:
                     return False, None, None, None

@@ -463,8 +463,7 @@ def temporalTest(tok):
         return True
     if tt.hasModifierText(tok):
         return True
-    
-    
+
 ####
 #END_MODULE
 #### 
@@ -613,8 +612,17 @@ def getRefIdx(ref_list, start_span, end_span):
 ####
 #END_MODULE
 ####           
-                
-        
-    
-    
-    
+
+## Identifies the local span of the serach_text in the input "text"
+# @author Amy Olex
+# @param text The text to be searched
+# @param search_text The text to search for.
+# @return The start index and end index of the search_text string.
+def calculateSpan(text, search_text):
+    try:
+        start_idx = text.index(search_text)
+        end_idx = start_idx + len(search_text)
+    except ValueError:
+        return None, None
+
+    return start_idx, end_idx

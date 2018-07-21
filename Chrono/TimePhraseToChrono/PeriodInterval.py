@@ -4,7 +4,8 @@ import string
 import numpy as np
 
 from Chrono import chronoEntities as chrono, utils
-from Chrono.BuildEntities import hasModifier, getSpan
+from Chrono.BuildEntities import hasModifier
+from Chrono.utils import calculateSpan
 from chronoML import ChronoKeras
 
 
@@ -270,7 +271,7 @@ def hasPeriodInterval(tpentity):
         # test if the intersect list contains plural or singular period.
 
         this_term = list(set(intersect) & set(terms))[0]
-        start_idx, end_idx = getSpan(text_norm, this_term)
+        start_idx, end_idx = calculateSpan(text_norm, this_term)
         if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows", "today", "todays"]:
             return True, "Day", start_idx, end_idx, False
         elif this_term in ["week", "weekly", "weeks"]:
@@ -301,7 +302,7 @@ def hasPeriodInterval(tpentity):
         if (this_term):
             if (len(this_term) == 1):
                 this_term = this_term[0]
-                start_idx, end_idx = getSpan(text_norm, this_term)
+                start_idx, end_idx = calculateSpan(text_norm, this_term)
 
                 if this_term in ["daily", "days"]:
                     #print("Returning a Daily")
@@ -356,7 +357,7 @@ def hasEmbeddedPeriodInterval(tpentity):
                 if (isinstance(utils.getNumberFromText(sub1), (int))):
                     # if it is a number then test to figure out what sub2 is.
                     this_term = sub2
-                    start_idx, end_idx = getSpan(text_norm, this_term)
+                    start_idx, end_idx = calculateSpan(text_norm, this_term)
                     if this_term in ["day", "daily", "days", "yesterday", "tomorrow", "yesterdays", "tomorrows",
                                      "today", "todays"]:
                         #print("ACK! Found an Embedded Day")

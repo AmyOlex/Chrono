@@ -1,7 +1,7 @@
 import re
 
 from Chrono import chronoEntities as chrono, utils
-from Chrono.BuildEntities import getSpan
+from Chrono.utils import calculateSpan
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a AM or PM time indication, then builds the associated chronoentity list
@@ -80,10 +80,10 @@ def hasAMPM(tpentity):
         for text in text_list:
             if (re.search('AM|A\.M\.|am|a\.m\.', text)):
                 match = re.search('AM|A\.M\.|am|a\.m\.', text).group(0)
-                start_idx, end_idx = getSpan(text_norm, match)
+                start_idx, end_idx = calculateSpan(text_norm, match)
                 return True, "AM", start_idx, end_idx
             elif (re.search('PM|P\.M\.|pm|p\.m\.', text)):
                 match = re.search('PM|P\.M\.|pm|p\.m\.', text).group(0)
-                start_idx, end_idx = getSpan(text_norm, match)
+                start_idx, end_idx = calculateSpan(text_norm, match)
                 return True, "PM", start_idx, end_idx
     return False, None, None, None

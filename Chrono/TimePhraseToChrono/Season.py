@@ -2,7 +2,8 @@ import re
 import string
 
 from Chrono import chronoEntities as chrono, utils
-from Chrono.BuildEntities import hasModifier, getSpan
+from Chrono.BuildEntities import hasModifier
+from Chrono.utils import calculateSpan
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a season of the year written out in text form, then builds the associated chronoentity list
@@ -102,9 +103,9 @@ def hasSeasonOfYear(tpentity, ref_list):
     if len(intersect) == 1:
 
         term = intersect[0]
-        start_idx, end_idx = getSpan(text_norm, term)
+        start_idx, end_idx = calculateSpan(text_norm, term)
         if term == "summer" or term == "summers":
-            start_idx, end_idx = getSpan(text_norm, "summer")
+            start_idx, end_idx = calculateSpan(text_norm, "summer")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
             postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
@@ -113,7 +114,7 @@ def hasSeasonOfYear(tpentity, ref_list):
                 return True, "Summer", start_idx, end_idx
 
         elif term == "winter" or term == "winters":
-            start_idx, end_idx = getSpan(text_norm, "winter")
+            start_idx, end_idx = calculateSpan(text_norm, "winter")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
             postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
@@ -122,7 +123,7 @@ def hasSeasonOfYear(tpentity, ref_list):
                 return True, "Winter", start_idx, end_idx
 
         elif term == "fall" or term == "falls":
-            start_idx, end_idx = getSpan(text_norm, "fall")
+            start_idx, end_idx = calculateSpan(text_norm, "fall")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
             postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
@@ -131,7 +132,7 @@ def hasSeasonOfYear(tpentity, ref_list):
                 return True, "Fall", start_idx, end_idx
 
         elif term == "spring" or term == "springs":
-            start_idx, end_idx = getSpan(text_norm, "spring")
+            start_idx, end_idx = calculateSpan(text_norm, "spring")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
             postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()

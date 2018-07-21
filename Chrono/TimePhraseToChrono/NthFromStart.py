@@ -1,4 +1,6 @@
 import string
+
+import Chrono.utils
 from Chrono import utils
 from Chrono import BuildEntities as tpc
 from Chrono import chronoEntities as chrono
@@ -41,7 +43,7 @@ def hasNthFromStart(tpentity, ref_list):
         val = utils.isOrdinal(t)
 
         if val is not None:
-            start_idx, end_idx = tpc.getSpan(text_norm, t)
+            start_idx, end_idx = Chrono.utils.calculateSpan(text_norm, t)
             # now get the reference index of this token and see if there are any temporal tokens next to it.
             idx = utils.getRefIdx(ref_list, refStart_span + start_idx, refStart_span + end_idx)
             if ref_list[idx - 1].isTemporal() or ref_list[idx + 1].isTemporal():
