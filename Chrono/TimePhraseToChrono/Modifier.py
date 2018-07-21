@@ -1,7 +1,7 @@
 import string
-
 from Chrono import chronoEntities as chrono
 from Chrono.utils import calculateSpan
+
 
 ## Parses a TimePhrase entity's text field to determine if it contains a modifier text expression, then builds the associated chronoentity list
 # @author Luke Maffey

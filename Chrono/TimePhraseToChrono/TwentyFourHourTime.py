@@ -1,5 +1,4 @@
 import re
-
 from Chrono import chronoEntities as chrono, utils
 from Chrono.utils import calculateSpan
 

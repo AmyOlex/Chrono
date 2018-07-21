@@ -2,7 +2,7 @@ import string
 
 import Chrono.utils
 from Chrono import chronoEntities as chrono
-from Chrono import BuildEntities as be
+
 
 ## Takes in a TimePhraseEntity and identifies if it should be annotated as a After entity
 # @author Amy Olex

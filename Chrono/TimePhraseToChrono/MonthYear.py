@@ -1,9 +1,7 @@
 import calendar
 import re
-
 import Chrono.utils
 from Chrono import chronoEntities as chrono
-from Chrono import BuildEntities as be
 from Chrono import utils
 
 
@@ -18,7 +16,7 @@ from Chrono import utils
 def buildYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan, flags = hasYear(s, flags)
     if b:
-        ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+        ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = ref_StartSpan + endSpan
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,

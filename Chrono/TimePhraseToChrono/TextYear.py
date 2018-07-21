@@ -1,8 +1,6 @@
 import re
 import string
-
 from nltk import WhitespaceTokenizer
-
 from Chrono import chronoEntities as chrono, utils
 
 

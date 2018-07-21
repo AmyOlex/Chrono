@@ -1,8 +1,6 @@
 import re
 import string
-
 import numpy as np
-
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasModifier
 from Chrono.utils import calculateSpan

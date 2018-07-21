@@ -1,7 +1,7 @@
 import Chrono.utils
 from Chrono import chronoEntities as chrono
 import re
-from Chrono import BuildEntities as be
+
 
 ## Takes in list of TimePhrase output and converts to chronoEntity
 # @author Nicholas Morton

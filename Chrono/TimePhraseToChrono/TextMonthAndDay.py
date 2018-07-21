@@ -1,8 +1,6 @@
 import datetime
 import string
-
 from nltk import WhitespaceTokenizer
-
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasModifier
 from Chrono.utils import calculateSpan
