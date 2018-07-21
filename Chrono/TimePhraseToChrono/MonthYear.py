@@ -189,7 +189,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b and not flags["fourdigityear"]:
         # In most cases this will be at the end of the Span
-        ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+        ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         chrono_2_digit_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity",
@@ -231,7 +231,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                 if bHour and not flags["hour"]:
                     # print("Found Hour in 2-digit year")
                     flags["hour"] = True
-                    ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+                    ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour - startSpanHour)
                     if (int(textHour) <= 24):
@@ -245,7 +245,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
                     if bMinute and not flags["minute"]:
                         flags["minute"] = True
-                        ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+                        ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute - startSpanMinute)
                         if (int(textMinute) <= 60):
@@ -260,7 +260,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
                         if bSecond and not flags["second"]:
                             flags["second"] = True
-                            ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+                            ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpanSecond
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond - startSpanSecond)
                             if (int(textSecond) <= 60):
@@ -337,7 +337,7 @@ def buildMonthOfYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = hasMonthOfYear(s)
     if b and not flags["month"]:
         flags["month"] = True
-        ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+        ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         if (int(text) <= 12):
@@ -393,7 +393,7 @@ def hasMonthOfYear(tpentity):
                 elif int(twodigitstart[1]) > 12:
                     # assume yy/mm/dd
                     start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[
-                        2])  # twodigitstart.span(2) #tpc.getSpan(text_norm,twodigitstart[2])
+                        2])  # twodigitstart.span(2) #getSpan(text_norm,twodigitstart[2])
                     return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
                 else:
                     return False, None, None, None
