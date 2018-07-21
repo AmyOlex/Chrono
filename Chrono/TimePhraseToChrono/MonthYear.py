@@ -61,7 +61,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
                 if bHour and not flags["hour"]:
                     # print("Found Hour in Year")
                     flags["hour"] = True
-                    ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+                    ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
                     abs_EndSpanHour = abs_StartSpanHour + abs(endSpanHour - startSpanHour)
                     if (int(textHour) <= 24):
@@ -75,7 +75,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
                     bMinute, textMinute, startSpanMinute, endSpanMinute = hasMinuteOfHour(s)
                     if bMinute and not flags["minute"]:
                         flags["minute"] = True
-                        ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+                        ref_StartSpan, ref_EndSpan = s.getSpan()
                         abs_StartSpanMinute = ref_StartSpan + startSpanMinute
                         abs_EndSpanMinute = abs_StartSpanMinute + abs(endSpanMinute - startSpanMinute)
                         if (int(textMinute) <= 60):
@@ -90,7 +90,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
                         bSecond, textSecond, startSpanSecond, endSpanSecond = hasSecondOfMinute(s)
                         if bSecond and not flags["second"]:
                             flags["second"] = True
-                            ref_StartSpan, ref_EndSpan = s.tpc.getSpan()
+                            ref_StartSpan, ref_EndSpan = s.getSpan()
                             abs_StartSpanSecond = ref_StartSpan + startSpanSecond
                             abs_EndSpanSecond = abs_StartSpanSecond + abs(endSpanSecond - startSpanSecond)
                             if (int(textSecond) <= 60):
