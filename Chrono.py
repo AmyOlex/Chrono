@@ -40,7 +40,7 @@ from chronoML import DecisionTree as DTree
 from chronoML import RF_classifier as RandomForest
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from chronoML import SVM_classifier as SVMclass
-from Chrono import TimePhrase_to_Chrono
+from Chrono import BuildEntities
 from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 #        for c in tempPhrases:
 #            print(c)
     
-        chrono_master_list, my_chrono_ID_counter = TimePhrase_to_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+        chrono_master_list, my_chrono_ID_counter = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
