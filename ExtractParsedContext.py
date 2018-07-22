@@ -105,24 +105,33 @@ if __name__ == "__main__":
         content = [x.strip() for x in content]
         
         entitylist = []
+
         for line in content:
-            fields = line.split()
-            print(fields)
+            fields1 = line.split('\t')
             
-            if len(fields) >= 5:
-                eid = fields[0]
-                etype = fields[1]
-                estart = fields[2]
-                eend = fields[3]
-                etoken = ' '.join(fields[4:len(fields)])
-            elif len(fields) == 4:
-                eid = fields[0]
-                etype = fields[1]
-                estart = fields[2]
-                eend = fields[3]
+            #if 2 we have a relation
+            #if 3 need to split out the middle entry by spaces
+            fields2 = fields1[1].split(' ')
+            if len(fields1) == 2 and len(fields2) == 3:
+                eid = fields1[0]
+                etype = fields2[0]
+                estart = fields2[1]
+                eend = fields2[2]
                 etoken = ""
+            elif len(fields1) == 3 and len(fields2) == 3:
+                eid = fields1[0]
+                etype = fields2[0]
+                estart = fields2[1]
+                eend = fields2[2]
+                etoken = fields1[2]
+            elif len(fields1) == 3 and len(fields2) == 4:
+                eid = fields1[0]
+                etype = fields2[0]
+                estart = fields2[1]
+                eend = fields2[3]
+                etoken = fields1[2]
             else:
-                print("Error: uknown field length.")
+                print("Error, unrecognized number of fields")
                 return(0)
                 
             
