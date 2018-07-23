@@ -382,6 +382,15 @@ def markTemporal(refToks):
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
         ref.setTemporal(temporalTest(ref.getText()))
+    
+    ## read in the link terms dictionary
+    terms = open("dictionary/LinkTerms.txt", 'r').read().split()
+    
+    
+    ## Now go through the list again and mark all linking words a, an, in, of that appear between 2 temporal and or number tokens.
+    for i in range(1, len(refToks)-1):
+        if (refToks[i-1].isNumeric() or refToks[i-1].isTemporal()) and (refToks[i+1].isNumeric() or refToks[i+1].isTemporal()) and (refToks[i].getText() in terms):
+            refToks[i].setLinkTerm(1)
         
     return refToks
 ####
@@ -543,6 +552,13 @@ def getTemporalPhrases(chroList, doctime):
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
+        
+        ## Now look for a linking term.  Only continue the phrase if the term is surrounded by numeric or temporal tokens. 
+        ## Also, only consider linking terms if we are already in a phrase.
+        elif chroList[n].isLinkTerm() and inphrase:
+            if (chroList[n-1].isTemporal() or chroList[n-1].isNumeric()) and (chroList[n+1].isTemporal() or chroList[n+1].isNumeric()):
+                tmpPhrase.append(copy.copy(chroList[n]))
+        
         else:
             #current element is not temporal, check to see if inphrase
             #print("Not Temporal, or numeric " + str(chroList[n]))

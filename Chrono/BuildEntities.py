@@ -63,7 +63,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     ref_list = referenceToken.lowercase(ref_list)
     
     for s in TimePhraseList:
-        print(s)
+        #print(s)
         chrono_tmp_list = []
         
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
