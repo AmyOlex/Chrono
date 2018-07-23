@@ -188,7 +188,11 @@ def hasYear(tpentity, flags):
 def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b and not flags["fourdigityear"]:
-        # In most cases this will be at the end of the Span
+        
+        print("Found a 2-digit year phrase: " + str(s))
+        print("The year is: " + text)
+        #In most cases this will be at the end of the Span
+        flags["twodigityear"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
@@ -306,14 +310,14 @@ def has2DigitYear(tpentity):
             text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
 
             # define regular expression to find a 2-digit year
-            regex = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
-            if regex and len(regex.group(0)) == 8:
-                if len(regex.group(0).split("/")) == 3:
-                    start_idx, end_idx = Chrono.utils.calculateSpan(text, re.compile("/").split(regex.group(0))[2])
-                    return True, re.compile("/").split(regex.group(0))[2], text_start + start_idx, text_start + end_idx
-                elif len(regex.group(0).split("-")) == 3:
-                    start_idx, end_idx = Chrono.utils.calculateSpan(text, re.compile("-").split(regex.group(0))[2])
-                    return True, re.compile("-").split(regex.group(0))[2], text_start + start_idx, text_start + end_idx
+            result = re.search('([0-9]{1,2})[-/]([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2})', text)
+            
+            if result:
+                result = result.group(0) 
+                split_result = re.split('[/-]', result)
+                if len(split_result) == 3:
+                    start_idx, end_idx = Chrono.utils.calculateSpan(result, split_result[2])
+                    return True, split_result[2], text_start + start_idx, text_start + end_idx
                 else:
                     return False, None, None, None
 
@@ -321,6 +325,7 @@ def has2DigitYear(tpentity):
     else:
 
         return False, None, None, None  # if the text_list does not have any entries, return false
+
 
 
 ####
