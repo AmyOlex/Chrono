@@ -6,7 +6,7 @@
 ## I have one option for my laptop using the training data, and two options for willow, one with training and the other with test.
 ## I have not added in any evaluation options yet.
 
-USER=$1  ##Options: amy, luke
+USER=$1  ##Options: amy, luke, help
 LOC=$2  ##Options: willow, laptop
 DATASET=$3  ##Options: test, train
 ML=$4		##Chrono options
@@ -16,6 +16,17 @@ ML_DATA=$5 	##Options: news5, news3, clin5, clin3, newsclin5, newsclin3
 ## Example Usage:  ./run.sh amy laptop train NB news5
 
 ## Below are the variables to change for each user if the data locations change
+
+if [ $USER = "help" ]
+then
+	echo "Usage: ./run.sh USER DEVICE DATASET ML ML_DATA"
+	echo "USER: amy, luke, help"
+	echo "LOC: willow, laptop"
+	echo "DATASET: train, test"
+	echo "ML: SVM, NB, DT, RB, NN"
+	echo "ML_DATA: news5, news3, clin5, clin3, newsclin5, newsclin3"
+fi
+
 if [ $USER = "amy" ]
 then
 	if [ $LOC = "laptop" ]
@@ -120,6 +131,8 @@ then
 
 	cd $ANAFORA_DIR
 	
+	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+
 	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
 
 elif [ $USER = "luke" ]
