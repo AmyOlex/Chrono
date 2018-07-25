@@ -37,9 +37,10 @@ import os
 import pickle
 
 from chronoML import DecisionTree as DTree
+from chronoML import RF_classifier as RandomForest
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from chronoML import SVM_classifier as SVMclass
-from Chrono import TimePhrase_to_Chrono
+from Chrono import BuildEntities
 from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
@@ -90,6 +91,13 @@ if __name__ == "__main__":
         classifier, feats = DTree.build_dt_model(args.d, args.c)
         with open('DT_model.pkl', 'wb') as mod:  
             pickle.dump([classifier, feats], mod)
+
+    if(args.m == "RF" and args.M is None):
+        ## Train the decision tree classifier and save in the classifier variable
+        # print("Got RF")
+        classifier, feats = RandomForest.build_model(args.d, args.c)
+        with open('RF_model.pkl', 'wb') as mod:
+            pickle.dump([classifier, feats], mod)
     
     elif(args.m == "NN" and args.M is None):
         #print("Got NN")
@@ -137,22 +145,25 @@ if __name__ == "__main__":
         if(debug) : print(doctime)
     
         ## parse out reference tokens
-        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+args.x)
+        text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
         
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in my_refToks : print(tok)
+
     
         ## mark all ref tokens if they are numeric or temporal
         chroList = utils.markTemporal(my_refToks)
+        
+        if(debug) :
+            print("REFERENCE TOKENS:\n")
+            for tok in chroList : print(tok)
+            
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
     
-        #for c in chroList:
-        #    print(c)
+#        for c in tempPhrases:
+#            print(c)
     
-        chrono_master_list, my_chrono_ID_counter = TimePhrase_to_Chrono.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+        chrono_master_list, my_chrono_ID_counter = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])

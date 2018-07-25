@@ -45,10 +45,11 @@ import string
 # @param end_span The location of the last character
 # @param pos The part of speech assigned to this token
 # @param temporal A boolean indicating if this token contains any temporal components
+# @param sent_boundary A boolean indicating if this token is at the end of a sentence or line
 class refToken :
 
     ## The constructor
-    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, t6list=None, numeric=None) :
+    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, numeric=None, sent_boundary=None) :
         self.id = id
         self.text = text
         self.start_span = start_span
@@ -56,7 +57,7 @@ class refToken :
         self.pos = pos
         self.temporal = temporal
         self.numeric = numeric
-        self.t6list = t6list
+        self.sent_boundary = sent_boundary
 
     ## Defines how to convert a refToken to string
     def __str__(self) :
@@ -65,9 +66,9 @@ class refToken :
         pos_str = "" if self.pos is None else ("pos: " + self.pos)
         temp_str = "" if self.temporal is None else (" isTemp: " + str(self.temporal))
         num_str = "" if self.numeric is None else (" isNumeric: " + str(self.numeric))
-        t6_str = "" if self.t6list is None else (" T6List: " + str(self.t6list))
+        sentb_str = "" if self.sent_boundary is None else (" isEndSent: " + str(self.sent_boundary))
         #return str(self.id) + " " + self.text
-        return str(self.id) + " " + self.text + span_str + pos_str  + temp_str + num_str + t6_str
+        return str(self.id) + " " + self.text + span_str + pos_str  + temp_str + num_str + sentb_str
 
     #### Methods to SET properties ###
     
@@ -102,15 +103,11 @@ class refToken :
     #  @param temp A boolean, 1 if it is a numeric token, 0 otherwise
     def setNumeric(self, num) :
         self.numeric = num
-
-    ## Adds to the entities list of T6 entities
-    #  @param t6id an integer of the t6 entities ID
-    def t6Append(self, t6id) :
-        if self.t6list is None :
-            self.t6list = []
-            self.t6list.append(t6id)
-        else :
-            self.t6list.append(t6id)
+    
+    ## Sets the entity's sentence boundary flag
+    #  @param temp A boolean, 1 if it is a numeric token, 0 otherwise
+    def setSentBoundary(self, num) :
+        self.sent_boundary = num
 
 
     #### Methods to GET properties ####
@@ -140,8 +137,8 @@ class refToken :
         return(self.numeric)
 
     ## Gets the entity's t6list
-    def getT6list(self) :
-        return(self.t6list)
+    def getSentBoundary(self) :
+        return(self.sent_boundary)
         
     ## Function to determine if the input span overlaps this objects span
     # @author Amy Olex
@@ -165,11 +162,11 @@ class refToken :
 # @param temporal A boolean list of 0's and 1' indicating which token contains temporal information. Must be the same length as tok_list. Assumes it is a one-to-one relationship in the same order as tok_list.
 # @param remove_stopwords A boolean that, if true, removes tokens in the stopword list.  Defaults to False.
 # @return A list of refToken objects in the same order as the input tok_list.
-def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=None) :
+def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=None, sent_boundaries=None) :
     ref_list = list()
     tok_len = len(tok_list)
     ## figure out which lists were sent in
-    include = [1, 0, 0, 0]
+    include = [1, 0, 0, 0, 0]
     if span is not None:
         if len(span)==tok_len:
             include[1]=1
@@ -188,9 +185,14 @@ def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=Non
         else:
             raise ValueError('temporal list is not same length as token list.')
     
+    if sent_boundaries is not None:
+        if len(sent_boundaries)==tok_len:
+            include[4]=1
+        else:
+            raise ValueError('sentence boundary flag array is not same length as token list.')
     
     for idx in range(0,tok_len):
-        ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, end_span=span[idx][1] if include[1] else None, pos=pos[idx][1] if include[2] else None, temporal=temporal[idx] if include[3] else None))
+        ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, end_span=span[idx][1] if include[1] else None, pos=pos[idx][1] if include[2] else None, temporal=temporal[idx] if include[3] else None, sent_boundary=sent_boundaries[idx] if include[4] else None))
         id_counter = id_counter +1
         
     if remove_stopwords is not None:
