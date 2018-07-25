@@ -135,13 +135,41 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 
 
         #check to see if it has a number associated with it.  We assume the number comes before the interval string
+        #to figure out if the number we find is close to the interval token the end of the number string needs to be within 2 characters of the start of the interval token.
+        #I tried just extracting the previous reference token, but that doesn't work because phrases like "42-year-old" are actually one reference token.
+        # So I decided I had to do it the hard way with index arithmetic.
         if idxstart > 0:
-            substr = s.getText()[0:idxstart]
-            m = re.search('([0-9]{1,2})', substr)
+            ## get the absolute span of the interval token
+            abs_Sspan = ref_Sspan + idxstart
+            abs_Espan = ref_Sspan + idxend
+            
+            ## purposfully split on a single space
+            substr = s.getText()[0:idxstart].strip(' ').split(' ')
+            print("full phrase: " + s.getText() + "  Start Span: " + str(idxstart))
+            print("My substring List: " + str(substr))
+            ## get the previous token
+            prevtok = substr[len(substr)-1]
+            prev_sSpan = idxstart - len(prevtok)-1
+            prev_eSpan = idxstart - 1
+            print("My substring List: " + str(substr))
+            print("Last token: " + prevtok )
+            ## get the rest of the substring joined by a space
+            if len(substr) > 1:
+                rest_of_phrase = ' '.join(substr[0:len(substr)-1])
+                rest_of_phrase_length = len(rest_of_phrase) + 1
+                print("My rest of phrase: " + rest_of_phrase)
+            else:
+                rest_of_phrase_length = 0
+            
+            ## now calculate the relative span of prevtok
+            #rel_Sspan = rest_of_phrase_length
+            #rel_Espan = rest_of_phrase_length + len(prevtok)
+
+            m = re.search('([0-9]{1,2})', prevtok)
             if m is not None :
                 num_val = m.group(0)
-                abs_Sspan = ref_Sspan + m.span(0)[0]
-                abs_Espan = ref_Sspan + m.span(0)[1]
+                abs_Sspan = ref_Sspan + rest_of_phrase_length + m.span(0)[0]
+                abs_Espan = ref_Sspan + rest_of_phrase_length + m.span(0)[1]
 
                 my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
                 chrono_id = chrono_id + 1
@@ -151,10 +179,12 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 my_entity.set_number(my_number_entity.get_id())
             #else search for a text number
             else:
-                texNumVal = utils.getNumberFromText(substr)
+                texNumVal = utils.getNumberFromText(prevtok)
                 if texNumVal is not None:
+                    abs_Sspan = ref_Sspan + rest_of_phrase_length
+                    abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok)
                     #create the number entity
-                    my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal)
+                    my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
                     chrono_id = chrono_id + 1
                     #append to list
                     chrono_list.append(my_number_entity)
@@ -162,6 +192,35 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                     my_entity.set_number(my_number_entity.get_id())
 
         chrono_list.append(my_entity)
+        
+        
+#        if idxstart > 0:
+#            substr = s.getText()[0:idxstart]
+#            m = re.search('([0-9]{1,2})', substr)
+#            if m is not None :
+#                num_val = m.group(0)
+#                abs_Sspan = ref_Sspan + m.span(0)[0]
+#                abs_Espan = ref_Sspan + m.span(0)[1]
+#
+#                my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
+#                chrono_id = chrono_id + 1
+#
+#                #add the number entity to the list
+#                chrono_list.append(my_number_entity)
+#                my_entity.set_number(my_number_entity.get_id())
+#            #else search for a text number
+#            else:
+#                texNumVal = utils.getNumberFromText(substr)
+#                if texNumVal is not None:
+#                    #create the number entity
+#                    my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal)
+#                    chrono_id = chrono_id + 1
+#                    #append to list
+#                    chrono_list.append(my_number_entity)
+#                    #link to interval entity
+#                    my_entity.set_number(my_number_entity.get_id())
+#
+#        chrono_list.append(my_entity)
 
     else:
         boo2, val, idxstart, idxend, numstr = hasEmbeddedPeriodInterval(s)
