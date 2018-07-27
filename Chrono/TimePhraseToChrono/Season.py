@@ -1,7 +1,7 @@
 import re
 import string
 from Chrono import chronoEntities as chrono, utils
-from Chrono.TimePhraseToChrono.Modifier import hasModifier
+from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
 
 
@@ -22,7 +22,7 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
         chrono_id = chrono_id + 1
 
         #check here to see if it has a modifier
-        hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+        hasMod, mod_type, mod_start, mod_end = hasNextLastThis(s)
         if(hasMod):
             if mod_type == "This":
                 chrono_list.append(chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))

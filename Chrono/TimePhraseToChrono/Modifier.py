@@ -96,7 +96,7 @@ def hasModifierText(tpentity):
 # @author Amy Olex
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
-def hasModifier(tpentity):
+def hasNextLastThis(tpentity):
     # convert to all lower
     text_lower = tpentity.getText().lower()
     # remove all punctuation

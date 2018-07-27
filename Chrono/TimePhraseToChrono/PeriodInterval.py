@@ -2,7 +2,7 @@ import re
 import string
 import numpy as np
 from Chrono import chronoEntities as chrono, utils
-from Chrono.TimePhraseToChrono.Modifier import hasModifier
+from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
 from chronoML import ChronoKeras
 
@@ -93,7 +93,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 
             else:
                 # check for a Last Word
-                hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+                hasMod, mod_type, mod_start, mod_end = hasNextLastThis(s)
 
                 if(hasMod):
                     if mod_type == "Next":
@@ -122,7 +122,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 chrono_list.append(chrono_this_entity)
             else:
                 # check for a Last Word
-                hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+                hasMod, mod_type, mod_start, mod_end = hasNextLastThis(s)
                 if(hasMod):
                     if mod_type == "Next":
                         chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_entity.get_id()))
