@@ -49,7 +49,7 @@ import string
 class refToken :
 
     ## The constructor
-    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, numeric=None, sent_boundary=None) :
+    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, numeric=None, sent_boundary=None, link_term=None) :
         self.id = id
         self.text = text
         self.start_span = start_span
@@ -58,6 +58,7 @@ class refToken :
         self.temporal = temporal
         self.numeric = numeric
         self.sent_boundary = sent_boundary
+        self.link_term = link_term
 
     ## Defines how to convert a refToken to string
     def __str__(self) :
@@ -67,8 +68,9 @@ class refToken :
         temp_str = "" if self.temporal is None else (" isTemp: " + str(self.temporal))
         num_str = "" if self.numeric is None else (" isNumeric: " + str(self.numeric))
         sentb_str = "" if self.sent_boundary is None else (" isEndSent: " + str(self.sent_boundary))
+        linkt_str = "" if self.link_term is None else (" isLinkTerm: " + str(self.link_term))
         #return str(self.id) + " " + self.text
-        return str(self.id) + " " + self.text + span_str + pos_str  + temp_str + num_str + sentb_str
+        return str(self.id) + " " + self.text + span_str + pos_str  + temp_str + num_str + sentb_str + linkt_str
 
     #### Methods to SET properties ###
     
@@ -108,6 +110,11 @@ class refToken :
     #  @param temp A boolean, 1 if it is a numeric token, 0 otherwise
     def setSentBoundary(self, num) :
         self.sent_boundary = num
+    
+    ## Sets the entity's link term flag
+    #  @param temp A boolean, 1 if it is a numeric token, 0 otherwise
+    def setLinkTerm(self, num) :
+        self.link_term = num
 
 
     #### Methods to GET properties ####
@@ -136,9 +143,13 @@ class refToken :
     def isNumeric(self) :
         return(self.numeric)
 
-    ## Gets the entity's t6list
+    ## Gets the entity's sentence boundary flag
     def getSentBoundary(self) :
         return(self.sent_boundary)
+    
+    ## Gets the entity's link term flag
+    def isLinkTerm(self) :
+        return(self.link_term)
         
     ## Function to determine if the input span overlaps this objects span
     # @author Amy Olex
@@ -162,11 +173,11 @@ class refToken :
 # @param temporal A boolean list of 0's and 1' indicating which token contains temporal information. Must be the same length as tok_list. Assumes it is a one-to-one relationship in the same order as tok_list.
 # @param remove_stopwords A boolean that, if true, removes tokens in the stopword list.  Defaults to False.
 # @return A list of refToken objects in the same order as the input tok_list.
-def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=None, sent_boundaries=None) :
+def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=None, remove_stopwords=None, sent_boundaries=None, link_term = None) :
     ref_list = list()
     tok_len = len(tok_list)
     ## figure out which lists were sent in
-    include = [1, 0, 0, 0, 0]
+    include = [1, 0, 0, 0, 0, 0]
     if span is not None:
         if len(span)==tok_len:
             include[1]=1
@@ -191,8 +202,19 @@ def convertToRefTokens(tok_list, id_counter=0, span=None, pos=None, temporal=Non
         else:
             raise ValueError('sentence boundary flag array is not same length as token list.')
     
+    if link_term is not None:
+        if len(link_term)==tok_len:
+            include[5]=1
+        else:
+            raise ValueError('sentence boundary flag array is not same length as token list.')
+    
     for idx in range(0,tok_len):
-        ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, end_span=span[idx][1] if include[1] else None, pos=pos[idx][1] if include[2] else None, temporal=temporal[idx] if include[3] else None, sent_boundary=sent_boundaries[idx] if include[4] else None))
+        ref_list.append(refToken(id=id_counter, text=tok_list[idx], start_span=span[idx][0] if include[1] else None, 
+                                                                    end_span=span[idx][1] if include[1] else None, 
+                                                                    pos=pos[idx][1] if include[2] else None, 
+                                                                    temporal=temporal[idx] if include[3] else None, 
+                                                                    sent_boundary=sent_boundaries[idx] if include[4] else None, 
+                                                                    link_term=link_term[idx] if include[5] else None))
         id_counter = id_counter +1
         
     if remove_stopwords is not None:
