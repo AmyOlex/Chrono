@@ -53,12 +53,6 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         abs_Espan = ref_Sspan + idxend
 
         # get index of overlapping reference token
-        #ref_idx = -1
-        #for i in range(0,len(ref_list)):
-        #    if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
-        #        ref_idx = i
-        #        break
-
         ref_idx = utils.getRefIdx(ref_list, abs_Sspan, abs_Espan)
 
         # extract ML features
@@ -138,26 +132,34 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         #to figure out if the number we find is close to the interval token the end of the number string needs to be within 2 characters of the start of the interval token.
         #I tried just extracting the previous reference token, but that doesn't work because phrases like "42-year-old" are actually one reference token.
         # So I decided I had to do it the hard way with index arithmetic.  The one concern about this method is that I assume there is a space at the end.  This could cause some issues down the line.
+        # Yep, we are getting the spans wrong for phrases like "six-months".  I am going to test for a space as the last character before just assuming there was one.
         if idxstart > 0:
             ## get the absolute span of the interval token
             abs_Sspan = ref_Sspan + idxstart
             abs_Espan = ref_Sspan + idxend
             
             ## purposfully split on a single space
-            substr = s.getText()[0:idxstart].strip(' ').split(' ')
+            substr = s.getText()[0:idxstart]
+            # test to see if last character is a space and set a flag.
+            has_space = True if substr[len(substr)-1] == ' ' else False
+            substr = substr.strip(' ').split(' ')
+            
             print("full phrase: " + s.getText() + "  Start Span: " + str(idxstart))
             print("My substring List: " + str(substr))
+            
             ## get the previous token
             prevtok = substr[len(substr)-1]
-            prev_sSpan = idxstart - len(prevtok)-1
+            prev_sSpan = idxstart - len(prevtok)-1 if has_space else idxstart - len(prevtok)
             prev_eSpan = idxstart - 1
-            print("My substring List: " + str(substr))
-            print("Last token: " + prevtok )
+            print("My substring List: " + str(substr) + "  idxstart: " + str(idxstart))
+            print("Last token: " + prevtok + "  Last token length: " + str(len(prevtok)) )
+            print("Last token start: " + str(prev_sSpan) + " Last token End: " + str(prev_eSpan))
+            
             ## get the rest of the substring joined by a space
             if len(substr) > 1:
                 rest_of_phrase = ' '.join(substr[0:len(substr)-1])
-                rest_of_phrase_length = len(rest_of_phrase) + 1
-                print("My rest of phrase: " + rest_of_phrase)
+                rest_of_phrase_length = len(rest_of_phrase) + 1 
+                print("My rest of phrase:" + rest_of_phrase + ":")
             else:
                 rest_of_phrase_length = 0
             
@@ -232,19 +234,25 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 abs_Espan = ref_Sspan + idxend
                 
                 ## purposfully split on a single space
-                substr = s.getText()[0:idxstart].strip(' ').split(' ')
+                substr = s.getText()[0:idxstart]
+                # test to see if last character is a space and set a flag.
+                has_space = True if substr[len(substr)-1] == ' ' else False
+                substr = substr.strip(' ').split(' ')
+                
                 print("2full phrase: " + s.getText() + "  Start Span: " + str(idxstart))
                 print("2My substring List: " + str(substr))
+                
                 ## get the previous token
                 prevtok = substr[len(substr)-1]
-                prev_sSpan = idxstart - len(prevtok)-1
+                prev_sSpan = idxstart - len(prevtok)-1 if has_space else idxstart - len(prevtok)
                 prev_eSpan = idxstart - 1
                 print("2My substring List: " + str(substr))
                 print("2Last token: " + prevtok )
+                
                 ## get the rest of the substring joined by a space
                 if len(substr) > 1:
                     rest_of_phrase = ' '.join(substr[0:len(substr)-1])
-                    rest_of_phrase_length = len(rest_of_phrase) + 1
+                    rest_of_phrase_length = len(rest_of_phrase) + 1 
                     print("2My rest of phrase: " + rest_of_phrase)
                 else:
                     rest_of_phrase_length = 0
