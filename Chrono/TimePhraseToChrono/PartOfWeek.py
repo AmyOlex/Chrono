@@ -1,6 +1,7 @@
 import string
 from Chrono import chronoEntities as chrono
 from Chrono.utils import calculateSpan
+from config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a part of the week expression, then builds the associated chronoentity list
@@ -38,10 +39,10 @@ def hasPartOfWeek(tpentity):
     text_list = text_norm.split(" ")
 
     # define my period lists
-    partofday = ["weekend", "weekends"]
+    partofweek = DICTIONARY["PartOfWeek"]
 
     # figure out if any of the tokens in the text_list are also in the ampm list
-    intersect = list(set(text_list) & set(partofday))
+    intersect = list(set(text_list) & set(partofweek))
 
     # only proceed if the intersect list has a length of 1 or more.
     # For this method I'm assuming it will only be a length of 1, if it is not then we don't know what to do with it.

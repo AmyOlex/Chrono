@@ -1,6 +1,7 @@
 import string
 from Chrono import chronoEntities as chrono
 from Chrono.utils import calculateSpan
+from config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a modifier text expression, then builds the associated chronoentity list
@@ -75,7 +76,7 @@ def hasModifierText(tpentity):
 
     if len(text_list)>0:
         #loop through list looking for expression
-        temp_text = ["nearly", "almost", "<", "late", "mid", "fiscal", "fy", "over", "early", "approximately", "beginning"]
+        temp_text = DICTIONARY["Modifier"]
 
         for t in text_list:
             answer = next((m for m in temp_text if m in t), None)
