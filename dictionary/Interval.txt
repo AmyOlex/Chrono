@@ -1,0 +1,9 @@
+yesterday
+yesterdays
+tomorrow
+tomorrows
+today
+todays
+daily
+/min
+/week

@@ -74,7 +74,7 @@ if __name__ == "__main__":
     for root, dirs, files in os.walk(args.D, topdown=True):
         for file in files:
             with open(root + '/' + file) as f:
-                key = file[:-4]
+                key = os.path.splitext(file)[0]
                 for word in f:
                     if key not in DICTIONARY:
                         DICTIONARY[key] = []
