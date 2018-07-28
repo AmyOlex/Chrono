@@ -55,9 +55,9 @@ def hasTextMonth(text):
     #text_list = text_norm.split(" ")
     
     #define my day lists
-    full_month = ["January","February","March","April","May","June","July","August","September","October","November","December","january","february","march","april","may","june","july","august","september","october","november","december"]
-    abbr_month = ["Jan.", "Feb.","Mar.","Apr.","Jun.","Jul.","Aug.","Sept.","Oct.","Nov.","Dec.","jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","oct.","nov.","dec.", "Jan", "Feb","Mar","Apr","Jun","Jul","Aug","Sept","Oct","Nov","Dec","jan","feb","mar","apr","jun","jul","aug","sept","oct","nov","dec"]
-    
+    full_month = DICTIONARY["FullMonth"]
+    abbr_month = DICTIONARY["AbrMonth"]
+
     answer = next((m for m in full_month if m in text_norm), None)
     if answer is not None:
         return True
@@ -86,8 +86,8 @@ def hasDayOfWeek(text):
     #text_list = text_norm.split(" ")
     
     #define my day lists
-    full_day = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-    abbr_day = ["Mon.","Tues.","Wed.","Thurs.","Fri.","Sat.","Sun."]
+    full_day = DICTIONARY["FullDay"]
+    abbr_day = DICTIONARY["AbrDay"]
 
     answer = next((m for m in full_day if m in text_norm), None)
     if answer is not None:
@@ -117,10 +117,7 @@ def hasPeriodInterval(text):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
-             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
-             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
-             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+    terms = DICTIONARY["PeriodInterval"]
     ## possibly add in abbreviations like yr, sec, min, etc.
     
     answer = next((m for m in terms if m in text_norm), None)
@@ -249,10 +246,10 @@ def hasPartOfWeek(text):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    partofday = ["weekend", "weekends"]
+    partofweek = DICTIONARY["PartOfWeek"]
     
     for t in text_list:
-        answer = next((m for m in partofday if m in t), None)
+        answer = next((m for m in partofweek if m in t), None)
         if answer is not None:
             return True
         else:
@@ -276,7 +273,7 @@ def hasSeasonOfYear(text):
     text_list = text_norm.split(" ")
     
     #define my season lists
-    seasonofyear = ["summer", "winter", "fall", "spring"]
+    seasonofyear = DICTIONARY["Season"]
     
     for t in text_list:
         answer = next((m for m in seasonofyear if m in t), None)
@@ -305,7 +302,7 @@ def hasPartOfDay(text):
     text_list = text_norm.split(" ")
     
     #define my part of day lists
-    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon","bedtime","midnight","eve"]
+    partofday = DICTIONARY['PartOfDay']
     
     for t in text_list:
         answer = next((m for m in partofday if m in t), None)
@@ -342,12 +339,14 @@ def hasTimeZone(text):
     #             return False
     # return False
     text_norm = text.translate(str.maketrans(string.punctuation+"0123456789", " "*(len(string.punctuation)+10))).strip()
-    tz = re.search('\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK)', text_norm)
+    tz3 = '|'.join(DICTIONARY["TimeZone3"])
+    tz4 = '|'.join(DICTIONARY["TimeZone4"])
+    tz = re.search('\d{0,4}('+tz3+')', text_norm)
 
     if tz:
         return True
     else:
-        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+        tz = re.search('\d{0,4}('+tz4+')', text_norm)
         if tz:
             return True
     return False
@@ -393,7 +392,7 @@ def hasModifierText(text):
     # convert to list
     text_list = text_norm.split(" ")
 
-    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few", "approximately", "<", "beginning"]
+    temp_text = DICTIONARY['Modifier']
 
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
