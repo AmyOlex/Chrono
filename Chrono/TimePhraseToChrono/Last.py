@@ -1,6 +1,7 @@
 import string
 import re
 from Chrono import chronoEntities as chrono
+from config import DICTIONARY
 
 
 def buildLast(s, chrono_id, chrono_list):
@@ -29,7 +30,8 @@ def buildLast(s, chrono_id, chrono_list):
 def hasLast(tpentity):
     text = tpentity.getText()
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    lst = re.search('(last|previously|pre|later|earlier|early|previous|past|lately|final|latest|prior|recent|recently)', text_norm)
+    last_words = '|'.join(DICTIONARY["Last"])
+    lst = re.search('('+last_words+')', text_norm)
 
     if lst is not None:
         return True, lst.group(1), lst.start(1), lst.end(1)
