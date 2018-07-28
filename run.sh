@@ -133,7 +133,7 @@ then
 	
 	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
 
-	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
+	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --include Number
 
 elif [ $USER = "luke" ]
 then
