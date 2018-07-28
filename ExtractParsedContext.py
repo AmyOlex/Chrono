@@ -73,9 +73,25 @@ if __name__ == "__main__":
             else:
                 enumber = ""
             
+            
+            if(len(eproperties[0].getElementsByTagName('Value')) == 1):
+                tmp = eproperties[0].getElementsByTagName('Value')[0].firstChild
+                if tmp is not None:
+                    evalue = eproperties[0].getElementsByTagName('Value')[0].firstChild.data
+                else:
+                    evalue = "None"
+            elif(len(eproperties[0].getElementsByTagName('Type')) == 1):
+                tmp = eproperties[0].getElementsByTagName('Type')[0].firstChild
+                if tmp is not None:
+                    evalue = eproperties[0].getElementsByTagName('Type')[0].firstChild.data
+                else:
+                    evalue = "None"
+            else:
+                evalue = ""
+            
             if etype == entity:
                 start, end = espan.split(",")
-                entitylist.append([eid, etype, int(start), int(end), enumber])
+                entitylist.append([eid, etype, int(start), int(end), enumber, evalue])
         return(entitylist)   
     
     def writeTargetSpansXML(infile, entitylist, context, outfile):
@@ -87,7 +103,8 @@ if __name__ == "__main__":
             end = min(len(linestring), int(entity[3])+context)
             
             if context > 0:
-                outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + "), Raw Token: " + linestring[entity[2]:entity[3]] + ", Number: " + entity[4])
+                outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + 
+                                "), Raw Token: " + linestring[entity[2]:entity[3]] + ", Value: " + str(entity[5]) + ", Number: " + entity[4])
                 outfile.write("\n" + linestring[start:end])
         
             else:
