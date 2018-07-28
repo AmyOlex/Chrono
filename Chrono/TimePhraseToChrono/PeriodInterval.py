@@ -184,7 +184,11 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 texNumVal = utils.getNumberFromText(prevtok)
                 if texNumVal is not None:
                     abs_Sspan = ref_Sspan + rest_of_phrase_length
-                    abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok)
+                    abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok) if has_space else ref_Sspan + rest_of_phrase_length + len(prevtok) - 1
+                    print("Ref sSpan: " + str(ref_Sspan) + "  Ref eSpan: " + str(ref_Espan))
+                    print("Absolute Start of Entity: " + str(ref_Sspan+idxstart))
+                    print("Absolute Start of phrase: " + str(ref_Sspan))
+                    print("Absolute Start of Number: " + str(abs_Sspan) + "  End: " + str(abs_Espan))
                     #create the number entity
                     my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
                     chrono_id = chrono_id + 1
@@ -278,7 +282,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                     texNumVal = utils.getNumberFromText(prevtok)
                     if texNumVal is not None:
                         abs_Sspan = ref_Sspan + rest_of_phrase_length
-                        abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok)
+                        abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok) if has_space else ref_Sspan + rest_of_phrase_length + len(prevtok) - 1
                         #create the number entity
                         my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
                         chrono_id = chrono_id + 1
