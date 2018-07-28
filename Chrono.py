@@ -36,6 +36,7 @@ import argparse
 import os
 import pickle
 
+from config import DICTIONARY
 from chronoML import DecisionTree as DTree
 from chronoML import RF_classifier as RandomForest
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
@@ -64,10 +65,21 @@ if __name__ == "__main__":
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
+    parser.add_argument('-D', metavar='MLmodel', type=str, help='The path to dictionaries', required=False, default='./dictionary')
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
-    
+
+    # Read in the word lists for each entity
+    for root, dirs, files in os.walk(args.D, topdown=True):
+        for file in files:
+            with open(root + '/' + file) as f:
+                key = file[:-4]
+                for word in f:
+                    if key not in DICTIONARY:
+                        DICTIONARY[key] = []
+                    DICTIONARY[key].append(word.rstrip('\n'))
+
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
