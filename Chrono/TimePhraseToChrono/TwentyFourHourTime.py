@@ -1,6 +1,7 @@
 import re
 from Chrono import chronoEntities as chrono, utils
 from Chrono.utils import calculateSpan
+from config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a 24-hour time expression, then builds the associated chronoentity list
@@ -71,12 +72,13 @@ def has24HourTime(tpentity, flags):
     # convert to list
     stext = tpentity.getText()
     text_list = stext.split(" ")
+    tz = "|".join(DICTIONARY["TimeZone3"]) + "|".join(DICTIONARY["TimeZone4"])
 
     if not flags["loneDigitYear"]:
         # loop through list looking for expression
         for text in text_list:
             tz_format = re.search(
-                '\d{0,4}(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|HST|HAST|HADT|SST|SDT|GMT|CHST|UTC)', text)
+                '\d{0,4}('+tz+')', text)
             if len(text) == 4:
                 num = utils.getNumberFromText(text)
                 if num is not None:
