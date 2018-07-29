@@ -70,7 +70,7 @@ def getWhitespaceTokens(file_path):
     spans = [span for span in span_generator]
     tokenized_text = WhitespaceTokenizer().tokenize(text)
     tags = nltk.pos_tag(tokenized_text)
-    #print(tokenized_text)
+    print(tokenized_text)
     
     sent_tokenize_list = sent_tokenize(text)
     sent_boundaries = [0] * len(tokenized_text)
@@ -78,41 +78,46 @@ def getWhitespaceTokens(file_path):
     ## figure out which tokens are at the end of a sentence
     tok_counter = 0
     
-    #print("\nLength of tokenized_text: " + str(len(tokenized_text)) + "\n")
-    #print("Starting value of tok_counter: " + str(tok_counter))
-    #print("Number of tokenized sentences: " + str(len(sent_tokenize_list)))
+    print("\nLength of tokenized_text: " + str(len(tokenized_text)) + "\n")
+    print("Starting value of tok_counter: " + str(tok_counter))
+    print("Number of tokenized sentences: " + str(len(sent_tokenize_list)))
     
     for s in range(0,len(sent_tokenize_list)):
         sent = sent_tokenize_list[s]
-        #print("Sentence #" + str(s) + "::::" + sent)
+        print("Sentence #" + str(s) + "::::" + sent)
         
         if "\n" in sent:
-            #print("Found Newline in Sentence #" + str(s))
+            print("Found Newline in Sentence #" + str(s))
             sent_newline = sent.split("\n")
-            #print("Sentence #" + str(s) + " has " + str(len(sent_newline)) + " new lines.")
+            print("Sentence #" + str(s) + " has " + str(len(sent_newline)) + " new lines.")
             for sn in sent_newline:
                 sent_split = WhitespaceTokenizer().tokenize(sn)
-                #print("Newline string :::: " + sn)
-                #print("Length of newline string: " + str(len(sent_split)))
+                
+                print("Newline string :::: " + sn)
+                print("Tokenized sub-sentence:::: " + str(sent_split))
+                print("Length of newline string: " + str(len(sent_split)))
+                
                 nw_idx = len(sent_split) + tok_counter - 1
-                #print("Absolute index of last token in newline string: " + str(len(sent_split)) + "+" + str(tok_counter) + "-1 = " + str(nw_idx))
+                print("Original last token of sentence at newidx " + str(nw_idx) + ":::" + str(tokenized_text[nw_idx]))
+                print("Absolute index of last token in newline string: " + str(len(sent_split)) + "+" + str(tok_counter) + "-1 = " + str(nw_idx))
                 sent_boundaries[nw_idx] = 1
-                #print("New sent_boundaries: " + str(sent_boundaries))
+                print("New sent_boundaries: " + str(sent_boundaries))
                 tok_counter = tok_counter + len(sent_split)
-                #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
+                print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
                 
                 
         else:
             sent_split = WhitespaceTokenizer().tokenize(sent)
-            #print("No new lines. tok_counter: " + str(tok_counter))
-            #print("Length of sentence: " + str(len(sent_split)))
-            #print("Tokenized sentence #" + str(s) + ":::: " + str(sent_split))
+            print("No new lines. tok_counter: " + str(tok_counter))
+            print("Length of sentence: " + str(len(sent_split)))
+            print("Tokenized sentence #" + str(s) + ":::: " + str(sent_split))
             nw_idx = len(sent_split) + tok_counter - 1
-            #print("New idx: " + str(nw_idx))
+            print("Original	last token of sentence at newidx " + str(nw_idx) + ":::" + str(tokenized_text[nw_idx]))
+            print("New idx: " + str(nw_idx))
             sent_boundaries[nw_idx] = 1
-            #print("New sent_boundaries: " + str(sent_boundaries))
+            print("New sent_boundaries: " + str(sent_boundaries))
             tok_counter = tok_counter + len(sent_split)
-            #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
+            print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
     
     return text, tokenized_text, spans, tags, sent_boundaries
 
