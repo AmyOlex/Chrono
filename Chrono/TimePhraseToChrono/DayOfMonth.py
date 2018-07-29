@@ -39,6 +39,7 @@ def hasDayOfMonth(tpentity):
     text_norm = text_lower.translate(str.maketrans(",", " "))
     # convert to list
     text_list = text_norm.split(" ")
+    print(text_list)
 
     if len(text_list) > 0:
         # loop through list looking for expression
@@ -61,6 +62,7 @@ def hasDayOfMonth(tpentity):
                 if re.search('[A-Za-z]{3,4}', twodigitstart[2]) and utils.getMonthNumber(twodigitstart[2]) <= 12:
                     # if the second entity is all characters and is a valid text month get the first number as the day
                     if int(twodigitstart[1]) <= 31:
+                        print("Found 2digitstart" + str(twodigitstart[1]))
                         start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[1])
                         return True, twodigitstart[1], text_start + start_idx, text_start + end_idx
                     else:
