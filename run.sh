@@ -92,6 +92,12 @@ then
 			OUT_DIR="/home/alolex/ChronoAnalysis_031918/ChronoResults/colonTrain_dev2"
 			ML_DATA_DIR="/home/alolex/ChronoAnalysis_031918/Chrono/sample_files"
 		fi
+		if [ $DATASET = "eval" ]
+		then
+			DATA_DIR="/home/share/data/THYME/ChronoEval/THYMEColonFinal/Dev"
+                        OUT_DIR="/home/alolex/ChronoAnalysis_031918/ChronoResults/colonEval"
+                        ML_DATA_DIR="/home/alolex/ChronoAnalysis_031918/Chrono/sample_files"
+		fi
 		if [ $ML_DATA = "news5" ]
 		then
 			ML_DATA_FILE="official_train_MLmatrix_Win5_012618_data.csv"
@@ -129,11 +135,19 @@ then
 	
 	python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 
-	cd $ANAFORA_DIR
-	
-	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+#	cd $ANAFORA_DIR
 
-	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --include Number
+#	echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+
+#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+
+#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
+
+#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
+
+#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
+
+
 
 elif [ $USER = "luke" ]
 then
