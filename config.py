@@ -1,1 +1,2 @@
 DICTIONARY = {}
+MODE = "SCATE"
