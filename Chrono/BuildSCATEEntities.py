@@ -39,7 +39,7 @@ from Chrono.TimePhraseToChrono import *
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
 from Chrono import utils
-
+from config import SUBINTERVAL_LINKING, BUILD_ENTITIES
 
 #Example TimePhrase List
 #Wsj_0152
@@ -69,11 +69,13 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
         # The flags are in the order: [loneDigitYear, month, day, hour, minute, second]
         chrono_time_flags = {"loneDigitYear":False, "month":False, "day":False, "hour":False, "minute":False, "second":False, "fourdigityear":False, "twodigityear":False}
-        
+
+        for f in BUILD_ENTITIES:
+            chrono_tmp_list, chrono_id, chrono_time_flags = f(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Year function
-        chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.buildYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
-        #Parse out Two-Digit Year 
-        chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.build2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        # chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.buildYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        # #Parse out Two-Digit Year
+        # chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.build2DigitYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Month-of-Year
         chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.buildMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Day-of-Month
@@ -112,8 +114,11 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     #    for e in chrono_tmp_list:
     #        print(e)
         
-        
-        tmplist, chrono_id = buildSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
+        if SUBINTERVAL_LINKING:
+            tmplist, chrono_id = buildSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
+        else:
+            tmplist = chrono_tmp_list
+
         chrono_list = chrono_list+tmplist
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
