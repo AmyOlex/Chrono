@@ -53,6 +53,7 @@ import numpy as np
 from Chrono import w2ny as w2n
 import string
 import copy
+from config import DICTIONARY
 
 ## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -384,7 +385,7 @@ def markTemporal(refToks):
         ref.setTemporal(temporalTest(ref.getText()))
     
     ## read in the link terms dictionary
-    terms = open("dictionary/LinkTerms.txt", 'r').read().split()
+    terms = DICTIONARY["LinkTerms"]
     
     
     ## Now go through the list again and mark all linking words a, an, in, of that appear between 2 temporal and or number tokens.
