@@ -45,6 +45,12 @@ then
 			OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/Colon_dev"
 			ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
 		fi
+		if [ $DATASET = "eval" ]
+		then
+			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/SemEval-Task6-Evaluation"
+                        OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/newsEval"
+                        ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+		fi
 		if [ $ML_DATA = "news5" ]
 		then
 			ML_DATA_FILE="official_train_MLmatrix_Win5_012618_data.csv"
