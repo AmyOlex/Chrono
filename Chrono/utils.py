@@ -39,6 +39,7 @@ import nltk
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.tokenize import sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
+from nltk.tokenize.util import align_tokens
 # from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
 import dateutil.parser
@@ -55,7 +56,7 @@ import string
 import copy
 from config import DICTIONARY
 
-## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
+## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
 # @param file_path The path and file name of the text file to be parsed.
 # @return text String containing the raw text blob from reading in the file.
@@ -67,55 +68,57 @@ def getWhitespaceTokens(file_path):
     ## Testing the replacement of all "=" signs by spaces before tokenizing.
     text = text.translate(str.maketrans("=", ' '))
     
-    span_generator = WhitespaceTokenizer().span_tokenize(text)
-    spans = [span for span in span_generator]
-    tokenized_text = WhitespaceTokenizer().tokenize(text)
-    tags = nltk.pos_tag(tokenized_text)
-    #print(tokenized_text)
+    ## Tokenize the sentences
+    sentences = sent_tokenize(text)
     
-    sent_tokenize_list = sent_tokenize(text)
+    ## Get spans of the sentences
+    sent_spans = align_tokens(sentences, text)
+    
+    ## create empty arrays for white space tokens and sentence delimiters
+    tokenized_text = []
+    text_spans = []
+    
+    ## Loop through each sentence and get the tokens and token spans
+    for s in range(0,len(sentences)):
+        # get the tokens and token spans within the sentence
+        toks = WhitespaceTokenizer().tokenize(sentences[s])
+        span_generator = WhitespaceTokenizer().span_tokenize(sentences[s])
+        rel_spans = [span for span in span_generator]
+        
+        # convert the relative spans into absolute spans
+        abs_spans = []
+        for start, end in rel_spans:
+            abs_spans = abs_spans + [(sent_spans[s][0]+start, sent_spans[s][0]+end)]
+        
+        tokenized_text = tokenized_text + toks
+        text_spans = text_spans + abs_spans
+    
+    ## Now we have the token list and the spans.  We should be able to continue finding sentnence boundaries as before
+    tags = nltk.pos_tag(tokenized_text)
     sent_boundaries = [0] * len(tokenized_text)
     
     ## figure out which tokens are at the end of a sentence
     tok_counter = 0
     
-    #print("\nLength of tokenized_text: " + str(len(tokenized_text)) + "\n")
-    #print("Starting value of tok_counter: " + str(tok_counter))
-    #print("Number of tokenized sentences: " + str(len(sent_tokenize_list)))
-    
-    for s in range(0,len(sent_tokenize_list)):
-        sent = sent_tokenize_list[s]
-        #print("Sentence #" + str(s) + "::::" + sent)
+    for s in range(0,len(sentences)):
+        sent = sentences[s]
         
         if "\n" in sent:
-            #print("Found Newline in Sentence #" + str(s))
             sent_newline = sent.split("\n")
-            #print("Sentence #" + str(s) + " has " + str(len(sent_newline)) + " new lines.")
             for sn in sent_newline:
                 sent_split = WhitespaceTokenizer().tokenize(sn)
-                #print("Newline string :::: " + sn)
-                #print("Length of newline string: " + str(len(sent_split)))
                 nw_idx = len(sent_split) + tok_counter - 1
-                #print("Absolute index of last token in newline string: " + str(len(sent_split)) + "+" + str(tok_counter) + "-1 = " + str(nw_idx))
                 sent_boundaries[nw_idx] = 1
-                #print("New sent_boundaries: " + str(sent_boundaries))
                 tok_counter = tok_counter + len(sent_split)
-                #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
-                
-                
+                 
         else:
             sent_split = WhitespaceTokenizer().tokenize(sent)
-            #print("No new lines. tok_counter: " + str(tok_counter))
-            #print("Length of sentence: " + str(len(sent_split)))
-            #print("Tokenized sentence #" + str(s) + ":::: " + str(sent_split))
             nw_idx = len(sent_split) + tok_counter - 1
-            #print("New idx: " + str(nw_idx))
             sent_boundaries[nw_idx] = 1
-            #print("New sent_boundaries: " + str(sent_boundaries))
             tok_counter = tok_counter + len(sent_split)
-            #print("Incremented tok_counter by " + str(len(sent_split)) + " to equal " + str(tok_counter))
-    
-    return text, tokenized_text, spans, tags, sent_boundaries
+            
+    return text, tokenized_text, text_spans, tags, sent_boundaries
+
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex

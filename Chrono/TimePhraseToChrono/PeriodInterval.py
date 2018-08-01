@@ -20,7 +20,6 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 
     features = feats.copy()
     ref_Sspan, ref_Espan = s.getSpan()
-    #print("In buildPeriodInterval(), TimePhrase Text: " + s.getText())
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
@@ -145,29 +144,19 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
             has_space = True if substr[len(substr)-1] == ' ' else False
             substr = substr.strip(' ').split(' ')
             
-            print("full phrase: " + s.getText() + "  Start Span: " + str(idxstart))
-            print("My substring List: " + str(substr))
-            
             ## get the previous token
             prevtok = substr[len(substr)-1]
             prev_sSpan = idxstart - len(prevtok)-1 if has_space else idxstart - len(prevtok)
             prev_eSpan = idxstart - 1
-            print("My substring List: " + str(substr) + "  idxstart: " + str(idxstart))
-            print("Last token: " + prevtok + "  Last token length: " + str(len(prevtok)) )
-            print("Last token start: " + str(prev_sSpan) + " Last token End: " + str(prev_eSpan))
             
             ## get the rest of the substring joined by a space
             if len(substr) > 1:
                 rest_of_phrase = ' '.join(substr[0:len(substr)-1])
                 rest_of_phrase_length = len(rest_of_phrase) + 1 
-                print("My rest of phrase:" + rest_of_phrase + ":")
+            
             else:
                 rest_of_phrase_length = 0
             
-            ## now calculate the relative span of prevtok
-            #rel_Sspan = rest_of_phrase_length
-            #rel_Espan = rest_of_phrase_length + len(prevtok)
-
             m = re.search('([0-9]{1,2})', prevtok)
             if m is not None :
                 num_val = m.group(0)
@@ -186,10 +175,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 if texNumVal is not None:
                     abs_Sspan = ref_Sspan + rest_of_phrase_length
                     abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok) if has_space else ref_Sspan + rest_of_phrase_length + len(prevtok) - 1
-                    print("Ref sSpan: " + str(ref_Sspan) + "  Ref eSpan: " + str(ref_Espan))
-                    print("Absolute Start of Entity: " + str(ref_Sspan+idxstart))
-                    print("Absolute Start of phrase: " + str(ref_Sspan))
-                    print("Absolute Start of Number: " + str(abs_Sspan) + "  End: " + str(abs_Espan))
+                    
                     #create the number entity
                     my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
                     chrono_id = chrono_id + 1
@@ -244,21 +230,16 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 has_space = True if substr[len(substr)-1] == ' ' else False
                 substr = substr.strip(' ').split(' ')
                 
-                print("2full phrase: " + s.getText() + "  Start Span: " + str(idxstart))
-                print("2My substring List: " + str(substr))
-                
                 ## get the previous token
                 prevtok = substr[len(substr)-1]
                 prev_sSpan = idxstart - len(prevtok)-1 if has_space else idxstart - len(prevtok)
                 prev_eSpan = idxstart - 1
-                print("2My substring List: " + str(substr))
-                print("2Last token: " + prevtok )
                 
                 ## get the rest of the substring joined by a space
                 if len(substr) > 1:
                     rest_of_phrase = ' '.join(substr[0:len(substr)-1])
                     rest_of_phrase_length = len(rest_of_phrase) + 1 
-                    print("2My rest of phrase: " + rest_of_phrase)
+                    
                 else:
                     rest_of_phrase_length = 0
             
@@ -294,38 +275,6 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 
             chrono_list.append(my_entity)
         
-#            substr = s.getText()[:idxstart] ## extract entire first part of TimePhrase phrase
-#            m = re.search('([0-9]{1,2})', substr) #search for an integer in the subphrase and extract it's coordinates
-#            if m is not None :
-#                num_val = m.group(0)
-#                abs_Sspan = ref_Sspan + m.span(0)[0]
-#                abs_Espan = ref_Sspan + m.span(0)[1]##
-#
-#                my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
-#                chrono_id = chrono_id + 1
-#
-#                #add the number entity to the list
-#                chrono_list.append(my_number_entity)
-#                #link to interval entity
-#                my_entity.set_number(my_number_entity.get_id())
-#            #else search for a text number
-#            else:
-#                texNumVal = utils.getNumberFromText(numstr)
-#                if texNumVal is not None:
-#                    m = re.search(numstr, substr) #search for the number string in the subphrase
-#                    if m is not None :
-#                        abs_Sspan = ref_Sspan + m.span(0)[0]
-#                        abs_Espan = ref_Sspan + m.span(0)[1]
-#                        #create the number entity
-#                        my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=texNumVal)
-#                        chrono_id = chrono_id + 1
-#                        #append to list
-#                        chrono_list.append(my_number_entity)
-#                        #link to interval entity
-#                        my_entity.set_number(my_number_entity.get_id())
-#
-#            chrono_list.append(my_entity)
-
     return chrono_list, chrono_id
 
 ## Takes in a TimePhrase entity and identifies if it has any period or calendar interval phrases like "week" or "days"
