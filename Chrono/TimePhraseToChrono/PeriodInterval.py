@@ -5,6 +5,7 @@ from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
 from chronoML import ChronoKeras
+from config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated chronoentity list
@@ -22,7 +23,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
     boo, val, idxstart, idxend, plural = hasPeriodInterval(s)
 
     # FIND terms that are always marked as calendar intervals!
-    if boo and re.search("yesterday|yesterdays|tomorrow|tomorrows|today|todays|daily|/min|/week", s.getText()):
+    if boo and re.search("|".join(DICTIONARY["Interval"]), s.getText()):
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoCalendarIntervalEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
@@ -298,10 +299,7 @@ def hasPeriodInterval(tpentity):
     #print("text list: " + str(text_list))
 
     # define my period lists
-    terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
-             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly",
-             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly",
-             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"]  #, "date"]
+    terms = DICTIONARY["PeriodInterval"]
 
     # figure out if any of the tokens in the text_list are also in the interval list
     intersect = list(set(text_list) & set(terms))
@@ -381,10 +379,7 @@ def hasEmbeddedPeriodInterval(tpentity):
     text_list = text_norm.split(" ")
 
     # define my period/interval term lists
-    terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
-             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly",
-             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly",
-             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+    terms = DICTIONARY["PeriodInterval"]
 
     ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:

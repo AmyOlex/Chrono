@@ -2,6 +2,7 @@ import string
 
 import Chrono.utils
 from Chrono import chronoEntities as chrono
+from config import DICTIONARY
 
 
 ## Takes in a TimePhraseEntity and identifies if it should be annotated as a After entity
@@ -55,8 +56,8 @@ def hasBeforeAfter(tpentity):
     text_list = text_norm.split(" ")
 
     # define my day lists
-    b_words = ["before", "ago", "pre", "previously", "earlier", "until"]
-    a_words = ["after", "later"]
+    b_words = DICTIONARY['Before']
+    a_words = DICTIONARY['After']
     ba_words = b_words + a_words
 
     # figure out if any of the tokens in the text_list are also in the modifiers list

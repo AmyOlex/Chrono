@@ -1,5 +1,6 @@
 import re
 import string
+from config import DICTIONARY
 from Chrono import chronoEntities as chrono
 from Chrono.utils import calculateSpan
 
@@ -40,8 +41,7 @@ def hasPartOfDay(tpentity):
     text_list = text_norm.split(" ")
 
     # define my period lists
-    partofday = ["morning", "evening", "afternoon", "night", "dawn", "dusk", "tonight", "overnight", "nights",
-                 "mornings", "evening", "afternoons", "noon", "bedtime", "midnight", "eve"]
+    partofday = DICTIONARY["PartOfDay"]
 
     # figure out if any of the tokens in the text_list are also in the ampm list
     intersect = list(set(text_list) & set(partofday))

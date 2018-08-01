@@ -125,7 +125,7 @@ class ChronoEntity:
 	## Prints the XML representation of the entity
 	#
 	# Subclasses need to close the properties and entities tags
-	def print_xml(self):
+	def print_SCATE(self):
 		return("\t<entity>\n\t\t<id>{}</id>\n\t\t<span>{},{}</span>\n\t\t"
 			  "<type>{}</type>\n\t\t<parentsType>{}</parentsType>"
 			  "\n\t\t<properties>\n\t\t".format(self.entityID, self.start_span,
@@ -167,8 +167,8 @@ class ChronoYearEntity(ChronoIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  	self.value, self.sub_interval or '', self.modifier or ''))
 
@@ -202,8 +202,8 @@ class ChronoPeriodEntity(ChronoEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.period_type, self.number or '', self.modifier or ''))
 
@@ -248,8 +248,8 @@ class chronoMonthOfYearEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.month_type,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -282,8 +282,8 @@ class ChronoSeasonOfYearEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.season_type,
 			    self.number or '', self.modifier or ''))
@@ -326,8 +326,8 @@ class ChronoWeekOfYearEntity(ChronoRepeatingIntervalEntity):
 	## Prints the xml leaving empty variables blank
 	#
 	# No examples, so this is the assumed format
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.sub_interval or '',
 			  self.number or '', self.modifier or ''))
@@ -368,8 +368,8 @@ class ChronoDayOfMonthEntity(ChronoRepeatingIntervalEntity):
 
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.value,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -410,8 +410,8 @@ class ChronoDayOfWeekEntity(ChronoRepeatingIntervalEntity):
 
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.day_type,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -468,8 +468,8 @@ class ChronoHourOfDayEntity(ChronoRepeatingIntervalEntity):
 
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<AMPM-Of-Day>{}</AMPM-Of-Day>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<AMPM-Of-Day>{}</AMPM-Of-Day>\n"
 			  "\t\t\t<Time-Zone>{}</Time-Zone>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.value, self.ampm or '',
@@ -511,8 +511,8 @@ class ChronoMinuteOfHourEntity(ChronoRepeatingIntervalEntity):
 
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.value,
 			  self.sub_interval or '', self.number or '', self.modifier or ''))
@@ -544,8 +544,8 @@ class ChronoSecondOfMinuteEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t\t<Number>{}</Number>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.value, self.number or '', self.modifier or ''))
 
@@ -578,8 +578,8 @@ class ChronoCalendarIntervalEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.calendar_type, self.number or '', self.modifier or ''))
 
@@ -612,8 +612,8 @@ class ChronoPartOfDayEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.part_of_day_type, self.number or '', self.modifier or ''))
 
@@ -646,8 +646,8 @@ class ChronoPartOfWeekEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.part_of_week_type, self.number or '', self.modifier or ''))
 
@@ -679,8 +679,8 @@ class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
 			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
 			  self.ampm_type, self.number or '', self.modifier or ''))
 
@@ -689,8 +689,8 @@ class ChronoTimeZoneEntity(ChronoRepeatingIntervalEntity):
 	def __init__(self, entityID, start_span, end_span):
 		super().__init__(entityID, start_span, end_span, "Time-Zone")
 
-	def print_xml(self):
-		return(super().print_xml() + "</properties>\n\t</entity>\n")
+	def print_SCATE(self):
+		return(super().print_SCATE() + "</properties>\n\t</entity>\n")
 
 ## Super class for all Operators
 class ChronoOperator(ChronoEntity):
@@ -717,8 +717,8 @@ class ChronoSumOperator(ChronoOperator):
 		return self.period_2
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Period>{}</Period>\n\t\t\t<Period>{}</Period>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Period>{}</Period>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.period_1, self.period_2))
 
 class ChronoDifferenceOperator(ChronoOperator):
@@ -740,8 +740,8 @@ class ChronoDifferenceOperator(ChronoOperator):
 		return self.period_2
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Period>{}</Period>\n\t\t\t<Period>{}</Period>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Period>{}</Period>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.period_1, self.period_2))
 
 
@@ -765,8 +765,8 @@ class ChronoUnionOperator(ChronoOperator):
 		return self.repeating_intervals_2
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.repeating_intervals_1,
 			  self.repeating_intervals_2))
@@ -791,8 +791,8 @@ class ChronoIntersectionOperator(ChronoOperator):
 		return self.repeating_intervals_2
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t\t\t<Repeating-Intervals>{}</Repeating-Intervals>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.repeating_intervals_1,
 			  self.repeating_intervals_2))
@@ -851,8 +851,8 @@ class ChronoLastOperator(ChronoOperator):
 		return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Semantics>{}</Semantics>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Semantics>{}</Semantics>\n"
 			  "\t\t\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
@@ -909,8 +909,8 @@ class ChronoNextOperator(ChronoOperator):
 		return self.semantics
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t\t<Semantics>{}</Semantics>\n"
@@ -958,8 +958,8 @@ class ChronoThisOperator(ChronoOperator):
 		return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.interval_type,
@@ -1016,8 +1016,8 @@ class ChronoBeforeOperator(ChronoOperator):
 
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t\t<Semantics>{}</Semantics>\n"
@@ -1075,8 +1075,8 @@ class ChronoAfterOperator(ChronoOperator):
 
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Period>{}</Period>\n"
 			  "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
 			  "\t\t\t<Semantics>{}</Semantics>\n"
@@ -1141,8 +1141,8 @@ class ChronoBetweenOperator(ChronoOperator):
 		return self.end_included
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Start-Interval-Type>{}</Start-Interval-Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Start-Interval-Type>{}</Start-Interval-Type>\n"
 			  "\t\t\t<Start-Interval>{}</Start-Interval>\n"
 			  "\t\t\t<End-Interval-Type>{}</End-Interval-Type>\n"
 			  "\t\t\t<End-Interval>{}</End-Interval>\n"
@@ -1197,8 +1197,8 @@ class ChronoNthOperator(ChronoOperator):
         return self.repeating_interval
 
 	## Prints the xml leaving empty variables blank
-    def print_xml(self):
-        return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+    def print_SCATE(self):
+        return(super().print_SCATE() + "\t<Interval-Type>{}</Interval-Type>\n"
         "\t\t\t<Interval>{}</Interval>\n\t\t\t<Value>{}</Value>\n"
         "\t\t\t<Period>{}</Period>\n"
         "\t\t\t<Repeating-Interval>{}</Repeating-Interval>\n"
@@ -1241,8 +1241,8 @@ class ChronoTwoDigitYearOperator(ChronoOperator):
 	def get_sub_interval(self):
 		return self.sub_interval
 
-	def print_xml(self):
-		return(super().print_xml() + "\t<Interval-Type>{}</Interval-Type>\n"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Interval-Type>{}</Interval-Type>\n"
 			  "\t\t\t<Interval>{}</Interval>\n\t\t\t<Value>{}</Value>\n"
 			  "\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
 			  "\t\t</properties>\n\t</entity>\n".format(self.interval_type or '',
@@ -1265,8 +1265,8 @@ class ChronoNumber(ChronoOtherEntity):
 		return self.value
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Value>{}</Value>\n\t\t</properties>\n\t"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Value>{}</Value>\n\t\t</properties>\n\t"
 			  "</entity>\n".format(self.value))
 
 class ChronoModifier(ChronoOtherEntity):
@@ -1281,8 +1281,8 @@ class ChronoModifier(ChronoOtherEntity):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "\t<Type>{}</Type>\n\t\t</properties>\n\t"
+	def print_SCATE(self):
+		return(super().print_SCATE() + "\t<Type>{}</Type>\n\t\t</properties>\n\t"
 			  "</entity>\n".format(self.modifier))
 
 class ChronoEvent(ChronoOtherEntity):
@@ -1290,6 +1290,6 @@ class ChronoEvent(ChronoOtherEntity):
 		super().__init__(entityID, start_span, end_span, "Event")
 
 	## Prints the xml leaving empty variables blank
-	def print_xml(self):
-		return(super().print_xml() + "</properties>\n\t</entity>\n")
+	def print_SCATE(self):
+		return(super().print_SCATE() + "</properties>\n\t</entity>\n")
 

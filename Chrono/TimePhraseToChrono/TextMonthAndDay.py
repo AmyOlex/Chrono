@@ -4,6 +4,7 @@ from nltk import WhitespaceTokenizer
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
+from config import DICTIONARY
 
 
 ## Parses a TimePhraseEntity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list
@@ -161,9 +162,7 @@ def hasTextMonth(tpentity, ref_list):
     text_list = text_norm.split(" ")
 
     # define my month lists
-    full_month = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
-                  "november", "december"]
-
+    full_month = DICTIONARY["FullMonth"]
     # run for full month
     t_flag = False
     for tok in text_list:

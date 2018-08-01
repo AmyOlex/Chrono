@@ -1,6 +1,7 @@
 import string
 import re
 from Chrono import chronoEntities as chrono
+from config import DICTIONARY
 
 
 def buildTimeZone(s, chrono_id, chrono_list):
@@ -28,12 +29,14 @@ def buildTimeZone(s, chrono_id, chrono_list):
 def hasTimeZone(tpentity):
     text = tpentity.getText()
     text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
-    tz = re.search('(AST|EST|EDT|CST|CDT|MST|MDT|PST|PDT|HST|SST|SDT|GMT|UTC|BST|CET|IST|MSD|MSK|AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+    tz3 = '|'.join(DICTIONARY["TimeZone3"])
+    tz4 = '|'.join(DICTIONARY["TimeZone4"])
+    tz = re.search('('+tz3+')', text_norm)
 
     if tz is not None:
         return True, tz.group(1), tz.start(1), tz.end(1)
     '''    
-        tz = re.search('\d{0,4}(AKST|HAST|HADT|CHST|CEST|EEST)', text_norm)
+        tz = re.search('\d{0,4}('+tz4+')', text_norm)
         if tz is None:
             return False, None, None, None
         elif len(tz.group()) == 4:

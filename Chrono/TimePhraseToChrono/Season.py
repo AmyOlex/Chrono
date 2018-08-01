@@ -3,6 +3,7 @@ import string
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
+from config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a season of the year written out in text form, then builds the associated chronoentity list
@@ -92,7 +93,7 @@ def hasSeasonOfYear(tpentity, ref_list):
     text_list = text_norm.split(" ")
 
     # define my period lists
-    seasonofyear = ["summer", "winter", "fall", "spring", "summers", "falls", "winters", "springs"]
+    seasonofyear = DICTIONARY["Season"]
 
     # figure out if any of the tokens in the text_list are also in the ampm list
     intersect = list(set(text_list) & set(seasonofyear))

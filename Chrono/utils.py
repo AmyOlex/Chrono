@@ -54,6 +54,7 @@ import numpy as np
 from Chrono import w2ny as w2n
 import string
 import copy
+from config import DICTIONARY
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -129,7 +130,7 @@ def getDocTime(file_path):
     return(dateutil.parser.parse(text))
 
   
-## Writes out the full XML file for all T6entities in list.
+## Writes out the full XML file for all Chrono in list.
 # @author Amy Olex
 # @param chrono_list The list of Chrono objects needed to be written in the file.
 # @param outfile A string containing the output file location and name.
@@ -137,7 +138,7 @@ def write_xml(chrono_list, outfile):
     fout = open(outfile + ".completed.xml", "w")
     fout.write("<data>\n<annotations>\n")
     for c in chrono_list :
-        fout.write(str(c.print_xml()))
+        fout.write(str(c.print_SCATE()))
     
     fout.write("\n</annotations>\n</data>")
     fout.close()
@@ -387,7 +388,7 @@ def markTemporal(refToks):
         ref.setTemporal(temporalTest(ref.getText()))
     
     ## read in the link terms dictionary
-    terms = open("dictionary/LinkTerms.txt", 'r').read().split()
+    terms = DICTIONARY["LinkTerms"]
     
     
     ## Now go through the list again and mark all linking words a, an, in, of that appear between 2 temporal and or number tokens.

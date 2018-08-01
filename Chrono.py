@@ -36,11 +36,12 @@ import argparse
 import os
 import pickle
 
+from config import DICTIONARY, MODE
 from chronoML import DecisionTree as DTree
 from chronoML import RF_classifier as RandomForest
 from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from chronoML import SVM_classifier as SVMclass
-from Chrono import BuildEntities
+from Chrono import BuildSCATEEntities
 from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
@@ -64,10 +65,26 @@ if __name__ == "__main__":
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
+    parser.add_argument('-D', metavar='Dictionary', type=str, help='The path to dictionaries', required=False, default='./dictionary')
+    parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
-    
+
+    # Select mode if given
+    if args.O:
+        MODE = args.O
+
+    # Read in the word lists for each entity
+    for root, dirs, files in os.walk(args.D, topdown=True):
+        for file in files:
+            with open(root + '/' + file) as f:
+                key = os.path.splitext(file)[0]
+                for word in f:
+                    if key not in DICTIONARY:
+                        DICTIONARY[key] = []
+                    DICTIONARY[key].append(word.rstrip('\n'))
+
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
@@ -132,42 +149,43 @@ if __name__ == "__main__":
             feats = utils.get_features(args.d)
     
     ## Pass the ML classifier through to the parse SUTime entities method.
-  
-    ## Loop through each file and parse
-    for f in range(0,len(infiles)) :
-        print("Parsing "+ infiles[f] +" ...")
-        ## Init the ChronoEntity list
-        my_chronoentities = []
-        my_chrono_ID_counter = 1
-        
-        ## parse out the doctime
-        doctime = utils.getDocTime(infiles[f] + ".dct")
-        if(debug) : print(doctime)
-    
-        ## parse out reference tokens
-        text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
-        #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
-        
 
-    
-        ## mark all ref tokens if they are numeric or temporal
-        chroList = utils.markTemporal(my_refToks)
-        
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in chroList : print(tok)
-            
-        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
-    
-        if(debug):
-            for c in tempPhrases:
-                print(c)
-    
+    if MODE == "SCATE":
+        print("Parsing in SCATE mode")
+        ## Loop through each file and parse
+        for f in range(0,len(infiles)) :
+            print("Parsing "+ infiles[f] +" ...")
+            ## Init the ChronoEntity list
+            my_chronoentities = []
+            my_chrono_ID_counter = 1
 
-        chrono_master_list, my_chrono_ID_counter = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
-        
-        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-        utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
-    
-    
+            ## parse out the doctime
+            doctime = utils.getDocTime(infiles[f] + ".dct")
+            if(debug) : print(doctime)
+
+            ## parse out reference tokens
+            text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
+            #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
+            my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
+
+
+
+            ## mark all ref tokens if they are numeric or temporal
+            chroList = utils.markTemporal(my_refToks)
+
+            if(debug) :
+                print("REFERENCE TOKENS:\n")
+                for tok in chroList : print(tok)
+
+            tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+
+            if(debug):
+                for c in tempPhrases:
+                    print(c)
+
+            chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+
+            print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+            utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+      else:
+            print("Error: " + str(MODE) + " MODE not implemented yet. Exiting.")
