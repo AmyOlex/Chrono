@@ -2,7 +2,7 @@ import datetime
 import string
 from nltk import WhitespaceTokenizer
 from Chrono import chronoEntities as chrono, utils
-from Chrono.TimePhraseToChrono.Modifier import hasModifier
+from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
 
 
@@ -125,7 +125,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
         ## if the start of the month is not 0 then we have leading text to parse
         if(idxstart > 0):
             #substr = s.getText()[:idxstart].strip(",.").strip()
-            hasMod, mod_type, mod_start, mod_end = hasModifier(s)
+            hasMod, mod_type, mod_start, mod_end = hasNextLastThis(s)
             if(hasMod):
                 if mod_type == "This":
                     chrono_list.append(chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_month_entity.get_id()))
