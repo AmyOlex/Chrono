@@ -45,7 +45,7 @@ from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
 
-debug=True
+debug=False
 ## This is the driver method to run all of Chrono.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -160,9 +160,11 @@ if __name__ == "__main__":
             
         tempPhrases = utils.getTemporalPhrases(chroList, doctime)
     
-        for c in tempPhrases:
-            print(c)
+        if(debug):
+            for c in tempPhrases:
+                print(c)
     
+
         chrono_master_list, my_chrono_ID_counter = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))

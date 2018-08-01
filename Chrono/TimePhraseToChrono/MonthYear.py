@@ -189,8 +189,6 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     if b and not flags["fourdigityear"]:
         
-        print("Found a 2-digit year phrase: " + str(s))
-        print("The year is: " + text)
         #In most cases this will be at the end of the Span
         flags["twodigityear"] = True
         ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -233,7 +231,6 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                 # Check for Hour in same element
                 bHour, textHour, startSpanHour, endSpanHour = hasHourOfDay(s)
                 if bHour and not flags["hour"]:
-                    # print("Found Hour in 2-digit year")
                     flags["hour"] = True
                     ref_StartSpan, ref_EndSpan = s.getSpan()
                     abs_StartSpanHour = ref_StartSpan + startSpanHour
