@@ -101,7 +101,7 @@ then
 		if [ $DATASET = "eval" ]
 		then
 			DATA_DIR="/home/share/data/THYME/ChronoEval/THYMEColonFinal/Dev"
-                        OUT_DIR="/home/alolex/ChronoAnalysis_031918/ChronoResults/colonEval"
+                        OUT_DIR="/home/alolex/ChronoAnalysis_031918/ChronoResults/colonEval073018"
                         ML_DATA_DIR="/home/alolex/ChronoAnalysis_031918/Chrono/sample_files"
 		fi
 		if [ $ML_DATA = "news5" ]
@@ -141,7 +141,7 @@ then
 	
 #	python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 
-	cd $ANAFORA_DIR
+#	cd $ANAFORA_DIR
 
 	echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
 	echo "EVERYTHING"
