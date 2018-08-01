@@ -187,5 +187,5 @@ if __name__ == "__main__":
 
             print("Number of Chrono Entities: " + str(len(chrono_master_list)))
             utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
-      else:
-            print("Error: " + str(MODE) + " MODE not implemented yet. Exiting.")
+    else:
+        print("Error: " + str(MODE) + " MODE not implemented yet. Exiting.")
