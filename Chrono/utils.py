@@ -37,7 +37,9 @@
 
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
+from nltk.tokenize import sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
+from nltk.tokenize.util import align_tokens
 # from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
 import dateutil.parser
@@ -53,7 +55,7 @@ from Chrono import w2ny as w2n
 import string
 import copy
 
-## Parses a text file to idenitfy all tokens seperated by white space with their original file span coordinates.
+## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
 # @param file_path The path and file name of the text file to be parsed.
 # @return text String containing the raw text blob from reading in the file.
@@ -62,11 +64,60 @@ import copy
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
-    span_generator = WhitespaceTokenizer().span_tokenize(text)
-    spans = [span for span in span_generator]
-    tokenized_text = WhitespaceTokenizer().tokenize(text)
+    ## Testing the replacement of all "=" signs by spaces before tokenizing.
+    text = text.translate(str.maketrans("=", ' '))
+    
+    ## Tokenize the sentences
+    sentences = sent_tokenize(text)
+    
+    ## Get spans of the sentences
+    sent_spans = align_tokens(sentences, text)
+    
+    ## create empty arrays for white space tokens and sentence delimiters
+    tokenized_text = []
+    text_spans = []
+    
+    ## Loop through each sentence and get the tokens and token spans
+    for s in range(0,len(sentences)):
+        # get the tokens and token spans within the sentence
+        toks = WhitespaceTokenizer().tokenize(sentences[s])
+        span_generator = WhitespaceTokenizer().span_tokenize(sentences[s])
+        rel_spans = [span for span in span_generator]
+        
+        # convert the relative spans into absolute spans
+        abs_spans = []
+        for start, end in rel_spans:
+            abs_spans = abs_spans + [(sent_spans[s][0]+start, sent_spans[s][0]+end)]
+        
+        tokenized_text = tokenized_text + toks
+        text_spans = text_spans + abs_spans
+    
+    ## Now we have the token list and the spans.  We should be able to continue finding sentnence boundaries as before
     tags = nltk.pos_tag(tokenized_text)
-    return text, tokenized_text, spans, tags
+    sent_boundaries = [0] * len(tokenized_text)
+    
+    ## figure out which tokens are at the end of a sentence
+    tok_counter = 0
+    
+    for s in range(0,len(sentences)):
+        sent = sentences[s]
+        
+        if "\n" in sent:
+            sent_newline = sent.split("\n")
+            for sn in sent_newline:
+                sent_split = WhitespaceTokenizer().tokenize(sn)
+                nw_idx = len(sent_split) + tok_counter - 1
+                sent_boundaries[nw_idx] = 1
+                tok_counter = tok_counter + len(sent_split)
+                 
+        else:
+            sent_split = WhitespaceTokenizer().tokenize(sent)
+            nw_idx = len(sent_split) + tok_counter - 1
+            sent_boundaries[nw_idx] = 1
+            tok_counter = tok_counter + len(sent_split)
+            
+    return text, tokenized_text, text_spans, tags, sent_boundaries
+
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
@@ -208,8 +259,20 @@ def isOrdinal(text):
 # @author Amy Olex  
 # @param text The text string to be converted to an integer.
 def getMonthNumber(text):
-    month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12}
-    return month_dict[text]
+    month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12,
+                  'JANUARY':1, 'FEBRUARY':2, 'MARCH':3, 'APRIL':4, 'MAY':5, 'JUNE':6, 'JULY':7, 'AUGUST':8, 'SEPTEMBER':9, 'OCTOBER':10,'NOVEMBER':11, 'DECEMBER':12, 
+                  'january':1, 'february':2, 'march':3, 'april':4, 'june':6, 'july':7, 'august':8, 'september':9, 'october':10,'november':11, 'december':12,
+                  'Jan':1, 'Feb':2, 'Mar':3, 'Apr':4, 'Jun':6, 'Jul':7, 'Aug':8, 'Sept':9, 'Sep':9, 'Oct':10,'Nov':11, 'Dec':12,
+                  'jan':1, 'feb':2, 'mar':3, 'apr':4, 'jun':6, 'jul':7, 'aug':8, 'sept':9, 'sep':9, 'oct':10,'nov':11, 'dec':12,
+                  'JAN':1, 'FEB':2, 'MAR':3, 'APR':4, 'JUN':6, 'JUL':7, 'AUG':8, 'SEPT':9, 'SEP':9, 'OCT':10,'NOV':11, 'DEC':12,
+                  '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, '11':11, '12':12,
+                  '01':1, '02':2, '03':3, '04':4, '05':5, '06':6, '07':7, '08':8, '09':9, '10':10, '11':11, '12':12}
+    try:
+        value = month_dict[text]
+    except KeyError:
+        value = 100
+    
+    return value
    
 ## Function to determine if the input span overlaps this objects span
 # @author Amy Olex
@@ -322,6 +385,15 @@ def markTemporal(refToks):
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
         ref.setTemporal(temporalTest(ref.getText()))
+    
+    ## read in the link terms dictionary
+    terms = open("dictionary/LinkTerms.txt", 'r').read().split()
+    
+    
+    ## Now go through the list again and mark all linking words a, an, in, of that appear between 2 temporal and or number tokens.
+    for i in range(1, len(refToks)-1):
+        if (refToks[i-1].isNumeric() or refToks[i-1].isTemporal()) and (refToks[i+1].isNumeric() or refToks[i+1].isTemporal()) and (refToks[i].getText() in terms):
+            refToks[i].setLinkTerm(1)
         
     return refToks
 ####
@@ -403,8 +475,7 @@ def temporalTest(tok):
         return True
     if tt.hasModifierText(tok):
         return True
-    
-    
+
 ####
 #END_MODULE
 #### 
@@ -441,7 +512,10 @@ def getTemporalPhrases(chroList, doctime):
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
-                if e1+1 != s2 and inphrase:
+                
+                #if e1+1 != s2 and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    #print("Found Sentence Boundary Word!!!!!!!!!")
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
@@ -473,12 +547,21 @@ def getTemporalPhrases(chroList, doctime):
             else:
                 s1,e1 = chroList[n].getSpan()
                 s2,e2 = chroList[n+1].getSpan()
-                if e1+1 != s2 and inphrase:
-                    # print("has new line: " + str(chroList[n]))
+                
+                #if e1+1 != s2 and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    #print("Found Sentence Boundary Word!!!!!!!!!")
                     phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
+        
+        ## Now look for a linking term.  Only continue the phrase if the term is surrounded by numeric or temporal tokens. 
+        ## Also, only consider linking terms if we are already in a phrase.
+        elif chroList[n].isLinkTerm() and inphrase:
+            if (chroList[n-1].isTemporal() or chroList[n-1].isNumeric()) and (chroList[n+1].isTemporal() or chroList[n+1].isNumeric()):
+                tmpPhrase.append(copy.copy(chroList[n]))
+        
         else:
             #current element is not temporal, check to see if inphrase
             #print("Not Temporal, or numeric " + str(chroList[n]))
@@ -548,8 +631,17 @@ def getRefIdx(ref_list, start_span, end_span):
 ####
 #END_MODULE
 ####           
-                
-        
-    
-    
-    
+
+## Identifies the local span of the serach_text in the input "text"
+# @author Amy Olex
+# @param text The text to be searched
+# @param search_text The text to search for.
+# @return The start index and end index of the search_text string.
+def calculateSpan(text, search_text):
+    try:
+        start_idx = text.index(search_text)
+        end_idx = start_idx + len(search_text)
+    except ValueError:
+        return None, None
+
+    return start_idx, end_idx

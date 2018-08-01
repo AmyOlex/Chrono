@@ -1,6 +1,7 @@
 anaforatools
 kfoldoutput*
 Chrono_TempEval2018_Post-Competition_Submissions/*
+Chrono_SemEval2018_PostEvalSubmission_RF_NewswireClinicalModel_072918/*
 Chrono_TempEval2018_Submission_NN/*
 resultsEvaluation/*
 resultsDebug/*
@@ -70,3 +71,5 @@ runit.sh
 *.xml
 Chrono_SemEval2018_PostEvalSubmission_NB_NewswireModel_060818/Chrono_TempEval2018_PostEvalSubmission_NB_060818.zip
 *.tiff
+*.dct
+SemEval-OfficialTrain/*

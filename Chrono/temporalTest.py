@@ -55,7 +55,7 @@ def hasTextMonth(text):
     
     #define my day lists
     full_month = ["January","February","March","April","May","June","July","August","September","October","November","December","january","february","march","april","may","june","july","august","september","october","november","december"]
-    abbr_month = ["Jan.", "Feb.","Mar.","Apr.","Jun.","Jul.","Aug.","Sept.","Oct.","Nov.","Dec.","jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","oct.","nov.","dec."]
+    abbr_month = ["Jan.", "Feb.","Mar.","Apr.","Jun.","Jul.","Aug.","Sept.","Oct.","Nov.","Dec.","jan.","feb.","mar.","apr.","jun.","jul.","aug.","sept.","oct.","nov.","dec.", "Jan", "Feb","Mar","Apr","Jun","Jul","Aug","Sept","Oct","Nov","Dec","jan","feb","mar","apr","jun","jul","aug","sept","oct","nov","dec"]
     
     answer = next((m for m in full_month if m in text_norm), None)
     if answer is not None:
@@ -116,7 +116,10 @@ def hasPeriodInterval(text):
     text_list = text_norm.split(" ")
     
     #define my period lists
-    terms = ["quarter","decades","decade","yesterday","yesterdays","today","todays","day","week","month","year","daily","weekly","monthly","yearly","century","minute","second","hour","hourly","days","weeks","months","years","centuries", "minutes","seconds","hours"]#,"recently"]
+    terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
+             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
+             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
+             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
     ## possibly add in abbreviations like yr, sec, min, etc.
     
     answer = next((m for m in terms if m in text_norm), None)
@@ -301,7 +304,7 @@ def hasPartOfDay(text):
     text_list = text_norm.split(" ")
     
     #define my part of day lists
-    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon"] 
+    partofday = ["morning","evening","afternoon","night","dawn","dusk","tonight","overnight","nights","mornings","evening","afternoons","noon","bedtime","midnight","eve"]
     
     for t in text_list:
         answer = next((m for m in partofday if m in t), None)
@@ -352,7 +355,7 @@ def hasTimeZone(text):
 ####
 
 
-## Takes in a string and identifies if it contains the temporal word "now"
+## Takes in a string and identifies if it contains other misc temporal tokens
 # @author Amy Olex
 # @param text String being parsed
 # @return Outputs True if it contains "now"
@@ -363,7 +366,10 @@ def hasTempText(text):
     #convert to list
     text_list = text_norm.split(" ")
     
-    temp_text = ["this","now", "current", "last", "before", "previously", "ago", "pre", "after", "later", "earlier", "until", "quarter", "time", "next", "previous", "coming", "past"]
+    temp_text = ["this","now", "current", "last", "before", "previously", "ago", "pre", "after", "later", 
+    "earlier", "early", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
+    "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length", "final", "latest", "prior", "recent",
+    "recently"]
     
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
@@ -386,7 +392,7 @@ def hasModifierText(text):
     # convert to list
     text_list = text_norm.split(" ")
 
-    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few"]
+    temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few", "approximately", "<", "beginning"]
 
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)

@@ -1,0 +1,16 @@
+morning
+evening
+afternoon
+night
+dawn
+dusk
+tonight
+overnight
+nights
+mornings
+evening
+afternoons
+noon
+bedtime
+midnight
+eve
