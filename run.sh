@@ -137,21 +137,25 @@ then
 	
 	
 	
-	
-	
-#	python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+	if [ $DATASET = "eval" ]
+        then	
+		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+	else
+		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		cd $ANAFORA_DIR
 
-#	cd $ANAFORA_DIR
+		echo "EVERYTHING"
+		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+	
+		echo "EXCLUDE EVENT"
+		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
 
-	echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
-	echo "EVERYTHING"
-#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
-	echo "EXCLUDE EVENT"
-#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
-	echo "EXCLUDE EVENT AND OVERLAP SPANS"
-#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
-	echo "INCLUDE ONLY WHAT WE PARSE AND OVERLAP SPANS"
-#	python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
+		echo "EXCLUDE EVENT AND OVERLAP SPANS"
+		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
+
+		echo "INCLUDE ONLY WHAT WE PARSE AND OVERLAP SPANS"
+		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
+	fi
 
 	echo "COMMANDS:"
 	echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
