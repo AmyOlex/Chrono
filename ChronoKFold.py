@@ -45,7 +45,7 @@ import pandas as pd
 import shutil
 from sklearn.model_selection import StratifiedKFold
 
-from Chrono import createMLTrainingMatrix
+from Chrono_createMLTrainingMatrix import createMLTrainingMatrix
 
 
 def copy_files(df, directory):
@@ -108,7 +108,7 @@ for i, (train_index, test_index) in enumerate(skf.split(df_x, df_y)):
     for x in train['filename'].values.tolist():
         mltrain.append("./kfold/training/" + x + "/" + x)
 
-    createMLTrainingMatrix.createMLTrainingMatrix(mltrain,"./kfold/trainingGold/",window=5, output="./kfold/kfoldML")
+    createMLTrainingMatrix(mltrain,"./kfold/trainingGold/",window=5, output="./kfold/kfoldML")
     run_chrono = "python run_chrono.py -i ./kfold/test/ -r ./kfold/testGold/ -o ./kfold/TestResults -m SVM -d ./kfold/kfoldML_data.csv -c ./kfold/kfoldML_class.csv"
     eval_chrono = "python -m anafora.evaluate -r ../kfold/testGold/ -p ../kfold/TestResults/ --exclude Event Modifier"
 
