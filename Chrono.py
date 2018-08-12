@@ -36,11 +36,9 @@ import argparse
 import os
 import pickle
 
-from config import DICTIONARY, MODE
-from chronoML import DecisionTree as DTree
-from chronoML import RF_classifier as RandomForest
-from chronoML import NB_nltk_classifier as NBclass, ChronoKeras
-from chronoML import SVM_classifier as SVMclass
+from Chrono.config import DICTIONARY, MODE
+from Chrono.chronoML.chronoML import DecisionTree as DTree, SVM_classifier as SVMclass, RF_classifier as RandomForest
+from Chrono.chronoML.chronoML import NB_nltk_classifier as NBclass, ChronoKeras
 from Chrono import BuildSCATEEntities
 from Chrono import referenceToken
 from Chrono import utils

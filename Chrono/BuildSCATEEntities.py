@@ -39,7 +39,7 @@ from Chrono.TimePhraseToChrono import *
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
 from Chrono import utils
-from config import SUBINTERVAL_LINKING
+from Chrono.config import SUBINTERVAL_LINKING
 
 #Example TimePhrase List
 #Wsj_0152

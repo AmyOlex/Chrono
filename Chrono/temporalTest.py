@@ -40,7 +40,7 @@
 import string
 import re
 from Chrono import utils
-from config import DICTIONARY
+from Chrono.config import DICTIONARY
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex

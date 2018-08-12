@@ -54,7 +54,7 @@ import numpy as np
 from Chrono import w2ny as w2n
 import string
 import copy
-from config import DICTIONARY
+from Chrono.config import DICTIONARY
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
