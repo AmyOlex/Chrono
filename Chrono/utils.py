@@ -383,7 +383,9 @@ def get_features(data_file):
 def markTemporal(refToks):
 
     # Read in the word lists for each entity
-    for root, dirs, files in os.walk('X:/Luke/PyCharmProject/Chrono/dictionary', topdown=True):
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    path = os.path.join(my_path, "../dictionary")
+    for root, dirs, files in os.walk(path, topdown=True):
         for file in files:
             with open(root + '/' + file) as f:
                 key = os.path.splitext(file)[0]
