@@ -4,7 +4,7 @@ import numpy as np
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
-from Chrono.chronoML.chronoML import ChronoKeras
+from Chrono.chronoML import ChronoKeras
 from Chrono.config import DICTIONARY
 
 

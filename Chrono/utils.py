@@ -32,8 +32,8 @@
 
 
 
-## Provides all helper functions for Chrono methods. 
-
+## Provides all helper functions for Chrono methods.
+import os
 
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
@@ -381,6 +381,20 @@ def get_features(data_file):
 # @param refToks The list of reference Tokens
 # @return modified list of reftoks
 def markTemporal(refToks):
+
+    # Read in the word lists for each entity
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    path = os.path.join(my_path, "../dictionary")
+    for root, dirs, files in os.walk(path, topdown=True):
+        for file in files:
+            with open(root + '/' + file) as f:
+                key = os.path.splitext(file)[0]
+                for word in f:
+                    if key not in DICTIONARY:
+                        DICTIONARY[key] = []
+                    DICTIONARY[key].append(word.rstrip('\n'))
+
+
     for ref in refToks:
         #mark if numeric
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))

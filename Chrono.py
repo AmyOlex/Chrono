@@ -36,9 +36,9 @@ import argparse
 import os
 import pickle
 
-from Chrono.config import DICTIONARY, MODE
-from Chrono.chronoML.chronoML import DecisionTree as DTree, SVM_classifier as SVMclass, RF_classifier as RandomForest
-from Chrono.chronoML.chronoML import NB_nltk_classifier as NBclass, ChronoKeras
+from Chrono.config import MODE
+from Chrono.chronoML import NB_nltk_classifier as NBclass, RF_classifier as RandomForest, DecisionTree as DTree, \
+    ChronoKeras, SVM_classifier as SVMclass
 from Chrono import BuildSCATEEntities
 from Chrono import referenceToken
 from Chrono import utils
@@ -74,14 +74,14 @@ if __name__ == "__main__":
         MODE = args.O
 
     # Read in the word lists for each entity
-    for root, dirs, files in os.walk(args.D, topdown=True):
-        for file in files:
-            with open(root + '/' + file) as f:
-                key = os.path.splitext(file)[0]
-                for word in f:
-                    if key not in DICTIONARY:
-                        DICTIONARY[key] = []
-                    DICTIONARY[key].append(word.rstrip('\n'))
+    # for root, dirs, files in os.walk(args.D, topdown=True):
+    #     for file in files:
+    #         with open(root + '/' + file) as f:
+    #             key = os.path.splitext(file)[0]
+    #             for word in f:
+    #                 if key not in DICTIONARY:
+    #                     DICTIONARY[key] = []
+    #                 DICTIONARY[key].append(word.rstrip('\n'))
 
     ## Get list of folder names in the input directory
     indirs = []
