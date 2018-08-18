@@ -79,10 +79,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Parse a directory of files to count the number of tokens')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
-    parser.add_argument('-x', metavar='fileExt', type=str,
-                        help='input file extension if exists. Default is an empty string', required=False, default="")
-    parser.add_argument('-o', metavar='outputFilePrefix', type=str,
-                        help='The output file name prefix with path if needed.', required=True)
 
     args = parser.parse_args()
     # Now we can access each argument as args.i, args.o, args.r
