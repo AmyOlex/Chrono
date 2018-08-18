@@ -46,10 +46,13 @@ def count_temporal_tokens(filename, outfile):
     chroList = utils.markTemporal(my_refToks)
     doctime = utils.getDocTime(str(filename) + ".dct")
     tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+    temptokens = 0
     with outfile.open('a+') as f:
-        f.write("Temporal Tokens: " + str(len(tempPhrases)) + "\n")
+        f.write("Temporal Phrases: " + str(len(tempPhrases)) + "\n")
         for p in tempPhrases:
+            temptokens = temptokens + len(p.getText().split())
             f.write(p.getText() + "\n")
+        f.write("Temporal Tokens: " + str(temptokens) + "\n")
 
 
 # http://ominian.com/2016/03/29/os-walk-for-pathlib-path/
