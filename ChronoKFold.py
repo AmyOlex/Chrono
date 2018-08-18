@@ -39,12 +39,13 @@
 # use sed '/\*/!d' kfoldoutput.txt to see just scores
 # Luke Maffey
 
+import numpy as np
 import os
 import pandas as pd
 import shutil
 from sklearn.model_selection import StratifiedKFold
 
-from Chrono.utils.Chrono_createMLTrainingMatrix import createMLTrainingMatrix
+from Chrono_createMLTrainingMatrix import createMLTrainingMatrix
 
 
 def copy_files(df, directory):
