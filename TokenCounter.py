@@ -36,8 +36,8 @@ from Chrono import utils, referenceToken
 
 def count_total_tokens(filename, outfile):
     text, tokens, spans, tags, sents = utils.getWhitespaceTokens(str(filename))
-    with outfile.open('a+') as f:
-        f.write("Total number of tokens: ", len(tokens))
+    with outfile.open('w+') as f:
+        f.write("Total number of tokens: " + str(len(tokens)) + "\n")
 
 
 def count_temporal_tokens(filename, outfile):
@@ -47,9 +47,9 @@ def count_temporal_tokens(filename, outfile):
     doctime = utils.getDocTime(str(filename) + ".dct")
     tempPhrases = utils.getTemporalPhrases(chroList, doctime)
     with outfile.open('a+') as f:
-        f.write("Total: ", len(tempPhrases))
+        f.write("Temporal Tokens: " + str(len(tempPhrases)) + "\n")
         for p in tempPhrases:
-            f.write(p)
+            f.write(p.getText() + "\n")
 
 
 # http://ominian.com/2016/03/29/os-walk-for-pathlib-path/
@@ -90,21 +90,12 @@ if __name__ == "__main__":
     # get list of folder names in the input directory
     indirs = []
     infiles = []
-    outfiles = []
-    outdirs = []
-    goldfiles = []
-    preout = Path(args.o)
     prein = Path(args.i)
-    for root, dirs, files in path_walk(args.i, topdown=True):
-        for name in dirs:
-            indirs.append(root.joinpath(name))
-            infiles.append(root.joinpath(name, name))
-            outfiles.append(preout.joinpath(name, name))
-            outdirs.append(preout.joinpath(name))
-            if not prein.joinpath(name).exists():
-                print(str(prein.joinpath(name)) + " DOES NOT EXISTS")
-                break
-    for f in infiles:
-        count_total_tokens(f, f.name + ".count")
-    print("Completed creating ML training matrix files.")
+    for root, dirs, files in path_walk(Path(args.i), topdown=True):
+        for f in files:
+            if ".dct" not in f.name:
+                print("Processing: ", f)
+                count_total_tokens(Path(f), Path("counts/" + f.name + ".count"))
+                count_temporal_tokens(Path(f), Path("counts/" + f.name + ".count"))
+    print("Completed couting tokens.")
 
