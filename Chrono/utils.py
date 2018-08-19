@@ -140,26 +140,8 @@ def write_xml(chrono_list, outfile):
     fout.close()
  ####
  #END_MODULE
- ####   
+ ####
 
-
-## Marks all the reference tokens that show up in the TimePhrase entity list.
-# @author Amy Olex
-# @param refToks The list of reference Tokens
-# @param tpList The list of TimePhrase entities to compare against
-### I don't think we need/use this any longer.  Maybe can be recycled for something else.
-#def markTemporalRefToks(refToks, tpList):
-#    for ref in refToks:
-#        for tp in tpList:
-#            tpStart, tpEnd = tp.getSpan()
-#            if ref.spanOverlap(tpStart, tpEnd):
-#                ref.setTemporal(True)
-#        if ref.isTemporal() is None:
-#            ref.setTemporal(False)
-#    return refToks
-####
-#END_MODULE
-####
     
 ## Takes in a text string and returns the numerical value
 # @author Amy Olex
@@ -683,4 +665,23 @@ def path_walk(top, topdown=False, followlinks=False):
 
     if topdown is not True:
         yield top, dirs, nondirs
+
+
+## Marks all the reference tokens that show up in the TimePhrase entity list.
+# @author Amy Olex
+# @param refToks The list of reference Tokens
+# @param tpList The list of TimePhrase entities to compare against
+### I don't think we need/use this any longer.  Maybe can be recycled for something else.
+#def markTemporalRefToks(refToks, tpList):
+#    for ref in refToks:
+#        for tp in tpList:
+#            tpStart, tpEnd = tp.getSpan()
+#            if ref.spanOverlap(tpStart, tpEnd):
+#                ref.setTemporal(True)
+#        if ref.isTemporal() is None:
+#            ref.setTemporal(False)
+#    return refToks
+####
+#END_MODULE
+####
 
