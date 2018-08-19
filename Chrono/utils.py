@@ -34,23 +34,19 @@
 
 ## Provides all helper functions for Chrono methods.
 import os
-
+from pathlib import Path
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.tokenize import sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize.util import align_tokens
-# from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
 import dateutil.parser
-# import datetime
-# from Chrono import TimePhrase_to_Chrono
 from Chrono import TimePhraseEntity as tp
 import re
 import csv
 from collections import OrderedDict
 import numpy as np
-#from word2number import w2n
 from Chrono import w2ny as w2n
 import string
 import copy
@@ -376,25 +372,27 @@ def get_features(data_file):
 ## END Function
 ###### 
 
+
+def initialize(my_dictionary="../dictionary"):
+    # Read in the word lists for each entity
+    my_path = Path(__file__).parent
+    path = my_path, "../dictionary")
+    if Path(my_dictionary).exists():
+        for root, dirs, files in os.walk(path, topdown=True):
+            for file in files:
+                with open(root + '/' + file) as f:
+                    key = os.path.splitext(file)[0]
+                    for word in f:
+                        if key not in DICTIONARY:
+                            DICTIONARY[key] = []
+                        DICTIONARY[key].append(word.rstrip('\n'))
+
+
 ## Marks all the reference tokens that are identified as temporal.
 # @author Amy Olex
 # @param refToks The list of reference Tokens
 # @return modified list of reftoks
 def markTemporal(refToks):
-
-    # Read in the word lists for each entity
-    my_path = os.path.abspath(os.path.dirname(__file__))
-    path = os.path.join(my_path, "../dictionary")
-    for root, dirs, files in os.walk(path, topdown=True):
-        for file in files:
-            with open(root + '/' + file) as f:
-                key = os.path.splitext(file)[0]
-                for word in f:
-                    if key not in DICTIONARY:
-                        DICTIONARY[key] = []
-                    DICTIONARY[key].append(word.rstrip('\n'))
-
-
     for ref in refToks:
         #mark if numeric
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
@@ -660,3 +658,25 @@ def calculateSpan(text, search_text):
         return None, None
 
     return start_idx, end_idx
+
+# http://ominian.com/2016/03/29/os-walk-for-pathlib-path/
+def path_walk(top, topdown=False, followlinks=False):
+    """
+         See Python docs for os.walk, exact same behavior but it yields Path() instances instead
+    """
+    names = list(top.iterdir())
+
+    dirs = (node for node in names if node.is_dir() is True)
+    nondirs = (node for node in names if node.is_dir() is False)
+
+    if topdown:
+        yield top, dirs, nondirs
+
+    for name in dirs:
+        if followlinks or name.is_symlink() is False:
+            for x in path_walk(name, topdown, followlinks):
+                yield x
+
+    if topdown is not True:
+        yield top, dirs, nondirs
+

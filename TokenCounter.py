@@ -55,28 +55,6 @@ def count_temporal_tokens(filename, outfile):
         f.write("Temporal Tokens: " + str(temptokens) + "\n")
 
 
-# http://ominian.com/2016/03/29/os-walk-for-pathlib-path/
-def path_walk(top, topdown=False, followlinks=False):
-    """
-         See Python docs for os.walk, exact same behavior but it yields Path() instances instead
-    """
-    names = list(top.iterdir())
-
-    dirs = (node for node in names if node.is_dir() is True)
-    nondirs = (node for node in names if node.is_dir() is False)
-
-    if topdown:
-        yield top, dirs, nondirs
-
-    for name in dirs:
-        if followlinks or name.is_symlink() is False:
-            for x in path_walk(name, topdown, followlinks):
-                yield x
-
-    if topdown is not True:
-        yield top, dirs, nondirs
-
-
 if __name__ == "__main__":
     # Parse input arguments
     parser = argparse.ArgumentParser(
@@ -84,13 +62,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
 
     args = parser.parse_args()
-    # Now we can access each argument as args.i, args.o, args.r
-
-    # get list of folder names in the input directory
-    indirs = []
-    infiles = []
-    prein = Path(args.i)
-    for root, dirs, files in path_walk(Path(args.i), topdown=True):
+    for root, dirs, files in utils.path_walk(Path(args.i), topdown=True):
         for f in files:
             if ".dct" not in f.name:
                 print("Processing: ", f)
