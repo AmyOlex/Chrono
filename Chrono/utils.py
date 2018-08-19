@@ -363,7 +363,7 @@ def get_features(data_file):
 ###### 
 
 
-def initialize(in_dictionary="dictionary", in_mode="SCATE"):
+def initialize(in_mode, in_dictionary="dictionary"):
     # Read in the word lists for each entity
     # my_path = Path(__file__).parent
     path = Path(in_dictionary)
@@ -379,6 +379,7 @@ def initialize(in_dictionary="dictionary", in_mode="SCATE"):
     else:
         print("Dictionary not found: ", path)
 
+    global MODE
     MODE = in_mode
 
 

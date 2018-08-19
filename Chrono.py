@@ -64,12 +64,11 @@ if __name__ == "__main__":
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
     parser.add_argument('-D', metavar='Dictionary', type=str, help='The path to dictionaries', required=False, default='./dictionary')
-    parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False)
+    parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False, default="SCATE")
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
-
-    utils.initialize()
+    utils.initialize(in_mode=args.O)
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
@@ -135,42 +134,39 @@ if __name__ == "__main__":
     
     ## Pass the ML classifier through to the parse SUTime entities method.
 
-    if MODE == "SCATE":
-        print("Parsing in SCATE mode")
-        ## Loop through each file and parse
-        for f in range(0,len(infiles)) :
-            print("Parsing "+ infiles[f] +" ...")
-            ## Init the ChronoEntity list
-            my_chronoentities = []
-            my_chrono_ID_counter = 1
+    print("Parsing in {} mode".format(MODE))
+    ## Loop through each file and parse
+    for f in range(0,len(infiles)) :
+        print("Parsing "+ infiles[f] +" ...")
+        ## Init the ChronoEntity list
+        my_chronoentities = []
+        my_chrono_ID_counter = 1
 
-            ## parse out the doctime
-            doctime = utils.getDocTime(infiles[f] + ".dct")
-            if(debug) : print(doctime)
+        ## parse out the doctime
+        doctime = utils.getDocTime(infiles[f] + ".dct")
+        if(debug) : print(doctime)
 
-            ## parse out reference tokens
-            text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
-            #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-            my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
-
+        ## parse out reference tokens
+        text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
+        #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
 
 
-            ## mark all ref tokens if they are numeric or temporal
-            chroList = utils.markTemporal(my_refToks)
 
-            if(debug) :
-                print("REFERENCE TOKENS:\n")
-                for tok in chroList : print(tok)
+        ## mark all ref tokens if they are numeric or temporal
+        chroList = utils.markTemporal(my_refToks)
 
-            tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+        if(debug) :
+            print("REFERENCE TOKENS:\n")
+            for tok in chroList : print(tok)
 
-            if(debug):
-                for c in tempPhrases:
-                    print(c)
+        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
 
-            chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+        if(debug):
+            for c in tempPhrases:
+                print(c)
 
-            print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-            utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f])
-    else:
-        print("Error: " + str(MODE) + " MODE not implemented yet. Exiting.")
+        chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+
+        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+        utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f])

@@ -131,7 +131,8 @@ class ChronoEntity:
                                                   self.end_span, self.type, self.parent_type))
 
     def print_ANN(self):
-        return(self.entityID + "\t" + self.get_type() + "\t" + self.get_start_span() + "\t" + self.get_end_span() + "\t" + self.text)
+        return(str(self.entityID) + "\t" + str(self.get_type()) + "\t" + str(self.get_start_span()) + "\t" +
+               str(self.get_end_span()) + "\t" + self.text + "\n")
 
 
 ## Super class for Intervals which are defined as years
