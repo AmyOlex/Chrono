@@ -50,7 +50,7 @@ import numpy as np
 from Chrono import w2ny as w2n
 import string
 import copy
-from Chrono.config import DICTIONARY
+from Chrono.config import DICTIONARY, MODE
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -373,19 +373,23 @@ def get_features(data_file):
 ###### 
 
 
-def initialize(my_dictionary="../dictionary"):
+def initialize(in_dictionary="dictionary", in_mode="SCATE"):
     # Read in the word lists for each entity
-    my_path = Path(__file__).parent
-    path = my_path, "../dictionary")
-    if Path(my_dictionary).exists():
-        for root, dirs, files in os.walk(path, topdown=True):
+    # my_path = Path(__file__).parent
+    path = Path(in_dictionary)
+    if Path(in_dictionary).exists():
+        for root, dirs, files in path_walk(path, topdown=True):
             for file in files:
-                with open(root + '/' + file) as f:
-                    key = os.path.splitext(file)[0]
+                with file.open() as f:
+                    key = file.stem
                     for word in f:
                         if key not in DICTIONARY:
                             DICTIONARY[key] = []
                         DICTIONARY[key].append(word.rstrip('\n'))
+    else:
+        print("Dictionary not found: ", path)
+
+    MODE = in_mode
 
 
 ## Marks all the reference tokens that are identified as temporal.

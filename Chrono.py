@@ -70,8 +70,8 @@ if __name__ == "__main__":
     ## Now we can access each argument as args.i, args.o, args.r
 
     # Select mode if given
-    if args.O:
-        MODE = args.O
+    # if args.O:
+    #     MODE = args.O
 
     # Read in the word lists for each entity
     # for root, dirs, files in os.walk(args.D, topdown=True):
@@ -83,6 +83,7 @@ if __name__ == "__main__":
     #                     DICTIONARY[key] = []
     #                 DICTIONARY[key].append(word.rstrip('\n'))
 
+    utils.initialize()
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
