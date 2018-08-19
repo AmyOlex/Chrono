@@ -130,14 +130,22 @@ def getDocTime(file_path):
 # @author Amy Olex
 # @param chrono_list The list of Chrono objects needed to be written in the file.
 # @param outfile A string containing the output file location and name.
-def write_xml(chrono_list, outfile):
-    fout = open(outfile + ".completed.xml", "w")
-    fout.write("<data>\n<annotations>\n")
-    for c in chrono_list :
-        fout.write(str(c.print_SCATE()))
-    
-    fout.write("\n</annotations>\n</data>")
-    fout.close()
+def write_out(chrono_list, outfile):
+    if MODE == "SCATE":
+        fout = open(outfile + ".completed.xml", "w")
+        fout.write("<data>\n<annotations>\n")
+        for c in chrono_list :
+            fout.write(str(c.print_SCATE()))
+
+        fout.write("\n</annotations>\n</data>")
+        fout.close()
+    elif MODE == "ANN":
+        fout = open(outfile + ".completed.xml", "w")
+        for c in chrono_list:
+            fout.write(str(c.print_ANN()))
+        fout.close()
+    else:
+        print("Mode not supported: ", MODE)
  ####
  #END_MODULE
  ####

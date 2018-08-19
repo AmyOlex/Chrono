@@ -69,20 +69,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
 
-    # Select mode if given
-    # if args.O:
-    #     MODE = args.O
-
-    # Read in the word lists for each entity
-    # for root, dirs, files in os.walk(args.D, topdown=True):
-    #     for file in files:
-    #         with open(root + '/' + file) as f:
-    #             key = os.path.splitext(file)[0]
-    #             for word in f:
-    #                 if key not in DICTIONARY:
-    #                     DICTIONARY[key] = []
-    #                 DICTIONARY[key].append(word.rstrip('\n'))
-
     utils.initialize()
     ## Get list of folder names in the input directory
     indirs = []
@@ -185,6 +171,6 @@ if __name__ == "__main__":
             chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
 
             print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-            utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+            utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f])
     else:
         print("Error: " + str(MODE) + " MODE not implemented yet. Exiting.")
