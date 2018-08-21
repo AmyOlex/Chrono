@@ -65,7 +65,7 @@ if __name__ == "__main__":
     utils.initialize(in_mode="SCATE")
     for root, dirs, files in utils.path_walk(Path(args.i), topdown=True):
         for f in files:
-            if not any(ext in f.name for ext in [".dct",".ann",".xml"]):
+            if not any(ext in f.name for ext in [".dct",".ann",".xml",".csv"]):
                 print("Processing: ", f)
                 count_total_tokens(Path(f), Path("counts/" + f.name + ".count"))
                 count_temporal_tokens(Path(f), Path("counts/" + f.name + ".count"))
