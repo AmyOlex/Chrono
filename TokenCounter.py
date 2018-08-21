@@ -62,6 +62,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
 
     args = parser.parse_args()
+    utils.initialize(in_mode="SCATE")
     for root, dirs, files in utils.path_walk(Path(args.i), topdown=True):
         for f in files:
             if ".dct" not in f.name:
