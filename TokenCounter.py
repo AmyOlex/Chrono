@@ -63,9 +63,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     utils.initialize(in_mode="SCATE")
+
+    skip_me = [".dct",".ann",".xml",".csv"]
+
     for root, dirs, files in utils.path_walk(Path(args.i), topdown=True):
         for f in files:
-            if not any(ext in f.name for ext in [".dct",".ann",".xml",".csv"]):
+            if not any(ext in f.name for ext in skip_me):
                 print("Processing: ", f)
                 count_total_tokens(Path(f), Path("counts/" + f.name + ".count"))
                 count_temporal_tokens(Path(f), Path("counts/" + f.name + ".count"))
