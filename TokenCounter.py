@@ -57,7 +57,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     utils.initialize(in_mode="SCATE")
 
-    skip_me = [".dct",".ann",".xml",".csv"]
+    skip_me = [".dct",".ann",".xml",".csv",".DS_Store"]
 
     outfile = Path(args.o)
     with outfile.open('w+') as f:
