@@ -34,12 +34,6 @@ from pathlib import Path
 from Chrono import utils, referenceToken
 
 
-def count_total_tokens(filename, outfile):
-    text, tokens, spans, tags, sents = utils.getWhitespaceTokens(str(filename))
-    with outfile.open('w+') as f:
-        f.write("Total number of tokens: " + str(len(tokens)) + "\n")
-
-
 def count_temporal_tokens(filename, outfile):
     text, tokens, spans, tags, sents = utils.getWhitespaceTokens(str(filename))
     my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
@@ -48,11 +42,9 @@ def count_temporal_tokens(filename, outfile):
     tempPhrases = utils.getTemporalPhrases(chroList, doctime)
     temptokens = 0
     with outfile.open('a+') as f:
-        f.write("Temporal Phrases: " + str(len(tempPhrases)) + "\n")
         for p in tempPhrases:
-            temptokens = temptokens + len(p.getText().split())
-            f.write(p.getText() + "\n")
-        f.write("Temporal Tokens: " + str(temptokens) + "\n")
+            temptokens = len(p.getText().split())
+            f.write(filename.name + "\t" + str(len(tokens)) + "\t" + p.getText() + "\t" +  str(temptokens) + "\n")
 
 
 if __name__ == "__main__":
@@ -60,17 +52,21 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Parse a directory of files to count the number of tokens')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
+    parser.add_argument('-o', metavar='outputfile', type=str, help='path to the output file.', required=True)
 
     args = parser.parse_args()
     utils.initialize(in_mode="SCATE")
 
     skip_me = [".dct",".ann",".xml",".csv"]
 
+    outfile = Path(args.o)
+    with outfile.open('w+') as f:
+        f.write("File" + "\t" + "Total" + "\t" + "Phrase" + "\t" + "Phrase Length" + "\n")
+
     for root, dirs, files in utils.path_walk(Path(args.i), topdown=True):
         for f in files:
             if not any(ext in f.name for ext in skip_me):
                 print("Processing: ", f)
-                count_total_tokens(Path(f), Path("counts/" + f.name + ".count"))
-                count_temporal_tokens(Path(f), Path("counts/" + f.name + ".count"))
+                count_temporal_tokens(Path(f), outfile)
     print("Completed couting tokens.")
 
