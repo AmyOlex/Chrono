@@ -56,7 +56,7 @@ def build_model(train_data, train_labels):
     
     # Build keras NN
     model = Sequential()
-    model.add(Dense(size, input_shape=(size, ), activation='relu'))
+    model.add(Dense(size, input_dim=size, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(size, activation='relu'))
     model.add(Dropout(0.5))
@@ -87,9 +87,12 @@ def keras_evaluate(model,test_data,test_labels):
 # @return A 0 or 1 for which class was predicted
 def keras_classify(model,predict_data):
     # Keras wants a list of numpy arrays
-    X = []
-    X.append(list(predict_data))
-    X.append(list(predict_data))
+    X = predict_data
+    X = np.expand_dims(X,axis=0)
+    print(np.shape(X))
+    # X = []
+    # X.append(list(predict_data))
+    # X.append(list(predict_data))
     #print("Predicting on {}".format(X))
     prediction = model.predict(X,verbose=1)
     #print("The prediction is: {}".format(np.round(prediction[0])))
