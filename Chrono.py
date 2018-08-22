@@ -37,12 +37,7 @@ import os
 import pickle
 
 from Chrono.config import MODE
-from Chrono.chronoML import NB_nltk_classifier as NBclass, RF_classifier as RandomForest, DecisionTree as DTree, \
-    ChronoKeras, SVM_classifier as SVMclass
-from Chrono import BuildSCATEEntities
-from Chrono import referenceToken
-from Chrono import utils
-from keras.models import load_model
+from Chrono import BuildSCATEEntities, referenceToken, utils
 
 debug=False
 ## This is the driver method to run all of Chrono.
@@ -69,6 +64,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
     utils.initialize(in_mode=args.O)
+    utils.setup_ML(args.m, args.M, args.d, args.c)
+
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
@@ -76,64 +73,14 @@ if __name__ == "__main__":
     outdirs = []
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
-           
           indirs.append(os.path.join(root, name))
           infiles.append(os.path.join(root,name,name))
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
-    
-    ## Get training data for ML methods by importing pre-made boolean matrix
-    ## Train ML methods on training data
-    if(args.m == "DT" and args.M is None):
-        ## Train the decision tree classifier and save in the classifier variable
-        #print("Got DT")
-        classifier, feats = DTree.build_dt_model(args.d, args.c)
-        with open('DT_model.pkl', 'wb') as mod:  
-            pickle.dump([classifier, feats], mod)
 
-    if(args.m == "RF" and args.M is None):
-        ## Train the decision tree classifier and save in the classifier variable
-        # print("Got RF")
-        classifier, feats = RandomForest.build_model(args.d, args.c)
-        with open('RF_model.pkl', 'wb') as mod:
-            pickle.dump([classifier, feats], mod)
-    
-    elif(args.m == "NN" and args.M is None):
-        #print("Got NN")
-        ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model(args.d, args.c)
-        feats = utils.get_features(args.d)
-        classifier.save('NN_model.h5')
-            
-    elif(args.m == "SVM" and args.M is None):
-        #print("Got SVM")
-        ## Train the SVM classifier and save in the classifier variable
-        classifier, feats = SVMclass.build_model(args.d, args.c)
-        with open('SVM_model.pkl', 'wb') as mod:  
-            pickle.dump([classifier, feats], mod)
-            
-    elif(args.M is None):
-        #print("Got NB")
-        ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
-        classifier.show_most_informative_features(20)
-        with open('NB_model.pkl', 'wb') as mod:  
-            pickle.dump([classifier, feats], mod)
-                
-    elif(args.M is not None):
-        #print("use saved model")
-        if args.m == "NB" or args.m == "DT":
-            with open(args.M, 'rb') as mod:
-                print(args.M)
-                classifier, feats = pickle.load(mod)
-        elif args.m == "NN":
-            classifier = load_model(args.M)
-            feats = utils.get_features(args.d)
-    
     ## Pass the ML classifier through to the parse SUTime entities method.
-
     print("Parsing in {} mode".format(MODE))
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
