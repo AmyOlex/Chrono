@@ -440,8 +440,7 @@ def markTemporal(refToks):
     
     ## read in the link terms dictionary
     terms = DICTIONARY["LinkTerms"]
-    
-    
+
     ## Now go through the list again and mark all linking words a, an, in, of that appear between 2 temporal and or number tokens.
     for i in range(1, len(refToks)-1):
         if (refToks[i-1].isNumeric() or refToks[i-1].isTemporal()) and (refToks[i+1].isNumeric() or refToks[i+1].isTemporal()) and (refToks[i].getText() in terms):

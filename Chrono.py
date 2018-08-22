@@ -79,7 +79,7 @@ if __name__ == "__main__":
               os.makedirs(os.path.join(args.o,name))
 
     ## Loop through each file and parse
-    for f in range(0,len(infiles)) :
+    for f in range(0,len(infiles)):
         print("Parsing "+ infiles[f] +" ...")
         ## Init the ChronoEntity list
         my_chronoentities = []
@@ -87,14 +87,12 @@ if __name__ == "__main__":
 
         ## parse out the doctime
         doctime = utils.getDocTime(infiles[f] + ".dct")
-        if(debug) : print(doctime)
+        if(debug): print(doctime)
 
         ## parse out reference tokens
         text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
-
-
 
         ## mark all ref tokens if they are numeric or temporal
         chroList = utils.markTemporal(my_refToks)
