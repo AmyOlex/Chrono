@@ -34,7 +34,6 @@
 
 import argparse
 import os
-from Chrono.config import MODE
 from Chrono import BuildSCATEEntities, referenceToken, utils
 
 debug=False
@@ -60,6 +59,7 @@ if __name__ == "__main__":
     parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False, default="SCATE")
     
     args = parser.parse_args()
+
     ## Now we can access each argument as args.i, args.o, args.r
     utils.initialize(in_mode=args.O)
     classifier, feats = utils.setup_ML(args.m, args.M, args.d, args.c)
@@ -78,8 +78,6 @@ if __name__ == "__main__":
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
 
-    ## Pass the ML classifier through to the parse SUTime entities method.
-    print("Parsing in {} mode".format(MODE))
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
         print("Parsing "+ infiles[f] +" ...")

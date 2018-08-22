@@ -45,7 +45,6 @@ from Chrono.config import DICTIONARY, MODE
 from collections import OrderedDict
 from keras.models import load_model
 
-
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
 # @param file_path The path and file name of the text file to be parsed.
@@ -408,7 +407,11 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
     return classifier, feats
 
 
-def initialize(in_mode, in_dictionary="dictionary"):
+def initialize(in_mode="SCATE", in_dictionary="dictionary"):
+    global MODE
+    MODE = in_mode
+    print("Parsing in {} mode".format(MODE))
+
     # Read in the word lists for each entity
     path = Path(in_dictionary)
     if Path(in_dictionary).exists():
@@ -422,9 +425,6 @@ def initialize(in_mode, in_dictionary="dictionary"):
                         DICTIONARY[key].append(word.rstrip('\n'))
     else:
         print("Dictionary not found: ", path)
-
-    global MODE
-    MODE = in_mode
 
 
 ## Marks all the reference tokens that are identified as temporal.
