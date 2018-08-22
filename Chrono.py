@@ -34,8 +34,6 @@
 
 import argparse
 import os
-import pickle
-
 from Chrono.config import MODE
 from Chrono import BuildSCATEEntities, referenceToken, utils
 
@@ -64,7 +62,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
     utils.initialize(in_mode=args.O)
-    utils.setup_ML(args.m, args.M, args.d, args.c)
+    classifier, feats = utils.setup_ML(args.m, args.M, args.d, args.c)
 
     ## Get list of folder names in the input directory
     indirs = []

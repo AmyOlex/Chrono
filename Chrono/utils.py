@@ -33,7 +33,7 @@
 
 
 ## Provides all helper functions for Chrono methods.
-import re, csv, nltk, dateutil.parser, string, copy, numpy as np
+import re, csv, nltk, dateutil.parser, string, copy, pickle, numpy as np
 from pathlib import Path
 from nltk.tokenize import WhitespaceTokenizer, sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
@@ -44,6 +44,7 @@ from Chrono.chronoML import NB_nltk_classifier as NBclass, RF_classifier as Rand
 from Chrono.config import DICTIONARY, MODE
 from collections import OrderedDict
 from keras.models import load_model
+
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -364,14 +365,14 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
         # print("Got DT")
         classifier, feats = DTree.build_dt_model(train_data, train_labels)
         with open('DT_model.pkl', 'wb') as mod:
-            np.pickle.dump([classifier, feats], mod)
+            pickle.dump([classifier, feats], mod)
 
     if (ml_input == "RF" and ml_model is None):
         ## Train the decision tree classifier and save in the classifier variable
         # print("Got RF")
         classifier, feats = RandomForest.build_model(train_data, train_labels)
         with open('RF_model.pkl', 'wb') as mod:
-            np.pickle.dump([classifier, feats], mod)
+            pickle.dump([classifier, feats], mod)
 
     elif (ml_input == "NN" and ml_model is None):
         # print("Got NN")
@@ -385,7 +386,7 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
         ## Train the SVM classifier and save in the classifier variable
         classifier, feats = SVMclass.build_model(train_data, train_labels)
         with open('SVM_model.pkl', 'wb') as mod:
-            np.pickle.dump([classifier, feats], mod)
+            pickle.dump([classifier, feats], mod)
 
     elif (ml_model is None):
         # print("Got NB")
@@ -393,17 +394,18 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
         classifier, feats, NB_input = NBclass.build_model(train_data, train_labels)
         classifier.show_most_informative_features(20)
         with open('NB_model.pkl', 'wb') as mod:
-            np.pickle.dump([classifier, feats], mod)
+            pickle.dump([classifier, feats], mod)
 
     elif (ml_model is not None):
         # print("use saved model")
         if ml_input == "NB" or ml_input == "DT":
             with open(ml_model, 'rb') as mod:
                 print(ml_model)
-                classifier, feats = np.pickle.load(mod)
+                classifier, feats = pickle.load(mod)
         elif ml_input == "NN":
             classifier = load_model(ml_model)
             feats = get_features(train_data)
+    return classifier, feats
 
 
 def initialize(in_mode, in_dictionary="dictionary"):
