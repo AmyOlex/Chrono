@@ -35,9 +35,9 @@
 import argparse
 import os
 
-import Chrono.ChronoUtils.filesystem_utils
-import Chrono.ChronoUtils.initialize_chrono
-import Chrono.ChronoUtils.parse_text
+import Chrono.ChronoUtils.filesystem_utils as filesystem_utils
+import Chrono.ChronoUtils.initialize_chrono as initialize
+import Chrono.ChronoUtils.parse_text as parse_text
 from Chrono import BuildSCATEEntities, referenceToken
 
 debug=False
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ## Now we can access each argument as args.i, args.o, args.r
-    Chrono.ChronoUtils.initialize_chrono.initialize()
-    classifier, feats = Chrono.ChronoUtils.initialize_chrono.setup_ML(args.m, args.M, args.d, args.c)
+    initialize.initialize()
+    classifier, feats = initialize.setup_ML(args.m, args.M, args.d, args.c)
 
     ## Get list of folder names in the input directory
     indirs = []
@@ -90,22 +90,22 @@ if __name__ == "__main__":
         my_chrono_ID_counter = 1
 
         ## parse out the doctime
-        doctime = Chrono.ChronoUtils.parse_text.getDocTime(infiles[f] + ".dct")
+        doctime = parse_text.getDocTime(infiles[f] + ".dct")
         if(debug): print(doctime)
 
         ## parse out reference tokens
-        text, tokens, spans, tags, sents = Chrono.ChronoUtils.parse_text.getWhitespaceTokens(infiles[f] + args.x)
+        text, tokens, spans, tags, sents = parse_text.getWhitespaceTokens(infiles[f] + args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
 
         ## mark all ref tokens if they are numeric or temporal
-        chroList = Chrono.ChronoUtils.parse_text.markTemporal(my_refToks)
+        chroList = parse_text.markTemporal(my_refToks)
 
         if(debug) :
             print("REFERENCE TOKENS:\n")
             for tok in chroList : print(tok)
 
-        tempPhrases = Chrono.ChronoUtils.parse_text.getTemporalPhrases(chroList, doctime)
+        tempPhrases = parse_text.getTemporalPhrases(chroList, doctime)
 
         if(debug):
             for c in tempPhrases:
@@ -114,4 +114,4 @@ if __name__ == "__main__":
         chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
 
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-        Chrono.ChronoUtils.filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f], mode=args.O)
+        filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f], mode=args.O)
