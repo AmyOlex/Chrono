@@ -1,7 +1,8 @@
 import re
 
+import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono, utils
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a AM or PM time indication, then builds the associated chronoentity list
@@ -50,7 +51,7 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
 
             #else search for a text number
             else:
-                texNumVal = utils.getNumberFromText(substr)
+                texNumVal = Chrono.ChronoUtils.parse_text.getNumberFromText(substr)
 
                 if texNumVal is not None:
                     #create the hour entity

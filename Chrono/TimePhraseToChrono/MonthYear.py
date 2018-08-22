@@ -1,5 +1,8 @@
 import calendar
 import re
+
+
+import Chrono.ChronoUtils.parse_text
 import Chrono.utils
 from Chrono import chronoEntities as chrono
 from Chrono import utils
@@ -33,7 +36,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
-            m = utils.getMonthNumber(textMonth)
+            m = Chrono.ChronoUtils.parse_text.getMonthNumber(textMonth)
 
             if (m <= 12):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
@@ -133,7 +136,7 @@ def hasYear(tpentity, flags):
         # loop through list looking for expression
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
+            text_start, text_end = Chrono.ChronoUtils.parse_text.calculateSpan(text_norm, text)
 
             result = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{4})', text)
 
@@ -143,7 +146,7 @@ def hasYear(tpentity, flags):
                 split_result = re.split('[/:-]', result)
 
                 if len(split_result) == 3:
-                    start_idx, end_idx = Chrono.utils.calculateSpan(text, split_result[2])
+                    start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text, split_result[2])
                     return True, split_result[2], text_start + start_idx, text_start + end_idx, flags
                 else:
                     return False, None, None, None, flags
@@ -155,7 +158,7 @@ def hasYear(tpentity, flags):
                     result = result.group(0)
                     split_result = re.split('[/:-]', result)
                     if len(split_result) == 3:
-                        start_idx, end_idx = Chrono.utils.calculateSpan(result, split_result[0])
+                        start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(result, split_result[0])
                         return True, split_result[0], text_start + start_idx, text_start + end_idx, flags
                     else:
                         return False, None, None, None, flags
@@ -163,7 +166,7 @@ def hasYear(tpentity, flags):
             elif len(text) == 6:
                 result = re.search("c\.([0-9]{4})", text)
                 if result:
-                    rval = utils.getNumberFromText(result.group(1))
+                    rval = Chrono.ChronoUtils.parse_text.getNumberFromText(result.group(1))
                     if rval:
                         if rval >= 1500 and rval <= 2050:
                             start_idx, end_idx = result.span(1)
@@ -205,7 +208,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
             abs_EndSpanMonth = abs_StartSpanMonth + abs(endSpanMonth - startSpanMonth)
-            m = utils.getMonthNumber(textMonth)
+            m = Chrono.ChronoUtils.parse_text.getMonthNumber(textMonth)
 
             if (m <= 12):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
@@ -304,7 +307,7 @@ def has2DigitYear(tpentity):
         # loop through list looking for expression
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
+            text_start, text_end = Chrono.ChronoUtils.parse_text.calculateSpan(text_norm, text)
 
             # define regular expression to find a 2-digit year
             result = re.search('([0-9]{1,2})[-/]([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2})', text)
@@ -313,7 +316,7 @@ def has2DigitYear(tpentity):
                 result = result.group(0) 
                 split_result = re.split('[/-]', result)
                 if len(split_result) == 3:
-                    start_idx, end_idx = Chrono.utils.calculateSpan(result, split_result[2])
+                    start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(result, split_result[2])
                     return True, split_result[2], text_start + start_idx, text_start + end_idx
                 else:
                     return False, None, None, None
@@ -345,7 +348,8 @@ def buildMonthOfYear(s, chrono_id, chrono_list, flags):
         if (int(text) <= 12):
             chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
                                                            end_span=abs_EndSpan,
-                                                           month_type=calendar.month_name[utils.getMonthNumber(text)])
+                                                           month_type=calendar.month_name[
+                                                               Chrono.ChronoUtils.parse_text.getMonthNumber(text)])
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
 
@@ -372,7 +376,7 @@ def hasMonthOfYear(tpentity):
         # loop through list looking for expression
         for text in text_list:
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
-            text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
+            text_start, text_end = Chrono.ChronoUtils.parse_text.calculateSpan(text_norm, text)
 
             # define regular expression to find a 2-digit month
             twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
@@ -380,7 +384,7 @@ def hasMonthOfYear(tpentity):
 
             if (fourdigitstart):
                 # If start with 4 digits then assum the format yyyy/mm/dd
-                start_idx, end_idx = Chrono.utils.calculateSpan(text, fourdigitstart[2])
+                start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text, fourdigitstart[2])
                 return True, fourdigitstart[2], text_start + start_idx, text_start + end_idx
             elif (twodigitstart):
                 # If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
@@ -388,13 +392,13 @@ def hasMonthOfYear(tpentity):
                 # check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
                 if int(twodigitstart[1]) <= 12:
                     # assume mm/dd/yy
-                    start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[1])  # twodigitstart.span(1)  #
+                    start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text, twodigitstart[1])  # twodigitstart.span(1)  #
                     # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(1)[0]+text_start) + " : " + str(twodigitstart.group(1)))
                     ##### Trying to DEBUG string formats like AP-JN-08-16-90 ##########
                     return True, twodigitstart[1], text_start + start_idx, text_start + end_idx
                 elif int(twodigitstart[1]) > 12:
                     # assume yy/mm/dd
-                    start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[
+                    start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text, twodigitstart[
                         2])  # twodigitstart.span(2) #getSpan(text_norm,twodigitstart[2])
                     return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
                 else:

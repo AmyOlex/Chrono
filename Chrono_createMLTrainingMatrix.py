@@ -54,6 +54,9 @@ import sys
 import os
 import argparse
 import csv
+
+
+import Chrono.ChronoUtils.parse_text
 from nltk.stem.snowball import SnowballStemmer
 from copy import deepcopy
 from Chrono import chronoEntities
@@ -100,16 +103,16 @@ def createMLTrainingMatrix(infiles, gold_folder, ext="", save = False, output = 
         print("ML Parsing "+ infiles[f] +" ...")
         
         ## parse out the doctime
-        doctime = utils.getDocTime(infiles[f] + ".dct")
+        doctime = Chrono.ChronoUtils.parse_text.getDocTime(infiles[f] + ".dct")
         if(debug) : print(doctime)
         
         ## parse out reference tokens
-        text, tokens, spans, tags = utils.getWhitespaceTokens(infiles[f]+ext)
+        text, tokens, spans, tags = Chrono.ChronoUtils.parse_text.getWhitespaceTokens(infiles[f] + ext)
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags)
         
         
         ## mark all ref tokens if they are numeric or temporal
-        chroList = utils.markTemporal(my_refToks)
+        chroList = Chrono.ChronoUtils.parse_text.markTemporal(my_refToks)
         
         
         ## import gold standard data
@@ -137,7 +140,7 @@ def createMLTrainingMatrix(infiles, gold_folder, ext="", save = False, output = 
                 # loop through each gold instance and find the one that overlaps with the current reftok.
                 for g in gold_list:
                    # print(str(g))
-                    if utils.overlap([ref_s,ref_e], [int(g['start']),int(g['end'])] ):
+                    if Chrono.ChronoUtils.parse_text.overlap([ref_s, ref_e], [int(g['start']), int(g['end'])]):
                         this_obs = {}
                         # if the gold token overlaps with the current reftok we need to extract the features from the reftok and add it to the list
                         
@@ -236,10 +239,12 @@ def extract_numeric_feature(reftok_list, reftok_idx, obs_list):
     before = max(reftok_idx-1,0)
     after = min(reftok_idx+1,len(reftok_list)-1)
     
-    if(before != reftok_idx and isinstance(utils.getNumberFromText(reftok_list[before].getText()), (int))):
+    if(before != reftok_idx and isinstance(
+            Chrono.ChronoUtils.parse_text.getNumberFromText(reftok_list[before].getText()), (int))):
         obs_list.update({'feat_numeric':1})
         return(obs_list)
-    elif(after != reftok_idx and isinstance(utils.getNumberFromText(reftok_list[after].getText()), (int))):
+    elif(after != reftok_idx and isinstance(
+            Chrono.ChronoUtils.parse_text.getNumberFromText(reftok_list[after].getText()), (int))):
         obs_list.update({'feat_numeric':1})
         return(obs_list)
     else:
@@ -267,7 +272,7 @@ def extract_bow_features(reftok_list, reftok_idx, window, obs_dict, obs_list):
     
     for r in range(start, end):
         if r != reftok_idx:
-            num_check = utils.getNumberFromText(reftok_list[r].getText())
+            num_check = Chrono.ChronoUtils.parse_text.getNumberFromText(reftok_list[r].getText())
             if(isinstance(num_check, (int))):
                 #this_bow[num_check] = 1
                 obs_list.update({num_check: 1})

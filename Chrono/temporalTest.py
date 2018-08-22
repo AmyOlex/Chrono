@@ -39,6 +39,8 @@
 
 import string
 import re
+
+import Chrono.ChronoUtils.parse_text
 from Chrono import utils
 from Chrono.config import DICTIONARY
 
@@ -180,10 +182,10 @@ def has24HourTime(text):
     #loop through list looking for expression
     for text in text_list:
         if len(text) == 4:
-            num = utils.getNumberFromText(text)
+            num = Chrono.ChronoUtils.parse_text.getNumberFromText(text)
             if num is not None:
-                hour = utils.getNumberFromText(text[:2])
-                minute = utils.getNumberFromText(text[2:])
+                hour = Chrono.ChronoUtils.parse_text.getNumberFromText(text[:2])
+                minute = Chrono.ChronoUtils.parse_text.getNumberFromText(text[2:])
                 if (hour is not None) and (minute is not None):
                     if (minute >= 60) or (hour >= 24):
                         return False
@@ -211,7 +213,7 @@ def hasDateOrTime(text):
     #loop through list looking for expression
     for text in text_list:
         if len(text) == 4:
-            num = utils.getNumberFromText(text)
+            num = Chrono.ChronoUtils.parse_text.getNumberFromText(text)
             if (num >= 1800) and (num <= 2050):
                 ## for 4 digit years, but not all 4 digit numbers will be temporal. I set a specific range for 4-digit years.
                 return True

@@ -1,6 +1,8 @@
 import re
+
+import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono, utils
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.config import DICTIONARY
 
 
@@ -80,10 +82,10 @@ def has24HourTime(tpentity, flags):
             tz_format = re.search(
                 '\d{0,4}('+tz+')', text)
             if len(text) == 4:
-                num = utils.getNumberFromText(text)
+                num = Chrono.ChronoUtils.parse_text.getNumberFromText(text)
                 if num is not None:
-                    hour = utils.getNumberFromText(text[:2])
-                    minute = utils.getNumberFromText(text[2:])
+                    hour = Chrono.ChronoUtils.parse_text.getNumberFromText(text[:2])
+                    minute = Chrono.ChronoUtils.parse_text.getNumberFromText(text[2:])
                     if (hour is not None) and (minute is not None):
                         if (minute > 60) or (hour > 24):
                             return False, None, None, None
@@ -93,8 +95,8 @@ def has24HourTime(tpentity, flags):
             elif tz_format is not None:
                 time = tz_format[0]
                 # print("THIS TIME: {}".format(time))
-                hour = utils.getNumberFromText(time[0:2])
-                minute = utils.getNumberFromText(time[2:4])
+                hour = Chrono.ChronoUtils.parse_text.getNumberFromText(time[0:2])
+                minute = Chrono.ChronoUtils.parse_text.getNumberFromText(time[2:4])
                 # if (minute > 60) or (hour > 24):
                 #     return False, None, None, None
                 # else:

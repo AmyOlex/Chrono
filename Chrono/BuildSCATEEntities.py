@@ -33,8 +33,7 @@
 
 
 ## Converts temporal phrases into Chrono Entities
-
-
+import Chrono.ChronoUtils.parse_text
 from Chrono.TimePhraseToChrono import *
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
@@ -227,7 +226,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
                 mStart = chrono_list[month].get_start_span()
                 mEnd = chrono_list[month].get_end_span()
                 
-                my_month = utils.getMonthNumber(chrono_list[month].get_month_type())
+                my_month = Chrono.ChronoUtils.parse_text.getMonthNumber(chrono_list[month].get_month_type())
                 
                 if day is not None and my_month == dct.month:
                     # add a Last
@@ -254,7 +253,7 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
                 mEnd = chrono_list[dayweek].get_end_span()
                 
                 #Get ref idx for this token
-                ref = utils.getRefIdx(ref_list, mStart, mEnd)
+                ref = Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, mStart, mEnd)
                 vb = None
                 
                 while vb is None and ref != 0:

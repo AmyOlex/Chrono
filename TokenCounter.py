@@ -31,15 +31,20 @@
 # Boston, MA  02111-1307, USA.
 import argparse
 from pathlib import Path
+
+
+import Chrono.ChronoUtils.filesystem_utils
+import Chrono.ChronoUtils.initialize_chrono
+import Chrono.ChronoUtils.parse_text
 from Chrono import utils, referenceToken
 
 
 def count_temporal_tokens(filename, outfile):
-    text, tokens, spans, tags, sents = utils.getWhitespaceTokens(str(filename))
+    text, tokens, spans, tags, sents = Chrono.ChronoUtils.parse_text.getWhitespaceTokens(str(filename))
     my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
-    chroList = utils.markTemporal(my_refToks)
-    doctime = utils.getDocTime(str(filename) + ".dct")
-    tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+    chroList = Chrono.ChronoUtils.parse_text.markTemporal(my_refToks)
+    doctime = Chrono.ChronoUtils.parse_text.getDocTime(str(filename) + ".dct")
+    tempPhrases = Chrono.ChronoUtils.parse_text.getTemporalPhrases(chroList, doctime)
     temptokens = 0
     with outfile.open('a+') as f:
         for p in tempPhrases:
@@ -55,7 +60,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', metavar='outputfile', type=str, help='path to the output file.', required=True)
 
     args = parser.parse_args()
-    utils.initialize(in_mode="SCATE")
+    Chrono.ChronoUtils.initialize_chrono.initialize(in_mode="SCATE")
 
     skip_me = [".dct",".ann",".xml",".csv",".DS_Store"]
 
@@ -63,7 +68,7 @@ if __name__ == "__main__":
     with outfile.open('w+') as f:
         f.write("File" + "\t" + "Total" + "\t" + "Phrase" + "\t" + "Phrase Length" + "\n")
 
-    for root, dirs, files in utils.path_walk(Path(args.i), topdown=True):
+    for root, dirs, files in Chrono.ChronoUtils.filesystem_utils.path_walk(Path(args.i), topdown=True):
         for f in files:
             if not any(ext in f.name for ext in skip_me):
                 print("Processing: ", f)

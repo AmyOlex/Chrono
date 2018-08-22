@@ -1,6 +1,6 @@
 import string
 from Chrono import chronoEntities as chrono
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.config import DICTIONARY
 
 
