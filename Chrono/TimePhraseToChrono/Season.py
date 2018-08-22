@@ -3,7 +3,7 @@ import string
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
-from config import DICTIONARY
+from Chrono.config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a season of the year written out in text form, then builds the associated chronoentity list

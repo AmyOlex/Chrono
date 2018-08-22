@@ -1,7 +1,7 @@
 import string
 from Chrono import chronoEntities as chrono
 from Chrono.utils import calculateSpan
-from config import DICTIONARY
+from Chrono.config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a part of the week expression, then builds the associated chronoentity list

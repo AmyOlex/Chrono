@@ -4,8 +4,8 @@ import numpy as np
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
-from chronoML import ChronoKeras
-from config import DICTIONARY
+from Chrono.chronoML import ChronoKeras
+from Chrono.config import DICTIONARY
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a calendar interval or period phrase, then builds the associated chronoentity list

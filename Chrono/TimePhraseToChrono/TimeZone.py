@@ -1,7 +1,7 @@
 import string
 import re
 from Chrono import chronoEntities as chrono
-from config import DICTIONARY
+from Chrono.config import DICTIONARY
 
 
 def buildTimeZone(s, chrono_id, chrono_list):

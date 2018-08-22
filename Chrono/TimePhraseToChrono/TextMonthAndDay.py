@@ -4,7 +4,7 @@ from nltk import WhitespaceTokenizer
 from Chrono import chronoEntities as chrono, utils
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.utils import calculateSpan
-from config import DICTIONARY
+from Chrono.config import DICTIONARY
 
 
 ## Parses a TimePhraseEntity's text field to determine if it contains a month of the year, written out in text form, followed by a day, then builds the associated chronoentity list

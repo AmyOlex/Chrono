@@ -32,29 +32,25 @@
 
 
 
-## Provides all helper functions for Chrono methods. 
-
-
+## Provides all helper functions for Chrono methods.
+import os
+from pathlib import Path
 import nltk
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.tokenize import sent_tokenize
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize.util import align_tokens
-# from Chrono import chronoEntities as t6
 from Chrono import temporalTest as tt
 import dateutil.parser
-# import datetime
-# from Chrono import TimePhrase_to_Chrono
 from Chrono import TimePhraseEntity as tp
 import re
 import csv
 from collections import OrderedDict
 import numpy as np
-#from word2number import w2n
 from Chrono import w2ny as w2n
 import string
 import copy
-from config import DICTIONARY
+from Chrono.config import DICTIONARY, MODE
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -134,36 +130,26 @@ def getDocTime(file_path):
 # @author Amy Olex
 # @param chrono_list The list of Chrono objects needed to be written in the file.
 # @param outfile A string containing the output file location and name.
-def write_xml(chrono_list, outfile):
-    fout = open(outfile + ".completed.xml", "w")
-    fout.write("<data>\n<annotations>\n")
-    for c in chrono_list :
-        fout.write(str(c.print_SCATE()))
-    
-    fout.write("\n</annotations>\n</data>")
-    fout.close()
+def write_out(chrono_list, outfile):
+    if MODE == "SCATE":
+        fout = open(outfile + ".completed.xml", "w")
+        fout.write("<data>\n<annotations>\n")
+        for c in chrono_list :
+            fout.write(str(c.print_SCATE()))
+
+        fout.write("\n</annotations>\n</data>")
+        fout.close()
+    elif MODE == "ANN":
+        fout = open(outfile + ".completed.xml", "w")
+        for c in chrono_list:
+            fout.write(str(c.print_ANN()))
+        fout.close()
+    else:
+        print("Mode not supported: ", MODE)
  ####
  #END_MODULE
- ####   
+ ####
 
-
-## Marks all the reference tokens that show up in the TimePhrase entity list.
-# @author Amy Olex
-# @param refToks The list of reference Tokens
-# @param tpList The list of TimePhrase entities to compare against
-### I don't think we need/use this any longer.  Maybe can be recycled for something else.
-#def markTemporalRefToks(refToks, tpList):
-#    for ref in refToks:
-#        for tp in tpList:
-#            tpStart, tpEnd = tp.getSpan()
-#            if ref.spanOverlap(tpStart, tpEnd):
-#                ref.setTemporal(True)
-#        if ref.isTemporal() is None:
-#            ref.setTemporal(False)
-#    return refToks
-####
-#END_MODULE
-####
     
 ## Takes in a text string and returns the numerical value
 # @author Amy Olex
@@ -375,6 +361,27 @@ def get_features(data_file):
 ######
 ## END Function
 ###### 
+
+
+def initialize(in_mode, in_dictionary="dictionary"):
+    # Read in the word lists for each entity
+    # my_path = Path(__file__).parent
+    path = Path(in_dictionary)
+    if Path(in_dictionary).exists():
+        for root, dirs, files in path_walk(path, topdown=True):
+            for file in files:
+                with file.open() as f:
+                    key = file.stem
+                    for word in f:
+                        if key not in DICTIONARY:
+                            DICTIONARY[key] = []
+                        DICTIONARY[key].append(word.rstrip('\n'))
+    else:
+        print("Dictionary not found: ", path)
+
+    global MODE
+    MODE = in_mode
+
 
 ## Marks all the reference tokens that are identified as temporal.
 # @author Amy Olex
@@ -646,3 +653,44 @@ def calculateSpan(text, search_text):
         return None, None
 
     return start_idx, end_idx
+
+# http://ominian.com/2016/03/29/os-walk-for-pathlib-path/
+def path_walk(top, topdown=False, followlinks=False):
+    """
+         See Python docs for os.walk, exact same behavior but it yields Path() instances instead
+    """
+    names = list(top.iterdir())
+
+    dirs = (node for node in names if node.is_dir() is True)
+    nondirs = (node for node in names if node.is_dir() is False)
+
+    if topdown:
+        yield top, dirs, nondirs
+
+    for name in dirs:
+        if followlinks or name.is_symlink() is False:
+            for x in path_walk(name, topdown, followlinks):
+                yield x
+
+    if topdown is not True:
+        yield top, dirs, nondirs
+
+
+## Marks all the reference tokens that show up in the TimePhrase entity list.
+# @author Amy Olex
+# @param refToks The list of reference Tokens
+# @param tpList The list of TimePhrase entities to compare against
+### I don't think we need/use this any longer.  Maybe can be recycled for something else.
+#def markTemporalRefToks(refToks, tpList):
+#    for ref in refToks:
+#        for tp in tpList:
+#            tpStart, tpEnd = tp.getSpan()
+#            if ref.spanOverlap(tpStart, tpEnd):
+#                ref.setTemporal(True)
+#        if ref.isTemporal() is None:
+#            ref.setTemporal(False)
+#    return refToks
+####
+#END_MODULE
+####
+
