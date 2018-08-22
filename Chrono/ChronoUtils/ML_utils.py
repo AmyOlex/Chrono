@@ -39,6 +39,10 @@ from Chrono.ChronoUtils.parse_text import getNumberFromText
 from nltk import SnowballStemmer
 
 
+## Function that get the list of features to extract from the input training data matrix file.
+# @author Amy Olex
+# @param data_file The name and path the the data file that contains the training matrix.  The first row is assumed to be the list of features.
+# @return A dictionary with all the features stored as keys and the values set to zero.
 def extract_prediction_features(reftok_list, reftok_idx, feature_dict) :
 
     reftok = reftok_list[reftok_idx]

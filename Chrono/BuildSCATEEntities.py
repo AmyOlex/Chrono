@@ -37,7 +37,6 @@ import Chrono.ChronoUtils.parse_text
 from Chrono.TimePhraseToChrono import *
 from Chrono import referenceToken
 from Chrono import chronoEntities as chrono
-from Chrono import utils
 from Chrono.config import SUBINTERVAL_LINKING
 
 #Example TimePhrase List

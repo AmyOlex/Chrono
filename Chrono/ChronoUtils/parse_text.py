@@ -43,6 +43,12 @@ from nltk import sent_tokenize, WhitespaceTokenizer
 from nltk.tokenize.util import align_tokens
 
 
+## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
+# @author Amy Olex
+# @param file_path The path and file name of the text file to be parsed.
+# @return text String containing the raw text blob from reading in the file.
+# @return tokenized_text A list containing each token that was seperated by white space.
+# @return spans The coordinates for each token.
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
     text = file.read()
@@ -101,12 +107,20 @@ def getWhitespaceTokens(file_path):
     return text, tokenized_text, text_spans, tags, sent_boundaries
 
 
+## Reads in the dct file and converts it to a datetime object.
+# @author Amy Olex
+# @param file_path The path and file name of the dct file.
+# @return A datetime object
 def getDocTime(file_path):
     file = open(file_path, "r")
     text = file.read()
     return(dateutil.parser.parse(text))
 
 
+## Takes in a text string and returns the numerical value
+# @author Amy Olex
+# @param text The string containing our number
+# @return value The numerical value of the text string, None is returned if there is no number
 def getNumberFromText(text):
     try :
         number = w2n.word_to_num(text)
@@ -116,6 +130,9 @@ def getNumberFromText(text):
     return number
 
 
+## Function to get the integer representation of a text month
+# @author Amy Olex
+# @param text The text string to be converted to an integer.
 def getMonthNumber(text):
     month_dict = {'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10,'November':11, 'December':12,
                   'JANUARY':1, 'FEBRUARY':2, 'MARCH':3, 'APRIL':4, 'MAY':5, 'JUNE':6, 'JULY':7, 'AUGUST':8, 'SEPTEMBER':9, 'OCTOBER':10,'NOVEMBER':11, 'DECEMBER':12,
@@ -133,6 +150,11 @@ def getMonthNumber(text):
     return value
 
 
+## Takes in a Reference List that has had numeric and temporal tokens marked, and identifies all the
+## temporal phrases by finding consecutive temporal tokens.
+# @author Amy Olex
+# @param chroList The list of temporally marked reference tokens
+# @return A list of temporal phrases for parsing
 def getTemporalPhrases(chroList, doctime):
     #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime)
     id_counter = 0
@@ -240,6 +262,12 @@ def getTemporalPhrases(chroList, doctime):
     return phrases
 
 
+## Takes in a list of reference tokens identified as a temporal phrase and returns one TimePhraseEntity.
+# @author Amy Olex
+# @param items The list of reference tokesn
+# @param counter The ID this TimePhrase entity should have
+# @param doctime The document time.
+# @return A single TimePhrase entity with the text span and string concatenated.
 def createTPEntity(items, counter, doctime):
     start_span, tmp = items[0].getSpan()
     tmp, end_span = items[len(items)-1].getSpan()
@@ -250,6 +278,12 @@ def createTPEntity(items, counter, doctime):
     return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
 
 
+## Takes in a reference list of tokens, a start span and an end span
+# @author Amy Olex
+# @param ref_list The list of reference tokens we want an index for.
+# @param start_span The start span of the token we need to find in ref_list
+# @param end_span The ending span of the token we need to find
+# @return Returns the index of the ref_list token that overlaps the start and end spans provided, or -1 if not found.
 def getRefIdx(ref_list, start_span, end_span):
     for i in range(0,len(ref_list)):
         if(overlap(ref_list[i].getSpan(),(start_span,end_span))):
@@ -257,6 +291,9 @@ def getRefIdx(ref_list, start_span, end_span):
     return -1
 
 
+## Function to identify an ordinal number
+# @author Amy Olex
+# @param text The text string to be tested for an ordinal.
 def isOrdinal(text):
     text_lower = text.lower()
     if text_lower == '1st' or text_lower== 'first': #re.search('1st|first', text_lower) is not None):
@@ -327,6 +364,16 @@ def isOrdinal(text):
     return number
 
 
+## Function to determine if the input span overlaps this objects span
+# @author Amy Olex
+# @param sp1 a 2-tuple with the first start and end span
+# @param sp2 a 2-tuple with the second start and end span
+# @output True or False
+# @author Amy Olex
+# @param reftok_list The full document being parsed as a list of tokens.
+# @param reftok_idx The index of the target token in the reference list.
+# @param feature_dict A dictionary with the features to be extracted listed as the keys and the values all set to zero.
+# @return A dictionary with the features as keys and the values set to 0 if not present, and 1 if present for the target word.
 def overlap(sp1, sp2) :
     x=set(range(int(sp1[0]), int(sp1[1])))
     y=set(range(int(sp2[0]), int(sp2[1])))
@@ -336,6 +383,10 @@ def overlap(sp1, sp2) :
         return False
 
 
+## Marks all the reference tokens that are identified as temporal.
+# @author Amy Olex
+# @param refToks The list of reference Tokens
+# @return modified list of reftoks
 def markTemporal(refToks):
     for ref in refToks:
         #mark if numeric
@@ -354,8 +405,11 @@ def markTemporal(refToks):
     return refToks
 
 
+## Tests to see if the token is a number.
+# @author Amy Olex
+# @param tok The token string
+# @return Boolean true if numeric, false otherwise
 def numericTest(tok, pos):
-
     if pos == "CD":
         return True
     else:
@@ -371,6 +425,10 @@ def numericTest(tok, pos):
         return False
 
 
+## Tests to see if the token is a temporal value.
+# @author Amy Olex
+# @param tok The token string
+# @return Boolean true if temporal, false otherwise
 def temporalTest(tok):
     #remove punctuation
     #tok = tok.translate(str.maketrans("", "", string.punctuation))
@@ -419,6 +477,12 @@ def temporalTest(tok):
     if tt.hasModifierText(tok):
         return True
 
+
+## Identifies the local span of the serach_text in the input "text"
+# @author Amy Olex
+# @param text The text to be searched
+# @param search_text The text to search for.
+# @return The start index and end index of the search_text string.
 
 def calculateSpan(text, search_text):
     try:

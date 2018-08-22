@@ -3,7 +3,7 @@ import string
 
 import Chrono.ChronoUtils.parse_text
 from nltk import WhitespaceTokenizer
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 
 
 def buildTextYear(s, chrono_id, chrono_list):

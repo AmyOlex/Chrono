@@ -60,7 +60,7 @@ import Chrono.ChronoUtils.parse_text
 from nltk.stem.snowball import SnowballStemmer
 from copy import deepcopy
 from Chrono import chronoEntities
-from Chrono import utils
+from Chrono
 from Chrono import TimePhraseEntity
 from Chrono import referenceToken
 

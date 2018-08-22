@@ -31,6 +31,10 @@
 # Boston, MA  02111-1307, USA.
 
 
+## Writes out the full XML file for all Chrono in list.
+# @author Amy Olex
+# @param chrono_list The list of Chrono objects needed to be written in the file.
+# @param outfile A string containing the output file location and name.
 def write_out(chrono_list, outfile, mode=["SCATE"]):
 
     if "SCATE" in mode:
@@ -50,6 +54,8 @@ def write_out(chrono_list, outfile, mode=["SCATE"]):
         fout.close()
 
 
+## Implements the functionality of os.walk using pathlib
+# http://ominian.com/2016/03/29/os-walk-for-pathlib-path/
 def path_walk(top, topdown=False, followlinks=False):
     """
          See Python docs for os.walk, exact same behavior but it yields Path() instances instead

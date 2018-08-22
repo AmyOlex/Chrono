@@ -5,7 +5,7 @@ import Chrono.ChronoUtils.ML_utils
 
 import Chrono.ChronoUtils.parse_text
 import numpy as np
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.chronoML import ChronoKeras

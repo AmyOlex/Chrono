@@ -3,9 +3,7 @@ import re
 
 
 import Chrono.ChronoUtils.parse_text
-import Chrono.utils
 from Chrono import chronoEntities as chrono
-from Chrono import utils
 from Chrono.TimePhraseToChrono.DayOfMonth import hasDayOfMonth
 from Chrono.TimePhraseToChrono.HourOfDay import hasHourOfDay
 from Chrono.TimePhraseToChrono.MinuteOfHour import hasMinuteOfHour

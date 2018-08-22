@@ -1,6 +1,5 @@
 import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono
-from Chrono import utils
 import re
 import calendar
 

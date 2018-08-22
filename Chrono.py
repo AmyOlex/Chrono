@@ -38,7 +38,7 @@ import os
 import Chrono.ChronoUtils.filesystem_utils
 import Chrono.ChronoUtils.initialize_chrono
 import Chrono.ChronoUtils.parse_text
-from Chrono import BuildSCATEEntities, referenceToken, utils
+from Chrono import BuildSCATEEntities, referenceToken
 
 debug=False
 ## This is the driver method to run all of Chrono.

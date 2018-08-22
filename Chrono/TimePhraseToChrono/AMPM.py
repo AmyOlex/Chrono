@@ -1,7 +1,7 @@
 import re
 
 import Chrono.ChronoUtils.parse_text
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 from Chrono.ChronoUtils.parse_text import calculateSpan
 
 

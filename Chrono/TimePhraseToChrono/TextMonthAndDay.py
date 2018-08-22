@@ -3,7 +3,7 @@ import string
 
 import Chrono.ChronoUtils.parse_text
 from nltk import WhitespaceTokenizer
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
 from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.config import DICTIONARY

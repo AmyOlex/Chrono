@@ -1,7 +1,6 @@
 import string
 
 import Chrono.ChronoUtils.parse_text
-import Chrono.utils
 from Chrono import chronoEntities as chrono
 from Chrono.config import DICTIONARY
 

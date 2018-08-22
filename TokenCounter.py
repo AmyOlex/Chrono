@@ -36,7 +36,7 @@ from pathlib import Path
 import Chrono.ChronoUtils.filesystem_utils
 import Chrono.ChronoUtils.initialize_chrono
 import Chrono.ChronoUtils.parse_text
-from Chrono import utils, referenceToken
+from Chrono import referenceToken
 
 
 def count_temporal_tokens(filename, outfile):
