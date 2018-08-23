@@ -36,7 +36,7 @@ import argparse
 import os
 
 import Chrono.ChronoUtils.filesystem_utils as filesystem_utils
-import Chrono.ChronoUtils.initialize_chrono as initialize
+import Chrono.ChronoUtils.initialize_chrono as initialize_chrono
 import Chrono.ChronoUtils.parse_text as parse_text
 from Chrono import BuildSCATEEntities, referenceToken
 
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ## Now we can access each argument as args.i, args.o, args.r
-    initialize.initialize()
-    classifier, feats = initialize.setup_ML(args.m, args.M, args.d, args.c)
+    initialize_chrono.initialize()
+    classifier, feats = initialize_chrono.setup_ML(args.m, args.M, args.d, args.c)
 
     ## Get list of folder names in the input directory
     indirs = []
