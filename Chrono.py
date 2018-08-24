@@ -33,14 +33,41 @@
 ## This is the main driver program that runs Chrono.  
 
 import argparse
+import multiprocessing
 import os
 
 import Chrono.ChronoUtils.filesystem_utils as filesystem_utils
 import Chrono.ChronoUtils.initialize_chrono as initialize_chrono
 import Chrono.ChronoUtils.parse_text as parse_text
 from Chrono import BuildSCATEEntities, referenceToken
+from joblib import Parallel, delayed
 
 debug=False
+
+def parallel_run(infiles, ext, ml, output, outfiles, x, dict, model, data, labels):
+    initialize_chrono.initialize(dict)
+    classifier, feats = initialize_chrono.setup_ML(ml, model, data, labels)
+
+    print("Parsing " + infiles[x] + " ...")
+    my_chronoentities = []
+    my_chrono_ID_counter = 1
+
+    ## parse out the doctime
+    doctime = parse_text.getDocTime(infiles[x] + ".dct")
+    ## parse out reference tokens
+    text, tokens, spans, tags, sents = parse_text.getWhitespaceTokens(infiles[x] + ext)
+    my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
+    ## mark all ref tokens if they are numeric or temporal
+    chroList = parse_text.markTemporal(my_refToks)
+    tempPhrases = parse_text.getTemporalPhrases(chroList, doctime)
+    chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter,
+                                                                                  chroList, (classifier, ml), feats,
+                                                                                  doctime)
+
+    print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+    filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[x], mode=output)
+
+
 ## This is the driver method to run all of Chrono.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -61,6 +88,7 @@ if __name__ == "__main__":
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
     parser.add_argument('-D', metavar='Dictionary', type=str, help='The path to dictionaries', required=False, default='./dictionary')
     parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False, default="SCATE", nargs="*")
+    parser.add_argument('-p', action='store_true', help='Run in parallel')
     
     args = parser.parse_args()
 
@@ -82,36 +110,44 @@ if __name__ == "__main__":
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
 
-    ## Loop through each file and parse
-    for f in range(0,len(infiles)):
-        print("Parsing "+ infiles[f] +" ...")
-        ## Init the ChronoEntity list
-        my_chronoentities = []
-        my_chrono_ID_counter = 1
+    if args.p:
+        num_cores = multiprocessing.cpu_count()
+        Parallel(n_jobs=num_cores)(
+            delayed(parallel_run)(infiles, args.x, args.m, args.O, outfiles, x, args.D, args.M, args.d, args.c) for x in range(len(infiles)))
+    else:
+        initialize_chrono.initialize(args.D)
+        classifier, feats = initialize_chrono.setup_ML(args.m, args.M, args.d, args.c)
 
-        ## parse out the doctime
-        doctime = parse_text.getDocTime(infiles[f] + ".dct")
-        if(debug): print(doctime)
+        ## Loop through each file and parse
+        for f in range(0,len(infiles)):
+            print("Parsing "+ infiles[f] +" ...")
+            ## Init the ChronoEntity list
+            my_chronoentities = []
+            my_chrono_ID_counter = 1
 
-        ## parse out reference tokens
-        text, tokens, spans, tags, sents = parse_text.getWhitespaceTokens(infiles[f] + args.x)
-        #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
+            ## parse out the doctime
+            doctime = parse_text.getDocTime(infiles[f] + ".dct")
+            if(debug): print(doctime)
 
-        ## mark all ref tokens if they are numeric or temporal
-        chroList = parse_text.markTemporal(my_refToks)
+            ## parse out reference tokens
+            text, tokens, spans, tags, sents = parse_text.getWhitespaceTokens(infiles[f] + args.x)
+            #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
+            my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
 
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in chroList : print(tok)
+            ## mark all ref tokens if they are numeric or temporal
+            chroList = parse_text.markTemporal(my_refToks)
 
-        tempPhrases = parse_text.getTemporalPhrases(chroList, doctime)
+            if(debug) :
+                print("REFERENCE TOKENS:\n")
+                for tok in chroList : print(tok)
 
-        if(debug):
-            for c in tempPhrases:
-                print(c)
+            tempPhrases = parse_text.getTemporalPhrases(chroList, doctime)
 
-        chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+            if(debug):
+                for c in tempPhrases:
+                    print(c)
 
-        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-        filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f], mode=args.O)
+            chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+
+            print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+            filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f], mode=args.O)
