@@ -93,8 +93,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ## Now we can access each argument as args.i, args.o, args.r
-    initialize_chrono.initialize()
-    classifier, feats = initialize_chrono.setup_ML(args.m, args.M, args.d, args.c)
 
     ## Get list of folder names in the input directory
     indirs = []
