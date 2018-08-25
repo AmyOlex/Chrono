@@ -22,7 +22,7 @@ then
 	echo "Usage: ./run.sh USER DEVICE DATASET ML ML_DATA"
 	echo "USER: amy, luke, help"
 	echo "LOC: willow, laptop"
-	echo "DATASET: train, test"
+	echo "DATASET: train, test, eval"
 	echo "ML: SVM, NB, DT, RB, NN"
 	echo "ML_DATA: news5, news3, clin5, clin3, newsclin5, newsclin3"
 fi
@@ -50,6 +50,8 @@ then
 			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/SemEval-Task6-Evaluation"
                         OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/newsEval"
                         ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			DATA_DIR2="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME_Eval"
+			OUT_DIR2="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/THYME_Eval"
 		fi
 		if [ $ML_DATA = "news5" ]
 		then
@@ -140,6 +142,27 @@ then
 	if [ $DATASET = "eval" ]
         then	
 		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		if [ $LOC = "laptop" ]
+		then
+			python Chrono.py -i $DATA_DIR2 -o $OUT_DIR2 -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+			echo python Chrono.py -i $DATA_DIR2 -o $OUT_DIR2 -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE	
+		fi
+
+		NEWDIR=Evaluation `date "+%Y-%m-%d %H:%M:%S"`
+		mkdir $NEWDIR
+		cd $NEWDIR
+		mkdir Newswire
+		mkdir Cancer
+		cp -r $OUT_DIR/* Newswire/
+		cp -r $OUT_DIR2/* Cancer/
+		rm .DS_Store
+		rm  */.DS_Store
+		rm */*/.DS_Store
+		zip -r -X $NEWDIR.zip Newswire Cancer
+
+		echo "Completed Evaluation Runs"
+
 	else
 		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 		cd $ANAFORA_DIR
