@@ -140,7 +140,7 @@ def write_out(chrono_list, outfile):
         fout.write("\n</annotations>\n</data>")
         fout.close()
     elif MODE == "ANN":
-        fout = open(outfile + ".completed.xml", "w")
+        fout = open(outfile + ".completed.ann", "w")
         for c in chrono_list:
             fout.write(str(c.print_ANN()))
         fout.close()
