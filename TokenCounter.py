@@ -37,6 +37,7 @@ import Chrono.ChronoUtils.filesystem_utils
 import Chrono.ChronoUtils.initialize_chrono
 import Chrono.ChronoUtils.parse_text
 from Chrono import referenceToken
+import xml.etree.ElementTree as ET
 
 
 def count_temporal_tokens(filename, outfile):
@@ -45,11 +46,22 @@ def count_temporal_tokens(filename, outfile):
     chroList = Chrono.ChronoUtils.parse_text.markTemporal(my_refToks)
     doctime = Chrono.ChronoUtils.parse_text.getDocTime(str(filename) + ".dct")
     tempPhrases = Chrono.ChronoUtils.parse_text.getTemporalPhrases(chroList, doctime)
-    temptokens = 0
     with outfile.open('a+') as f:
         for p in tempPhrases:
             temptokens = len(p.getText().split())
-            f.write(filename.name + "\t" + str(len(tokens)) + "\t" + p.getText() + "\t" +  str(temptokens) + "\n")
+            f.write(filename.name + "\t" + str(len(tokens)) + "\t" + p.getText() + "\t" + str(temptokens) + "\n")
+
+
+def count_xml_tokens(filename, outfile):
+    tree = ET.parse(str(filename))
+    root = tree.getroot()
+    temptokens = 0
+    for item in root.findall('./annotations/entity'):
+        temptokens = temptokens + 1
+
+    text, tokens, spans, tags, sents = Chrono.ChronoUtils.parse_text.getWhitespaceTokens(str(filename))
+    with outfile.open('a+') as f:
+        f.write(filename.name + "\t" + str(len(tokens)) + "\t" + str(temptokens) + "\n")
 
 
 if __name__ == "__main__":
@@ -58,20 +70,31 @@ if __name__ == "__main__":
         description='Parse a directory of files to count the number of tokens')
     parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
     parser.add_argument('-o', metavar='outputfile', type=str, help='path to the output file.', required=True)
+    parser.add_argument('--xml', action='store_true')
 
     args = parser.parse_args()
-    Chrono.ChronoUtils.initialize_chrono.initialize(in_mode="SCATE")
+    Chrono.ChronoUtils.initialize_chrono.initialize()
 
-    skip_me = [".dct",".ann",".xml",".csv",".DS_Store"]
+    skip_me = [".dct",".ann",".csv",".DS_Store"]
 
     outfile = Path(args.o)
-    with outfile.open('w+') as f:
-        f.write("File" + "\t" + "Total" + "\t" + "Phrase" + "\t" + "Phrase Length" + "\n")
+    if args.xml:
+        with outfile.open('w+') as f:
+            f.write("File" + "\t" + "Total" + "\t" + "Entity Count" + "\n")
+    else:
+        with outfile.open('w+') as f:
+            f.write("File" + "\t" + "Total" + "\t" + "Phrase" + "\t" + "Phrase Length" + "\n")
 
     for root, dirs, files in Chrono.ChronoUtils.filesystem_utils.path_walk(Path(args.i), topdown=True):
         for f in files:
-            if not any(ext in f.name for ext in skip_me):
-                print("Processing: ", f)
-                count_temporal_tokens(Path(f), outfile)
+            if args.xml:
+                if not any(ext in f.name for ext in skip_me):
+                    print("Processing: ", f)
+                    count_xml_tokens(Path(f), outfile)
+            else:
+                skip_me.append(".xml")
+                if not any(ext in f.name for ext in skip_me):
+                    print("Processing: ", f)
+                    count_temporal_tokens(Path(f), outfile)
     print("Completed couting tokens.")
 
