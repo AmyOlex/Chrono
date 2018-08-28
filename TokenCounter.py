@@ -59,9 +59,8 @@ def count_xml_tokens(filename, outfile):
     for item in root.findall('./annotations/entity'):
         temptokens = temptokens + 1
 
-    text, tokens, spans, tags, sents = Chrono.ChronoUtils.parse_text.getWhitespaceTokens(str(filename))
     with outfile.open('a+') as f:
-        f.write(filename.name + "\t" + str(len(tokens)) + "\t" + str(temptokens) + "\n")
+        f.write(filename.name + "\t" + str(temptokens) + "\n")
 
 
 if __name__ == "__main__":
@@ -80,7 +79,7 @@ if __name__ == "__main__":
     outfile = Path(args.o)
     if args.xml:
         with outfile.open('w+') as f:
-            f.write("File" + "\t" + "Total" + "\t" + "Entity Count" + "\n")
+            f.write("File" + "\t" + "Entity Count" + "\n")
     else:
         with outfile.open('w+') as f:
             f.write("File" + "\t" + "Total" + "\t" + "Phrase" + "\t" + "Phrase Length" + "\n")
