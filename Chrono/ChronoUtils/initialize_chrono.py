@@ -6,7 +6,7 @@ from Chrono.chronoML import DecisionTree as DTree, RF_classifier as RandomForest
 from Chrono.config import DICTIONARY
 from Chrono.ChronoUtils.filesystem_utils import path_walk
 from Chrono.ChronoUtils.ML_utils import get_features
-from keras.engine.saving import load_model
+# from keras.engine.saving import load_model
 
 
 def setup_ML(ml_input, ml_model, train_data, train_labels):
@@ -55,7 +55,8 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
                 print(ml_model)
                 classifier, feats = pickle.load(mod)
         elif ml_input == "NN":
-            classifier = load_model(ml_model)
+            # classifier = load_model(ml_model)
+            print("Model loading temporarily disabled...")
             feats = get_features(train_data)
     return classifier, feats
 
