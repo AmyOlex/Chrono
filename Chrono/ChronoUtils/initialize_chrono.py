@@ -72,4 +72,4 @@ def initialize(in_dictionary="dictionary"):
                             DICTIONARY[key] = []
                         DICTIONARY[key].append(word.rstrip('\n'))
     else:
-        print("Dictionary not found: ", path)
+        raise ValueError('Dictionary not found: ' + in_dictionary)
