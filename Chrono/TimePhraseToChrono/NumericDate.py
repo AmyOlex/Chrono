@@ -1,5 +1,5 @@
+import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono
-from Chrono import utils
 import re
 import calendar
 
@@ -27,7 +27,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
         ## Note that 24hour times in this range will be interpreted as years.  However, if a timezone like 1800EDT is attached it will not be parsed here.
         if len(text) == 4:
 
-            num = utils.getNumberFromText(text)
+            num = Chrono.ChronoUtils.parse_text.getNumberFromText(text)
             if num is not None:
                 if (num >= 1500) and (num <= 2050) and not flags["fourdigityear"] and not flags["loneDigitYear"]:
                     flags["loneDigitYear"] = True
@@ -43,11 +43,11 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                     chrono_list.append(chrono_year_entity)
 
         ## parse out the condesnsed date format like 19980303 or 03031998.
-        elif len(text) == 8 and utils.getNumberFromText(text) is not None:
+        elif len(text) == 8 and Chrono.ChronoUtils.parse_text.getNumberFromText(text) is not None:
             # Identify format yyyymmdd
-            y = utils.getNumberFromText(text[0:4])
-            m = utils.getNumberFromText(text[4:6])
-            d = utils.getNumberFromText(text[6:8])
+            y = Chrono.ChronoUtils.parse_text.getNumberFromText(text[0:4])
+            m = Chrono.ChronoUtils.parse_text.getNumberFromText(text[4:6])
+            d = Chrono.ChronoUtils.parse_text.getNumberFromText(text[6:8])
             if y is not None:
                 if (y >= 1500) and (y <= 2050) and (m <= 12) and (d <= 31):
                     ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -76,9 +76,9 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                     chrono_list.append(chrono_day_entity)
                 else:
                     # test for mmddyyyy
-                    y2 = utils.getNumberFromText(text[4:8])
-                    m2 = utils.getNumberFromText(text[0:2])
-                    d2 = utils.getNumberFromText(text[2:4])
+                    y2 = Chrono.ChronoUtils.parse_text.getNumberFromText(text[4:8])
+                    m2 = Chrono.ChronoUtils.parse_text.getNumberFromText(text[0:2])
+                    d2 = Chrono.ChronoUtils.parse_text.getNumberFromText(text[2:4])
                     if y2 is not None:
                         if (y2 >= 1500) and (y2 <= 2050) and (m2 <= 12) and (d2 <= 31):
                             ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -108,12 +108,12 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 
         ## parse out the condesnsed date format like 030399 or 990303.
         ## Note that dates such as 12-01-2006 (120106 vs 061201) and similar are not distinguishable.
-        elif len(text) == 6 and utils.getNumberFromText(text) is not None:
+        elif len(text) == 6 and Chrono.ChronoUtils.parse_text.getNumberFromText(text) is not None:
             # Identify format mmddyy
 
-            y = utils.getNumberFromText(text[4:6])
-            m = utils.getNumberFromText(text[0:2])
-            d = utils.getNumberFromText(text[2:4])
+            y = Chrono.ChronoUtils.parse_text.getNumberFromText(text[4:6])
+            m = Chrono.ChronoUtils.parse_text.getNumberFromText(text[0:2])
+            d = Chrono.ChronoUtils.parse_text.getNumberFromText(text[2:4])
             if y is not None and m is not None and d is not None:
                 if (m <= 12) and (d <= 31):
                     ref_StartSpan, ref_EndSpan = s.getSpan()
@@ -141,9 +141,9 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                     chrono_list.append(chrono_day_entity)
                 else:
                     # test for yymmdd
-                    y2 = utils.getNumberFromText(text[0:2])
-                    m2 = utils.getNumberFromText(text[2:4])
-                    d2 = utils.getNumberFromText(text[4:6])
+                    y2 = Chrono.ChronoUtils.parse_text.getNumberFromText(text[0:2])
+                    m2 = Chrono.ChronoUtils.parse_text.getNumberFromText(text[2:4])
+                    d2 = Chrono.ChronoUtils.parse_text.getNumberFromText(text[4:6])
                     if y2 is not None:
                         if (m2 <= 12) and (d2 <= 31):
                             ref_StartSpan, ref_EndSpan = s.getSpan()

@@ -1,6 +1,7 @@
 import string
-import Chrono.utils
-from Chrono import utils
+
+
+import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono
 
 
@@ -39,12 +40,12 @@ def hasNthFromStart(tpentity, ref_list):
 
     ## if the term does not exist by itself it may be a substring. Go through each word in the TimePhrase string and see if a substring matches.
     for t in text_list:
-        val = utils.isOrdinal(t)
+        val = Chrono.ChronoUtils.parse_text.isOrdinal(t)
 
         if val is not None:
-            start_idx, end_idx = Chrono.utils.calculateSpan(text_norm, t)
+            start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text_norm, t)
             # now get the reference index of this token and see if there are any temporal tokens next to it.
-            idx = utils.getRefIdx(ref_list, refStart_span + start_idx, refStart_span + end_idx)
+            idx = Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, refStart_span + start_idx, refStart_span + end_idx)
             if ref_list[idx - 1].isTemporal() or ref_list[idx + 1].isTemporal():
                 return True, val, start_idx, end_idx
 

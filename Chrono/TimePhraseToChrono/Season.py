@@ -1,8 +1,10 @@
 import re
 import string
-from Chrono import chronoEntities as chrono, utils
+
+import Chrono.ChronoUtils.parse_text
+from Chrono import chronoEntities as chrono
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.config import DICTIONARY
 
 
@@ -61,7 +63,7 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
                 my_entity.set_number(my_number_entity.get_id())
                 #else search for a text number
             else:
-                texNumVal = utils.getNumberFromText(substr)
+                texNumVal = Chrono.ChronoUtils.parse_text.getNumberFromText(substr)
                 if texNumVal is not None:
                     #create the number entity
                     my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal)
@@ -108,7 +110,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             start_idx, end_idx = calculateSpan(text_norm, "summer")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
                 return True, "Summer", start_idx, end_idx
@@ -117,7 +119,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             start_idx, end_idx = calculateSpan(text_norm, "winter")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
                 return True, "Winter", start_idx, end_idx
@@ -126,7 +128,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             start_idx, end_idx = calculateSpan(text_norm, "fall")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
                 return True, "Fall", start_idx, end_idx
@@ -135,7 +137,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             start_idx, end_idx = calculateSpan(text_norm, "spring")
             absStart = refStart_span + start_idx
             absEnd = refStart_span + end_idx
-            postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+            postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
                 return True, "Spring", start_idx, end_idx

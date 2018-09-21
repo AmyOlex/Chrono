@@ -2,7 +2,7 @@ import re
 import string
 from Chrono.config import DICTIONARY
 from Chrono import chronoEntities as chrono
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 
 
 ## Parses a TimePhrase entity's text field to determine if it contains a part of the day expression, then builds the associated chronoentity list

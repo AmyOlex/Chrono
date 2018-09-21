@@ -1,7 +1,9 @@
 import re
 import string
+
+import Chrono.ChronoUtils.parse_text
 from nltk import WhitespaceTokenizer
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 
 
 def buildTextYear(s, chrono_id, chrono_list):
@@ -36,9 +38,9 @@ def hasTextYear(tpentity):
         ##split on spaces
         tokenized_text = WhitespaceTokenizer().tokenize(text)
         for t in tokenized_text:
-            if utils.getNumberFromText(t) is None:
+            if Chrono.ChronoUtils.parse_text.getNumberFromText(t) is None:
                 return False, None, None, None
-        val = utils.getNumberFromText(text)
+        val = Chrono.ChronoUtils.parse_text.getNumberFromText(text)
 
         if val is not None:
             if val >= 1500 and val <= 2050:

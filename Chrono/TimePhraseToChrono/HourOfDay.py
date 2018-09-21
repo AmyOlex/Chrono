@@ -1,4 +1,5 @@
-import Chrono.utils
+
+import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono
 import re
 
@@ -48,7 +49,7 @@ def hasHourOfDay(tpentity):
             if (re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text)):  # checks for HH:MM:SS String
                 match = re.search('^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$', text).group(0)
                 if len(match.split(":")) == 2 or len(match.split(":")) == 3:
-                    start_idx, end_idx = Chrono.utils.calculateSpan(text_norm, re.compile(":").split(match)[0])
+                    start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text_norm, re.compile(":").split(match)[0])
                     return True, re.compile(":").split(match)[0], start_idx, end_idx
                 else:
                     return False, None, None, None  # if no 2 digit hour expressions were found return false

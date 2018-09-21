@@ -1,9 +1,11 @@
 import datetime
 import string
+
+import Chrono.ChronoUtils.parse_text
 from nltk import WhitespaceTokenizer
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.config import DICTIONARY
 
 
@@ -50,7 +52,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
         if(idxend < len(s.getText())):
             substr = s.getText()[idxend:].strip(",.").strip()
 
-            num = utils.getNumberFromText(substr)
+            num = Chrono.ChronoUtils.parse_text.getNumberFromText(substr)
             if num is not None:
                 if num <= 31 and not flags["day"]:
                     flags["day"] = True
@@ -66,7 +68,8 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                     if False: #dct is not None:
                         mStart = my_month_entity.get_start_span()
                         mEnd = my_month_entity.get_end_span()
-                        this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
+                        this_dct = datetime.datetime(int(dct.year), int(
+                            Chrono.ChronoUtils.parse_text.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
                         if this_dct > dct:
                             chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                             chrono_id = chrono_id + 1
@@ -90,7 +93,7 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                 ##split on spaces
                 tokenized_text = WhitespaceTokenizer().tokenize(substr)
                 for i in range(0,len(tokenized_text)):
-                    num = utils.getNumberFromText(tokenized_text[i])
+                    num = Chrono.ChronoUtils.parse_text.getNumberFromText(tokenized_text[i])
                     if num is not None:
                         if num <= 31:
                             day_startidx, day_endidx = calculateSpan(s.getText(), tokenized_text[i])
@@ -105,7 +108,8 @@ def buildTextMonthAndDay(s, chrono_id, chrono_list, flags, dct=None, ref_list=No
                             if False: #dct is not None:
                                 mStart = my_month_entity.get_start_span()
                                 mEnd = my_month_entity.get_end_span()
-                                this_dct = datetime.datetime(int(dct.year),int(utils.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
+                                this_dct = datetime.datetime(int(dct.year), int(
+                                    Chrono.ChronoUtils.parse_text.getMonthNumber(my_month_entity.get_month_type())), int(my_day_entity.get_value()), 0, 0)
                                 if this_dct > dct:
                                     chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=my_month_entity.get_id()))
                                     chrono_id = chrono_id + 1
@@ -175,7 +179,7 @@ def hasTextMonth(tpentity, ref_list):
                 start_idx, end_idx = calculateSpan(text_lower, answer2)
                 absStart = refStart_span + start_idx
                 absEnd = refStart_span + end_idx
-                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+                postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
                 if postag == "NNP":
                     if answer2 in ["january"]:
@@ -221,7 +225,7 @@ def hasTextMonth(tpentity, ref_list):
                 start_idx, end_idx = calculateSpan(text_lower, answer2)
                 absStart = refStart_span + start_idx
                 absEnd = refStart_span + end_idx
-                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+                postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
                 if postag == "NNP":
                     if answer2 in ["jan."]:
@@ -265,7 +269,7 @@ def hasTextMonth(tpentity, ref_list):
                 start_idx, end_idx = calculateSpan(text_lower, answer2)
                 absStart = refStart_span + start_idx
                 absEnd = refStart_span + end_idx
-                postag = ref_list[utils.getRefIdx(ref_list, absStart, absEnd)].getPos()
+                postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
                 if postag == "NNP":
                     if answer2 in ["jan"]:

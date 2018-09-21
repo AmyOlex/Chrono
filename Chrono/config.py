@@ -3,7 +3,7 @@
 DICTIONARY = {}
 
 # Mode is for what type of entities to look for
-MODE = "SCATE"
+# MODE = []
 
 # Link sub intervals?
 SUBINTERVAL_LINKING = True

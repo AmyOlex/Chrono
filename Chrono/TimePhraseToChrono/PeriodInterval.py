@@ -1,9 +1,13 @@
 import re
 import string
+
+import Chrono.ChronoUtils.ML_utils
+
+import Chrono.ChronoUtils.parse_text
 import numpy as np
-from Chrono import chronoEntities as chrono, utils
+from Chrono import chronoEntities as chrono
 from Chrono.TimePhraseToChrono.Modifier import hasNextLastThis
-from Chrono.utils import calculateSpan
+from Chrono.ChronoUtils.parse_text import calculateSpan
 from Chrono.chronoML import ChronoKeras
 from Chrono.config import DICTIONARY
 
@@ -53,10 +57,10 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
         abs_Espan = ref_Sspan + idxend
 
         # get index of overlapping reference token
-        ref_idx = utils.getRefIdx(ref_list, abs_Sspan, abs_Espan)
+        ref_idx = Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, abs_Sspan, abs_Espan)
 
         # extract ML features
-        my_features = utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
+        my_features = Chrono.ChronoUtils.ML_utils.extract_prediction_features(ref_list, ref_idx, feats.copy())
 
         # classify into period or interval
         if classifier[1] == "NN":
@@ -171,7 +175,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 my_entity.set_number(my_number_entity.get_id())
             #else search for a text number
             else:
-                texNumVal = utils.getNumberFromText(prevtok)
+                texNumVal = Chrono.ChronoUtils.parse_text.getNumberFromText(prevtok)
                 if texNumVal is not None:
                     abs_Sspan = ref_Sspan + rest_of_phrase_length
                     abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok) if has_space else ref_Sspan + rest_of_phrase_length + len(prevtok) - 1
@@ -195,12 +199,12 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
             # get index of overlapping reference token
             ref_idx = -1
             for i in range(0,len(ref_list)):
-                if(utils.overlap(ref_list[i].getSpan(),(abs_Sspan,abs_Espan))):
+                if(Chrono.ChronoUtils.parse_text.overlap(ref_list[i].getSpan(), (abs_Sspan, abs_Espan))):
                     ref_idx = i
                     break
 
             # extract ML features
-            my_features = utils.extract_prediction_features(ref_list, ref_idx, features)
+            my_features = Chrono.ChronoUtils.ML_utils.extract_prediction_features(ref_list, ref_idx, features)
 
             # classify into period or interval
             if(classifier[1] == "NN"):
@@ -264,7 +268,7 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                     my_entity.set_number(my_number_entity.get_id())
                 #else search for a text number
                 else:
-                    texNumVal = utils.getNumberFromText(prevtok)
+                    texNumVal = Chrono.ChronoUtils.parse_text.getNumberFromText(prevtok)
                     if texNumVal is not None:
                         abs_Sspan = ref_Sspan + rest_of_phrase_length
                         abs_Espan = ref_Sspan + rest_of_phrase_length + len(prevtok) if has_space else ref_Sspan + rest_of_phrase_length + len(prevtok) - 1
@@ -395,7 +399,7 @@ def hasEmbeddedPeriodInterval(tpentity):
                 sub1 = t[:idx]
                 sub2 = t[idx:]
                 # sub1 should be a number
-                if (isinstance(utils.getNumberFromText(sub1), (int))):
+                if (isinstance(Chrono.ChronoUtils.parse_text.getNumberFromText(sub1), (int))):
                     # if it is a number then test to figure out what sub2 is.
                     this_term = sub2
                     start_idx, end_idx = calculateSpan(text_norm, this_term)

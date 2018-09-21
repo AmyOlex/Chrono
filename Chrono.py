@@ -33,18 +33,41 @@
 ## This is the main driver program that runs Chrono.  
 
 import argparse
+import multiprocessing
 import os
-import pickle
 
-from Chrono.config import MODE
-from Chrono.chronoML import NB_nltk_classifier as NBclass, RF_classifier as RandomForest, DecisionTree as DTree, \
-    ChronoKeras, SVM_classifier as SVMclass
-from Chrono import BuildSCATEEntities
-from Chrono import referenceToken
-from Chrono import utils
-from keras.models import load_model
+import Chrono.ChronoUtils.filesystem_utils as filesystem_utils
+import Chrono.ChronoUtils.initialize_chrono as initialize_chrono
+import Chrono.ChronoUtils.parse_text as parse_text
+from Chrono import BuildSCATEEntities, referenceToken
+from joblib import Parallel, delayed
 
 debug=False
+
+def parallel_run(infiles, ext, ml, output, outfiles, x, dict, model, data, labels):
+    initialize_chrono.initialize(dict)
+    classifier, feats = initialize_chrono.setup_ML(ml, model, data, labels)
+
+    print("Parsing " + infiles[x] + " ...")
+    my_chronoentities = []
+    my_chrono_ID_counter = 1
+
+    ## parse out the doctime
+    doctime = parse_text.getDocTime(infiles[x] + ".dct")
+    ## parse out reference tokens
+    text, tokens, spans, tags, sents = parse_text.getWhitespaceTokens(infiles[x] + ext)
+    my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
+    ## mark all ref tokens if they are numeric or temporal
+    chroList = parse_text.markTemporal(my_refToks)
+    tempPhrases = parse_text.getTemporalPhrases(chroList, doctime)
+    chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter,
+                                                                                  chroList, (classifier, ml), feats,
+                                                                                  doctime)
+
+    print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+    filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[x], mode=output)
+
+
 ## This is the driver method to run all of Chrono.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -64,11 +87,13 @@ if __name__ == "__main__":
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
     parser.add_argument('-D', metavar='Dictionary', type=str, help='The path to dictionaries', required=False, default='./dictionary')
-    parser.add_argument('-O', metavar='Mode', type=str, help='Output mode. Options are ANN and SCATE, default is SCATE XML format.', required=False, default="SCATE")
+    parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False, default="SCATE", nargs="*")
+    parser.add_argument('-p', action='store_true', help='Run in parallel')
     
     args = parser.parse_args()
+
     ## Now we can access each argument as args.i, args.o, args.r
-    utils.initialize(in_mode=args.O)
+
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
@@ -76,97 +101,51 @@ if __name__ == "__main__":
     outdirs = []
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
-           
           indirs.append(os.path.join(root, name))
           infiles.append(os.path.join(root,name,name))
           outfiles.append(os.path.join(args.o,name,name))
           outdirs.append(os.path.join(args.o,name))
           if not os.path.exists(os.path.join(args.o,name)):
               os.makedirs(os.path.join(args.o,name))
-    
-    ## Get training data for ML methods by importing pre-made boolean matrix
-    ## Train ML methods on training data
-    if(args.m == "DT" and args.M is None):
-        ## Train the decision tree classifier and save in the classifier variable
-        #print("Got DT")
-        classifier, feats = DTree.build_dt_model(args.d, args.c)
-        with open('DT_model.pkl', 'wb') as mod:  
-            pickle.dump([classifier, feats], mod)
 
-    if(args.m == "RF" and args.M is None):
-        ## Train the decision tree classifier and save in the classifier variable
-        # print("Got RF")
-        classifier, feats = RandomForest.build_model(args.d, args.c)
-        with open('RF_model.pkl', 'wb') as mod:
-            pickle.dump([classifier, feats], mod)
-    
-    elif(args.m == "NN" and args.M is None):
-        #print("Got NN")
-        ## Train the neural network classifier and save in the classifier variable
-        classifier = ChronoKeras.build_model(args.d, args.c)
-        feats = utils.get_features(args.d)
-        classifier.save('NN_model.h5')
-            
-    elif(args.m == "SVM" and args.M is None):
-        #print("Got SVM")
-        ## Train the SVM classifier and save in the classifier variable
-        classifier, feats = SVMclass.build_model(args.d, args.c)
-        with open('SVM_model.pkl', 'wb') as mod:  
-            pickle.dump([classifier, feats], mod)
-            
-    elif(args.M is None):
-        #print("Got NB")
-        ## Train the naive bayes classifier and save in the classifier variable
-        classifier, feats, NB_input = NBclass.build_model(args.d, args.c)
-        classifier.show_most_informative_features(20)
-        with open('NB_model.pkl', 'wb') as mod:  
-            pickle.dump([classifier, feats], mod)
-                
-    elif(args.M is not None):
-        #print("use saved model")
-        if args.m == "NB" or args.m == "DT":
-            with open(args.M, 'rb') as mod:
-                print(args.M)
-                classifier, feats = pickle.load(mod)
-        elif args.m == "NN":
-            classifier = load_model(args.M)
-            feats = utils.get_features(args.d)
-    
-    ## Pass the ML classifier through to the parse SUTime entities method.
+    if args.p:
+        num_cores = multiprocessing.cpu_count()
+        Parallel(n_jobs=num_cores)(
+            delayed(parallel_run)(infiles, args.x, args.m, args.O, outfiles, x, args.D, args.M, args.d, args.c) for x in range(len(infiles)))
+    else:
+        initialize_chrono.initialize(args.D)
+        classifier, feats = initialize_chrono.setup_ML(args.m, args.M, args.d, args.c)
 
-    print("Parsing in {} mode".format(MODE))
-    ## Loop through each file and parse
-    for f in range(0,len(infiles)) :
-        print("Parsing "+ infiles[f] +" ...")
-        ## Init the ChronoEntity list
-        my_chronoentities = []
-        my_chrono_ID_counter = 1
+        ## Loop through each file and parse
+        for f in range(0,len(infiles)):
+            print("Parsing "+ infiles[f] +" ...")
+            ## Init the ChronoEntity list
+            my_chronoentities = []
+            my_chrono_ID_counter = 1
 
-        ## parse out the doctime
-        doctime = utils.getDocTime(infiles[f] + ".dct")
-        if(debug) : print(doctime)
+            ## parse out the doctime
+            doctime = parse_text.getDocTime(infiles[f] + ".dct")
+            if(debug): print(doctime)
 
-        ## parse out reference tokens
-        text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
-        #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
+            ## parse out reference tokens
+            text, tokens, spans, tags, sents = parse_text.getWhitespaceTokens(infiles[f] + args.x)
+            #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
+            my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
 
+            ## mark all ref tokens if they are numeric or temporal
+            chroList = parse_text.markTemporal(my_refToks)
 
+            if(debug) :
+                print("REFERENCE TOKENS:\n")
+                for tok in chroList : print(tok)
 
-        ## mark all ref tokens if they are numeric or temporal
-        chroList = utils.markTemporal(my_refToks)
+            tempPhrases = parse_text.getTemporalPhrases(chroList, doctime)
 
-        if(debug) :
-            print("REFERENCE TOKENS:\n")
-            for tok in chroList : print(tok)
+            if(debug):
+                for c in tempPhrases:
+                    print(c)
 
-        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+            chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
 
-        if(debug):
-            for c in tempPhrases:
-                print(c)
-
-        chrono_master_list, my_chrono_ID_counter = BuildSCATEEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
-
-        print("Number of Chrono Entities: " + str(len(chrono_master_list)))
-        utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f])
+            print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+            filesystem_utils.write_out(chrono_list=chrono_master_list, outfile=outfiles[f], mode=args.O)

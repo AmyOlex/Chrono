@@ -1,6 +1,6 @@
 import string
 
-import Chrono.utils
+import Chrono.ChronoUtils.parse_text
 from Chrono import chronoEntities as chrono
 from Chrono.config import DICTIONARY
 
@@ -68,11 +68,11 @@ def hasBeforeAfter(tpentity):
     if len(intersect) == 1:
         # test if the intersect list contains which days.
         if len(list(set(intersect) & set(b_words))) == 1:
-            start_idx, end_idx = Chrono.utils.calculateSpan(text_lower, list(set(intersect) & set(b_words))[0])
+            start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text_lower, list(set(intersect) & set(b_words))[0])
             return True, "Before", start_idx, end_idx
 
         if len(list(set(intersect) & set(a_words))) == 1:
-            start_idx, end_idx = Chrono.utils.calculateSpan(text_lower, list(set(intersect) & set(a_words))[0])
+            start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text_lower, list(set(intersect) & set(a_words))[0])
             return True, "After", start_idx, end_idx
 
         else:
