@@ -126,7 +126,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-       'dictionary': ['data/dictionary/*.txt'],
+       'dictionary': ['dictionary/*.txt'],
     },
     include_package_data=True,
 
