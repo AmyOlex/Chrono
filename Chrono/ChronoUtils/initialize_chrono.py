@@ -62,7 +62,6 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
 
 def initialize(in_dictionary="dictionary"):
     dict_path = pkg_resources.resource_filename('Chrono', in_dictionary+'/')
-    print(dict_path)
     # Read in the word lists for each entity
     path = Path(dict_path)
     if Path(dict_path).exists():
@@ -75,4 +74,4 @@ def initialize(in_dictionary="dictionary"):
                             DICTIONARY[key] = []
                         DICTIONARY[key].append(word.rstrip('\n'))
     else:
-        raise ValueError('Dictionary not found: ' + in_dictionary)
+        raise ValueError('Dictionary not found: ' + dict_path)
