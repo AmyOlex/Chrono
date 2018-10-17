@@ -1,6 +1,0 @@
-before
-ago
-pre
-previously
-earlier
-until

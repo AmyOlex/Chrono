@@ -1,8 +1,0 @@
-summer
-winter
-fall
-spring
-summers
-falls
-winters
-springs
