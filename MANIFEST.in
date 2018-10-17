@@ -1,2 +1,1 @@
 include dictionary/*.txt
-include data/dictionary/*.txt
