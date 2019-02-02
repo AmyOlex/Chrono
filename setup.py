@@ -61,7 +61,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='3.0.0',
+    version='3.0.1',
 
     description='Chrono is a hybrid rule-based and machine learning system that identifies temporal expressions in text and normalizes them into the Semantically Compositional Annotations for Temporal Expressions (SCATE) schema developed by Bethard and Parker. Chrono has emerged as the top performing system for SemEval 2018 Task 6: Parsing Time Normalizations.',
     long_description=long_description,

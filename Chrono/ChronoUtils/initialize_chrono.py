@@ -61,10 +61,10 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
 
 
 def initialize(in_dictionary="dictionary"):
-    dict_path = pkg_resources.resource_filename('data', '/')
+    dict_path = pkg_resources.resource_filename('dictionary', 'dictionary/')
     # Read in the word lists for each entity
-    path = Path(dict_path).parent.joinpath(Path(in_dictionary))
-    if Path(dict_path).exists():
+    path = Path(dict_path)
+    if path.exists():
         for root, dirs, files in path_walk(path, topdown=True):
             for file in files:
                 with file.open() as f:
