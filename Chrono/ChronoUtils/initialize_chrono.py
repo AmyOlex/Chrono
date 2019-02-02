@@ -64,16 +64,17 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
 def initialize(in_dictionary="dictionary"):
     # dict_path = pkg_resources.resource_filename('dictionary', 'dictionary/')
     # Read in the word lists for each entity
-    dict_path = os.path.dirname(os.path.abspath(__file__))
-    path = Path(dict_path).parent.parent.joinpath(in_dictionary)
+    dict_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),in_dictionary)
+    path = Path(dict_path)
     if path.exists():
         for root, dirs, files in path_walk(path, topdown=True):
             for file in files:
-                with file.open() as f:
-                    key = file.stem
-                    for word in f:
-                        if key not in DICTIONARY:
-                            DICTIONARY[key] = []
-                        DICTIONARY[key].append(word.rstrip('\n'))
+                with open(file) as f:
+                    if file.suffix == '.txt':
+                        key = file.stem
+                        for word in f:
+                            if key not in DICTIONARY:
+                                DICTIONARY[key] = []
+                            DICTIONARY[key].append(word.rstrip('\n'))
     else:
         raise ValueError('Dictionary not found: ' + dict_path)
