@@ -111,7 +111,8 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['nltk', 'python-dateutil', 'numpy<=1.14.5,>=1.13.3', 'scikit-learn', 'keras', 'tensorflow', 'scipy'],
+    install_requires=['nltk', 'python-dateutil', 'numpy<=1.14.5,>=1.13.3', 'scikit-learn', 'keras', 'tensorflow',
+                      'scipy', 'joblib'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
