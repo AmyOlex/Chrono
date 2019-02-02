@@ -1,6 +1,7 @@
 import pickle
 from pathlib import Path
-import pkg_resources
+# import pkg_resources
+import os
 
 from Chrono.chronoML import DecisionTree as DTree, RF_classifier as RandomForest, ChronoKeras, \
     SVM_classifier as SVMclass, NB_nltk_classifier as NBclass
@@ -61,9 +62,10 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
 
 
 def initialize(in_dictionary="dictionary"):
-    dict_path = pkg_resources.resource_filename('dictionary', 'dictionary/')
+    # dict_path = pkg_resources.resource_filename('dictionary', 'dictionary/')
     # Read in the word lists for each entity
-    path = Path(dict_path)
+    dict_path = os.path.dirname(os.path.abspath(__file__))
+    path = Path(dict_path).parent.parent.joinpath(in_dictionary)
     if path.exists():
         for root, dirs, files in path_walk(path, topdown=True):
             for file in files:
