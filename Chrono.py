@@ -86,7 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
-    parser.add_argument('-D', metavar='Dictionary', type=str, help='The path to dictionaries', required=False, default='./dictionary')
+    parser.add_argument('-D', metavar='Dictionary', type=str, help='The path to dictionaries', required=False, default='dictionary')
     parser.add_argument('-O', metavar='Mode', type=str, help='Output mode', required=False, default="SCATE", nargs="*")
     parser.add_argument('-p', action='store_true', help='Run in parallel')
     

@@ -1,6 +1,7 @@
 import pickle
 from pathlib import Path
-import pkg_resources
+# import pkg_resources
+import os
 
 from Chrono.chronoML import DecisionTree as DTree, RF_classifier as RandomForest, ChronoKeras, \
     SVM_classifier as SVMclass, NB_nltk_classifier as NBclass
@@ -61,17 +62,19 @@ def setup_ML(ml_input, ml_model, train_data, train_labels):
 
 
 def initialize(in_dictionary="dictionary"):
-    dict_path = pkg_resources.resource_filename('data', '/')
+    # dict_path = pkg_resources.resource_filename('dictionary', 'dictionary/')
     # Read in the word lists for each entity
-    path = Path(dict_path).parent.joinpath(Path(in_dictionary))
-    if Path(dict_path).exists():
+    dict_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),in_dictionary)
+    path = Path(dict_path)
+    if path.exists():
         for root, dirs, files in path_walk(path, topdown=True):
             for file in files:
-                with file.open() as f:
-                    key = file.stem
-                    for word in f:
-                        if key not in DICTIONARY:
-                            DICTIONARY[key] = []
-                        DICTIONARY[key].append(word.rstrip('\n'))
+                with open(file) as f:
+                    if file.suffix == '.txt':
+                        key = file.stem
+                        for word in f:
+                            if key not in DICTIONARY:
+                                DICTIONARY[key] = []
+                            DICTIONARY[key].append(word.rstrip('\n'))
     else:
         raise ValueError('Dictionary not found: ' + dict_path)
