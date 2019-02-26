@@ -44,7 +44,7 @@ from os import path
 
 class Install(_install):
     def run(self):
-        _install.do_egg_install(self)
+        _install.run(self)
         import nltk
         nltk.download("punkt")
         nltk.download("averaged_perceptron_tagger")
@@ -143,4 +143,8 @@ setup(
     #        'sample=sample:main',
     #    ],
     #},
+    # Run this method after downloading and installing everything
+    cmdclass={
+        'install': Install
+    },
 )
