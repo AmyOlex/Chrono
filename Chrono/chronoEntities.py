@@ -122,6 +122,16 @@ class ChronoEntity:
     def get_parent_type(self):
         return self.parent_type
 
+    ## Sets the entity's text
+    # @param text The text
+    def set_text(self, text):
+        self.text = text
+
+    ## Gets the entity's text
+    # @param text The text
+    def get_text(self, text):
+        return self.text
+
     ## Prints the XML representation of the entity
     # Subclasses need to close the properties and entities tags
     def print_SCATE(self):
@@ -131,7 +141,7 @@ class ChronoEntity:
                                                   self.end_span, self.type, self.parent_type))
 
     def print_ANN(self):
-        return(str(self.entityID) + "\t" + str(self.get_type()) + "\t" + str(self.get_start_span()) + "\t" +
+        return("T" + str(self.entityID)[:-6] + "\t" + str(self.get_type()) + " " + str(self.get_start_span()) + " " +
                str(self.get_end_span()) + "\t" + self.text + "\n")
 
 
