@@ -24,7 +24,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = ref_StartSpan + endSpan
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
-                                                     end_span=abs_EndSpan, value=int(text))
+                                                     end_span=abs_EndSpan, value=int(text), text=s)
         chrono_id = chrono_id + 1
         flags["fourdigityear"] = True
 
@@ -40,7 +40,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
                                                                      start_span=abs_StartSpanMonth,
                                                                      end_span=abs_EndSpanMonth,
-                                                                     month_type=calendar.month_name[m])
+                                                                     month_type=calendar.month_name[m], text=s)
                 chrono_id = chrono_id + 1
                 chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
 
@@ -53,7 +53,8 @@ def buildYear(s, chrono_id, chrono_list, flags):
                     if (int(textDay) <= 31):
                         chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity",
                                                                           start_span=abs_StartSpanDay,
-                                                                          end_span=abs_EndSpanDay, value=int(textDay))
+                                                                          end_span=abs_EndSpanDay, value=int(textDay),
+                                                                          text=s)
                         chrono_id = chrono_id + 1
                         chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
 
@@ -68,7 +69,8 @@ def buildYear(s, chrono_id, chrono_list, flags):
                             if (int(textHour) <= 24):
                                 chrono_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity",
                                                                                   start_span=abs_StartSpanHour,
-                                                                                  end_span=abs_EndSpanHour, value=int(textHour))
+                                                                                  end_span=abs_EndSpanHour, value=int(textHour),
+                                                                                  text=s)
                                 chrono_id = chrono_id + 1
                                 chrono_day_entity.set_sub_interval(chrono_hour_entity.get_id())
 
@@ -83,7 +85,8 @@ def buildYear(s, chrono_id, chrono_list, flags):
                                         chrono_minute_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity",
                                                                                                start_span=abs_StartSpanMinute,
                                                                                                end_span=abs_EndSpanMinute,
-                                                                                               value=int(textMinute))
+                                                                                               value=int(textMinute),
+                                                                                               text=s)
                                         chrono_id = chrono_id + 1
                                         chrono_hour_entity.set_sub_interval(chrono_minute_entity.get_id())
 
@@ -97,7 +100,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
                                             if (int(textSecond) <= 60):
                                                 chrono_second_entity = chrono.ChronoSecondOfMinuteEntity(
                                                     entityID=str(chrono_id) + "entity", start_span=abs_StartSpanSecond,
-                                                    end_span=abs_EndSpanSecond, value=int(textSecond))
+                                                    end_span=abs_EndSpanSecond, value=int(textSecond), text=s)
                                                 chrono_list.append(chrono_second_entity)
                                                 chrono_id = chrono_id + 1
                                                 chrono_minute_entity.set_sub_interval(chrono_second_entity.get_id())
@@ -197,7 +200,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         chrono_2_digit_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity",
                                                                        start_span=abs_StartSpan, end_span=abs_EndSpan,
-                                                                       value=text)
+                                                                       value=text, text=s)
         chrono_id = chrono_id + 1
 
         # Check for Month in same element
@@ -212,7 +215,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                 chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
                                                                      start_span=abs_StartSpanMonth,
                                                                      end_span=abs_EndSpanMonth,
-                                                                     month_type=calendar.month_name[m])
+                                                                     month_type=calendar.month_name[m], text=s)
                 chrono_id = chrono_id + 1
                 chrono_2_digit_year_entity.set_sub_interval(chrono_month_entity.get_id())
 
@@ -225,7 +228,8 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                     if (int(textDay) <= 31):
                         chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity",
                                                                           start_span=abs_StartSpanDay,
-                                                                          end_span=abs_EndSpanDay, value=int(textDay))
+                                                                          end_span=abs_EndSpanDay, value=int(textDay),
+                                                                          text=s)
                         chrono_id = chrono_id + 1
                         chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
 
@@ -239,7 +243,8 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                             if (int(textHour) <= 24):
                                 chrono_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity",
                                                                                   start_span=abs_StartSpanHour,
-                                                                                  end_span=abs_EndSpanHour, value=int(textHour))
+                                                                                  end_span=abs_EndSpanHour, value=int(textHour),
+                                                                                  text=s)
                                 chrono_id = chrono_id + 1
                                 chrono_day_entity.set_sub_interval(chrono_hour_entity.get_id())
 
@@ -254,7 +259,8 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                                     chrono_minute_entity = chrono.ChronoMinuteOfHourEntity(entityID=str(chrono_id) + "entity",
                                                                                            start_span=abs_StartSpanMinute,
                                                                                            end_span=abs_EndSpanMinute,
-                                                                                           value=int(textMinute))
+                                                                                           value=int(textMinute),
+                                                                                           text=s)
                                     chrono_id = chrono_id + 1
                                     chrono_hour_entity.set_sub_interval(chrono_minute_entity.get_id())
 
@@ -268,7 +274,7 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
                                         if (int(textSecond) <= 60):
                                             chrono_second_entity = chrono.ChronoSecondOfMinuteEntity(
                                                 entityID=str(chrono_id) + "entity", start_span=abs_StartSpanSecond,
-                                                end_span=abs_EndSpanSecond, value=int(textSecond))
+                                                end_span=abs_EndSpanSecond, value=int(textSecond), text=s)
                                             chrono_list.append(chrono_second_entity)
                                             chrono_id = chrono_id + 1
                                             chrono_minute_entity.set_sub_interval(chrono_second_entity.get_id())
@@ -347,7 +353,8 @@ def buildMonthOfYear(s, chrono_id, chrono_list, flags):
             chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
                                                            end_span=abs_EndSpan,
                                                            month_type=calendar.month_name[
-                                                               Chrono.ChronoUtils.parse_text.getMonthNumber(text)])
+                                                               Chrono.ChronoUtils.parse_text.getMonthNumber(text)],
+                                                           text=s)
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
 
