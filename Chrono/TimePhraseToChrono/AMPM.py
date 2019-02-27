@@ -94,4 +94,4 @@ def hasAMPM(tpentity):
                 match = re.search('PM|P\.M\.|pm|p\.m\.', text).group(0)
                 start_idx, end_idx = calculateSpan(text_norm, match)
                 return True, "PM", start_idx, end_idx, text
-    return False, None, None, None
+    return False, None, None, None, None
