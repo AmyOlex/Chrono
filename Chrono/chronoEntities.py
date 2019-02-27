@@ -142,7 +142,7 @@ class ChronoEntity:
 
     def print_ANN(self):
         return("T" + str(self.entityID)[:-6] + "\t" + str(self.get_type()) + " " + str(self.get_start_span()) + " " +
-               str(self.get_end_span()) + "\t" + self.text + "\n")
+               str(self.get_end_span()) + "\t" + str(self.text) + "\n")
 
 
 ## Super class for Intervals which are defined as years
