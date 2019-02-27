@@ -48,8 +48,9 @@ def build_model(data_file, class_file):
         data_list = [row for row in reader]
     y = []
     with open(class_file) as f:
-        for line in f.readlines():
-            y.append(int(line.strip()))
+        y = [line.rstrip() for line in f]
+        # for line in f.readlines():
+        #     y.append(int(line.strip()))
     
     X = []
     for row in data_list:
