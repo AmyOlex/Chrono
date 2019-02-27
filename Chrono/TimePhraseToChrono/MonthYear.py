@@ -24,7 +24,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = ref_StartSpan + endSpan
         chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
-                                                     end_span=abs_EndSpan, value=int(text), text=s.getText())
+                                                     end_span=abs_EndSpan, value=int(text), text=s.getText()[ref_StartSpan:ref_EndSpan])
         chrono_id = chrono_id + 1
         flags["fourdigityear"] = True
 
