@@ -147,8 +147,8 @@ class ChronoEntity:
 
 ## Super class for Intervals which are defined as years
 class ChronoIntervalEntity(ChronoEntity):
-    def __init__(self, entityID, start_span, end_span, type):
-        super().__init__(entityID, start_span, end_span, type, "Interval")
+    def __init__(self, entityID, start_span, end_span, type, text=""):
+        super().__init__(entityID, start_span, end_span, type, "Interval", text)
 
 
 ## A year interval
@@ -157,8 +157,8 @@ class ChronoIntervalEntity(ChronoEntity):
 # @param modifier Any modifiers, sometimes "approx", defaults to None
 class ChronoYearEntity(ChronoIntervalEntity):
     def __init__(self, entityID, start_span, end_span, value, sub_interval=None,
-                 modifier=None):
-        super().__init__(entityID, start_span, end_span, "Year")
+                 modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Year", text)
         self.value = value
         self.sub_interval = sub_interval
         self.modifier = modifier
@@ -193,8 +193,8 @@ class ChronoYearEntity(ChronoIntervalEntity):
 # @param number Required
 class ChronoPeriodEntity(ChronoEntity):
     def __init__(self, entityID, start_span, end_span, period_type, number,
-                 modifier=None):
-        super().__init__(entityID, start_span, end_span, "Period", "Duration")
+                 modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Period", "Duration", text)
         self.period_type = period_type
         self.number = number
         self.modifier = modifier
@@ -226,16 +226,16 @@ class ChronoPeriodEntity(ChronoEntity):
 
 ## Super class for all Repeating-intervals
 class ChronoRepeatingIntervalEntity(ChronoEntity):
-    def __init__(self, entityID, start_span, end_span, repeatingType):
+    def __init__(self, entityID, start_span, end_span, repeatingType, text=""):
         super().__init__(entityID, start_span, end_span, repeatingType,
-                         "Repeating-Interval")
+                         "Repeating-Interval", text)
 
 
 ## @param month_type Required {January, Februray,...}
 class chronoMonthOfYearEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, month_type, sub_interval=None,
-                 number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Month-Of-Year")
+                 number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Month-Of-Year", text)
         self.month_type = month_type
         self.sub_interval = sub_interval
         self.number = number
@@ -278,8 +278,8 @@ class chronoMonthOfYearEntity(ChronoRepeatingIntervalEntity):
 ## @param season_type Required {Summer, Winter, Fall, Spring}
 class ChronoSeasonOfYearEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, season_type,
-                 number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Season-Of-Year")
+                 number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Season-Of-Year", text)
         self.season_type = season_type
         self.number = number
         self.modifier = modifier
@@ -315,8 +315,8 @@ class ChronoSeasonOfYearEntity(ChronoRepeatingIntervalEntity):
 # @param value Required {1-52}
 class ChronoWeekOfYearEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, value, sub_interval=None,
-                 number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Week-Of-Year")
+                 number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Week-Of-Year", text)
         self.value = value
         self.sub_interval = sub_interval
         self.number = number
@@ -352,7 +352,7 @@ class ChronoWeekOfYearEntity(ChronoRepeatingIntervalEntity):
     def print_SCATE(self):
         return (super().print_SCATE() + "\t<Value>{}</Value>\n\t\t\t<Sub-Interval>{}</Sub-Interval>\n"
                                         "\t\t\t<Number>{}</Number>\n\t\t\t<Modifier>{}</Modifier>\n"
-                                        "\t\t</properties>\n\t</entity>\n".format(self.sub_interval or '',
+                                        "\t\t</properties>\n\t</entity>\n".format(self.value, self.sub_interval or '',
                                                                                   self.number or '',
                                                                                   self.modifier or ''))
 
@@ -360,8 +360,8 @@ class ChronoWeekOfYearEntity(ChronoRepeatingIntervalEntity):
 ## @param value Required {1-31}
 class ChronoDayOfMonthEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, value, sub_interval=None,
-                 number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Day-Of-Month")
+                 number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Day-Of-Month", text)
         self.value = value
         self.sub_interval = sub_interval
         self.number = number
@@ -404,8 +404,8 @@ class ChronoDayOfMonthEntity(ChronoRepeatingIntervalEntity):
 ## @param day_type Required {"Monday" - "Sunday"}
 class ChronoDayOfWeekEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, day_type, sub_interval=None,
-                 number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Day-Of-Week")
+                 number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Day-Of-Week", text)
         self.day_type = day_type
         self.sub_interval = sub_interval
         self.number = number
@@ -450,8 +450,8 @@ class ChronoDayOfWeekEntity(ChronoRepeatingIntervalEntity):
 # @param time_zone Optional, refers to a ChronoTimeZoneEntity
 class ChronoHourOfDayEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, value, ampm=None, time_zone=None,
-                 sub_interval=None, number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Hour-Of-Day")
+                 sub_interval=None, number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Hour-Of-Day", text)
         self.value = value
         self.ampm = ampm
         self.time_zone = time_zone
@@ -509,8 +509,8 @@ class ChronoHourOfDayEntity(ChronoRepeatingIntervalEntity):
 
 ## @param value Required {0-59}
 class ChronoMinuteOfHourEntity(ChronoRepeatingIntervalEntity):
-    def __init__(self, entityID, start_span, end_span, value, sub_interval=None, number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Minute-Of-Hour")
+    def __init__(self, entityID, start_span, end_span, value, sub_interval=None, number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Minute-Of-Hour", text)
         self.value = value
         self.sub_interval = sub_interval
         self.number = number
@@ -552,8 +552,8 @@ class ChronoMinuteOfHourEntity(ChronoRepeatingIntervalEntity):
 
 ## @param value Required {0-59}
 class ChronoSecondOfMinuteEntity(ChronoRepeatingIntervalEntity):
-    def __init__(self, entityID, start_span, end_span, value, number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Second-Of-Minute")
+    def __init__(self, entityID, start_span, end_span, value, number=None, modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Second-Of-Minute", text)
         self.value = value
         self.number = number
         self.modifier = modifier
@@ -587,8 +587,8 @@ class ChronoSecondOfMinuteEntity(ChronoRepeatingIntervalEntity):
 # @param calendar_type Required {Day, Month, Week, etc}
 class ChronoCalendarIntervalEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, calendar_type, number=None,
-                 modifier=None):
-        super().__init__(entityID, start_span, end_span, "Calendar-Interval")
+                 modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Calendar-Interval", text)
         self.calendar_type = calendar_type
         self.number = number
         self.modifier = modifier
@@ -615,14 +615,14 @@ class ChronoCalendarIntervalEntity(ChronoRepeatingIntervalEntity):
     def print_SCATE(self):
         return (super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
                                         "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
-            self.calendar_type, self.number or '', self.modifier or ''))
+                                        self.calendar_type, self.number or '', self.modifier or ''))
 
 
 ## @param part_of_day_type Required {Night, Morning, etc}
 class ChronoPartOfDayEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, part_of_day_type, number=None,
-                 modifier=None):
-        super().__init__(entityID, start_span, end_span, "Part-Of-Day")
+                 modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Part-Of-Day", text)
         self.part_of_day_type = part_of_day_type
         self.number = number
         self.modifier = modifier
@@ -649,14 +649,14 @@ class ChronoPartOfDayEntity(ChronoRepeatingIntervalEntity):
     def print_SCATE(self):
         return (super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
                                         "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
-            self.part_of_day_type, self.number or '', self.modifier or ''))
+                                        self.part_of_day_type, self.number or '', self.modifier or ''))
 
 
 ## @param part_of_week_type Required {Weekend, etc}
 class ChronoPartOfWeekEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, part_of_week_type, number=None,
-                 modifier=None):
-        super().__init__(entityID, start_span, end_span, "Part-Of-Week")
+                 modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Part-Of-Week", text)
         self.part_of_week_type = part_of_week_type
         self.number = number
         self.modifier = modifier
@@ -683,14 +683,14 @@ class ChronoPartOfWeekEntity(ChronoRepeatingIntervalEntity):
     def print_SCATE(self):
         return (super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
                                         "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
-            self.part_of_week_type, self.number or '', self.modifier or ''))
+                                        self.part_of_week_type, self.number or '', self.modifier or ''))
 
 
 ## @param ampm_type Required {AM, PM}
 class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
     def __init__(self, entityID, start_span, end_span, ampm_type, number=None,
-                 modifier=None):
-        super().__init__(entityID, start_span, end_span, "AMPM-Of-Day")
+                 modifier=None, text=""):
+        super().__init__(entityID, start_span, end_span, "AMPM-Of-Day", text)
         self.ampm_type = ampm_type
         self.number = number
         self.modifier = modifier
@@ -717,13 +717,13 @@ class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
     def print_SCATE(self):
         return (super().print_SCATE() + "\t<Type>{}</Type>\n\t\t\t<Number>{}</Number>\n"
                                         "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t</entity>\n".format(
-            self.ampm_type, self.number or '', self.modifier or ''))
+                                        self.ampm_type, self.number or '', self.modifier or ''))
 
 
 ## No special parameters, just identifies the location of a time zone in text
 class ChronoTimeZoneEntity(ChronoRepeatingIntervalEntity):
-    def __init__(self, entityID, start_span, end_span):
-        super().__init__(entityID, start_span, end_span, "Time-Zone")
+    def __init__(self, entityID, start_span, end_span, text=""):
+        super().__init__(entityID, start_span, end_span, "Time-Zone", text)
 
     def print_SCATE(self):
         return (super().print_SCATE() + "</properties>\n\t</entity>\n")
@@ -731,13 +731,13 @@ class ChronoTimeZoneEntity(ChronoRepeatingIntervalEntity):
 
 ## Super class for all Operators
 class ChronoOperator(ChronoEntity):
-    def __init__(self, entityID, start_span, end_span, operator_type):
-        super().__init__(entityID, start_span, end_span, operator_type, "Operator")
+    def __init__(self, entityID, start_span, end_span, operator_type, text=""):
+        super().__init__(entityID, start_span, end_span, operator_type, "Operator", text)
 
 
 class ChronoSumOperator(ChronoOperator):
-    def __init__(self, entityID, start_span, end_span, period_1, period_2):
-        super().__init__(entityID, start_span, end_span, "Sum")
+    def __init__(self, entityID, start_span, end_span, period_1, period_2, text=""):
+        super().__init__(entityID, start_span, end_span, "Sum", text)
         self.period_1 = period_1
         self.period_2 = period_2
 
@@ -760,8 +760,8 @@ class ChronoSumOperator(ChronoOperator):
 
 
 class ChronoDifferenceOperator(ChronoOperator):
-    def __init__(self, entityID, start_span, end_span, period_1, period_2):
-        super().__init__(entityID, start_span, end_span, "Difference")
+    def __init__(self, entityID, start_span, end_span, period_1, period_2, text=""):
+        super().__init__(entityID, start_span, end_span, "Difference", text)
         self.period_1 = period_1
         self.period_2 = period_2
 
@@ -785,8 +785,8 @@ class ChronoDifferenceOperator(ChronoOperator):
 
 class ChronoUnionOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, repeating_intervals_1,
-                 repeating_intervals_2):
-        super().__init__(entityID, start_span, end_span, "Union")
+                 repeating_intervals_2, text=""):
+        super().__init__(entityID, start_span, end_span, "Union", text)
         self.repeating_intervals_1 = repeating_intervals_1
         self.repeating_intervals_2 = repeating_intervals_2
 
@@ -812,8 +812,8 @@ class ChronoUnionOperator(ChronoOperator):
 
 class ChronoIntersectionOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, repeating_intervals_1,
-                 repeating_intervals_2):
-        super().__init__(entityID, start_span, end_span, "Intersection")
+                 repeating_intervals_2, text=""):
+        super().__init__(entityID, start_span, end_span, "Intersection", text)
         self.repeating_intervals_1 = repeating_intervals_1
         self.repeating_intervals_2 = repeating_intervals_2
 
@@ -839,8 +839,8 @@ class ChronoIntersectionOperator(ChronoOperator):
 
 ## No examples, currently a placeholder
 class ChronoEveryNthOperator(ChronoOperator):
-    def __init__(self, entityID, start_span, end_span):
-        super().__init__(entityID, start_span, end_span, "Every-Nth")
+    def __init__(self, entityID, start_span, end_span, text=""):
+        super().__init__(entityID, start_span, end_span, "Every-Nth", text)
 
 
 ## Create a last(Period) or last(Repeating-Interval) operator,
@@ -853,8 +853,8 @@ class ChronoEveryNthOperator(ChronoOperator):
 class ChronoLastOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, semantics="Interval-Not-Included",
                  interval_type="DocTime", interval=None, period=None,
-                 repeating_interval=None):
-        super().__init__(entityID, start_span, end_span, "Last")
+                 repeating_interval=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Last", text)
         self.semantics = semantics
         self.interval_type = interval_type
         self.interval = interval
@@ -914,8 +914,8 @@ class ChronoLastOperator(ChronoOperator):
 class ChronoNextOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
                  interval=None, period=None, repeating_interval=None,
-                 semantics="Interval-Not-Included"):
-        super().__init__(entityID, start_span, end_span, "Next")
+                 semantics="Interval-Not-Included", text=""):
+        super().__init__(entityID, start_span, end_span, "Next", text)
         self.interval_type = interval_type
         self.interval = interval
         self.period = period
@@ -973,8 +973,8 @@ class ChronoNextOperator(ChronoOperator):
 # @param repeating_interval Defaults to None
 class ChronoThisOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
-                 interval=None, period=None, repeating_interval=None):
-        super().__init__(entityID, start_span, end_span, "This")
+                 interval=None, period=None, repeating_interval=None, text=""):
+        super().__init__(entityID, start_span, end_span, "This", text)
         self.interval_type = interval_type
         self.interval = interval
         self.period = period
@@ -1025,8 +1025,8 @@ class ChronoThisOperator(ChronoOperator):
 class ChronoBeforeOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
                  interval=None, period=None, repeating_interval=None,
-                 semantics="Interval-Not-Included"):
-        super().__init__(entityID, start_span, end_span, "Before")
+                 semantics="Interval-Not-Included", text=""):
+        super().__init__(entityID, start_span, end_span, "Before", text)
         self.interval_type = interval_type
         self.interval = interval
         self.period = period
@@ -1086,8 +1086,8 @@ class ChronoBeforeOperator(ChronoOperator):
 class ChronoAfterOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, interval_type="DocTime",
                  interval=None, period=None, repeating_interval=None,
-                 semantics="Interval-Not-Included"):
-        super().__init__(entityID, start_span, end_span, "After")
+                 semantics="Interval-Not-Included", text=""):
+        super().__init__(entityID, start_span, end_span, "After", text)
         self.interval_type = interval_type
         self.interval = interval
         self.period = period
@@ -1147,8 +1147,8 @@ class ChronoAfterOperator(ChronoOperator):
 class ChronoBetweenOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, start_interval_type,
                  end_interval_type, start_interval=None, end_interval=None,
-                 start_included="Not-Included", end_included="Not-Included"):
-        super().__init__(entityID, start_span, end_span, "Between")
+                 start_included="Not-Included", end_included="Not-Included", text=""):
+        super().__init__(entityID, start_span, end_span, "Between", text)
         self.start_interval_type = start_interval_type
         self.start_interval = start_interval
         self.end_interval_type = end_interval_type
@@ -1215,8 +1215,8 @@ class ChronoBetweenOperator(ChronoOperator):
 # @param repeating_interval The repeating interval to link to
 class ChronoNthOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, value=None, interval=None, interval_type="DocTime",
-                 repeating_interval=None, period=None):
-        super().__init__(entityID, start_span, end_span, "NthFromStart")
+                 repeating_interval=None, period=None, text=""):
+        super().__init__(entityID, start_span, end_span, "NthFromStart", text)
         self.value = value
         self.interval_type = interval_type
         self.interval = interval
@@ -1270,8 +1270,8 @@ class ChronoNthOperator(ChronoOperator):
 # @param interval Defaults to None
 class ChronoTwoDigitYearOperator(ChronoOperator):
     def __init__(self, entityID, start_span, end_span, value, sub_interval=None,
-                 interval_type="DocTime", interval=None):
-        super().__init__(entityID, start_span, end_span, "Two-Digit-Year")
+                 interval_type="DocTime", interval=None, text=""):
+        super().__init__(entityID, start_span, end_span, "Two-Digit-Year", text)
         self.interval_type = interval_type
         self.interval = interval
         self.value = value
@@ -1312,13 +1312,13 @@ class ChronoTwoDigitYearOperator(ChronoOperator):
 
 ## Super class for all Other entities
 class ChronoOtherEntity(ChronoEntity):
-    def __init__(self, entityID, start_span, end_span, otherType):
-        super().__init__(entityID, start_span, end_span, otherType, "Other")
+    def __init__(self, entityID, start_span, end_span, otherType, text=""):
+        super().__init__(entityID, start_span, end_span, otherType, "Other", text)
 
 
 class ChronoNumber(ChronoOtherEntity):
-    def __init__(self, entityID, start_span, end_span, value):
-        super().__init__(entityID, start_span, end_span, "Number")
+    def __init__(self, entityID, start_span, end_span, value, text=""):
+        super().__init__(entityID, start_span, end_span, "Number", text)
         self.value = value
 
     def set_value(self, value):
@@ -1334,8 +1334,8 @@ class ChronoNumber(ChronoOtherEntity):
 
 
 class ChronoModifier(ChronoOtherEntity):
-    def __init__(self, entityID, start_span, end_span, modifier):
-        super().__init__(entityID, start_span, end_span, "Modifier")
+    def __init__(self, entityID, start_span, end_span, modifier, text=""):
+        super().__init__(entityID, start_span, end_span, "Modifier", text)
         self.modifier = modifier
 
     def set_modifier(self, modifier):
@@ -1351,8 +1351,8 @@ class ChronoModifier(ChronoOtherEntity):
 
 
 class ChronoEvent(ChronoOtherEntity):
-    def __init__(self, entityID, start_span, end_span):
-        super().__init__(entityID, start_span, end_span, "Event")
+    def __init__(self, entityID, start_span, end_span, text=""):
+        super().__init__(entityID, start_span, end_span, "Event", text)
 
     ## Prints the xml leaving empty variables blank
     def print_SCATE(self):
