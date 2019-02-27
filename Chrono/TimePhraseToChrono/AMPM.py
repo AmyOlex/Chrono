@@ -23,14 +23,15 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
     # else:
     #     my_tz_entity = None
 
-    boo, val, idxstart, idxend = hasAMPM(s)
+    boo, val, idxstart, idxend, text = hasAMPM(s)
     if boo:
         if val == "PM":
             am_flag = False
 
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
-        my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, ampm_type=val)
+        my_AMPM_entity = chrono.ChronoAMPMOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                      end_span=abs_Espan, ampm_type=val, text=text)
         chrono_id = chrono_id + 1
         chrono_list.append(my_AMPM_entity)
 
@@ -45,7 +46,9 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
                 abs_Sspan = ref_Sspan + m.span(0)[0]
                 abs_Espan = ref_Sspan + m.span(0)[1]
                 #print("Adding Hour in AMPM")
-                my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=hour_val, ampm=my_AMPM_entity.get_id())
+                my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                              end_span=abs_Espan, value=hour_val,
+                                                              ampm=my_AMPM_entity.get_id(), text=hour_val)
                 chrono_id = chrono_id + 1
                 chrono_list.append(my_hour_entity)
 
@@ -56,7 +59,11 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
                 if texNumVal is not None:
                     #create the hour entity
                     if not flags['hour']:
-                        my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal, ampm=my_AMPM_entity.get_id())
+                        my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity",
+                                                                      start_span=ref_Sspan,
+                                                                      end_span=ref_Sspan + (idxstart - 1),
+                                                                      value=texNumVal, ampm=my_AMPM_entity.get_id(),
+                                                                      text=substr)
                         chrono_id = chrono_id + 1
                         chrono_list.append(my_hour_entity)
 
@@ -82,9 +89,9 @@ def hasAMPM(tpentity):
             if (re.search('AM|A\.M\.|am|a\.m\.', text)):
                 match = re.search('AM|A\.M\.|am|a\.m\.', text).group(0)
                 start_idx, end_idx = calculateSpan(text_norm, match)
-                return True, "AM", start_idx, end_idx
+                return True, "AM", start_idx, end_idx, text
             elif (re.search('PM|P\.M\.|pm|p\.m\.', text)):
                 match = re.search('PM|P\.M\.|pm|p\.m\.', text).group(0)
                 start_idx, end_idx = calculateSpan(text_norm, match)
-                return True, "PM", start_idx, end_idx
+                return True, "PM", start_idx, end_idx, text
     return False, None, None, None
