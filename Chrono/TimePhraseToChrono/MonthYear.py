@@ -100,7 +100,7 @@ def buildYear(s, chrono_id, chrono_list, flags):
                                             if (int(textSecond) <= 60):
                                                 chrono_second_entity = chrono.ChronoSecondOfMinuteEntity(
                                                     entityID=str(chrono_id) + "entity", start_span=abs_StartSpanSecond,
-                                                    end_span=abs_EndSpanSecond, value=int(textSecond), text=textSecondt)
+                                                    end_span=abs_EndSpanSecond, value=int(textSecond), text=textSecond)
                                                 chrono_list.append(chrono_second_entity)
                                                 chrono_id = chrono_id + 1
                                                 chrono_minute_entity.set_sub_interval(chrono_second_entity.get_id())
