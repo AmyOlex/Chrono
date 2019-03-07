@@ -13,7 +13,7 @@ from Chrono.config import DICTIONARY
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 
 def buildBeforeAfter(s, chrono_id, chrono_list):
-    boo, val, startSpan, endSpan = hasBeforeAfter(s)
+    boo, val, startSpan, endSpan, batext = hasBeforeAfter(s)
 
     ## find the word "after" or "later" as a single token
     if boo:
@@ -24,7 +24,7 @@ def buildBeforeAfter(s, chrono_id, chrono_list):
         if val == "After":
             chrono_after_entity = chrono.ChronoAfterOperator(entityID=str(chrono_id) + "entity",
                                                              start_span=abs_StartSpan, end_span=abs_EndSpan,
-                                                             interval_type="Link")
+                                                             interval_type="Link", text=batext)
             chrono_id = chrono_id + 1
             chrono_list.append(chrono_after_entity)
 
@@ -32,7 +32,7 @@ def buildBeforeAfter(s, chrono_id, chrono_list):
         elif val == "Before":
             chrono_before_entity = chrono.ChronoBeforeOperator(entityID=str(chrono_id) + "entity",
                                                                start_span=abs_StartSpan, end_span=abs_EndSpan,
-                                                               interval_type="Link")
+                                                               interval_type="Link", text=batext)
             chrono_id = chrono_id + 1
             chrono_list.append(chrono_before_entity)
 
@@ -69,16 +69,16 @@ def hasBeforeAfter(tpentity):
         # test if the intersect list contains which days.
         if len(list(set(intersect) & set(b_words))) == 1:
             start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text_lower, list(set(intersect) & set(b_words))[0])
-            return True, "Before", start_idx, end_idx
+            return True, "Before", start_idx, end_idx, list(set(intersect) & set(b_words))[0]
 
         if len(list(set(intersect) & set(a_words))) == 1:
             start_idx, end_idx = Chrono.ChronoUtils.parse_text.calculateSpan(text_lower, list(set(intersect) & set(a_words))[0])
-            return True, "After", start_idx, end_idx
+            return True, "After", start_idx, end_idx, list(set(intersect) & set(a_words))[0]
 
         else:
-            return False, None, None, None
+            return False, None, None, None, None
     else:
-        return False, None, None, None
+        return False, None, None, None, None
 
 ####
 # END_MODULE
