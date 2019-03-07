@@ -17,7 +17,7 @@ def buildDayOfMonth(s, chrono_id, chrono_list, flags):
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         if (int(text) <= 31):
             chrono_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
-                                                          end_span=abs_EndSpan, value=int(text))
+                                                          end_span=abs_EndSpan, value=int(text), text=text)
             chrono_list.append(chrono_entity)
             chrono_id = chrono_id + 1
 
