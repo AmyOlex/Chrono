@@ -38,7 +38,7 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity",
                                                                  start_span=ref_StartSpan + start_idx,
-                                                                 end_span=ref_StartSpan + end_idx, value=num)
+                                                                 end_span=ref_StartSpan + end_idx, value=num, text=text)
                     chrono_id = chrono_id + 1
                     chrono_list.append(chrono_year_entity)
 
@@ -55,19 +55,19 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 
                     chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity",
                                                                  start_span=ref_StartSpan, end_span=ref_StartSpan + 4,
-                                                                 value=y)
+                                                                 value=y, text=y)
                     chrono_id = chrono_id + 1
                     # add month
                     chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
                                                                          start_span=ref_StartSpan + 4,
                                                                          end_span=ref_StartSpan + 6,
-                                                                         month_type=calendar.month_name[m])
+                                                                         month_type=calendar.month_name[m], text=m)
                     chrono_id = chrono_id + 1
                     chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
                     # add day
                     chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity",
                                                                       start_span=ref_StartSpan + 6,
-                                                                      end_span=ref_StartSpan + 8, value=d)
+                                                                      end_span=ref_StartSpan + 8, value=d, text=d)
                     chrono_id = chrono_id + 1
                     chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
 
@@ -86,19 +86,21 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
 
                             chrono_year_entity = chrono.ChronoYearEntity(entityID=str(chrono_id) + "entity",
                                                                          start_span=ref_StartSpan + 4,
-                                                                         end_span=ref_StartSpan + 8, value=y)
+                                                                         end_span=ref_StartSpan + 8, value=y, text=y)
                             chrono_id = chrono_id + 1
                             # add month
                             chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
                                                                                  start_span=ref_StartSpan,
                                                                                  end_span=ref_StartSpan + 2,
-                                                                                 month_type=calendar.month_name[m2])
+                                                                                 month_type=calendar.month_name[m2],
+                                                                                 text=m)
                             chrono_id = chrono_id + 1
                             chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
                             # add day
                             chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity",
                                                                               start_span=ref_StartSpan + 2,
-                                                                              end_span=ref_StartSpan + 4, value=d)
+                                                                              end_span=ref_StartSpan + 4,
+                                                                              value=d, text=d)
                             chrono_id = chrono_id + 1
                             chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
 
@@ -120,19 +122,19 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                     # add year
                     chrono_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity",
                                                                            start_span=ref_StartSpan + 4,
-                                                                           end_span=ref_StartSpan + 6, value=y)
+                                                                           end_span=ref_StartSpan + 6, value=y, text=y)
                     chrono_id = chrono_id + 1
                     # add month
                     chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
                                                                          start_span=ref_StartSpan,
                                                                          end_span=ref_StartSpan + 2,
-                                                                         month_type=calendar.month_name[m])
+                                                                         month_type=calendar.month_name[m], text=m)
                     chrono_id = chrono_id + 1
                     chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
                     # add day
                     chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity",
                                                                       start_span=ref_StartSpan + 2,
-                                                                      end_span=ref_StartSpan + 4, value=d)
+                                                                      end_span=ref_StartSpan + 4, value=d, text=d)
                     chrono_id = chrono_id + 1
                     chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
 
@@ -150,19 +152,22 @@ def buildNumericDate(s, chrono_id, chrono_list, flags):
                             # add year
                             chrono_year_entity = chrono.ChronoTwoDigitYearOperator(entityID=str(chrono_id) + "entity",
                                                                                    start_span=ref_StartSpan,
-                                                                                   end_span=ref_StartSpan + 2, value=y2)
+                                                                                   end_span=ref_StartSpan + 2, value=y2,
+                                                                                   text=y2)
                             chrono_id = chrono_id + 1
                             # add month
                             chrono_month_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity",
                                                                                  start_span=ref_StartSpan + 2,
                                                                                  end_span=ref_StartSpan + 4,
-                                                                                 month_type=calendar.month_name[m2])
+                                                                                 month_type=calendar.month_name[m2],
+                                                                                 text=m2)
                             chrono_id = chrono_id + 1
                             chrono_year_entity.set_sub_interval(chrono_month_entity.get_id())
                             # add day
                             chrono_day_entity = chrono.ChronoDayOfMonthEntity(entityID=str(chrono_id) + "entity",
                                                                               start_span=ref_StartSpan + 4,
-                                                                              end_span=ref_StartSpan + 6, value=d2)
+                                                                              end_span=ref_StartSpan + 6, value=d2,
+                                                                              text=d2)
                             chrono_id = chrono_id + 1
                             chrono_month_entity.set_sub_interval(chrono_day_entity.get_id())
 
