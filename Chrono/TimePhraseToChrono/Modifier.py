@@ -11,7 +11,7 @@ from Chrono.config import DICTIONARY
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 def buildModifierText(s, chrono_id, chrono_list):
-    boo, val, idxstart, idxend = hasModifierText(s)
+    boo, val, idxstart, idxend, mod_text = hasModifierText(s)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
@@ -118,38 +118,38 @@ def hasNextLastThis(tpentity):
         if intersect[0] == "this":
             start_idx = text_norm.index("this")
             end_idx = start_idx + len("this")
-            return True, "This", start_idx, end_idx
+            return True, "This", start_idx, end_idx, "this"
 
         if intersect[0] == "next":
             start_idx = text_norm.index("next")
             end_idx = start_idx + len("next")
-            return True, "Next", start_idx, end_idx
+            return True, "Next", start_idx, end_idx, "next"
 
         if intersect[0] == "last":
             start_idx = text_norm.index("last")
             end_idx = start_idx + len("last")
-            return True, "Last", start_idx, end_idx
+            return True, "Last", start_idx, end_idx, "last"
 
         if intersect[0] == "a":
             start_idx = text_norm.index("a")
             end_idx = start_idx + len("a")
-            return True, "Period", start_idx, end_idx
+            return True, "Period", start_idx, end_idx, "a"
 
         if intersect[0] == "each":
             start_idx = text_norm.index("each")
             end_idx = start_idx + len("each")
-            return True, "Period", start_idx, end_idx
+            return True, "Period", start_idx, end_idx, "each"
 
         if intersect[0] == "between":
             start_idx = text_norm.index("between")
             end_idx = start_idx + len("between")
-            return True, "Period", start_idx, end_idx
+            return True, "Period", start_idx, end_idx, "between"
 
         if intersect[0] == "from":
             start_idx = text_norm.index("from")
             end_idx = start_idx + len("from")
-            return True, "Period", start_idx, end_idx
+            return True, "Period", start_idx, end_idx, "from"
         else:
-            return False, None, None, None
+            return False, None, None, None, None
     else:
-        return False, None, None, None
+        return False, None, None, None, None

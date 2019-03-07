@@ -10,32 +10,34 @@ import string
 # @param chronoList The list of chrono objects we currently have.  Will add to these.
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 def buildDayOfWeek(s, chrono_id, chrono_list):
-    boo, val, idxstart, idxend = hasDayOfWeek(s)
+    boo, val, idxstart, idxend, day_text = hasDayOfWeek(s)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
         my_entity = chrono.ChronoDayOfWeekEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                 end_span=abs_Espan, day_type=val)
+                                                 end_span=abs_Espan, day_type=val, text=day_text)
         chrono_list.append(my_entity)
         chrono_id = chrono_id + 1
         # check here to see if it has a modifier
-        hasMod, mod_type, mod_start, mod_end = Chrono.TimePhraseToChrono.Modifier.hasNextLastThis(s)
+        hasMod, mod_type, mod_start, mod_end, mod_text = Chrono.TimePhraseToChrono.Modifier.hasNextLastThis(s)
         if (hasMod):
             if mod_type == "This":
                 chrono_list.append(chrono.ChronoThisOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                             end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                                                             end_span=abs_Espan, repeating_interval=my_entity.get_id(),
+                                                             text=mod_text))
                 chrono_id = chrono_id + 1
 
             if mod_type == "Next":
                 chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
-                                                             end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+                                                             end_span=abs_Espan, repeating_interval=my_entity.get_id(),
+                                                             text=mod_text))
                 chrono_id = chrono_id + 1
 
             if mod_type == "Last":
                 chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
                                                              end_span=abs_Espan, repeating_interval=my_entity.get_id(),
-                                                             semantics="Interval-Included"))
+                                                             semantics="Interval-Included", text=mod_text))
                 chrono_id = chrono_id + 1
             # else:
             #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
@@ -88,47 +90,47 @@ def hasDayOfWeek(tpentity):
             day_text = list(set(intersect) & set(M))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Monday", start_idx, end_idx
+            return True, "Monday", start_idx, end_idx, day_text
 
         if len(list(set(intersect) & set(T))) == 1:
             day_text = list(set(intersect) & set(T))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Tuesday", start_idx, end_idx
+            return True, "Tuesday", start_idx, end_idx, day_text
 
         if len(list(set(intersect) & set(W))) == 1:
             day_text = list(set(intersect) & set(W))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Wednesday", start_idx, end_idx
+            return True, "Wednesday", start_idx, end_idx, day_text
 
         if len(list(set(intersect) & set(TR))) == 1:
             day_text = list(set(intersect) & set(TR))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Thursday", start_idx, end_idx
+            return True, "Thursday", start_idx, end_idx, day_text
 
         if len(list(set(intersect) & set(F))) == 1:
             day_text = list(set(intersect) & set(F))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Friday", start_idx, end_idx
+            return True, "Friday", start_idx, end_idx, day_text
 
         if len(list(set(intersect) & set(S))) == 1:
             day_text = list(set(intersect) & set(S))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Saturday", start_idx, end_idx
+            return True, "Saturday", start_idx, end_idx, day_text
 
         if len(list(set(intersect) & set(SU))) == 1:
             day_text = list(set(intersect) & set(SU))[0]
             start_idx = text_norm.index(day_text)
             end_idx = start_idx + len(day_text)
-            return True, "Sunday", start_idx, end_idx
+            return True, "Sunday", start_idx, end_idx, day_text
         else:
-            return False, None, None, None
+            return False, None, None, None, None
     else:
-        return False, None, None, None
+        return False, None, None, None, None
 
 ####
 # END_MODULE

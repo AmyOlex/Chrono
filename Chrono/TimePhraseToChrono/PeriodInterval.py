@@ -91,15 +91,22 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
 
             else:
                 # check for a Last Word
-                hasMod, mod_type, mod_start, mod_end = hasNextLastThis(s)
+                hasMod, mod_type, mod_start, mod_end, mod_text = hasNextLastThis(s)
 
-                if(hasMod):
+                if (hasMod):
                     if mod_type == "Next":
-                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, period=my_entity.get_id()))
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity",
+                                                                     start_span=ref_Sspan + mod_start,
+                                                                     end_span=ref_Sspan + mod_end,
+                                                                     period=my_entity.get_id(), text=mod_text))
                         chrono_id = chrono_id + 1
 
                     if mod_type == "Last":
-                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, period=my_entity.get_id(), semantics="Interval-Not-Included"))
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity",
+                                                                     start_span=ref_Sspan + mod_start,
+                                                                     end_span=ref_Sspan + mod_end,
+                                                                     period=my_entity.get_id(),
+                                                                     semantics="Interval-Not-Included", text=mod_text))
                         chrono_id = chrono_id + 1
 
 
@@ -120,14 +127,22 @@ def buildPeriodInterval(s, chrono_id, chrono_list, ref_list, classifier, feats):
                 chrono_list.append(chrono_this_entity)
             else:
                 # check for a Last Word
-                hasMod, mod_type, mod_start, mod_end = hasNextLastThis(s)
-                if(hasMod):
+                hasMod, mod_type, mod_start, mod_end, mod_text = hasNextLastThis(s)
+                if (hasMod):
                     if mod_type == "Next":
-                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_entity.get_id()))
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity",
+                                                                     start_span=ref_Sspan + mod_start,
+                                                                     end_span=ref_Sspan + mod_end,
+                                                                     repeating_interval=my_entity.get_id(),
+                                                                     text=mod_text))
                         chrono_id = chrono_id + 1
 
                     if mod_type == "Last":
-                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=ref_Sspan+mod_start, end_span=ref_Sspan+mod_end, repeating_interval=my_entity.get_id(), semantics="Interval-Not-Included"))
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity",
+                                                                     start_span=ref_Sspan + mod_start,
+                                                                     end_span=ref_Sspan + mod_end,
+                                                                     repeating_interval=my_entity.get_id(),
+                                                                     semantics="Interval-Not-Included", text=mod_text))
                         chrono_id = chrono_id + 1
 
 
