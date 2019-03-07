@@ -12,12 +12,13 @@ from Chrono.config import DICTIONARY
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 def buildPartOfWeek(s, chrono_id, chrono_list):
 
-    boo, val, idxstart, idxend = hasPartOfWeek(s)
+    boo, val, idxstart, idxend, text = hasPartOfWeek(s)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
-        my_entity = chrono.ChronoPartOfWeekEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, part_of_week_type=val)
+        my_entity = chrono.ChronoPartOfWeekEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                  end_span=abs_Espan, part_of_week_type=val, text=text)
         chrono_list.append(my_entity)
         chrono_id = chrono_id + 1
         #check here to see if it has a modifier
@@ -51,8 +52,8 @@ def hasPartOfWeek(tpentity):
         term = intersect[0]
         start_idx, end_idx = calculateSpan(text_norm, term)
         if term == "weekend" or term == "weekends":
-            return True, "Weekend", start_idx, end_idx
+            return True, "Weekend", start_idx, end_idx, term
         else:
-            return False, None, None, None
+            return False, None, None, None, None
     else:
-        return False, None, None, None
+        return False, None, None, None, None
