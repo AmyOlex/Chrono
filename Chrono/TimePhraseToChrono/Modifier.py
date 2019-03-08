@@ -83,14 +83,14 @@ def hasModifierText(tpentity):
             if answer is not None:
                 answer2 = next((m for m in temp_text if t in m), None)
                 if answer2 is not None:
-                    return True, t, calculateSpan(text_norm, t)[0], calculateSpan(text_norm, t)[1]
+                    return True, t, calculateSpan(text_norm, t)[0], calculateSpan(text_norm, t)[1], t
                 else:
-                    return False, None, None, None  # if no 2 digit hour expressions were found return false
+                    return False, None, None, None, None  # if no 2 digit hour expressions were found return false
             else:
-                return False, None, None, None  # if no 2 digit day expressions were found return false
+                return False, None, None, None, None  # if no 2 digit day expressions were found return false
     else:
 
-        return False, None, None, None  # if the text_list does not have any entries, return false
+        return False, None, None, None, None  # if the text_list does not have any entries, return false
 
 
 ## Takes in a single text string and identifies if it has any modufying phrases
