@@ -18,7 +18,7 @@ def buildSecondOfMinute(s, chrono_id, chrono_list, flags):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         chrono_entity = chrono.ChronoSecondOfMinuteEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
-                                                          end_span=abs_EndSpan, value=int(text))
+                                                          end_span=abs_EndSpan, value=int(text), text=text)
         chrono_list.append(chrono_entity)
         chrono_id = chrono_id + 1
 
