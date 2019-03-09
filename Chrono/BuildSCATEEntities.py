@@ -230,18 +230,26 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
                 if day is not None and my_month == dct.month:
                     # add a Last
                     if chrono_list[day].get_value() <= dct.day:
-                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity",
+                                                                     start_span=mStart, end_span=mEnd,
+                                                                     repeating_interval=chrono_list[month].get_id()))
                         chrono_id = chrono_id + 1
                     elif chrono_list[day].get_value() > dct.day:
-                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                        chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity",
+                                                                     start_span=mStart, end_span=mEnd,
+                                                                     repeating_interval=chrono_list[month].get_id()))
                         chrono_id = chrono_id + 1
                 
                 elif my_month < dct.month:
-                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart,
+                                                                 end_span=mEnd,
+                                                                 repeating_interval=chrono_list[month].get_id()))
                     chrono_id = chrono_id + 1
                     
                 elif my_month > dct.month:
-                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[month].get_id()))
+                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart,
+                                                                 end_span=mEnd,
+                                                                 repeating_interval=chrono_list[month].get_id()))
                     chrono_id = chrono_id + 1      
             
             ##having a problem where a past day is being referenced without it being explicit.  
@@ -259,12 +267,16 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
                     if "VB" in ref_list[ref].getPos():
                         if ref_list[ref].getPos() in ["VBD","VBN"]:
                             #past tense so put as a last
-                            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                            chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity",
+                                                                         start_span=mStart, end_span=mEnd,
+                                                                         repeating_interval=chrono_list[dayweek].get_id()))
                             chrono_id = chrono_id + 1
                             # print("FOUND DAYWEEK LAST")
                         elif ref_list[ref].getPos() in ["VB","VBG","VBP","VBZ"]:
                             #present tense so put as a next
-                            chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                            chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity",
+                                                                         start_span=mStart, end_span=mEnd,
+                                                                         repeating_interval=chrono_list[dayweek].get_id()))
                             chrono_id = chrono_id + 1  
                             # print("FOUND DAYWEEK NEXT")
                         vb = True
