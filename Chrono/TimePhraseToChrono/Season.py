@@ -16,12 +16,13 @@ from Chrono.config import DICTIONARY
 # @return chronoList, chronoID Returns the expanded chronoList and the incremented chronoID.
 def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
 
-    boo, val, idxstart, idxend = hasSeasonOfYear(s, ref_list)
+    boo, val, idxstart, idxend, season_text = hasSeasonOfYear(s, ref_list)
     if boo:
         ref_Sspan, ref_Espan = s.getSpan()
         abs_Sspan = ref_Sspan + idxstart
         abs_Espan = ref_Sspan + idxend
-        my_entity = chrono.ChronoSeasonOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, season_type=val)
+        my_entity = chrono.ChronoSeasonOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                    end_span=abs_Espan, season_type=val, text=season_text)
         chrono_id = chrono_id + 1
 
         #check here to see if it has a modifier
@@ -61,7 +62,8 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
                 abs_Sspan = ref_Sspan + m.span(0)[0]
                 abs_Espan = ref_Sspan + m.span(0)[1]
 
-                my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=num_val)
+                my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=abs_Sspan,
+                                                       end_span=abs_Espan, value=num_val, text=num_val)
                 chrono_id = chrono_id + 1
 
                 #add the number entity to the list
@@ -72,7 +74,9 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
                 texNumVal = Chrono.ChronoUtils.parse_text.getNumberFromText(substr)
                 if texNumVal is not None:
                     #create the number entity
-                    my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=ref_Sspan, end_span=ref_Sspan + (idxstart - 1), value=texNumVal)
+                    my_number_entity = chrono.ChronoNumber(entityID=str(chrono_id) + "entity", start_span=ref_Sspan,
+                                                           end_span=ref_Sspan + (idxstart - 1), value=texNumVal,
+                                                           text=substr)
                     chrono_id = chrono_id + 1
                     #append to list
                     chrono_list.append(my_number_entity)
@@ -119,7 +123,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
-                return True, "Summer", start_idx, end_idx
+                return True, "Summer", start_idx, end_idx, term
 
         elif term == "winter" or term == "winters":
             start_idx, end_idx = calculateSpan(text_norm, "winter")
@@ -128,7 +132,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
-                return True, "Winter", start_idx, end_idx
+                return True, "Winter", start_idx, end_idx, term
 
         elif term == "fall" or term == "falls":
             start_idx, end_idx = calculateSpan(text_norm, "fall")
@@ -137,7 +141,7 @@ def hasSeasonOfYear(tpentity, ref_list):
             postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
-                return True, "Fall", start_idx, end_idx
+                return True, "Fall", start_idx, end_idx, term
 
         elif term == "spring" or term == "springs":
             start_idx, end_idx = calculateSpan(text_norm, "spring")
@@ -146,9 +150,9 @@ def hasSeasonOfYear(tpentity, ref_list):
             postag = ref_list[Chrono.ChronoUtils.parse_text.getRefIdx(ref_list, absStart, absEnd)].getPos()
 
             if postag == "NN":
-                return True, "Spring", start_idx, end_idx
+                return True, "Spring", start_idx, end_idx, term
 
         else:
-            return False, None, None, None
+            return False, None, None, None, None
 
-    return False, None, None, None
+    return False, None, None, None, None
