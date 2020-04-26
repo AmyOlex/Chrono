@@ -60,8 +60,8 @@ if __name__ == "__main__":
             espan = item.getElementsByTagName('span')[0].firstChild.data
             etype = item.getElementsByTagName('type')[0].firstChild.data
             eproperties = item.getElementsByTagName('properties')
-            
-            if(len(eproperties[0].getElementsByTagName('Number')) == 1):
+
+            if(eproperties and (len(eproperties[0].getElementsByTagName('Number')) == 1)):
                 tmp = eproperties[0].getElementsByTagName('Number')[0].firstChild
                 if tmp is not None:
                     enumber = eproperties[0].getElementsByTagName('Number')[0].firstChild.data
@@ -102,10 +102,20 @@ if __name__ == "__main__":
         
         if args.o == "":
             outfile = args.x + "/" + f + "/" + f + ".ann"
+            if(os.path.isdir(args.x + "/" + f)):
+                out = open(outfile, 'w')
+            else:
+                print("Directory not found, skipping: " + args.x + "/" + f)
+                continue
         else:
             outfile = args.o + "_" + f + ".ann"
+            if(os.path.isdir(args.o)):
+                out = open(outfile, 'w')
+            else:
+                print("Directory not found, skipping: " + args.o + "/" + f)
+                continue
         
-        out = open(outfile, 'w')
+        
         
         ## Open the XML file and parse it
         if args.f == "gold":
@@ -113,12 +123,23 @@ if __name__ == "__main__":
         elif args.f == "chrono":
             path = args.x + "/" + f + "/" + f + ".completed.xml"
         elif args.f == "rel":
-            path = args.x + "/" + f + "/" + f + ".Temporal-Relation.gold.completed.xml"
+            path_1 = args.x + "/" + f + "/" + f + ".Temporal-Relation.gold.completed.xml"
+            path_2 = args.x + "/" + f + "/" + f + ".Temporal-Entity.gold.completed.xml"
+            if(os.path.isfile(path_1)):
+                path = path_1
+            elif(os.path.isfile(path_2)):
+                path = path_2
+            else:
+                print("Error in TLINK path, can't find file: " + path_1)
+                print("Error in TLINK path, can't find file: " + path_2)
+                path = path_1
+
         else:
             print("Error, invalid option: " + args.f)
             exit(1)
     
         if(os.path.isfile(path)):
+            
             myElist = getTargetSpansXML(path)
     
             ## Pass this information to extract the text segments and write to file
@@ -129,7 +150,7 @@ if __name__ == "__main__":
                 print("Error, no file at: " + path2 + "  No output.")
 
         else:
-            print("Error, can't find file: " + f)    
+            print("Error, can't find file: " + path)    
     
         out.close()
     
