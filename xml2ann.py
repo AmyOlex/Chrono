@@ -123,7 +123,6 @@ if __name__ == "__main__":
     
             ## Pass this information to extract the text segments and write to file
             path2 = args.t + "/" + f + "/" + f
-            print(path2)
             if(os.path.isfile(path2)):            
                 writeTargetSpansXML(path2, myElist, out)
             else:
