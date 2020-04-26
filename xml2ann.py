@@ -69,8 +69,10 @@ if __name__ == "__main__":
                     enumber = "None"
             else:
                 enumber = ""
-            
-            start, end = espan.split(",")
+
+            espan_list = espan.split(",")
+            start = espan_list[0]
+            end = espan_list[len(espan_list)-1]
             entitylist.append([eid, etype, int(start), int(end), enumber])
         return(entitylist)   
     
@@ -108,8 +110,13 @@ if __name__ == "__main__":
         ## Open the XML file and parse it
         if args.f == "gold":
             path = args.x + "/" + f + "/" + f + ".TimeNorm.gold.completed.xml"
-        else:
+        elif args.f == "chrono":
             path = args.x + "/" + f + "/" + f + ".completed.xml"
+        elif args.f == "rel":
+            path = args.x + "/" + f + "/" + f + ".Temporal-Relation.gold.completed.xml"
+        else:
+            print("Error, invalid option: " + args.f)
+            exit(1)
     
         if(os.path.isfile(path)):
             myElist = getTargetSpansXML(path)
