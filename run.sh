@@ -31,25 +31,26 @@ if [ $USER = "amy" ]
 then
 	if [ $LOC = "laptop" ]
 	then
-		ANAFORA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/anaforatools"
+		ANAFORA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/anaforatools"
 
 		if [ $DATASET = "test" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
-			OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/Colon_dev"
-			ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/data/THYME"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/Colon_dev"
+			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $DATASET = "train" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
-			OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/Colon_dev"
-			ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			##DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/SemEval-OfficialTrain"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
+			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $DATASET = "eval" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/SemEval-Task6-Evaluation"
-                        OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/newsEval"
-                        ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/data/SemEval-Task6-Evaluation"
+            OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/newsEval"
+            ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $ML_DATA = "news5" ]
 		then
@@ -65,19 +66,19 @@ then
 		if [ $ML_DATA = "clin5" ]
 		then
 			ML_DATA_FILE="THYMEColon_train_Win5_data.csv"
-                        ML_CLASS_FILE="THYMEColon_train_Win5_class.csv"
+            ML_CLASS_FILE="THYMEColon_train_Win5_class.csv"
 		fi
 		if [ $ML_DATA = "newsclin3" ]
-                then
-                        ML_DATA_FILE="Newswire-THYMEColon_train_Win3_data.csv"
-                        ML_CLASS_FILE="Newswire-THYMEColon_train_Win3_class.csv"
+        then
+            ML_DATA_FILE="Newswire-THYMEColon_train_Win3_data.csv"
+            ML_CLASS_FILE="Newswire-THYMEColon_train_Win3_class.csv"
 
-                fi
+        fi
 		if [ $ML_DATA = "news3" ]
-                then
-                        ML_DATA_FILE="official_train_MLmatrix_Win3_data.csv"
-                        ML_CLASS_FILE="official_train_MLmatrix_Win3_class.csv"
-                fi
+        then
+            ML_DATA_FILE="official_train_MLmatrix_Win3_data.csv"
+            ML_CLASS_FILE="official_train_MLmatrix_Win3_class.csv"
+        fi
 
 
 	fi
