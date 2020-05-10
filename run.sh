@@ -42,7 +42,7 @@ then
 		if [ $DATASET = "train" ]
 		then
 			##DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
-			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/SemEval-OfficialTrain"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/SemEval-OfficialTrain-Subset"
 			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
 			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
@@ -143,25 +143,25 @@ then
 		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 	else
 		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
-		cd $ANAFORA_DIR
+		#cd $ANAFORA_DIR
 
-		echo "EVERYTHING"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+		#echo "EVERYTHING"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
 	
-		echo "EXCLUDE EVENT"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
+		#echo "EXCLUDE EVENT"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
 
-		echo "EXCLUDE EVENT AND OVERLAP SPANS"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
+		#echo "EXCLUDE EVENT AND OVERLAP SPANS"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
 
-		echo "INCLUDE ONLY WHAT WE PARSE AND OVERLAP SPANS"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
+		#echo "INCLUDE ONLY WHAT WE PARSE AND OVERLAP SPANS"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
 	fi
 
 	echo "COMMANDS:"
 	echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
-	echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
-
+	#echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+	echo "COMPLETED"
 
 
 
