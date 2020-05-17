@@ -188,6 +188,9 @@ class ChronoPeriodEntity(ChronoEntity):
 		
 	def get_period_type(self):
 		return self.period_type
+        
+	def get_value(self):
+		return self.period_type
 		
 	def set_number(self, number):
 		self.number = number
@@ -228,6 +231,9 @@ class chronoMonthOfYearEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_month_type(self):
 		return self.month_type
+        
+	def get_value(self):
+		return self.month_type
 	
 	def set_sub_interval(self, sub_interval):
 		self.sub_interval = sub_interval
@@ -267,6 +273,9 @@ class ChronoSeasonOfYearEntity(ChronoRepeatingIntervalEntity):
 		self.season_type = season_type
 		
 	def get_season_type(self):
+		return self.season_type
+        
+	def get_value(self):
 		return self.season_type
 	
 	def set_number(self, number):
@@ -388,6 +397,9 @@ class ChronoDayOfWeekEntity(ChronoRepeatingIntervalEntity):
 		self.day_type = day_type
 		
 	def get_day_type(self):
+		return self.day_type
+        
+	def get_value(self):
 		return self.day_type
 		
 	def set_sub_interval(self, sub_interval):
@@ -564,6 +576,9 @@ class ChronoCalendarIntervalEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_calendar_type(self):
 		return self.calendar_type
+        
+	def get_value(self):
+		return self.calendar_type
 		
 	def set_number(self, number):
 		self.number = number
@@ -597,6 +612,9 @@ class ChronoPartOfDayEntity(ChronoRepeatingIntervalEntity):
 		self.part_of_day_type = part_of_day_type
 		
 	def get_part_of_day_type(self):
+		return self.part_of_day_type
+        
+	def get_value(self):
 		return self.part_of_day_type
 		
 	def set_number(self, number):
@@ -632,6 +650,9 @@ class ChronoPartOfWeekEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_part_of_week_type(self):
 		return self.part_of_week_type
+        
+	def get_value(self):
+		return self.part_of_week_type
 		
 	def set_number(self, number):
 		self.number = number
@@ -664,6 +685,9 @@ class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
 		self.ampm_type = ampm_type
 		
 	def get_ampm_type(self):
+		return self.ampm_type
+        
+	def get_value(self):
 		return self.ampm_type
 
 	def set_number(self, number):
