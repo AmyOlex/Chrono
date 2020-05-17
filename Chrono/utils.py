@@ -54,6 +54,8 @@ import numpy as np
 from Chrono import w2ny as w2n
 import string
 import copy
+import dateutil.parser as dup
+import datetime
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -486,7 +488,7 @@ def temporalTest(tok):
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
 def getTemporalPhrases(chroList, doctime):
-    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime)
+    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
     id_counter = 0
     
     phrases = [] #the empty phrases list of TimePhrase entities
@@ -609,7 +611,7 @@ def createTPEntity(items, counter, doctime):
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, type=None, value=None, doctime=doctime)
 
 ####
 #END_MODULE
@@ -645,3 +647,95 @@ def calculateSpan(text, search_text):
         return None, None
 
     return start_idx, end_idx
+
+
+## Takes in list of ChronoEntities and identifies sub-intervals within the list
+# @author Amy Olex
+# @param list of ChronoEntities
+# @return List of ChronoEntities with sub-intervals assigned
+def getEntityTypes(chrono_list):
+    year = None
+    month = None
+    day = None
+    hour = None
+    minute = None
+    second = None
+    daypart = None
+    dayweek = None
+    interval = None
+    period = None
+    nth = None
+    nxt = None
+    this = None
+    tz = None
+    ampm = None
+    modifier = None
+    last = None
+    
+    entity_count = 0
+   
+    
+    ## loop through all entities and pull out the approriate IDs
+    for e in range(0,len(chrono_list)):
+        #print(chrono_list[e].get_id())
+        e_type = chrono_list[e].get_type()
+        #print("E-type: " + e_type)
+        
+        if e_type == "Two-Digit-Year" or e_type == "Year":
+            year = e
+            entity_count = entity_count + 1
+            # print("YEAR VALUE: " + str(chrono_list[e].get_value()))
+        elif e_type == "Month-Of-Year":
+            # print("FOUND Month")
+            month = e
+            entity_count = entity_count + 1
+        elif e_type == "Day-Of-Month":
+            day = e
+            entity_count = entity_count + 1
+        elif e_type == "Hour-Of-Day":
+            hour = e
+            entity_count = entity_count + 1
+        elif e_type == "Minute-Of-Hour":
+            minute = e
+            entity_count = entity_count + 1
+        elif e_type == "Second-Of-Minute":
+            second = e
+            entity_count = entity_count + 1
+        elif e_type == "Part-Of-Day":
+            daypart = e
+            entity_count = entity_count + 1
+        elif e_type == "Day-Of-Week":
+            dayweek = e
+            entity_count = entity_count + 1
+        elif e_type == "Calendar-Interval":
+            interval = e
+            entity_count = entity_count + 1
+        elif e_type == "Period":
+            period = e
+            entity_count = entity_count + 1
+        elif e_type == "NthFromStart":
+            nth = e
+            entity_count = entity_count + 1
+        elif e_type == "Next":
+            nxt = e
+            entity_count = entity_count + 1
+        elif e_type == "This":
+            this = e
+            entity_count = entity_count + 1
+        
+        elif e_type == "Time-Zone":
+            tz = e
+            entity_count = entity_count + 1
+        elif e_type == "AMPM-Of-Day":
+            ampm = e
+            entity_count = entity_count + 1
+        elif e_type == "Modifier":
+            modifier = e
+            entity_count = entity_count + 1
+        elif e_type == "Last":
+            last = e
+            entity_count = entity_count + 1
+            
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last,entity_count)
+    
+    

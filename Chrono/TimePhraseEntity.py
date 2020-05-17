@@ -46,19 +46,19 @@ import json
 class TimePhraseEntity :
     
     ## The constructor
-    def __init__(self, id, text, start_span, end_span, temptype, tempvalue, doctime) :
+    def __init__(self, id, text, start_span, end_span, type, value, doctime) :
         self.id = id
         self.text = text
         self.start_span = start_span
         self.end_span = end_span
-        self.temptype = temptype
-        self.tempvalue = tempvalue
+        self.type = type
+        self.value = value
         self.doctime = doctime
       
     ## String representation    
     def __str__(self) :
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
-        return(str(self.id) + " " + str(self.text) + span_str + str(self.temptype) + " " + str(self.tempvalue) + " " + str(self.doctime))
+        return(str(self.id) + " " + str(self.text) + span_str + " Type: " +str(self.type) + " Value: " + str(self.value) + " DocTime: " + str(self.doctime))
     
 
     #### Methods to SET properties ###
@@ -81,14 +81,14 @@ class TimePhraseEntity :
         self.end_span = end
         
     ## Sets the entity's type
-    #  @param temptype The type of TimePhrase temporal expression
-    def setType(self, temptype) :
-        self.temptype = temptype
+    #  @param type The type of TimePhrase temporal expression
+    def setType(self, type) :
+        self.type = type
         
-    ## Sets the entity's TimePhrase normalized value
-    #  @param tempvalue The entities normalized TimePhrase value
-    def setValue(self, tempvalue) :
-        self.tempvalue = tempvalue
+    ## Sets the entity's TimePhrase normalized value (this is in ISO format)
+    #  @param value The entities normalized TimePhrase value
+    def setValue(self, value) :
+        self.value = value
     
     def setDoctime(self, doctime) :
         self.doctime = doctime
@@ -107,13 +107,13 @@ class TimePhraseEntity :
     def getSpan(self) :
         return(self.start_span, self.end_span)
         
-    ## Gets the entity's temptype
+    ## Gets the entity's type
     def getType(self) :
-        return(self.temptype)
+        return(self.type)
         
-    ## Gets the entity's tempvalue
+    ## Gets the entity's value
     def getValue(self) :
-        return(self.tempvalue)
+        return(self.value)
     
     ## Gets the entity's doctime
     def getDoctime(self):
@@ -127,8 +127,16 @@ class TimePhraseEntity :
 def import_TimePhrase(tempt_json, doctime = None, id_counter=0) :
     temp_list = []
     for j in tempt_json:
-        temp_list.append(TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime))
+        temp_list.append(TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime))
         id_counter = id_counter +1
         
     return temp_list
+
+
+## Takes in list of ChronoEntities and converts the phrase to ISO standard.
+## This method is partially 
+# @author Amy Olex
+# @param list of ChronoEntities in phrase
+def getISO(chrono_list):
+    year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last,entity_count = utils.getEntityTypes(chrono_list)
 
