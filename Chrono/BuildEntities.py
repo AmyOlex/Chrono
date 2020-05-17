@@ -124,13 +124,14 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         
         if len(tmplist) > 0:
             print("Converting phrase to ISO: " + str(s))
-            #s.getISO(tmplist)
+            s.getISO(tmplist)
+            print("ISO Value: " + str(s))
             timex_list.append(s)
             
         
         
         chrono_list = chrono_list+tmplist  ##chrono_list is a list of ChronoEntities, and phrase information is lost
-        print(chrono_list)
+        #print(chrono_list)
         
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)

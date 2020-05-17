@@ -34,6 +34,9 @@
 ## Class definitions to represent a temporal phrase
 
 import json
+import dateutil.parser as dp
+from datetime import timedelta as td
+from Chrono import utils
 
 ## Class to define a TimePhrase entity parsed from the json output of TimePhrase
 # @author Amy Olex
@@ -118,7 +121,36 @@ class TimePhraseEntity :
     ## Gets the entity's doctime
     def getDoctime(self):
         return(self.doctime)
+    
+    ## Uses the parsed Chrono entities to create the ISO value   
+    def getISO(self, chronolist):
+        #determine which types are in the phrase
+        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
+        
+        ## convert hour to 24 hour time if needed
+        if hour and ampm:
+            if ampm == "PM" and int(hour) < 12:
+                print("Converting hour to 24-hour time.")
+                hour = int(hour) + 12
 
+        iso = ""
+        try:
+            iso = dp.parse(self.text, fuzzy = True, default=self.doctime)
+        except:
+            if month or day or year or hour or minute or second:
+                mytext = str(month) + " " + str(day) + ", " + str(year) + " " + str(hour) + ":" + str(minute) + ":" + str(second)
+                print("My Full Date Text is: " + mytext)
+                iso = dp.parse(mytext, fuzzy = True, default=self.doctime)
+            else:
+                iso = ""
+        else:
+            if last:
+                iso = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+        finally:
+            print("MY ISO:::: " + str(iso))
+            self.value = iso
+        
+        
 ## Function to convert json output of TimePhrase to a list of TimePhraseEntities
 # @author Amy Olex
 # @param tempt_json The TimePhrase parsed json string (required)
@@ -133,10 +165,4 @@ def import_TimePhrase(tempt_json, doctime = None, id_counter=0) :
     return temp_list
 
 
-## Takes in list of ChronoEntities and converts the phrase to ISO standard.
-## This method is partially 
-# @author Amy Olex
-# @param list of ChronoEntities in phrase
-def getISO(chrono_list):
-    year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last,entity_count = utils.getEntityTypes(chrono_list)
 

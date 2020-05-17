@@ -709,9 +709,17 @@ class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
 			  self.ampm_type, self.number or '', self.modifier or ''))
 
 ## No special parameters, just identifies the location of a time zone in text
+## Note, this need to be modified to extract the actual text of the time zone!!!!
 class ChronoTimeZoneEntity(ChronoRepeatingIntervalEntity):
-	def __init__(self, entityID, start_span, end_span):
+	def __init__(self, entityID, start_span, end_span, value):
 		super().__init__(entityID, start_span, end_span, "Time-Zone")
+		self.value = value
+        
+	def set_value(self, tz):
+		self.value = tz
+        
+	def get_value(self):
+		return self.value
 
 	def print_xml(self):
 		return(super().print_xml() + "</properties>\n\t</entity>\n")
@@ -873,6 +881,9 @@ class ChronoLastOperator(ChronoOperator):
 		
 	def get_repeating_interval(self):
 		return self.repeating_interval
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -931,6 +942,9 @@ class ChronoNextOperator(ChronoOperator):
 					
 	def get_semantics(self):
 		return self.semantics
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -980,6 +994,9 @@ class ChronoThisOperator(ChronoOperator):
 		
 	def get_repeating_interval(self):
 		return self.repeating_interval
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -1037,6 +1054,9 @@ class ChronoBeforeOperator(ChronoOperator):
 					
 	def get_semantics(self):
 		return self.semantics
+        
+	def get_value(self):
+		return self.type
 
 
 	## Prints the xml leaving empty variables blank
@@ -1096,6 +1116,9 @@ class ChronoAfterOperator(ChronoOperator):
 					
 	def get_semantics(self):
 		return self.semantics
+        
+	def get_value(self):
+		return self.type
 
 
 	## Prints the xml leaving empty variables blank
@@ -1163,6 +1186,9 @@ class ChronoBetweenOperator(ChronoOperator):
 					
 	def get_end_included(self):
 		return self.end_included
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -1219,6 +1245,9 @@ class ChronoNthOperator(ChronoOperator):
 		
     def get_repeating_interval(self):
         return self.repeating_interval
+        
+    def get_value(self):
+        return self.type
 
 	## Prints the xml leaving empty variables blank
     def print_xml(self):
@@ -1302,6 +1331,9 @@ class ChronoModifier(ChronoOtherEntity):
 		self.modifier = modifier
 		
 	def get_modifier(self):
+		return self.modifier
+        
+	def get_value(self):
 		return self.modifier
 
 	## Prints the xml leaving empty variables blank
