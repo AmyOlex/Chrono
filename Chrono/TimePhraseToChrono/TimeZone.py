@@ -11,7 +11,7 @@ def buildTimeZone(s, chrono_id, chrono_list):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
 
-        chrono_tz_entity = chrono.ChronoTimeZoneEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
+        chrono_tz_entity = chrono.ChronoTimeZoneEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan, value=val)
         chrono_id = chrono_id + 1
         chrono_list.append(chrono_tz_entity)
 
