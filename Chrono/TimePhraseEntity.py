@@ -36,6 +36,7 @@
 import json
 import dateutil.parser as dp
 from datetime import timedelta as td
+import datetime
 from Chrono import utils
 
 ## Class to define a TimePhrase entity parsed from the json output of TimePhrase
@@ -135,21 +136,60 @@ class TimePhraseEntity :
 
         iso = ""
         try:
-            iso = dp.parse(self.text, fuzzy = True, default=self.doctime)
+            tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime)
+           
         except:
             if month or day or year or hour or minute or second:
                 mytext = str(month) + " " + str(day) + ", " + str(year) + " " + str(hour) + ":" + str(minute) + ":" + str(second)
                 print("My Full Date Text is: " + mytext)
-                iso = dp.parse(mytext, fuzzy = True, default=self.doctime)
+                tmpdate = dp.parse(mytext, fuzzy = True, default=self.doctime)
+
             else:
-                iso = ""
+                tmpdate = ""
         else:
             if last:
-                iso = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+                if period == "Week" or dayweek:
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+                elif period == "Month":
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
+                elif period == "Year":
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
+                else:
+                    tmpdate = ""
         finally:
-            print("MY ISO:::: " + str(iso))
-            self.value = iso
-        
+            
+            if month and day and year and not (hour or minute or second):
+                m = tmpdate.month
+                y = tmpdate.year
+                d = tmpdate.day
+                if m < 10:
+                    m = "0" + str(m)
+                if d < 10:
+                    d = "0" + str(d)
+                iso = str(y) + "-" + str(m) + "-" + str(d)
+                
+            elif month and year and not day:
+                m = tmpdate.month
+                y = tmpdate.year
+                if m < 10:
+                    m = "0" + str(m)
+                iso = str(y) + "-" + str(m)
+                
+            elif year and not (day or month):
+                iso = str(tmpdate.year)
+            elif dayweek:
+                iso = str(dp.parse(self.text, fuzzy = True, default=self.doctime).isoformat())
+            elif tmpdate:
+                iso = tmpdate.isoformat()
+            else:
+                iso = tmpdate
+            
+            #if the ISO value has T00:00:00 in it, remove it.
+            self.value = iso.replace("T00:00:00", "")
+            print("MY ISO:::: " + iso)
+                
+    
+    
         
 ## Function to convert json output of TimePhrase to a list of TimePhraseEntities
 # @author Amy Olex
