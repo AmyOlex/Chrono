@@ -135,6 +135,8 @@ class TimePhraseEntity :
                 hour = int(hour) + 12
 
         iso = ""
+        
+        ## Convert dates and times
         try:
             tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime)
            
@@ -184,10 +186,37 @@ class TimePhraseEntity :
             else:
                 iso = tmpdate
             
+            
+            ## Convert periods and intervals that do not have dates and times.
+            ## year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last
+            
+            ## low hanging fruit, periods and intervals
+            ## I will have to pull out Frequency from this as the term "daily" is a frequency, but will work on that later.
+            ## I also will need the NUMBER associated with this phrase, so have to modify the method to return the VALUE.
+            ## lets assume 1 for now to get the basic structure.
+            
+            if interval or period:
+                if interval:
+                    duration = interval
+                else:
+                    duration = period
+                
+                if duration == "Day":
+                    iso = "P1D"
+                if duration == "Week":
+                    iso = "P1W"
+                if duration == "Month":
+                    iso = "P1M"
+                if duration == "Year":
+                    iso = "P1Y"
+
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
-            print("MY ISO:::: " + iso)
-                
+            print("MY ISO:::: " + iso)   
+            
+            
+            
+               
     
     
         
