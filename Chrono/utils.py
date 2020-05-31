@@ -742,7 +742,7 @@ def getEntityTypes(chrono_list):
 ## Takes in list of ChronoEntities and returns the values, blank string if no value
 # @author Amy Olex
 # @param list of ChronoEntities
-# @return List of ChronoEntitie values
+# @return String of entity values
 def getEntityValues(chrono_list):
     year = ""
     month = ""
@@ -826,7 +826,105 @@ def getEntityValues(chrono_list):
     return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last)
 
 
+## Takes in list of ChronoEntities associated with a temporal phrase and returns the associated numbers, blank string if no value
+# @author Amy Olex
+# @param list of ChronoEntities
+# @return Individual ChornoEntities attached to associated concept.
+def getPhraseEntities(chrono_list):
+    year = ""
+    month = ""
+    day = ""
+    hour = ""
+    minute = ""
+    second = ""
+    daypart = ""
+    dayweek = ""
+    interval = ""
+    period = ""
+    nth = ""
+    nxt = ""
+    this = ""
+    tz = ""
+    ampm = ""
+    modifier = ""
+    last = ""
+   
+    ## loop through all entities and pull out the approriate IDs
+    for e in range(0,len(chrono_list)):
+        #print(chrono_list[e].get_id())
+        e_type = chrono_list[e].get_type()
+        #print("E-type: " + e_type)
+        
+        if e_type == "Two-Digit-Year" or e_type == "Year":
+            year = chrono_list[e]
+
+        elif e_type == "Month-Of-Year":
+            
+            month = chrono_list[e]
+            
+        elif e_type == "Day-Of-Month":
+            day = chrono_list[e]
+           
+        elif e_type == "Hour-Of-Day":
+            hour = chrono_list[e]
+            
+        elif e_type == "Minute-Of-Hour":
+            minute = chrono_list[e]
+            
+        elif e_type == "Second-Of-Minute":
+            second = chrono_list[e]
+            
+        elif e_type == "Part-Of-Day":
+            daypart = chrono_list[e]
+            
+        elif e_type == "Day-Of-Week":
+            dayweek = chrono_list[e]
+            
+        elif e_type == "Calendar-Interval":
+            interval = chrono_list[e]
+            
+        elif e_type == "Period":
+            period = chrono_list[e]
+            
+        elif e_type == "NthFromStart":
+            nth = chrono_list[e]
+            
+        elif e_type == "Next":
+            nxt = chrono_list[e]
+            
+        elif e_type == "This":
+            this = chrono_list[e]
+                
+        elif e_type == "Time-Zone":
+            tz = chrono_list[e]
+            
+        elif e_type == "AMPM-Of-Day":
+            ampm = chrono_list[e]
+            
+        elif e_type == "Modifier":
+            modifier = chrono_list[e]
+            
+        elif e_type == "Last":
+            last = chrono_list[e]
+            
+            
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last)
+
+   
+## Takes in list of ChronoEntities and an entity ID and returns the associated number or blank string if no value
+# @author Amy Olex
+# @param list of ChronoEntities
+# @param String name of number entity
+# @return Integer number or None value of number entity
+def getPhraseNumber(chrono_list, eid):
     
+    #loop through entity list to identify Number entity
+    for e in chrono_list:
+        if e.get_id() == eid:
+            print("RETURNING VALUE OF " + str(e.get_value()))
+            return(e.get_value())
+    
+    return("")
     
     
     
