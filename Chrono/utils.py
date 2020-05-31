@@ -611,7 +611,7 @@ def createTPEntity(items, counter, doctime):
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, type=None, value=None, doctime=doctime)
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, type=None, mod=None, value=None, doctime=doctime)
 
 ####
 #END_MODULE
