@@ -916,13 +916,14 @@ def getPhraseEntities(chrono_list):
 # @param list of ChronoEntities
 # @param String name of number entity
 # @return Integer number or None value of number entity
-def getPhraseNumber(chrono_list, eid):
+def getPhraseNumber(phase_text, chrono_list, eid):
     
     #loop through entity list to identify Number entity
     for e in chrono_list:
         if e.get_id() == eid:
             print("RETURNING VALUE OF " + str(e.get_value()))
             return(e.get_value())
+
     
     return("")
     

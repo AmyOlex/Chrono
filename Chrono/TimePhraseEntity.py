@@ -50,19 +50,20 @@ from Chrono import utils
 class TimePhraseEntity :
     
     ## The constructor
-    def __init__(self, id, text, start_span, end_span, type, value, doctime) :
+    def __init__(self, id, text, start_span, end_span, type, mod, value, doctime) :
         self.id = id
         self.text = text
         self.start_span = start_span
         self.end_span = end_span
         self.type = type
+        self.mod = mod
         self.value = value
         self.doctime = doctime
       
     ## String representation    
     def __str__(self) :
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
-        return(str(self.id) + " " + str(self.text) + span_str + " Type: " +str(self.type) + " Value: " + str(self.value) + " DocTime: " + str(self.doctime))
+        return(str(self.id) + " " + str(self.text) + span_str + " Type: " +str(self.type) + " Mod: " +str(self.mod) + " Value: " + str(self.value) + " DocTime: " + str(self.doctime))
     
 
     #### Methods to SET properties ###
@@ -89,6 +90,11 @@ class TimePhraseEntity :
     def setType(self, type) :
         self.type = type
         
+    ## Sets the entity's modifier
+    #  @param mod The modifier of TimePhrase temporal expression
+    def setMod(self, mod) :
+        self.mod = mod
+        
     ## Sets the entity's TimePhrase normalized value (this is in ISO format)
     #  @param value The entities normalized TimePhrase value
     def setValue(self, value) :
@@ -114,6 +120,10 @@ class TimePhraseEntity :
     ## Gets the entity's type
     def getType(self) :
         return(self.type)
+        
+    ## Gets the entity's modifier
+    def getMod(self) :
+        return(self.mod)
         
     ## Gets the entity's value
     def getValue(self) :
@@ -228,11 +238,11 @@ class TimePhraseEntity :
             if interval or period:
                 if interval:
                     duration = interval.get_value()
-                    dtime = utils.getPhraseNumber(chronolist, interval.get_number())
+                    dtime = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
                     print("INTERVAL HERE: " + str(duration) + " Num: " + str(dtime))
                 else:
                     duration = period.get_value()
-                    dtime = utils.getPhraseNumber(chronolist, period.get_number())
+                    dtime = utils.getPhraseNumber(self.text, chronolist, period.get_number())
                     print("PERIOD HERE: " + str(duration) + " Num: " + str(dtime))
                 
                 if duration in "Days" and dtime:
