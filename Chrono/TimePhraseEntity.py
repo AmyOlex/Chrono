@@ -123,16 +123,45 @@ class TimePhraseEntity :
     def getDoctime(self):
         return(self.doctime)
     
+    
     ## Uses the parsed Chrono entities to create the ISO value   
     def getISO(self, chronolist):
-        #determine which types are in the phrase
-        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
         
-        ## convert hour to 24 hour time if needed
+        for e in chronolist:
+            print("ENTITY: " + str(e))
+        
+        #determine which types are in the phrase
+        #year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
+        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getPhraseEntities(chronolist)
+        
+        yearV = year.get_value() if year else ""
+        monthV = month.get_value() if month else ""
+        dayV = day.get_value() if day else ""
+        hourV = hour.get_value() if hour else ""
+        minuteV = minute.get_value() if minute else ""
+        secondV = second.get_value() if second else ""
+
+        daypartV = daypart.get_value() if daypart else ""
+        dayweekV = dayweek.get_value() if dayweek else ""
+        intervalV = interval.get_value() if interval else ""
+        periodV = period.get_value() if period else ""
+        nthV = nth.get_value() if nth else ""
+        nxtV = nxt.get_value() if nxt else ""
+        thisV = this.get_value() if this else ""
+        tzV = tz.get_value() if tz else ""
+        ampmV = ampm.get_value() if ampm else ""
+        modifierV = modifier.get_value() if modifier else ""
+        lastV = last.get_value() if last else ""
+        
+        ## convert hour to 24 hour time if needed.
+        ## If flag is zero then no addition will be made, but if 1 then 12 hours will be added anytime the hour entitiy is used.
+        hour_flag = 0
         if hour and ampm:
-            if ampm == "PM" and int(hour) < 12:
+            if ampmV == "PM" and int(hour.get_value()) < 12:
                 print("Converting hour to 24-hour time.")
-                hour = int(hour) + 12
+                hourV = int(hour.get_value()) + 12
+                
+            
 
         iso = ""
         
@@ -142,22 +171,23 @@ class TimePhraseEntity :
            
         except:
             if month or day or year or hour or minute or second:
-                mytext = str(month) + " " + str(day) + ", " + str(year) + " " + str(hour) + ":" + str(minute) + ":" + str(second)
+                mytext = str(monthV) + " " + str(dayV) + ", " + str(yearV) + " " + str(hourV) + ":" + str(minuteV) + ":" + str(secondV)
                 print("My Full Date Text is: " + mytext)
                 tmpdate = dp.parse(mytext, fuzzy = True, default=self.doctime)
 
             else:
                 tmpdate = ""
         else:
-            if last:
-                if period == "Week" or dayweek:
+            if last and period:
+                if periodV in "Weeks" or dayweek:
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
-                elif period == "Month":
+                elif periodV in "Months":
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
-                elif period == "Year":
+                elif periodV in "Years":
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
                 else:
-                    tmpdate = ""
+                    #assume 7 days
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
         finally:
             
             if month and day and year and not (hour or minute or second):
@@ -197,18 +227,35 @@ class TimePhraseEntity :
             
             if interval or period:
                 if interval:
-                    duration = interval
+                    duration = interval.get_value()
+                    dtime = utils.getPhraseNumber(chronolist, interval.get_number())
+                    print("INTERVAL HERE: " + str(duration) + " Num: " + str(dtime))
                 else:
-                    duration = period
+                    duration = period.get_value()
+                    dtime = utils.getPhraseNumber(chronolist, period.get_number())
+                    print("PERIOD HERE: " + str(duration) + " Num: " + str(dtime))
                 
-                if duration == "Day":
-                    iso = "P1D"
-                if duration == "Week":
-                    iso = "P1W"
-                if duration == "Month":
-                    iso = "P1M"
-                if duration == "Year":
-                    iso = "P1Y"
+                if duration in "Days" and dtime:
+                    iso = "P" + str(dtime) + "D"
+                if duration in "Weeks" and dtime:
+                    iso = "P" + str(dtime) + "W"
+                if duration in "Months" and dtime:
+                    iso = "P" + str(dtime) + "M"
+                if duration in "Years" and dtime:
+                    iso = "P" + str(dtime) + "Y"
+                if duration in "Hours" and dtime:
+                    iso = "PT" + str(dtime) + "H"
+                if duration in "Minutes" and dtime:
+                    iso = "PT" + str(dtime) + "M"
+                if duration in "Seconds" and dtime:
+                    iso = "PT" + str(dtime) + "S"
+                if duration in "Decades" and dtime:
+                    iso = "P" + str(int(dtime) * 10) + "Y"
+                if duration in "Century" and dtime:
+                    iso = "P100Y"
+                if duration in "Centuries" and dtime:
+                    iso = "P" + str(int(dtime) * 100) + "Y"
+                    
 
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
