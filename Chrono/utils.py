@@ -128,10 +128,12 @@ def getWhitespaceTokens(file_path):
 # @author Amy Olex
 # @param file_path The path and file name of the dct file.
 # @return A datetime object
-def getDocTime(file_path):
-    file = open(file_path, "r")
-    text = file.read()
-    return(dateutil.parser.parse(text))
+def getDocTime(file, i2b2):
+    file = open(file, "r")
+    lines = file.readlines()
+    print("In get DocTime. Admit Date: " + lines[1])
+    print("In get DocTime. Discharge Date: " + lines[3])
+    return(dateutil.parser.parse(lines[1]))
 
  ####
  #END_MODULE

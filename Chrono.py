@@ -156,7 +156,10 @@ if __name__ == "__main__":
         my_chrono_ID_counter = 1
         
         ## parse out the doctime
-        doctime = utils.getDocTime(infiles[f] + ".dct")
+        if args.I is not None:
+            doctime = utils.getDocTime(infiles[f], i2b2=True)
+        else:
+            doctime = utils.getDocTime(infiles[f] + ".dct", i2b2=False)
         if(debug) : print(doctime)
     
         ## parse out reference tokens
