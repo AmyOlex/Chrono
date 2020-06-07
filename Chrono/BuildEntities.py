@@ -140,7 +140,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     
     #print("TIMEX LIST: " + str(timex_list))
       
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, timex_list
     
 ####
 #END_MODULE
