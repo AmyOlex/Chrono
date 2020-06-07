@@ -145,7 +145,7 @@ if __name__ == "__main__":
         if(debug) : print(doctime)
     
         ## parse out reference tokens
-        text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
+        raw_text, text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
         
@@ -165,9 +165,11 @@ if __name__ == "__main__":
                 print(c)
     
 
-        chrono_master_list, my_chrono_ID_counter = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+        chrono_master_list, my_chrono_ID_counter, timex_phrases = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
+        
         utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+        utils.write_i2b2(timex_phrases, outfile=outfiles[f])
     
     

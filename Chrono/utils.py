@@ -118,7 +118,7 @@ def getWhitespaceTokens(file_path):
             sent_boundaries[nw_idx] = 1
             tok_counter = tok_counter + len(sent_split)
             
-    return text, tokenized_text, text_spans, tags, sent_boundaries
+    return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries
 
 
 ## Reads in the dct file and converts it to a datetime object.
