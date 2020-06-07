@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
+    parser.add_argument('-I', metavar='i2b2outdir', type=str, help='The path to the i2b2 XML output directory.', required=False, default=None)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -72,16 +73,20 @@ if __name__ == "__main__":
     indirs = []
     infiles = []
     outfiles = []
-    outdirs = []
+
     for root, dirs, files in os.walk(args.i, topdown = True):
        for name in dirs:
            
           indirs.append(os.path.join(root, name))
           infiles.append(os.path.join(root,name,name))
-          outfiles.append(os.path.join(args.o,name,name))
-          outdirs.append(os.path.join(args.o,name))
-          if not os.path.exists(os.path.join(args.o,name)):
-              os.makedirs(os.path.join(args.o,name))
+          if args.I is not None:
+              outfiles.append(os.path.join(args.I,name))
+              if not os.path.exists(os.path.join(args.I)):
+                  os.makedirs(os.path.join(args.I))
+          else:
+              outfiles.append(os.path.join(args.o,name,name))
+              if not os.path.exists(os.path.join(args.o,name)):
+                  os.makedirs(os.path.join(args.o,name))
     
     ## Get training data for ML methods by importing pre-made boolean matrix
     ## Train ML methods on training data
@@ -169,7 +174,10 @@ if __name__ == "__main__":
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         
-        utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
-        utils.write_i2b2(raw_text, timex_phrases, outfile=outfiles[f])
+        if args.I is not None:
+            utils.write_i2b2(raw_text, timex_phrases, outfile=outfiles[f])
+        else:
+            utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])
+        
     
     

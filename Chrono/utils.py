@@ -120,6 +120,9 @@ def getWhitespaceTokens(file_path):
             
     return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries
 
+ ####
+ #END_MODULE
+ #### 
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
@@ -130,7 +133,35 @@ def getDocTime(file_path):
     text = file.read()
     return(dateutil.parser.parse(text))
 
-  
+ ####
+ #END_MODULE
+ #### 
+
+## Writes out the full XML file in i2b2 format with all timex entities.
+# @author Amy Olex
+# @param text The raw text of the document.
+# @param phrase_list The parsed temporal phrases as a list of TimePhraseEntity objects with timex metadata.
+# @param outfile A string containing the output file location and beginning of file name.
+def write_i2b2(text, phrase_list, outfile):
+    fout = open(outfile + ".xml", "w")
+    
+    fout.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<ClinicalNarrativeTemporalAnnotation>\n<TEXT><![CDATA[\n")
+    
+    fout.write(text)
+    fout.write("\n")
+    fout.write("]]></TEXT>\n<TAGS>\n")
+
+    for c in phrase_list :
+        fout.write(c.i2b2format())
+    
+    fout.write("</TAGS>\n</ClinicalNarrativeTemporalAnnotation>")
+    
+    fout.close()
+ ####
+ #END_MODULE
+ ####  
+ 
+ 
 ## Writes out the full XML file for all T6entities in list.
 # @author Amy Olex
 # @param chrono_list The list of Chrono objects needed to be written in the file.
