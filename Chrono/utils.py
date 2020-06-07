@@ -65,9 +65,9 @@ import datetime
 # @return spans The coordinates for each token.
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
-    text = file.read()
+    raw_text = file.read()
     ## Testing the replacement of all "=" signs by spaces before tokenizing.
-    text = text.translate(str.maketrans("=", ' '))
+    text = raw_text.translate(str.maketrans("=", ' '))
     
     ## Tokenize the sentences
     sentences = sent_tokenize(text)
