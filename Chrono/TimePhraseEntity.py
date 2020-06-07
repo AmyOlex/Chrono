@@ -134,7 +134,7 @@ class TimePhraseEntity :
         return(self.doctime)
     
     ## Print i2b2 format
-    def XMLformat(self):
+    def i2b2format(self):
         #<TIMEX3 id="T0" start="18" end="26" text="10/17/95" type="DATE" val="1995-10-17" mod="NA" />
     
         return("<TIMEX3 id=\"" + str(self.id) + "\" start=\"" + str(self.start_span) + "\" end=\"" + str(self.end_span) + "\" text = \"" + str(self.text) + "\" type=\"" + str(self.type) + "\" val=\"" + str(self.value) + "\" mod=\"" + str(self.mod) + "\" />")
