@@ -56,37 +56,47 @@ if __name__ == "__main__":
     
     ## Parse input arguments
     parser = argparse.ArgumentParser(description='Parse a directory of files to identify and normalize temporal information.')
-    parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=True)
+    parser.add_argument('-i', metavar='inputdir', type=str, help='path to the input directory.', required=False, default=None)
+    parser.add_argument('-I', metavar='i2b2inputdir', type=str, help='path to the i2b2 input directory.', required=False, default=None)
     parser.add_argument('-x', metavar='fileExt', type=str, help='input file extension if exists. Default is and empty string', required=False, default="")
-    parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=True)
+    parser.add_argument('-o', metavar='outputdir', type=str, help='path to the output directory.', required=False, default=None)
+    parser.add_argument('-O', metavar='i2b2outdir', type=str, help='The path to the i2b2 XML output directory.', required=False, default=None)
     parser.add_argument('-m', metavar='MLmethod', type=str, help='The machine learning method to use. Must be one of NN (neural network), DT (decision tree), SVM (support vector machine), NB (naive bayes, default).', required=False, default='NB')
     parser.add_argument('-w', metavar='windowSize', type=str, help='An integer representing the window size for context feature extraction. Default is 3.', required=False, default=3)
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
-    parser.add_argument('-I', metavar='i2b2outdir', type=str, help='The path to the i2b2 XML output directory.', required=False, default=None)
+    
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
+    
+    #### need to check for input and output of one type here.
+    
+    
+    
     
     ## Get list of folder names in the input directory
     indirs = []
     infiles = []
     outfiles = []
-
-    for root, dirs, files in os.walk(args.i, topdown = True):
-       for name in dirs:
-           
-          indirs.append(os.path.join(root, name))
-          infiles.append(os.path.join(root,name,name))
-          if args.I is not None:
-              outfiles.append(os.path.join(args.I,name))
-              if not os.path.exists(os.path.join(args.I)):
-                  os.makedirs(os.path.join(args.I))
-          else:
-              outfiles.append(os.path.join(args.o,name,name))
-              if not os.path.exists(os.path.join(args.o,name)):
-                  os.makedirs(os.path.join(args.o,name))
+    
+    if args.O is not None:
+        for root, dirs, files in os.walk(args.I, topdown = True):
+            for name in files:
+                indirs.append(os.path.join(args.I))
+                infiles.append(os.path.join(args.I,name))
+                outfiles.append(os.path.join(args.O,name))
+                if not os.path.exists(os.path.join(args.O)):
+                    os.makedirs(os.path.join(args.O))
+    else:
+        for root, dirs, files in os.walk(args.i, topdown = True):
+           for name in dirs:
+                indirs.append(os.path.join(root, name))
+                infiles.append(os.path.join(root,name,name))
+                outfiles.append(os.path.join(args.o,name,name))
+                if not os.path.exists(os.path.join(args.o,name)):
+                    os.makedirs(os.path.join(args.o,name))
     
     ## Get training data for ML methods by importing pre-made boolean matrix
     ## Train ML methods on training data
@@ -174,7 +184,7 @@ if __name__ == "__main__":
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         
-        if args.I is not None:
+        if args.O is not None:
             utils.write_i2b2(raw_text, timex_phrases, outfile=outfiles[f])
         else:
             utils.write_xml(chrono_list=chrono_master_list, outfile=outfiles[f])

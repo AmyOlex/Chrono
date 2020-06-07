@@ -153,6 +153,7 @@ def write_i2b2(text, phrase_list, outfile):
 
     for c in phrase_list :
         fout.write(c.i2b2format())
+        fout.write("\n")
     
     fout.write("</TAGS>\n</ClinicalNarrativeTemporalAnnotation>")
     
