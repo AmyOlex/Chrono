@@ -145,7 +145,8 @@ def getDocTime(file, i2b2):
 # @param phrase_list The parsed temporal phrases as a list of TimePhraseEntity objects with timex metadata.
 # @param outfile A string containing the output file location and beginning of file name.
 def write_i2b2(text, phrase_list, outfile):
-    fout = open(outfile + ".xml", "w")
+    outname = outfile.replace(".txt", "")
+    fout = open(outname, "w")
     
     fout.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<ClinicalNarrativeTemporalAnnotation>\n<TEXT><![CDATA[\n")
     
@@ -953,13 +954,16 @@ def getPhraseEntities(chrono_list):
 def getPhraseNumber(phase_text, chrono_list, eid):
     
     #loop through entity list to identify Number entity
-    for e in chrono_list:
-        if e.get_id() == eid:
-            print("RETURNING VALUE OF " + str(e.get_value()))
-            return(e.get_value())
-
+    if eid:
+        for e in chrono_list:
+            if e.get_id() == eid:
+                print("RETURNING VALUE OF " + str(e.get_value()))
+                return(e.get_value(), "NA")
+    else:
+        print("NO NUMBER")
+        
     
-    return("")
+    return("","NA")
     
     
     
