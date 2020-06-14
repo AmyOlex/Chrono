@@ -57,6 +57,17 @@ import copy
 import dateutil.parser as dup
 import datetime
 
+## Load the dictionary files
+global APPROX3
+global APPROX10
+global PERIODINT
+
+APPROX3 = [line.rstrip() for line in open("/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/dictionary/Approximation3.txt", "r")]
+APPROX10 = [line.rstrip() for line in open("/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/dictionary/Approximation10.txt", "r")]
+PERIODINT = [line.rstrip() for line in open("/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/dictionary/Period-Interval.txt", "r")]
+
+
+
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
 # @param file_path The path and file name of the text file to be parsed.
@@ -951,7 +962,7 @@ def getPhraseEntities(chrono_list):
 # @param list of ChronoEntities
 # @param String name of number entity
 # @return Integer number or None value of number entity
-def getPhraseNumber(phase_text, chrono_list, eid):
+def getPhraseNumber(phrase_text, chrono_list, eid):
     
     #loop through entity list to identify Number entity
     if eid:
@@ -961,9 +972,23 @@ def getPhraseNumber(phase_text, chrono_list, eid):
                 return(e.get_value(), "NA")
     else:
         print("NO NUMBER")
-        
-    
+        print(APPROX3)
+        phrase_set = set(phrase_text.split())
+        print(phrase_set)
+        intersect3 = list(set(APPROX3) & phrase_set)
+        print(intersect3)
+        intersect10 = list(set(APPROX10) & phrase_set)
+        if len(intersect3) == 1:
+            return(3, "APPROX")
+        elif len(intersect10) == 1:
+            return(10,"APPROX")
+        elif phrase_text in PERIODINT:
+            if phrase_text[-1:] == "s":
+                return(2,"APPROX")
+            else:
+                return(1,"APPROX")
     return("","NA")
+
     
     
     

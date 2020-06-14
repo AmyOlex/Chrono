@@ -281,6 +281,22 @@ class TimePhraseEntity :
                     iso = "P100Y"
                 if duration in "Centuries" and dtime:
                     iso = "P" + str(int(dtime) * 100) + "Y"
+                if duration in "Day" and dtime:
+                    iso = "P" + str(dtime) + "D"
+                if duration in "Week" and dtime:
+                    iso = "P" + str(dtime) + "W"
+                if duration in "Month" and dtime:
+                    iso = "P" + str(dtime) + "M"
+                if duration in "Year" and dtime:
+                    iso = "P" + str(dtime) + "Y"
+                if duration in "Hour" and dtime:
+                    iso = "PT" + str(dtime) + "H"
+                if duration in "Minute" and dtime:
+                    iso = "PT" + str(dtime) + "M"
+                if duration in "Second" and dtime:
+                    iso = "PT" + str(dtime) + "S"
+                if duration in "Decade" and dtime:
+                    iso = "P" + str(int(dtime) * 10) + "Y"
                     
 
             #if the ISO value has T00:00:00 in it, remove it.
