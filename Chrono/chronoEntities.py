@@ -844,14 +844,15 @@ class ChronoEveryNthOperator(ChronoOperator):
 class ChronoLastOperator(ChronoOperator):
 	def __init__(self, entityID, start_span, end_span, semantics="Interval-Not-Included",
 	             interval_type="DocTime",interval=None, period=None,
-	             repeating_interval=None):
+	             repeating_interval=None, modifier=None):
 		super().__init__(entityID, start_span, end_span, "Last")
 		self.semantics = semantics
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
-		
+		self.modifier = modifier
+
 	def set_semantics(self, semantics):
 		self.semantics = semantics
 					
@@ -885,6 +886,10 @@ class ChronoLastOperator(ChronoOperator):
 	def get_value(self):
 		return self.type
 
+	def set_modifier(self):
+		self.modifier = modifier
+
+        
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
 		return(super().print_xml() + "\t<Semantics>{}</Semantics>\n"

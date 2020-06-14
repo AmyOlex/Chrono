@@ -42,8 +42,10 @@ then
 		if [ $DATASET = "train" ]
 		then
 			##DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
-			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/SemEval-OfficialTrain-Subset"
-			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
+			##DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/THYME_subset"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_train"
+			##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/i2b2_results/"
 			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $DATASET = "eval" ]
@@ -142,7 +144,7 @@ then
         then	
 		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 	else
-		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE 
 		#cd $ANAFORA_DIR
 
 		#echo "EVERYTHING"

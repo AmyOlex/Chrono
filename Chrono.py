@@ -83,6 +83,9 @@ if __name__ == "__main__":
     
     if args.O is not None:
         for root, dirs, files in os.walk(args.I, topdown = True):
+            
+            files.sort()
+            print("FILELIST: " + str(files))
             for name in files:
                 indirs.append(os.path.join(args.I))
                 infiles.append(os.path.join(args.I,name))
