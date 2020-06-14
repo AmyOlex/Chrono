@@ -144,6 +144,9 @@ class TimePhraseEntity :
     ## Uses the parsed Chrono entities to create the ISO value   
     def getISO(self, chronolist):
         
+        mytype = "TIME"
+        mymod = "NA"
+        
         for e in chronolist:
             print("ENTITY: " + str(e))
         
@@ -216,6 +219,7 @@ class TimePhraseEntity :
                 if d < 10:
                     d = "0" + str(d)
                 iso = str(y) + "-" + str(m) + "-" + str(d)
+                mytype = "DATE"
                 
             elif month and year and not day:
                 m = tmpdate.month
@@ -223,13 +227,17 @@ class TimePhraseEntity :
                 if m < 10:
                     m = "0" + str(m)
                 iso = str(y) + "-" + str(m)
+                mytype = "DATE"
                 
             elif year and not (day or month):
                 iso = str(tmpdate.year)
+                mytype = "DATE"
             elif dayweek:
                 iso = str(dp.parse(self.text, fuzzy = True, default=self.doctime).isoformat())
+                mytype = "DATE"
             elif tmpdate:
                 iso = tmpdate.isoformat()
+                mytype = "DATE"
             else:
                 iso = tmpdate
             
@@ -239,19 +247,20 @@ class TimePhraseEntity :
             
             ## low hanging fruit, periods and intervals
             ## I will have to pull out Frequency from this as the term "daily" is a frequency, but will work on that later.
-            ## I also will need the NUMBER associated with this phrase, so have to modify the method to return the VALUE.
-            ## lets assume 1 for now to get the basic structure.
             
             if interval or period:
+                mytype = "DURATION"
+                
                 if interval:
                     duration = interval.get_value()
-                    dtime = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
+                    dtime,mod = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
                     print("INTERVAL HERE: " + str(duration) + " Num: " + str(dtime))
+
                 else:
                     duration = period.get_value()
-                    dtime = utils.getPhraseNumber(self.text, chronolist, period.get_number())
+                    dtime,mod = utils.getPhraseNumber(self.text, chronolist, period.get_number())
                     print("PERIOD HERE: " + str(duration) + " Num: " + str(dtime))
-                
+
                 if duration in "Days" and dtime:
                     iso = "P" + str(dtime) + "D"
                 if duration in "Weeks" and dtime:
@@ -276,6 +285,8 @@ class TimePhraseEntity :
 
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
+            self.type = mytype
+            self.mod = mymod
             print("MY ISO:::: " + iso)
              
             
