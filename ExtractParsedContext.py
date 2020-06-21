@@ -42,69 +42,83 @@ if __name__ == "__main__":
     ## Parse input arguments
     parser = argparse.ArgumentParser(description='Extract entity context information from text using the AnaforaXML Annotation files.')
     parser.add_argument('-x', metavar='annodir', type=str, help='path to the input directory that holds the annotated files.', required=True)
-    parser.add_argument('-F', metavar='annotype', type=str, help='the format of the annotation files. Can be xml or ann. Default is xml.', required=False, default="xml")
+    parser.add_argument('-F', metavar='annotype', type=str, help='the format of the annotation files. Can be scate, i2b2, or ann. Default is scate.', required=False, default="scate")
     parser.add_argument('-i', metavar='filelist', type=str, help='File with list of documents to parse.', required=True)
     parser.add_argument('-t', metavar='textfiledir', type=str, help='Path to directory holding the raw text files.', required=True)
     parser.add_argument('-E', metavar='textfileext', type=str, help='Extension of the raw text files.  Default is blank for no extension. All text files must have the same extension.', required=False, default="")
     parser.add_argument('-o', metavar='outputfile', type=str, help='Name of the output file to save results to.', required=True)
-    parser.add_argument('-e', metavar='entity', type=str, help='The name of the entity we want to extract.', required=True)
-    parser.add_argument('-f', metavar='flag', type=str, help='gold or chrono', required=True)
+    parser.add_argument('-e', metavar='entity', type=str, help='The name of the entity we want to extract (for i2b2 this is - TLINK, TIMEX3, EVENT).', required=True)
+    parser.add_argument('-f', metavar='flag', type=str, help='The type of files being parsed, either gold standard files or chrono annotated files (only matters for SCATE annotations).', required=False, default="chrono")
     parser.add_argument('-c', metavar='context', type=str, help='The number of characters before and after for context.', required=False, default=20)
 
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
     
-    def getTargetSpansXML(xmlfile, entity):
+    def getTargetSpansXML(xmlfile, entity, filetype):
         xmldoc = minidom.parse(xmlfile)
-        itemlist = xmldoc.getElementsByTagName('entity')
-        entitylist = []
-        for item in itemlist:
-            eid = item.getElementsByTagName('id')[0].firstChild.data
-            espan = item.getElementsByTagName('span')[0].firstChild.data
-            etype = item.getElementsByTagName('type')[0].firstChild.data
-            eproperties = item.getElementsByTagName('properties')
+        
+        if filetype == "i2b2":
+            itemlist = xmldoc.getElementsByTagName(entity)
+            entitylist = []
+            for item in itemlist:
+                eid = item.getAttribute('id')
+                estart = item.getAttribute('start')
+                eend = item.getAttribute('end')
+                etype = item.getAttribute('type')
+                evalue = item.getAttribute('val')
+                emod = item.getAttribute('mod')
+                entitylist.append([eid, etype, int(estart), int(eend), emod, evalue])
+        
+        elif filetype == "scate":
+            itemlist = xmldoc.getElementsByTagName('entity')
+            entitylist = []
+            for item in itemlist:
+                eid = item.getElementsByTagName('id')[0].firstChild.data
+                espan = item.getElementsByTagName('span')[0].firstChild.data
+                etype = item.getElementsByTagName('type')[0].firstChild.data
+                eproperties = item.getElementsByTagName('properties')
             
-            if(len(eproperties[0].getElementsByTagName('Number')) == 1):
-                tmp = eproperties[0].getElementsByTagName('Number')[0].firstChild
-                if tmp is not None:
-                    enumber = eproperties[0].getElementsByTagName('Number')[0].firstChild.data
+                if(len(eproperties[0].getElementsByTagName('Number')) == 1):
+                    tmp = eproperties[0].getElementsByTagName('Number')[0].firstChild
+                    if tmp is not None:
+                        enumber = eproperties[0].getElementsByTagName('Number')[0].firstChild.data
+                    else:
+                        enumber = "None"
                 else:
-                    enumber = "None"
-            else:
-                enumber = ""
-            
-            
-            if(len(eproperties[0].getElementsByTagName('Value')) == 1):
-                tmp = eproperties[0].getElementsByTagName('Value')[0].firstChild
-                if tmp is not None:
-                    evalue = eproperties[0].getElementsByTagName('Value')[0].firstChild.data
+                    enumber = ""
+                    
+                if(len(eproperties[0].getElementsByTagName('Value')) == 1):
+                    tmp = eproperties[0].getElementsByTagName('Value')[0].firstChild
+                    if tmp is not None:
+                        evalue = eproperties[0].getElementsByTagName('Value')[0].firstChild.data
+                    else:
+                        evalue = "None"
+                elif(len(eproperties[0].getElementsByTagName('Type')) == 1):
+                    tmp = eproperties[0].getElementsByTagName('Type')[0].firstChild
+                    if tmp is not None:
+                        evalue = eproperties[0].getElementsByTagName('Type')[0].firstChild.data
+                    else:
+                        evalue = "None"
                 else:
-                    evalue = "None"
-            elif(len(eproperties[0].getElementsByTagName('Type')) == 1):
-                tmp = eproperties[0].getElementsByTagName('Type')[0].firstChild
-                if tmp is not None:
-                    evalue = eproperties[0].getElementsByTagName('Type')[0].firstChild.data
-                else:
-                    evalue = "None"
-            else:
-                evalue = ""
+                    evalue = ""
             
-            if etype == entity:
-                start, end = espan.split(",")
-                entitylist.append([eid, etype, int(start), int(end), enumber, evalue])
+                if etype == entity:
+                    start, end = espan.split(",")
+                    entitylist.append([eid, etype, int(start), int(end), enumber, evalue])
+        
         return(entitylist)   
     
     def writeTargetSpansXML(infile, entitylist, context, outfile):
         linestring = open(infile, 'r').read()
         term_set = set()
-        
+        print(entitylist)
         for entity in entitylist:
             start = max(0,int(entity[2])-context)
             end = min(len(linestring), int(entity[3])+context)
             
             if context > 0:
                 outfile.write("\n\nID: " + entity[0] + ", Type: " + entity[1] + ", Span: (" + str(entity[2]) + "," + str(entity[3]) + 
-                                "), Raw Token: " + linestring[entity[2]:entity[3]] + ", Value: " + str(entity[5]) + ", Number: " + entity[4])
+                                "), Raw Token: " + linestring[entity[2]:entity[3]] + ", Value: " + str(entity[5]) + ", Number/i2b2Modifier: " + entity[4])
                 outfile.write("\n" + linestring[start:end])
         
             else:
@@ -182,22 +196,28 @@ if __name__ == "__main__":
     terms = set()
     
     
-    if args.F == "xml":
+    if args.F == "SCATE" or args.F == "i2b2":
     
         for f in inputfiles:
         
             ## Open the XML file and parse it
-            if args.f == "gold":
+            if args.f == "gold" and args.F == "scate":
                 path = args.x + "/" + f + "/" + f + ".TimeNorm.gold.completed.xml"
-            else:
+                path2 = args.t + "/" + f + "/" + f + args.E
+            elif args.f == "chrono" and args.F == "scate":
                 path = args.x + "/" + f + "/" + f + ".completed.xml"
+                path2 = args.t + "/" + f + "/" + f + args.E
+            elif args.F == "i2b2":
+                path = args.x + "/" + f
+                path2 = args.t + "/" + f + args.E
+                print(path2)
         
             if(os.path.isfile(path)):
-                myElist = getTargetSpansXML(path, args.e)
-        
+                myElist = getTargetSpansXML(path, args.e, args.F)
+                print(myElist)
                 ## Pass this information to extract the text segments and write to file
-                path2 = args.t + "/" + f + "/" + f
                 if(os.path.isfile(path2)):
+                    print("HERE")
                     if int(args.c) > 0:
                         out.write("\n\n*****\nFile: " + f)
                 
