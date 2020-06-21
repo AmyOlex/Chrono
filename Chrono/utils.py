@@ -164,7 +164,7 @@ def write_i2b2(text, phrase_list, outfile):
     fout.write(text)
     fout.write("\n")
     fout.write("]]></TEXT>\n<TAGS>\n")
-
+    print("Phrase list length: " + str(len(phrase_list)))
     for c in phrase_list :
         fout.write(c.i2b2format())
         fout.write("\n")

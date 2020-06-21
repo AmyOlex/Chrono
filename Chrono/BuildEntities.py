@@ -112,11 +112,11 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         
         print("XXXXXXXXX")
         
-        if len(chrono_tmp_list) > 0:
-            print(s)
-            timex_list.append(s)
-            for e in chrono_tmp_list:
-                print(e)
+       # if len(chrono_tmp_list) > 0:
+        #    print(s)
+         #   timex_list.append(s)
+          #  for e in chrono_tmp_list:
+           #     print(e)
         
         tmplist, chrono_id = buildSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
         ## tmplist is a list of ChronoEntities for a single phrase, but can be returned empty
