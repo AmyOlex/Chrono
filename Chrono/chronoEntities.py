@@ -724,6 +724,7 @@ class ChronoTimeZoneEntity(ChronoRepeatingIntervalEntity):
 	def print_xml(self):
 		return(super().print_xml() + "</properties>\n\t</entity>\n")
 
+
 ## Super class for all Operators
 class ChronoOperator(ChronoEntity):
 	def __init__(self, entityID, start_span, end_span, operator_type):
@@ -1353,4 +1354,37 @@ class ChronoEvent(ChronoOtherEntity):
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
 		return(super().print_xml() + "</properties>\n\t</entity>\n")
+ 
+    
+class ChronoFrequency(ChronoOtherEntity):
+	def __init__(self, entityID, start_span, end_span, every=None, number=None, modifier=None):
+		super().__init__(entityID, start_span, end_span, "Other")
+		self.every = every
+        self.number = number
+		
+	def set_every(self, every):
+		self.every = every
+		
+	def get_every(self):
+		return self.every
+    
+	def set_number(self, number):
+		self.number = number
+		
+	def get_number(self):
+		return self.number
+        
+	def set_modifier(self, modifier):
+		self.modifier = modifier
+		
+	def get_modifier(self):
+		return self.modifier
+
+	## Prints the xml leaving empty variables blank
+	def print_xml(self):
+		return(super().print_xml() + "\t<Type>{}</Type>\n"
+			  "\t\t\t<Every>{}</Every>\n\t\t\t<Number>{}</Number>\n"
+			  "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t"
+			  "</entity>\n".format(self.otherType or '',
+              self.every or '', self.number or '', self.modifier or ''))
 
