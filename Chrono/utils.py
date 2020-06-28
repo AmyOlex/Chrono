@@ -71,8 +71,8 @@ global APPROX10
 global PERIODINT
 
 APPROX3 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation3.txt"), "r")]
-APPROX10 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation10.txt", "r")]
-PERIODINT = [line.rstrip() for line in open(os.path.join(dictpath,"Period-Interval.txt", "r")]
+APPROX10 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation10.txt"), "r")]
+PERIODINT = [line.rstrip() for line in open(os.path.join(dictpath,"Period-Interval.txt"), "r")]
 
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
