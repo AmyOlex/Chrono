@@ -38,8 +38,16 @@
 
 
 import string
+import os
+import inspect
 import re
 from Chrono import utils
+
+global dictpath
+thisfilename = inspect.getframeinfo(inspect.currentframe()).filename
+thispath = os.path.dirname(os.path.abspath(thisfilename))
+dictpath = os.path.join(thispath,"../dictionary")
+
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
@@ -381,6 +389,9 @@ def hasTempText(text):
                 return False
     return False
 
+####
+#END_MODULE
+####
 
 ## Takes in a string and identifies if it contains a temporal modifier
 # @author Luke Maffey
@@ -393,6 +404,31 @@ def hasModifierText(text):
     text_list = text_norm.split(" ")
 
     temp_text = ["nearly", "almost", "or so", "late", "mid","fiscal","fy", "over", "early", "few", "approximately", "<", "beginning"]
+
+    for t in text_list:
+        answer = next((m for m in temp_text if m in t), None)
+        if answer is not None:
+            answer2 = next((m for m in temp_text if t in m), None)
+            if answer2 is not None:
+                return True
+            else:
+                return False
+    return False
+####
+#END_MODULE
+####
+
+## Takes in a string and identifies if it contains a temporal clinical abbreviation
+# @author Amy Olex
+# @param text String being parsed
+# @return Outputs True if it contains a clinical temporal abbreviation
+def hasClinAbr(text):
+    # not we do not want to remove punctuation or loiwercase because these features are important for identifying abbreviations.
+    # convert to list
+    text_list = text.split(" ")
+
+    #load in dictionary of clinical abbreviations
+    temp_text = [line.rstrip() for line in open(os.path.join(dictpath, "AbrClinical.txt"), "r")]
 
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)

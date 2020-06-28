@@ -35,6 +35,7 @@
 import argparse
 import os
 import pickle
+import inspect
 
 from chronoML import DecisionTree as DTree
 from chronoML import RF_classifier as RandomForest
@@ -46,6 +47,9 @@ from Chrono import utils
 from keras.models import load_model
 
 debug=False
+
+
+
 ## This is the driver method to run all of Chrono.
 # @param INDIR The location of the directory with all the files in it.
 # @param OUTDIR The location of the directory where you want all the output written.
@@ -72,8 +76,11 @@ if __name__ == "__main__":
     ## Now we can access each argument as args.i, args.o, args.r
     
     #### need to check for input and output of one type here.
-    
-    
+    global dictpath
+    thisfilename = inspect.getframeinfo(inspect.currentframe()).filename
+    thispath = os.path.dirname(os.path.abspath(thisfilename))
+    dictpath = os.path.join(thispath,"dictionary")
+    print("The dictionary path: " + str(dictpath))
     
     
     ## Get list of folder names in the input directory

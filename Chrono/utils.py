@@ -56,16 +56,23 @@ import string
 import copy
 import dateutil.parser as dup
 import datetime
+import inspect
+import os
 
 ## Load the dictionary files
+
+global dictpath
+thisfilename = inspect.getframeinfo(inspect.currentframe()).filename
+thispath = os.path.dirname(os.path.abspath(thisfilename))
+dictpath = os.path.join(thispath,"../dictionary")
+
 global APPROX3
 global APPROX10
 global PERIODINT
 
-APPROX3 = [line.rstrip() for line in open("/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/dictionary/Approximation3.txt", "r")]
-APPROX10 = [line.rstrip() for line in open("/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/dictionary/Approximation10.txt", "r")]
-PERIODINT = [line.rstrip() for line in open("/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/dictionary/Period-Interval.txt", "r")]
-
+APPROX3 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation3.txt"), "r")]
+APPROX10 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation10.txt", "r")]
+PERIODINT = [line.rstrip() for line in open(os.path.join(dictpath,"Period-Interval.txt", "r")]
 
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
@@ -489,6 +496,12 @@ def temporalTest(tok):
     m = re.search('([0-9]{1,4}[-/][0-9]{1,2}[-/][0-9]{1,4})', tok)
     if m is not None:
         return True
+    
+    #look for date patterns mm[/-]dd, mm[/-]yy, mm[/-]yyyy
+    m = re.search('([0-9]{1,2}[-/][0-9]{1,4})', tok)
+    if m is not None:
+        return True
+    
     #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998 or 980304
     m = re.search('([0-9]{4,8})', tok)
     if m is not None:
@@ -522,6 +535,8 @@ def temporalTest(tok):
     if tt.hasTempText(tok):
         return True
     if tt.hasModifierText(tok):
+        return True
+    if tt.hasClinAbr(tok):
         return True
 
 ####
