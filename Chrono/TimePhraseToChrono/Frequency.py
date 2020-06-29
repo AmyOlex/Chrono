@@ -21,10 +21,10 @@ def buildFrequency(s, chrono_id, chrono_list):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
 
-        chrono_last_entity = chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
+        chrono_freq_entity = chrono.ChronoFrequency(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan, end_span=abs_EndSpan)
         
         chrono_id = chrono_id + 1
-        chrono_list.append(chrono_last_entity)
+        chrono_list.append(chrono_freq_entity)
 
     return chrono_list, chrono_id
 
@@ -41,9 +41,9 @@ def hasFrequency(tpentity):
     #text_norm = text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
     ## right now we are only looking at abbreviations for frequencies, so I will not transform the text or we will loose information.
     
-    search_string = FREQ.join("|")
-    print("FREQUENCY: " + search_string)
-    lst = re.search('(last|previously|pre|later|earlier|early|previous|past|lately|final|latest|prior|recent|recently)', text_norm)
+    search_string = "(" + "|".join(FREQ) + ")"
+    search_string = search_string.replace(".", "\.")
+    lst = re.search(search_string, text)
 
     if lst is not None:
         return True, lst.group(1), lst.start(1), lst.end(1)
