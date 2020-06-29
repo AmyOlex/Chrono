@@ -498,7 +498,7 @@ def temporalTest(tok):
         return True
     
     #look for date patterns mm[/-]dd, mm[/-]yy, mm[/-]yyyy
-    m = re.search('([0-9]{1,2}[-/][0-9]{1,4})', tok)
+    m = re.search('([0-9]{1,2}[-/][0-9]{2,4})', tok)
     if m is not None:
         return True
     

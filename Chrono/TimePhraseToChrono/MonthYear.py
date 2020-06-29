@@ -201,6 +201,8 @@ def build2DigitYear(s, chrono_id, chrono_list, flags):
 
         # Check for Month in same element
         bMonth, textMonth, startSpanMonth, endSpanMonth = hasMonthOfYear(s)
+        print("My Month")
+        print(textMonth)
         if bMonth and not flags["month"]:
             flags["month"] = True
             abs_StartSpanMonth = ref_StartSpan + startSpanMonth
@@ -306,7 +308,7 @@ def has2DigitYear(tpentity):
             # get start coordinate of this token in the full string so we can calculate the position of the temporal matches.
             text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
 
-            # define regular expression to find a 2-digit year
+            # define regular expression to find a 2-digit year in the following patterns: mm/dd/yy or mm-dd-yy or dd/mm/yy or dd-mm-yy or dd-MMM-yy or dd/MMM/yy or dd-MMMM-yy or dd/MMMM/yy
             result = re.search('([0-9]{1,2})[-/]([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2})', text)
             
             if result:
@@ -317,6 +319,17 @@ def has2DigitYear(tpentity):
                     return True, split_result[2], text_start + start_idx, text_start + end_idx
                 else:
                     return False, None, None, None
+            else:
+                # define regular expression to find a 2-digit year in the following patterns: mm/yy or mm-yy or dd/yy or dd-yy or MMM-yy or MMM/yy or MMMM-yy or MMMM/yy
+                result = re.search('([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2})', text)
+                if result:
+                    result = result.group(0) 
+                    split_result = re.split('[/-]', result)
+                    if len(split_result) == 2:
+                        start_idx, end_idx = Chrono.utils.calculateSpan(result, split_result[1])
+                        return True, split_result[1], text_start + start_idx, text_start + end_idx
+                    else:
+                        return False, None, None, None
 
         return False, None, None, None  # if no 2 digit year expressions were found return false
     else:
@@ -343,6 +356,8 @@ def buildMonthOfYear(s, chrono_id, chrono_list, flags):
         abs_StartSpan = ref_StartSpan + startSpan
         abs_EndSpan = abs_StartSpan + abs(endSpan - startSpan)
         if (int(text) <= 12):
+            print("My Month: ")
+            print(text)
             chrono_entity = chrono.chronoMonthOfYearEntity(entityID=str(chrono_id) + "entity", start_span=abs_StartSpan,
                                                            end_span=abs_EndSpan,
                                                            month_type=calendar.month_name[utils.getMonthNumber(text)])
@@ -375,8 +390,10 @@ def hasMonthOfYear(tpentity):
             text_start, text_end = Chrono.utils.calculateSpan(text_norm, text)
 
             # define regular expression to find a 2-digit month
-            twodigitstart = re.search('([0-9]{1,2})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
-            fourdigitstart = re.search('([0-9]{4})[-/:]([0-9]{1,2}|[A-Za-z]{3,4})[-/:]([0-9]{2})', text)
+            twodigitstart = re.search('([0-9]{1,2})[-/]([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2,4})', text)
+            fourdigitstart = re.search('([0-9]{4})[-/]([0-9]{1,2}|[A-Za-z]{3,4})[-/]([0-9]{2})', text)
+            twoplace = re.search('([0-9]{1,}|[A-Za-z]{3,4})[-/]([0-9]{1,})', text)
+            ## need to filter out phrases like "200/99"
 
             if (fourdigitstart):
                 # If start with 4 digits then assum the format yyyy/mm/dd
@@ -386,6 +403,7 @@ def hasMonthOfYear(tpentity):
                 # If only starts with 2 digits assume the format mm/dd/yy or mm/dd/yyyy
                 # Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
                 # check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
+                
                 if int(twodigitstart[1]) <= 12:
                     # assume mm/dd/yy
                     start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[1])  # twodigitstart.span(1)  #
@@ -399,6 +417,20 @@ def hasMonthOfYear(tpentity):
                     return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
                 else:
                     return False, None, None, None
+            elif (twoplace):
+                
+                ### note, it may be difficult to distingusish between moth and day here.  could be mm/yy or dd/mm.  Assume if mm <= 12, then that is the month.
+                if int(twoplace[1]) <= 12 and int(twoplace[2]) > 12 and int(twoplace[2]) < 100 and int(twoplace[1]) > 0:
+                    # assume mm/yy
+                    start_idx, end_idx = Chrono.utils.calculateSpan(text, twoplace[1])  
+                    return True, twoplace[1], text_start + start_idx, text_start + end_idx
+                elif int(twoplace[1]) <= 31 and int(twoplace[1]) > 0 and int(twoplace[2]) <= 12 and int(twoplace[2]) >0:
+                    # assume dd/mm
+                    start_idx, end_idx = Chrono.utils.calculateSpan(text, twoplace[2]) 
+                    return True, twoplace[2], text_start + start_idx, text_start + end_idx
+                else:
+                    return False, None, None, None
+                
 
         return False, None, None, None  # if no 2 digit month expressions were found return false
     else:
