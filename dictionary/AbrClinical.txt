@@ -30,6 +30,7 @@ q.h.
 q.h.s.
 q.i.d.
 qid
+QID
 q.I.
 q.m.t.
 qm

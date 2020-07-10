@@ -436,6 +436,9 @@ def hasClinAbr(text):
             answer2 = next((m for m in temp_text if t in m), None)
             if answer2 is not None:
                 return True
+            elif re.search('POD[#\s]{0,1}[#\s]{0,1}[0-9]{1,}', t):
+                print("FOUND POD!!!  " + t)
+                return True
             else:
                 return False
     return False
