@@ -188,7 +188,7 @@ def hasYear(tpentity, flags):
 def build2DigitYear(s, chrono_id, chrono_list, flags):
     b, text, startSpan, endSpan = has2DigitYear(s)
     print("Found Potential 2-digit year: " + str(text))
-    if b and not flags["fourdigityear"]:
+    if b and not flags["fourdigityear"] and int(text) > 31:
         
         #In most cases this will be at the end of the Span
         flags["twodigityear"] = True
@@ -331,7 +331,7 @@ def has2DigitYear(tpentity):
                 print("has2DY Results2: " + str(result))
                 if result:
                     result = result.group(0) 
-                    ## This is only considered a year if there is a valid month with it
+                    ## This is only considered a year if there is a valid month with it AND the value is greater than 31
                     bMonth, textMonth, startSpanMonth, endSpanMonth = hasMonthOfYear(result)
                     print("my bMonth is: " + str(bMonth))
                     if bMonth:    

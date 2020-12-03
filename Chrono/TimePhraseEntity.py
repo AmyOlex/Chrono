@@ -152,7 +152,9 @@ class TimePhraseEntity :
         
         #determine which types are in the phrase
         #year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
-        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getPhraseEntities(chronolist)
+        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx = utils.getPhraseEntities(chronolist)
+        
+        
         
         yearV = year.get_value() if year else ""
         monthV = month.get_value() if month else ""
@@ -161,17 +163,22 @@ class TimePhraseEntity :
         minuteV = minute.get_value() if minute else ""
         secondV = second.get_value() if second else ""
 
+        print("Year Value: " + str(yearV))
+        print("Month Value: " + str(monthV))
+        print("Day Value: " + str(dayV))
+
+
         daypartV = daypart.get_value() if daypart else ""
         dayweekV = dayweek.get_value() if dayweek else ""
         intervalV = interval.get_value() if interval else ""
         periodV = period.get_value() if period else ""
         nthV = nth.get_value() if nth else ""
         nxtV = nxt.get_value() if nxt else ""
-        thisV = this.get_value() if this else ""
+        thisV = thisx.get_value() if thisx else ""
         tzV = tz.get_value() if tz else ""
         ampmV = ampm.get_value() if ampm else ""
         modifierV = modifier.get_value() if modifier else ""
-        lastV = last.get_value() if last else ""
+        lastV = lastx.get_value() if lastx else ""
         
         ## convert hour to 24 hour time if needed.
         ## If flag is zero then no addition will be made, but if 1 then 12 hours will be added anytime the hour entitiy is used.
@@ -187,7 +194,12 @@ class TimePhraseEntity :
         
         ## Convert dates and times
         try:
+            #if month or day or year or hour or minute or second:
             tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime)
+            #    print("First date parse attempt: " + str(tmpdate))
+            #else:
+            #    tmpdate = ""
+            print("TMPDATE IS: " + str(tmpdate.isoformat()))
            
         except:
             if month or day or year or hour or minute or second:
@@ -198,19 +210,24 @@ class TimePhraseEntity :
             else:
                 tmpdate = ""
         else:
-            if last and period:
-                if periodV in "Weeks" or dayweek:
-                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
-                elif periodV in "Months":
-                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
-                elif periodV in "Years":
-                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
-                else:
-                    #assume 7 days
-                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+            #if lastx and period:
+            print("HELLO WORLD")
+            #    if periodV in "Weeks" or dayweek:
+            #        print("try parsing Weeks: " + self.text)
+            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+            #    elif periodV in "Months":
+            #        print("try parsing Months: " + self.text)
+            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
+            #    elif periodV in "Years":
+            #        print("try parsing Years: " + self.text)
+            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
+            #    else:
+            #        #assume 7 days
+            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
         finally:
             
             if month and day and year and not (hour or minute or second):
+                print("hello1")
                 m = tmpdate.month
                 y = tmpdate.year
                 d = tmpdate.day
@@ -222,6 +239,7 @@ class TimePhraseEntity :
                 mytype = "DATE"
                 
             elif month and year and not day:
+                print("hello2")
                 m = tmpdate.month
                 y = tmpdate.year
                 if m < 10:
@@ -230,15 +248,22 @@ class TimePhraseEntity :
                 mytype = "DATE"
                 
             elif year and not (day or month):
+                print("hello3")
                 iso = str(tmpdate.year)
                 mytype = "DATE"
             elif dayweek:
+                print("hello4")
                 iso = str(dp.parse(self.text, fuzzy = True, default=self.doctime).isoformat())
                 mytype = "DATE"
             elif tmpdate:
+                print("hello5")
+                print(str(tmpdate))
                 iso = tmpdate.isoformat()
                 mytype = "DATE"
+                print("GOOD: " + str(iso))
             else:
+                print("hello6")
+                print("tmpdate should be blank: " + tmpdate)
                 iso = tmpdate
             
             
@@ -249,16 +274,17 @@ class TimePhraseEntity :
             ## I will have to pull out Frequency from this as the term "daily" is a frequency, but will work on that later.
             
             if interval or period:
+                print("hello7")
                 mytype = "DURATION"
                 
                 if interval:
                     duration = interval.get_value()
-                    dtime,mod = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
+                    dtime,mymod = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
                     print("INTERVAL HERE: " + str(duration) + " Num: " + str(dtime))
 
                 else:
                     duration = period.get_value()
-                    dtime,mod = utils.getPhraseNumber(self.text, chronolist, period.get_number())
+                    dtime,mymod = utils.getPhraseNumber(self.text, chronolist, period.get_number())
                     print("PERIOD HERE: " + str(duration) + " Num: " + str(dtime))
 
                 if duration in "Days" and dtime:
@@ -298,7 +324,27 @@ class TimePhraseEntity :
                 if duration in "Decade" and dtime:
                     iso = "P" + str(int(dtime) * 10) + "Y"
                     
-
+            if daypart:
+                print("hello8")
+                #look for last, this, or next
+                print("Found Daypart: " + str(daypart) + " " + str(daypartV) + " " + self.text.lower())
+                if "night" in self.text.lower() and "over" in self.text.lower():
+                    mytype = "DURATION"
+                    iso = "PT12H"
+                #elif lastx:
+                #    print("Found LAST: " + str(lastx) + str(lastV))
+                #    mytype = "DATE"
+                #    iso = (self.doctime - td(days=1)).isoformat()
+                #elif nxt:
+                #    print("Found NEXT: " + str(nxt) + str(nxtV))
+                #    mytype = "DATE"
+                #    iso = (self.doctime + td(days=1)).isoformat()
+                else:
+                    #assume it is this or doesn't have a modifier.
+                    mytype = "DATE"
+                    iso = (self.doctime).isoformat()
+                    
+            
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
             self.type = mytype
