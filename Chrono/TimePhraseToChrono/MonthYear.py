@@ -435,6 +435,18 @@ def hasMonthOfYear(tpentity):
 
             elif (twoplace):
                 print("found a 2-place: " + str(twoplace))
+
+                if not twoplace[1].isnumeric():
+                    print("2-place Not Numeric!")
+                    mnum = utils.getMonthNumber(twoplace[1])
+                    if mnum == 100:
+                        print("found 100")
+                        return False, None, None, None
+                    else:
+                        newtwoplace = mnum + "/" + twoplace[2]
+                        print("New 2-place text: " + newtwoplace)
+                        twoplace = re.search('([0-9]{1,}|[A-Za-z]{3,4})[-/]([0-9]{1,})', newtwoplace)        
+                
                 ### note, it may be difficult to distingusish between month and day here.  could be mm/yy or dd/mm.  Assume if mm <= 12, then that is the month.
                 if int(twoplace[1]) <= 12 and int(twoplace[2]) > 12 and int(twoplace[2]) < 100 and int(twoplace[1]) > 0:
                     # assume mm/yy
