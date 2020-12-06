@@ -50,8 +50,11 @@ then
 		fi
 		if [ $DATASET = "eval" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/data/SemEval-Task6-Evaluation"
-            OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/newsEval"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_eval"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/i2b2_eval"
+			
+			##DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/data/SemEval-Task6-Evaluation"
+            ##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/newsEval"
             ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $ML_DATA = "news5" ]
@@ -142,7 +145,7 @@ then
 	
 	if [ $DATASET = "eval" ]
         then	
-		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
 	else
 		python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE 
 		#cd $ANAFORA_DIR
