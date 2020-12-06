@@ -210,20 +210,21 @@ class TimePhraseEntity :
             else:
                 tmpdate = ""
         else:
-            #if lastx and period:
-            print("HELLO WORLD")
-            #    if periodV in "Weeks" or dayweek:
-            #        print("try parsing Weeks: " + self.text)
-            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
-            #    elif periodV in "Months":
-            #        print("try parsing Months: " + self.text)
-            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
-            #    elif periodV in "Years":
-            #        print("try parsing Years: " + self.text)
-            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
-            #    else:
-            #        #assume 7 days
-            #        tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+            ### This code does not work.  It gets overwritten by the interval or period control below.  I need to figure this out.
+            if lastx and period:
+                print("HELLO LASTX")
+                if periodV in "Weeks" or dayweek:
+                    print("try parsing Weeks: " + self.text)
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
+                elif periodV in "Months":
+                    print("try parsing Months: " + self.text)
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
+                elif periodV in "Years":
+                    print("try parsing Years: " + self.text)
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
+                else:
+                    print("assume 7 days: " + self.text)
+                    tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
         finally:
             
             if month and day and year and not (hour or minute or second):
@@ -274,7 +275,7 @@ class TimePhraseEntity :
             ## I will have to pull out Frequency from this as the term "daily" is a frequency, but will work on that later.
             
             if interval or period:
-                print("hello7")
+                print("HELLO DURATION")
                 mytype = "DURATION"
                 
                 if interval:

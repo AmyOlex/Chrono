@@ -418,17 +418,20 @@ def hasMonthOfYear(tpentity):
                 # Note for dates like 12/03/2012, the text 12/11/03 and 11/03/12 can't be disambiguated, so will return 12 as the month for the first and 11 as the month for the second.
                 # check to see if the first two digits are less than or equal to 12.  If greater then we have the format yy/mm/dd
                 
-                if int(twodigitstart[1]) <= 12:
+                if int(twodigitstart[1]) <= 12 and int(twodigitstart[2]) <= 31:
                     # assume mm/dd/yy
                     start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[1])  # twodigitstart.span(1)  #
                     # print("found 2digit start mm-dd-yy: " + str(twodigitstart.span(1)[0]+text_start) + " : " + str(twodigitstart.group(1)))
                     ##### Trying to DEBUG string formats like AP-JN-08-16-90 ##########
                     return True, twodigitstart[1], text_start + start_idx, text_start + end_idx
-                elif int(twodigitstart[1]) > 12:
+                elif int(twodigitstart[1]) > 12 and int(twodigitstart[2]) <= 12 and int(twodigitstart[3]) <= 31:
                     # assume yy/mm/dd
                     start_idx, end_idx = Chrono.utils.calculateSpan(text, twodigitstart[
                         2])  # twodigitstart.span(2) #getSpan(text_norm,twodigitstart[2])
                     return True, twodigitstart[2], text_start + start_idx, text_start + end_idx
+                else:
+                    print("Not a date string, out of range")
+                    return False, None, None, None 
 
             elif (twoplace):
                 print("found a 2-place: " + str(twoplace))

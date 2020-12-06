@@ -66,10 +66,12 @@ thisfilename = inspect.getframeinfo(inspect.currentframe()).filename
 thispath = os.path.dirname(os.path.abspath(thisfilename))
 dictpath = os.path.join(thispath,"../dictionary")
 
+global APPROX2
 global APPROX3
 global APPROX10
 global PERIODINT
 
+APPROX2 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation2.txt"), "r")]
 APPROX3 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation3.txt"), "r")]
 APPROX10 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation10.txt"), "r")]
 PERIODINT = [line.rstrip() for line in open(os.path.join(dictpath,"Period-Interval.txt"), "r")]
@@ -987,21 +989,35 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
                 return(e.get_value(), "NA")
     else:
         print("NO NUMBER")
-        print(APPROX3)
+        print(phrase_text)
+        
         phrase_set = set(phrase_text.split())
         print(phrase_set)
+        
+        #intersect2 = list(set(APPROX2) & phrase_set)
+        #print(intersect2)
+        
         intersect3 = list(set(APPROX3) & phrase_set)
         print(intersect3)
+        
         intersect10 = list(set(APPROX10) & phrase_set)
+        print(intersect10)
+        
+        intersectperiodint = list(set(PERIODINT) & phrase_set)
+        print(intersectperiodint)
+        
+        #if len(intersect2) == 1:
+        #    return(2, "APPROX")
         if len(intersect3) == 1:
             return(3, "APPROX")
         elif len(intersect10) == 1:
             return(10,"APPROX")
-        elif phrase_text in PERIODINT:
-            if phrase_text[-1:] == "s":
-                return(2,"APPROX")
+        elif len(intersectperiodint) == 1:
+            print("In PERIODINT")
+            if intersectperiodint[0][-1:] == "s":
+                return(2,"NA")
             else:
-                return(1,"APPROX")
+                return(1,"NA")
     return("","NA")
 
     
