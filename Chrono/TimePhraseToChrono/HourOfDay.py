@@ -37,6 +37,7 @@ def hasHourOfDay(tpentity):
     text_lower = tpentity.getText().lower()
     # remove all punctuation
     text_norm = text_lower.translate(str.maketrans("", "", ","))
+    print("Hour of Day text: " + text_norm)
     # convert to list
     text_list = text_norm.split(" ")
 

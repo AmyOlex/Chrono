@@ -81,6 +81,8 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.buildMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Day-of-Month
         chrono_tmp_list, chrono_id, chrono_time_flags = DayOfMonth.buildDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse AMPM before Hour of Day
+        chrono_tmp_list, chrono_id = AMPM.buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out HourOfDay
         chrono_tmp_list, chrono_id, chrono_time_flags = HourOfDay.buildHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out MinuteOfHour
@@ -98,7 +100,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         
         chrono_tmp_list, chrono_id = DayOfWeek.buildDayOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id, chrono_time_flags = TextMonthAndDay.buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, chrono_time_flags, dct, ref_list)
-        chrono_tmp_list, chrono_id = AMPM.buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #chrono_tmp_list, chrono_id = AMPM.buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         chrono_tmp_list, chrono_id = PartOfDay.buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = PartOfWeek.buildPartOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = Season.buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
