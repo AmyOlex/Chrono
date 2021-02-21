@@ -11,6 +11,7 @@ LOC=$2  ##Options: willow, laptop
 DATASET=$3  ##Options: test, train
 ML=$4		##Chrono options
 ML_DATA=$5 	##Options: news5, news3, clin5, clin3, newsclin5, newsclin3
+REL=$6 ##Options: rel, norel
 
 
 ## Example Usage:  ./run.sh amy laptop train NB news5
@@ -45,7 +46,7 @@ then
 			##DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/THYME_subset"
 			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_train"
 			##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
-			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/i2b2_results/"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/i2b2_train/"
 			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $DATASET = "eval" ]
@@ -142,12 +143,30 @@ then
 	fi
 	
 	
-	
 	if [ $DATASET = "eval" ]
-        then	
-		python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+    then
+		if [ $REL = "rel" ]
+		then
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+		else
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		fi
 	else
-		python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE 
+		if [ $REL = "rel" ]
+		then
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+		else
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		fi
+			
 		#cd $ANAFORA_DIR
 
 		#echo "EVERYTHING"
@@ -163,8 +182,12 @@ then
 		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
 	fi
 
-	echo "COMMANDS:"
-	echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+	#echo "COMMANDS:"
+	#echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+	
+	
+	
+	
 	#echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
 	echo "COMPLETED"
 
