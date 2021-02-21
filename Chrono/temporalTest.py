@@ -126,8 +126,10 @@ def hasPeriodInterval(text):
     #define my period lists
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
              "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
-             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
-             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", 
+             "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+             # removed relative terms: "shortly", "soon", "briefly", "awhile", "future", "lately", 
+             
     ## possibly add in abbreviations like yr, sec, min, etc.
     
     answer = next((m for m in terms if m in text_norm), None)
@@ -378,6 +380,8 @@ def hasTempText(text):
     "earlier", "early", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
     "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length", "final", "latest", "prior", "recent",
     "recently"]
+ 
+                
     
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
