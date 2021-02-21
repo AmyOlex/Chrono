@@ -436,12 +436,12 @@ def get_features(data_file):
 # @author Amy Olex
 # @param refToks The list of reference Tokens
 # @return modified list of reftoks
-def markTemporal(refToks):
+def markTemporal(refToks, include_relative = True):
     for ref in refToks:
         #mark if numeric
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
-        ref.setTemporal(temporalTest(ref.getText()))
+        ref.setTemporal(temporalTest(ref.getText(), include_relative))
     
     ## read in the link terms dictionary
     terms = open("dictionary/LinkTerms.txt", 'r').read().split()
@@ -485,7 +485,7 @@ def numericTest(tok, pos):
 # @author Amy Olex
 # @param tok The token string
 # @return Boolean true if temporal, false otherwise
-def temporalTest(tok):
+def temporalTest(tok, include_relative=True):
     #remove punctuation
     #tok = tok.translate(str.maketrans("", "", string.punctuation))
     
@@ -534,12 +534,14 @@ def temporalTest(tok):
         return True
     if tt.hasTimeZone(tok):
         return True
-    if tt.hasTempText(tok):
+    if tt.hasTempText(tok) and include_relative:
         return True
     if tt.hasModifierText(tok):
         return True
     if tt.hasClinAbr(tok):
         return True
+    
+    return False
 
 ####
 #END_MODULE
