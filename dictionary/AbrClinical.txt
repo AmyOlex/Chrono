@@ -49,6 +49,9 @@ s/p
 stat
 TDS
 TID
+tid
+t.i.d.
+o/n
 U/A
 y
 YO
