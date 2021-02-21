@@ -67,14 +67,14 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
                         chrono_list.append(my_minute_entity)
                         flags["minute"] = True
                     
-                    if int(k.group(1)) <= 12:
-                        abs_Sspan = ref_Sspan + k.span(1)[0]
-                        abs_Espan = ref_Sspan + k.span(1)[1]
-                        print("Adding Hour in AMPM")
-                        my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=k.group(1), ampm=my_AMPM_entity.get_id(), sub_interval=my_minute_entity)
-                        chrono_id = chrono_id + 1
-                        chrono_list.append(my_hour_entity)
-                        flags["hour"] = True
+                        if int(k.group(1)) <= 12:
+                            abs_Sspan = ref_Sspan + k.span(1)[0]
+                            abs_Espan = ref_Sspan + k.span(1)[1]
+                            print("Adding Hour in AMPM")
+                            my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=k.group(1), ampm=my_AMPM_entity.get_id(), sub_interval=my_minute_entity)
+                            chrono_id = chrono_id + 1
+                            chrono_list.append(my_hour_entity)
+                            flags["hour"] = True
                     
                 elif len(time_val) == 4:
                     k = re.search('([0-9]{2})([0-9]{2})', time_val)
@@ -88,14 +88,14 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
                         chrono_list.append(my_minute_entity)
                         flags["minute"] = True
                     
-                    if int(k.group(1)) <= 12:
-                        abs_Sspan = ref_Sspan + k.span(1)[0]
-                        abs_Espan = ref_Sspan + k.span(1)[1]
-                        print("Adding Hour in AMPM")
-                        my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=k.group(1), ampm=my_AMPM_entity.get_id(), sub_interval=my_minute_entity)
-                        chrono_id = chrono_id + 1
-                        chrono_list.append(my_hour_entity)
-                        flags["hour"] = True
+                        if int(k.group(1)) <= 12:
+                            abs_Sspan = ref_Sspan + k.span(1)[0]
+                            abs_Espan = ref_Sspan + k.span(1)[1]
+                            print("Adding Hour in AMPM")
+                            my_hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, value=k.group(1), ampm=my_AMPM_entity.get_id(), sub_interval=my_minute_entity)
+                            chrono_id = chrono_id + 1
+                            chrono_list.append(my_hour_entity)
+                            flags["hour"] = True
 
             #else search for a text number
             else:
