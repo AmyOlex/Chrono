@@ -188,6 +188,9 @@ class ChronoPeriodEntity(ChronoEntity):
 		
 	def get_period_type(self):
 		return self.period_type
+        
+	def get_value(self):
+		return self.period_type
 		
 	def set_number(self, number):
 		self.number = number
@@ -228,6 +231,9 @@ class chronoMonthOfYearEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_month_type(self):
 		return self.month_type
+        
+	def get_value(self):
+		return self.month_type
 	
 	def set_sub_interval(self, sub_interval):
 		self.sub_interval = sub_interval
@@ -267,6 +273,9 @@ class ChronoSeasonOfYearEntity(ChronoRepeatingIntervalEntity):
 		self.season_type = season_type
 		
 	def get_season_type(self):
+		return self.season_type
+        
+	def get_value(self):
 		return self.season_type
 	
 	def set_number(self, number):
@@ -388,6 +397,9 @@ class ChronoDayOfWeekEntity(ChronoRepeatingIntervalEntity):
 		self.day_type = day_type
 		
 	def get_day_type(self):
+		return self.day_type
+        
+	def get_value(self):
 		return self.day_type
 		
 	def set_sub_interval(self, sub_interval):
@@ -564,6 +576,9 @@ class ChronoCalendarIntervalEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_calendar_type(self):
 		return self.calendar_type
+        
+	def get_value(self):
+		return self.calendar_type
 		
 	def set_number(self, number):
 		self.number = number
@@ -597,6 +612,9 @@ class ChronoPartOfDayEntity(ChronoRepeatingIntervalEntity):
 		self.part_of_day_type = part_of_day_type
 		
 	def get_part_of_day_type(self):
+		return self.part_of_day_type
+        
+	def get_value(self):
 		return self.part_of_day_type
 		
 	def set_number(self, number):
@@ -632,6 +650,9 @@ class ChronoPartOfWeekEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_part_of_week_type(self):
 		return self.part_of_week_type
+        
+	def get_value(self):
+		return self.part_of_week_type
 		
 	def set_number(self, number):
 		self.number = number
@@ -665,6 +686,9 @@ class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
 		
 	def get_ampm_type(self):
 		return self.ampm_type
+        
+	def get_value(self):
+		return self.ampm_type
 
 	def set_number(self, number):
 		self.number = number
@@ -685,12 +709,21 @@ class ChronoAMPMOfDayEntity(ChronoRepeatingIntervalEntity):
 			  self.ampm_type, self.number or '', self.modifier or ''))
 
 ## No special parameters, just identifies the location of a time zone in text
+## Note, this need to be modified to extract the actual text of the time zone!!!!
 class ChronoTimeZoneEntity(ChronoRepeatingIntervalEntity):
-	def __init__(self, entityID, start_span, end_span):
+	def __init__(self, entityID, start_span, end_span, value):
 		super().__init__(entityID, start_span, end_span, "Time-Zone")
+		self.value = value
+        
+	def set_value(self, tz):
+		self.value = tz
+        
+	def get_value(self):
+		return self.value
 
 	def print_xml(self):
 		return(super().print_xml() + "</properties>\n\t</entity>\n")
+
 
 ## Super class for all Operators
 class ChronoOperator(ChronoEntity):
@@ -812,14 +845,15 @@ class ChronoEveryNthOperator(ChronoOperator):
 class ChronoLastOperator(ChronoOperator):
 	def __init__(self, entityID, start_span, end_span, semantics="Interval-Not-Included",
 	             interval_type="DocTime",interval=None, period=None,
-	             repeating_interval=None):
+	             repeating_interval=None, modifier=None):
 		super().__init__(entityID, start_span, end_span, "Last")
 		self.semantics = semantics
 		self.interval_type = interval_type
 		self.interval = interval
 		self.period = period
 		self.repeating_interval = repeating_interval
-		
+		self.modifier = modifier
+
 	def set_semantics(self, semantics):
 		self.semantics = semantics
 					
@@ -849,7 +883,14 @@ class ChronoLastOperator(ChronoOperator):
 		
 	def get_repeating_interval(self):
 		return self.repeating_interval
+        
+	def get_value(self):
+		return self.type
 
+	def set_modifier(self):
+		self.modifier = modifier
+
+        
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
 		return(super().print_xml() + "\t<Semantics>{}</Semantics>\n"
@@ -907,6 +948,9 @@ class ChronoNextOperator(ChronoOperator):
 					
 	def get_semantics(self):
 		return self.semantics
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -956,6 +1000,9 @@ class ChronoThisOperator(ChronoOperator):
 		
 	def get_repeating_interval(self):
 		return self.repeating_interval
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -1013,6 +1060,9 @@ class ChronoBeforeOperator(ChronoOperator):
 					
 	def get_semantics(self):
 		return self.semantics
+        
+	def get_value(self):
+		return self.type
 
 
 	## Prints the xml leaving empty variables blank
@@ -1072,6 +1122,9 @@ class ChronoAfterOperator(ChronoOperator):
 					
 	def get_semantics(self):
 		return self.semantics
+        
+	def get_value(self):
+		return self.type
 
 
 	## Prints the xml leaving empty variables blank
@@ -1139,6 +1192,9 @@ class ChronoBetweenOperator(ChronoOperator):
 					
 	def get_end_included(self):
 		return self.end_included
+        
+	def get_value(self):
+		return self.type
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -1195,6 +1251,9 @@ class ChronoNthOperator(ChronoOperator):
 		
     def get_repeating_interval(self):
         return self.repeating_interval
+        
+    def get_value(self):
+        return self.type
 
 	## Prints the xml leaving empty variables blank
     def print_xml(self):
@@ -1279,6 +1338,9 @@ class ChronoModifier(ChronoOtherEntity):
 		
 	def get_modifier(self):
 		return self.modifier
+        
+	def get_value(self):
+		return self.modifier
 
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
@@ -1292,4 +1354,36 @@ class ChronoEvent(ChronoOtherEntity):
 	## Prints the xml leaving empty variables blank
 	def print_xml(self):
 		return(super().print_xml() + "</properties>\n\t</entity>\n")
+ 
+    
+class ChronoFrequency(ChronoOtherEntity):
+    def __init__(self, entityID, start_span, end_span, every=None, number=None, modifier=None):
+        super().__init__(entityID, start_span, end_span, "Other")
+        self.every = every
+        self.number = number
+
+    def set_every(self, every):
+        self.every = every
+
+    def get_every(self):
+        return self.every
+
+    def set_number(self, number):
+        self.number = number
+
+    def get_number(self):
+        return self.number
+
+    def set_modifier(self, modifier):
+        self.modifier = modifier
+
+    def get_modifier(self):
+        return self.modifier
+
+	## Prints the xml leaving empty variables blank
+    def print_xml(self):
+        return(super().print_xml() + "\t<Type>{}</Type>\n"
+            "\t\t\t<Every>{}</Every>\n\t\t\t<Number>{}</Number>\n"
+            "\t\t\t<Modifier>{}</Modifier>\n\t\t</properties>\n\t"
+            "</entity>\n".format(self.otherType or '', self.every or '', self.number or '', self.modifier or ''))
 

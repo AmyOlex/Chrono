@@ -301,6 +301,7 @@ def hasPeriodInterval(tpentity):
     #print("text list: " + str(text_list))
 
     # define my period lists
+    print("TOFIX: PeriodInterval.py @ line 304: convert to using the dictionary.")
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
              "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly",
              "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly",
@@ -384,6 +385,7 @@ def hasEmbeddedPeriodInterval(tpentity):
     text_list = text_norm.split(" ")
 
     # define my period/interval term lists
+    print("TOFIX: PeriodInterval.py @ line 388: convert to using the dictionary.")
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
              "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly",
              "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly",

@@ -54,6 +54,28 @@ import numpy as np
 from Chrono import w2ny as w2n
 import string
 import copy
+import dateutil.parser as dup
+import datetime
+import inspect
+import os
+
+## Load the dictionary files
+
+global dictpath
+thisfilename = inspect.getframeinfo(inspect.currentframe()).filename
+thispath = os.path.dirname(os.path.abspath(thisfilename))
+dictpath = os.path.join(thispath,"../dictionary")
+
+global APPROX2
+global APPROX3
+global APPROX10
+global PERIODINT
+
+APPROX2 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation2.txt"), "r")]
+APPROX3 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation3.txt"), "r")]
+APPROX10 = [line.rstrip() for line in open(os.path.join(dictpath,"Approximation10.txt"), "r")]
+PERIODINT = [line.rstrip() for line in open(os.path.join(dictpath,"Period-Interval.txt"), "r")]
+
 
 ## Parses a text file to idenitfy all sentences, then identifies all tokens in each sentence seperated by white space with their original file span coordinates.
 # @author Amy Olex
@@ -63,9 +85,9 @@ import copy
 # @return spans The coordinates for each token.
 def getWhitespaceTokens(file_path):
     file = open(file_path, "r")
-    text = file.read()
+    raw_text = file.read()
     ## Testing the replacement of all "=" signs by spaces before tokenizing.
-    text = text.translate(str.maketrans("=", ' '))
+    text = raw_text.translate(str.maketrans("=", ' '))
     
     ## Tokenize the sentences
     sentences = sent_tokenize(text)
@@ -116,19 +138,54 @@ def getWhitespaceTokens(file_path):
             sent_boundaries[nw_idx] = 1
             tok_counter = tok_counter + len(sent_split)
             
-    return text, tokenized_text, text_spans, tags, sent_boundaries
+    return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries
 
+ ####
+ #END_MODULE
+ #### 
 
 ## Reads in the dct file and converts it to a datetime object.
 # @author Amy Olex
 # @param file_path The path and file name of the dct file.
 # @return A datetime object
-def getDocTime(file_path):
-    file = open(file_path, "r")
-    text = file.read()
-    return(dateutil.parser.parse(text))
+def getDocTime(file, i2b2):
+    file = open(file, "r")
+    lines = file.readlines()
+    print("In get DocTime. Admit Date: " + lines[1])
+    print("In get DocTime. Discharge Date: " + lines[3])
+    return(dateutil.parser.parse(lines[1]))
 
-  
+ ####
+ #END_MODULE
+ #### 
+
+## Writes out the full XML file in i2b2 format with all timex entities.
+# @author Amy Olex
+# @param text The raw text of the document.
+# @param phrase_list The parsed temporal phrases as a list of TimePhraseEntity objects with timex metadata.
+# @param outfile A string containing the output file location and beginning of file name.
+def write_i2b2(text, phrase_list, outfile):
+    outname = outfile.replace(".txt", "")
+    fout = open(outname, "w")
+    
+    fout.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<ClinicalNarrativeTemporalAnnotation>\n<TEXT><![CDATA[\n")
+    
+    fout.write(text)
+    fout.write("\n")
+    fout.write("]]></TEXT>\n<TAGS>\n")
+    print("Phrase list length: " + str(len(phrase_list)))
+    for c in phrase_list :
+        fout.write(c.i2b2format())
+        fout.write("\n")
+    
+    fout.write("</TAGS>\n</ClinicalNarrativeTemporalAnnotation>")
+    
+    fout.close()
+ ####
+ #END_MODULE
+ ####  
+ 
+ 
 ## Writes out the full XML file for all T6entities in list.
 # @author Amy Olex
 # @param chrono_list The list of Chrono objects needed to be written in the file.
@@ -379,12 +436,12 @@ def get_features(data_file):
 # @author Amy Olex
 # @param refToks The list of reference Tokens
 # @return modified list of reftoks
-def markTemporal(refToks):
+def markTemporal(refToks, include_relative = True):
     for ref in refToks:
         #mark if numeric
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
-        ref.setTemporal(temporalTest(ref.getText()))
+        ref.setTemporal(temporalTest(ref.getText(), include_relative))
     
     ## read in the link terms dictionary
     terms = open("dictionary/LinkTerms.txt", 'r').read().split()
@@ -428,7 +485,7 @@ def numericTest(tok, pos):
 # @author Amy Olex
 # @param tok The token string
 # @return Boolean true if temporal, false otherwise
-def temporalTest(tok):
+def temporalTest(tok, include_relative=True):
     #remove punctuation
     #tok = tok.translate(str.maketrans("", "", string.punctuation))
     
@@ -441,6 +498,12 @@ def temporalTest(tok):
     m = re.search('([0-9]{1,4}[-/][0-9]{1,2}[-/][0-9]{1,4})', tok)
     if m is not None:
         return True
+    
+    #look for date patterns mm[/-]dd, mm[/-]yy, mm[/-]yyyy
+    m = re.search('([0-9]{1,2}[-/][0-9]{2,4})', tok)
+    if m is not None:
+        return True
+    
     #looks for a string of 8 digits that could possibly be a date in the format 19980304 or 03041998 or 980304
     m = re.search('([0-9]{4,8})', tok)
     if m is not None:
@@ -471,10 +534,14 @@ def temporalTest(tok):
         return True
     if tt.hasTimeZone(tok):
         return True
-    if tt.hasTempText(tok):
+    if tt.hasTempText(tok) and include_relative:
         return True
     if tt.hasModifierText(tok):
         return True
+    if tt.hasClinAbr(tok):
+        return True
+    
+    return False
 
 ####
 #END_MODULE
@@ -486,7 +553,7 @@ def temporalTest(tok):
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
 def getTemporalPhrases(chroList, doctime):
-    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], temptype=j['type'], tempvalue=j['value'], doctime=doctime)
+    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
     id_counter = 0
     
     phrases = [] #the empty phrases list of TimePhrase entities
@@ -609,7 +676,7 @@ def createTPEntity(items, counter, doctime):
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, temptype=None, tempvalue=None, doctime=doctime)
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, type=None, mod=None, value=None, doctime=doctime)
 
 ####
 #END_MODULE
@@ -645,3 +712,325 @@ def calculateSpan(text, search_text):
         return None, None
 
     return start_idx, end_idx
+
+
+## Takes in list of ChronoEntities and identifies sub-intervals within the list
+# @author Amy Olex
+# @param list of ChronoEntities
+# @return List of ChronoEntities with sub-intervals assigned
+def getEntityTypes(chrono_list):
+    year = None
+    month = None
+    day = None
+    hour = None
+    minute = None
+    second = None
+    daypart = None
+    dayweek = None
+    interval = None
+    period = None
+    nth = None
+    nxt = None
+    this = None
+    tz = None
+    ampm = None
+    modifier = None
+    last = None
+    
+    entity_count = 0
+   
+    
+    ## loop through all entities and pull out the approriate IDs
+    for e in range(0,len(chrono_list)):
+        #print(chrono_list[e].get_id())
+        e_type = chrono_list[e].get_type()
+        #print("E-type: " + e_type)
+        
+        if e_type == "Two-Digit-Year" or e_type == "Year":
+            year = e
+            entity_count = entity_count + 1
+            # print("YEAR VALUE: " + str(chrono_list[e].get_value()))
+        elif e_type == "Month-Of-Year":
+            # print("FOUND Month")
+            month = e
+            entity_count = entity_count + 1
+        elif e_type == "Day-Of-Month":
+            day = e
+            entity_count = entity_count + 1
+        elif e_type == "Hour-Of-Day":
+            hour = e
+            entity_count = entity_count + 1
+        elif e_type == "Minute-Of-Hour":
+            minute = e
+            entity_count = entity_count + 1
+        elif e_type == "Second-Of-Minute":
+            second = e
+            entity_count = entity_count + 1
+        elif e_type == "Part-Of-Day":
+            daypart = e
+            entity_count = entity_count + 1
+        elif e_type == "Day-Of-Week":
+            dayweek = e
+            entity_count = entity_count + 1
+        elif e_type == "Calendar-Interval":
+            interval = e
+            entity_count = entity_count + 1
+        elif e_type == "Period":
+            period = e
+            entity_count = entity_count + 1
+        elif e_type == "NthFromStart":
+            nth = e
+            entity_count = entity_count + 1
+        elif e_type == "Next":
+            nxt = e
+            entity_count = entity_count + 1
+        elif e_type == "This":
+            this = e
+            entity_count = entity_count + 1
+        
+        elif e_type == "Time-Zone":
+            tz = e
+            entity_count = entity_count + 1
+        elif e_type == "AMPM-Of-Day":
+            ampm = e
+            entity_count = entity_count + 1
+        elif e_type == "Modifier":
+            modifier = e
+            entity_count = entity_count + 1
+        elif e_type == "Last":
+            last = e
+            entity_count = entity_count + 1
+            
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last,entity_count)
+    
+
+## Takes in list of ChronoEntities and returns the values, blank string if no value
+# @author Amy Olex
+# @param list of ChronoEntities
+# @return String of entity values
+def getEntityValues(chrono_list):
+    year = ""
+    month = ""
+    day = ""
+    hour = ""
+    minute = ""
+    second = ""
+    daypart = ""
+    dayweek = ""
+    interval = ""
+    period = ""
+    nth = ""
+    nxt = ""
+    this = ""
+    tz = ""
+    ampm = ""
+    modifier = ""
+    last = ""
+   
+    ## loop through all entities and pull out the approriate IDs
+    for e in range(0,len(chrono_list)):
+        #print(chrono_list[e].get_id())
+        e_type = chrono_list[e].get_type()
+        #print("E-type: " + e_type)
+        
+        if e_type == "Two-Digit-Year" or e_type == "Year":
+            year = chrono_list[e].get_value()
+
+            # print("YEAR VALUE: " + str(chrono_list[e].get_value()))
+        elif e_type == "Month-Of-Year":
+            # print("FOUND Month")
+            month = chrono_list[e].get_value()
+            
+        elif e_type == "Day-Of-Month":
+            day = chrono_list[e].get_value()
+           
+        elif e_type == "Hour-Of-Day":
+            hour = chrono_list[e].get_value()
+            
+        elif e_type == "Minute-Of-Hour":
+            minute = chrono_list[e].get_value()
+            
+        elif e_type == "Second-Of-Minute":
+            second = chrono_list[e].get_value()
+            
+        elif e_type == "Part-Of-Day":
+            daypart = chrono_list[e].get_value()
+            
+        elif e_type == "Day-Of-Week":
+            dayweek = chrono_list[e].get_value()
+            
+        elif e_type == "Calendar-Interval":
+            interval = chrono_list[e].get_value()
+            
+        elif e_type == "Period":
+            period = chrono_list[e].get_value()
+            
+        elif e_type == "NthFromStart":
+            nth = chrono_list[e].get_value()
+            
+        elif e_type == "Next":
+            nxt = chrono_list[e].get_value()
+            
+        elif e_type == "This":
+            this = chrono_list[e].get_value()
+            
+        
+        elif e_type == "Time-Zone":
+            tz = chrono_list[e].get_value()
+            
+        elif e_type == "AMPM-Of-Day":
+            ampm = chrono_list[e].get_value()
+            
+        elif e_type == "Modifier":
+            modifier = chrono_list[e].get_value()
+            
+        elif e_type == "Last":
+            last = chrono_list[e].get_value()
+            
+            
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last)
+
+
+## Takes in list of ChronoEntities associated with a temporal phrase and returns the associated numbers, blank string if no value
+# @author Amy Olex
+# @param list of ChronoEntities
+# @return Individual ChornoEntities attached to associated concept.
+def getPhraseEntities(chrono_list):
+    year = ""
+    month = ""
+    day = ""
+    hour = ""
+    minute = ""
+    second = ""
+    daypart = ""
+    dayweek = ""
+    interval = ""
+    period = ""
+    nth = ""
+    nxt = ""
+    this = ""
+    tz = ""
+    ampm = ""
+    modifier = ""
+    last = ""
+   
+    ## loop through all entities and pull out the approriate IDs
+    for e in range(0,len(chrono_list)):
+        #print(chrono_list[e].get_id())
+        e_type = chrono_list[e].get_type()
+        #print("E-type: " + e_type)
+        
+        if e_type == "Two-Digit-Year" or e_type == "Year":
+            year = chrono_list[e]
+
+        elif e_type == "Month-Of-Year":
+            
+            month = chrono_list[e]
+            
+        elif e_type == "Day-Of-Month":
+            day = chrono_list[e]
+           
+        elif e_type == "Hour-Of-Day":
+            hour = chrono_list[e]
+            
+        elif e_type == "Minute-Of-Hour":
+            minute = chrono_list[e]
+            
+        elif e_type == "Second-Of-Minute":
+            second = chrono_list[e]
+            
+        elif e_type == "Part-Of-Day":
+            daypart = chrono_list[e]
+            
+        elif e_type == "Day-Of-Week":
+            dayweek = chrono_list[e]
+            
+        elif e_type == "Calendar-Interval":
+            interval = chrono_list[e]
+            
+        elif e_type == "Period":
+            period = chrono_list[e]
+            
+        elif e_type == "NthFromStart":
+            nth = chrono_list[e]
+            
+        elif e_type == "Next":
+            nxt = chrono_list[e]
+            
+        elif e_type == "This":
+            this = chrono_list[e]
+                
+        elif e_type == "Time-Zone":
+            tz = chrono_list[e]
+            
+        elif e_type == "AMPM-Of-Day":
+            ampm = chrono_list[e]
+            
+        elif e_type == "Modifier":
+            modifier = chrono_list[e]
+            
+        elif e_type == "Last":
+            last = chrono_list[e]
+            
+            
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last)
+
+   
+## Takes in list of ChronoEntities and an entity ID and returns the associated number or blank string if no value
+# @author Amy Olex
+# @param list of ChronoEntities
+# @param String name of number entity
+# @return Integer number or None value of number entity
+def getPhraseNumber(phrase_text, chrono_list, eid):
+    
+    #loop through entity list to identify Number entity
+    if eid:
+        for e in chrono_list:
+            if e.get_id() == eid:
+                print("RETURNING VALUE OF " + str(e.get_value()))
+                return(e.get_value(), "NA")
+    else:
+        print("NO NUMBER")
+        print(phrase_text)
+        
+        phrase_set = set(phrase_text.split())
+        print(phrase_set)
+        
+        #intersect2 = list(set(APPROX2) & phrase_set)
+        #print(intersect2)
+        
+        intersect3 = list(set(APPROX3) & phrase_set)
+        print(intersect3)
+        
+        intersect10 = list(set(APPROX10) & phrase_set)
+        print(intersect10)
+        
+        intersectperiodint = list(set(PERIODINT) & phrase_set)
+        print(intersectperiodint)
+        
+        #if len(intersect2) == 1:
+        #    return(2, "APPROX")
+        if len(intersect3) == 1:
+            return(3, "APPROX")
+        elif len(intersect10) == 1:
+            return(10,"APPROX")
+        elif len(intersectperiodint) == 1:
+            print("In PERIODINT")
+            if intersectperiodint[0][-1:] == "s":
+                return(2,"NA")
+            else:
+                return(1,"NA")
+    return("","NA")
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       

@@ -11,6 +11,7 @@ LOC=$2  ##Options: willow, laptop
 DATASET=$3  ##Options: test, train
 ML=$4		##Chrono options
 ML_DATA=$5 	##Options: news5, news3, clin5, clin3, newsclin5, newsclin3
+REL=$6 ##Options: rel, norel
 
 
 ## Example Usage:  ./run.sh amy laptop train NB news5
@@ -31,25 +32,31 @@ if [ $USER = "amy" ]
 then
 	if [ $LOC = "laptop" ]
 	then
-		ANAFORA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/anaforatools"
+		ANAFORA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/anaforatools"
 
 		if [ $DATASET = "test" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
-			OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/Colon_dev"
-			ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/data/THYME"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/Colon_dev"
+			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $DATASET = "train" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
-			OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/Colon_dev"
-			ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			##DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
+			##DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/THYME_subset"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_train"
+			##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/i2b2_train/"
+			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $DATASET = "eval" ]
 		then
-			DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/SemEval-Task6-Evaluation"
-                        OUT_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/results/newsEval"
-                        ML_DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/sample_files"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_eval"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/i2b2_eval"
+			
+			##DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/data/SemEval-Task6-Evaluation"
+            ##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/newsEval"
+            ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
 		if [ $ML_DATA = "news5" ]
 		then
@@ -65,19 +72,19 @@ then
 		if [ $ML_DATA = "clin5" ]
 		then
 			ML_DATA_FILE="THYMEColon_train_Win5_data.csv"
-                        ML_CLASS_FILE="THYMEColon_train_Win5_class.csv"
+            ML_CLASS_FILE="THYMEColon_train_Win5_class.csv"
 		fi
 		if [ $ML_DATA = "newsclin3" ]
-                then
-                        ML_DATA_FILE="Newswire-THYMEColon_train_Win3_data.csv"
-                        ML_CLASS_FILE="Newswire-THYMEColon_train_Win3_class.csv"
+        then
+            ML_DATA_FILE="Newswire-THYMEColon_train_Win3_data.csv"
+            ML_CLASS_FILE="Newswire-THYMEColon_train_Win3_class.csv"
 
-                fi
+        fi
 		if [ $ML_DATA = "news3" ]
-                then
-                        ML_DATA_FILE="official_train_MLmatrix_Win3_data.csv"
-                        ML_CLASS_FILE="official_train_MLmatrix_Win3_class.csv"
-                fi
+        then
+            ML_DATA_FILE="official_train_MLmatrix_Win3_data.csv"
+            ML_CLASS_FILE="official_train_MLmatrix_Win3_class.csv"
+        fi
 
 
 	fi
@@ -136,31 +143,53 @@ then
 	fi
 	
 	
-	
 	if [ $DATASET = "eval" ]
-        then	
-		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+    then
+		if [ $REL = "rel" ]
+		then
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+		else
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		fi
 	else
-		python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
-		cd $ANAFORA_DIR
+		if [ $REL = "rel" ]
+		then
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE --includeRelative
+		else
+			python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+			echo "COMMAND:"
+			echo python Chrono.py -I $DATA_DIR -O $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+		fi
+			
+		#cd $ANAFORA_DIR
 
-		echo "EVERYTHING"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+		#echo "EVERYTHING"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
 	
-		echo "EXCLUDE EVENT"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
+		#echo "EXCLUDE EVENT"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event
 
-		echo "EXCLUDE EVENT AND OVERLAP SPANS"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
+		#echo "EXCLUDE EVENT AND OVERLAP SPANS"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event --overlap
 
-		echo "INCLUDE ONLY WHAT WE PARSE AND OVERLAP SPANS"
-		python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
+		#echo "INCLUDE ONLY WHAT WE PARSE AND OVERLAP SPANS"
+		#python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR --exclude Event Between Every-Nth Frequency Intersection NotNormalizable PreAnnotation Sum Union --overlap
 	fi
 
-	echo "COMMANDS:"
-	echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
-	echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
-
+	#echo "COMMANDS:"
+	#echo python Chrono.py -i $DATA_DIR -o $OUT_DIR -m $ML -d $ML_DATA_DIR/$ML_DATA_FILE -c $ML_DATA_DIR/$ML_CLASS_FILE
+	
+	
+	
+	
+	#echo python -m anafora.evaluate -r $DATA_DIR -p $OUT_DIR
+	echo "COMPLETED"
 
 
 

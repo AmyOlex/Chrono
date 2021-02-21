@@ -62,8 +62,11 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
     ## Convert to lowercase
     ref_list = referenceToken.lowercase(ref_list)
     
+    ## this list will contain only the phrases that have a temporal component with a scate entity.
+    timex_list = []
+    
     for s in TimePhraseList:
-        #print(s)
+        print("\nNOW PARSING PHRASE: " + s.getText() + "\n")
         chrono_tmp_list = []
         
         # this is the new chrono time flags so we don't duplicate effort.  Will ned to eventually re-write this flow.
@@ -78,6 +81,8 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id, chrono_time_flags = MonthYear.buildMonthOfYear(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out Day-of-Month
         chrono_tmp_list, chrono_id, chrono_time_flags = DayOfMonth.buildDayOfMonth(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #Parse AMPM before Hour of Day
+        chrono_tmp_list, chrono_id = AMPM.buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out HourOfDay
         chrono_tmp_list, chrono_id, chrono_time_flags = HourOfDay.buildHourOfDay(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         #Parse out MinuteOfHour
@@ -95,7 +100,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         
         chrono_tmp_list, chrono_id = DayOfWeek.buildDayOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id, chrono_time_flags = TextMonthAndDay.buildTextMonthAndDay(s, chrono_id, chrono_tmp_list, chrono_time_flags, dct, ref_list)
-        chrono_tmp_list, chrono_id = AMPM.buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
+        #chrono_tmp_list, chrono_id = AMPM.buildAMPM(s, chrono_id, chrono_tmp_list, chrono_time_flags)
         chrono_tmp_list, chrono_id = PartOfDay.buildPartOfDay(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = PartOfWeek.buildPartOfWeek(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = Season.buildSeasonOfYear(s, chrono_id, chrono_tmp_list, ref_list)
@@ -106,20 +111,40 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id = NthFromStart.buildNthFromStart(s, chrono_id, chrono_tmp_list, ref_list)
         chrono_tmp_list, chrono_id = TimeZone.buildTimeZone(s, chrono_id, chrono_tmp_list)
         chrono_tmp_list, chrono_id = Last.buildLast(s, chrono_id, chrono_tmp_list)
+        chrono_tmp_list, chrono_id = Frequency.buildFrequency(s, chrono_id, chrono_tmp_list)
         
-    #    print("XXXXXXXXX")
-    #    print(s)
-    #    for e in chrono_tmp_list:
-    #        print(e)
         
+        print("XXXXXXXXX")
+        
+       # if len(chrono_tmp_list) > 0:
+        #    print(s)
+         #   timex_list.append(s)
+          #  for e in chrono_tmp_list:
+           #     print(e)
         
         tmplist, chrono_id = buildSubIntervals(chrono_tmp_list, chrono_id, dct, ref_list)
-        chrono_list = chrono_list+tmplist
+        ## tmplist is a list of ChronoEntities for a single phrase, but can be returned empty
+        ## Need to add ISO conversion here!
+        
+        if len(tmplist) > 0:
+            print("Converting phrase to ISO: " + str(s))
+            s.getISO(tmplist)
+            print("ISO Value: " + str(s))
+            print("TIMEX3 String: " + s.i2b2format())
+            timex_list.append(s)
+            
+        
+        
+        chrono_list = chrono_list+tmplist  ##chrono_list is a list of ChronoEntities, and phrase information is lost
+        #print(chrono_list)
+        
         #Going to incorporate in future builds
         #chrono_list, chrono_id = buildDuration(s, chrono_id, chrono_list)
         #chrono_list, chrono_id = buildSet(s, chrono_id, chrono_list)
+    
+    #print("TIMEX LIST: " + str(timex_list))
       
-    return chrono_list, chrono_id
+    return chrono_list, chrono_id, timex_list
     
 ####
 #END_MODULE
@@ -130,88 +155,11 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
 # @param list of ChronoEntities
 # @return List of ChronoEntities with sub-intervals assigned
 def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
-    year = None
-    month = None
-    day = None
-    hour = None
-    minute = None
-    second = None
-    daypart = None
-    dayweek = None
-    interval = None
-    period = None
-    nth = None
-    nxt = None
-    this = None
-    tz = None
-    ampm = None
-    modifier = None
-    last = None
+
     
-    entity_count = 0
+    year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last,entity_count = utils.getEntityTypes(chrono_list)
    
-    #print("in Build Subintervals") 
-    ## loop through all entities and pull out the approriate IDs
-    for e in range(0,len(chrono_list)):
-        #print(chrono_list[e].get_id())
-        e_type = chrono_list[e].get_type()
-        #print("E-type: " + e_type)
-        
-        if e_type == "Two-Digit-Year" or e_type == "Year":
-            year = e
-            entity_count = entity_count + 1
-            # print("YEAR VALUE: " + str(chrono_list[e].get_value()))
-        elif e_type == "Month-Of-Year":
-            # print("FOUND Month")
-            month = e
-            entity_count = entity_count + 1
-        elif e_type == "Day-Of-Month":
-            day = e
-            entity_count = entity_count + 1
-        elif e_type == "Hour-Of-Day":
-            hour = e
-            entity_count = entity_count + 1
-        elif e_type == "Minute-Of-Hour":
-            minute = e
-            entity_count = entity_count + 1
-        elif e_type == "Second-Of-Minute":
-            second = e
-            entity_count = entity_count + 1
-        elif e_type == "Part-Of-Day":
-            daypart = e
-            entity_count = entity_count + 1
-        elif e_type == "Day-Of-Week":
-            dayweek = e
-            entity_count = entity_count + 1
-        elif e_type == "Calendar-Interval":
-            interval = e
-            entity_count = entity_count + 1
-        elif e_type == "Period":
-            period = e
-            entity_count = entity_count + 1
-        elif e_type == "NthFromStart":
-            nth = e
-            entity_count = entity_count + 1
-        elif e_type == "Next":
-            nxt = e
-            entity_count = entity_count + 1
-        elif e_type == "This":
-            this = e
-            entity_count = entity_count + 1
-        
-        elif e_type == "Time-Zone":
-            tz = e
-            entity_count = entity_count + 1
-        elif e_type == "AMPM-Of-Day":
-            ampm = e
-            entity_count = entity_count + 1
-        elif e_type == "Modifier":
-            modifier = e
-            entity_count = entity_count + 1
-        elif e_type == "Last":
-            last = e
-            entity_count = entity_count + 1
-            
+     
         
         
     ## Now add additional NEXT and LAST entities where needed

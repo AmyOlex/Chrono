@@ -38,8 +38,16 @@
 
 
 import string
+import os
+import inspect
 import re
 from Chrono import utils
+
+global dictpath
+thisfilename = inspect.getframeinfo(inspect.currentframe()).filename
+thispath = os.path.dirname(os.path.abspath(thisfilename))
+dictpath = os.path.join(thispath,"../dictionary")
+
 
 ## Takes in a single text string and identifies if it is a month of the year
 # @author Amy Olex
@@ -118,8 +126,10 @@ def hasPeriodInterval(text):
     #define my period lists
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
              "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
-             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", "shortly", 
-             "soon", "briefly", "awhile", "future", "lately", "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", 
+             "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+             # removed relative terms: "shortly", "soon", "briefly", "awhile", "future", "lately", 
+             
     ## possibly add in abbreviations like yr, sec, min, etc.
     
     answer = next((m for m in terms if m in text_norm), None)
@@ -370,6 +380,8 @@ def hasTempText(text):
     "earlier", "early", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
     "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length", "final", "latest", "prior", "recent",
     "recently"]
+ 
+                
     
     for t in text_list:
         answer = next((m for m in temp_text if m in t), None)
@@ -381,6 +393,9 @@ def hasTempText(text):
                 return False
     return False
 
+####
+#END_MODULE
+####
 
 ## Takes in a string and identifies if it contains a temporal modifier
 # @author Luke Maffey
@@ -399,6 +414,34 @@ def hasModifierText(text):
         if answer is not None:
             answer2 = next((m for m in temp_text if t in m), None)
             if answer2 is not None:
+                return True
+            else:
+                return False
+    return False
+####
+#END_MODULE
+####
+
+## Takes in a string and identifies if it contains a temporal clinical abbreviation
+# @author Amy Olex
+# @param text String being parsed
+# @return Outputs True if it contains a clinical temporal abbreviation
+def hasClinAbr(text):
+    # not we do not want to remove punctuation or loiwercase because these features are important for identifying abbreviations.
+    # convert to list
+    text_list = text.split(" ")
+
+    #load in dictionary of clinical abbreviations
+    temp_text = [line.rstrip() for line in open(os.path.join(dictpath, "AbrClinical.txt"), "r")]
+
+    for t in text_list:
+        answer = next((m for m in temp_text if m in t), None)
+        if answer is not None:
+            answer2 = next((m for m in temp_text if t in m), None)
+            if answer2 is not None:
+                return True
+            elif re.search('POD[#\s]{0,1}[#\s]{0,1}[0-9]{1,}', t):
+                print("FOUND POD!!!  " + t)
                 return True
             else:
                 return False

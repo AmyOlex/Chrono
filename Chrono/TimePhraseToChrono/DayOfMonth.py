@@ -34,9 +34,14 @@ def buildDayOfMonth(s, chrono_id, chrono_list, flags):
 # @param tpentity The TimePhrase entity object being parsed
 # @return Outputs 4 values: Boolean Flag, Value text, start index, end index
 def hasDayOfMonth(tpentity):
-    text_lower = tpentity.getText().lower()
+    if isinstance(tpentity, str):
+        thisText = tpentity
+    else:
+        #text_lower = tpentity.getText().lower()
+        thisText = tpentity.getText()
+    
     # remove all punctuation
-    text_norm = text_lower.translate(str.maketrans(",", " "))
+    text_norm = thisText.translate(str.maketrans(",", " "))
     # convert to list
     text_list = text_norm.split(" ")
 
