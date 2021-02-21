@@ -70,7 +70,8 @@ if __name__ == "__main__":
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
-    
+    #parser.add_argument('-r',metavar='includeRelative', type=str2bool, help='Tell Chrono to mark relative phrases temporal words as temporal.', action="store_true", default=False)
+    parser.add_argument('--includeRelative', action="store_true")
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -177,10 +178,11 @@ if __name__ == "__main__":
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
         
-
+        if(args.includeRelative):
+            print("Including Relative Terms")
     
         ## mark all ref tokens if they are numeric or temporal
-        chroList = utils.markTemporal(my_refToks)
+        chroList = utils.markTemporal(my_refToks, include_relative = args.includeRelative)
         
         if(debug) :
             print("REFERENCE TOKENS:\n")
