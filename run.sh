@@ -58,6 +58,21 @@ then
             ##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results/newsEval"
             ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
 		fi
+				if [ $DATASET = "berttrain" ]
+		then
+			##DATA_DIR="/Users/alolex/Desktop/VCU_PhD_Work/Chrono/data/THYME"
+			##DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/THYME_subset"
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_train"
+			##OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results_bert/i2b2_train/"
+			ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
+		fi
+		if [ $DATASET = "berteval" ]
+		then
+			DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/i2b2_eval"
+			OUT_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/results_bert/i2b2_eval"
+      ML_DATA_DIR="/Users/alolex/Desktop/CCTR_Git_Repos/Chrono/sample_files"
+		fi
 		if [ $ML_DATA = "news5" ]
 		then
 			ML_DATA_FILE="official_train_MLmatrix_Win5_012618_data.csv"
