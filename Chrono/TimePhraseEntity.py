@@ -53,8 +53,8 @@ class TimePhraseEntity :
     def __init__(self, id, text, start_span, end_span, type, mod, value, doctime) :
         self.id = id
         self.text = text
-        self.start_span = start_span
-        self.end_span = end_span
+        self.start_span = start_span #this is the token-level span, not character
+        self.end_span = end_span #this is the token-level span, not character
         self.type = type
         self.mod = mod
         self.value = value

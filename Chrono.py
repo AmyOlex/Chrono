@@ -173,8 +173,10 @@ if __name__ == "__main__":
             doctime = utils.getDocTime(infiles[f] + ".dct", i2b2=False)
         if(debug) : print(doctime)
     
-        ## parse out reference tokens
-        raw_text, text, tokens, spans, tags, sents = utils.getWhitespaceTokens(infiles[f]+args.x)
+        ## parse out reference tokens.  The spans returned are character spans, not token spans.
+        ## sents is per token, a 1 indicates that token is the last in the sentence.
+        ##
+        raw_text, text, tokens, spans, tags, sents, sent_text, sent_membership = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
         my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
         
@@ -182,7 +184,7 @@ if __name__ == "__main__":
             print("Including Relative Terms")
     
         ## mark all ref tokens if they are numeric or temporal
-        chroList = utils.markTemporal(my_refToks, include_relative = args.includeRelative)
+        chroList = utils.markTemporal(my_refToks, include_relative=args.includeRelative)
         
         if(debug) :
             print("REFERENCE TOKENS:\n")

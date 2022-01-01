@@ -49,7 +49,7 @@ import string
 class refToken :
 
     ## The constructor
-    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, numeric=None, sent_boundary=None, link_term=None) :
+    def __init__(self, id, text, start_span=None, end_span=None, pos=None, temporal=None, numeric=None, sent_boundary=None, sent_membership=None, link_term=None) :
         self.id = id
         self.text = text
         self.start_span = start_span
@@ -59,6 +59,7 @@ class refToken :
         self.numeric = numeric
         self.sent_boundary = sent_boundary
         self.link_term = link_term
+        self.sent_membership = sent_membership
 
     ## Defines how to convert a refToken to string
     def __str__(self) :
