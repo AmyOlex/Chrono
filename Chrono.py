@@ -178,7 +178,7 @@ if __name__ == "__main__":
         ##
         raw_text, text, tokens, spans, tags, sents, sent_text, sent_membership = utils.getWhitespaceTokens(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents, sent_membership=sent_membership)
         
         if(args.includeRelative):
             print("Including Relative Terms")
