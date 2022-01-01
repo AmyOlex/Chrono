@@ -120,6 +120,9 @@ class refToken:
     def setLinkTerm(self, num):
         self.link_term = num
 
+    def setSentMembership(self, sent_membership):
+        self.sent_membership = sent_membership
+
     #### Methods to GET properties ####
 
     ## Gets the entity's ID
@@ -154,7 +157,11 @@ class refToken:
     def isLinkTerm(self):
         return (self.link_term)
 
-    ## Function to determine if the input span overlaps this objects span
+    def getSentMembership(self):
+        return (self.sent_membership)
+
+
+    # Function to determine if the input span overlaps this objects span
     # @author Amy Olex
     # @param start
     # @param end

@@ -190,7 +190,7 @@ if __name__ == "__main__":
             print("REFERENCE TOKENS:\n")
             for tok in chroList : print(tok)
             
-        tempPhrases = utils.getTemporalPhrases(chroList, doctime)
+        tempPhrases = utils.getTemporalPhrases(chroList, sent_text, doctime)
     
         if(debug):
             for c in tempPhrases:

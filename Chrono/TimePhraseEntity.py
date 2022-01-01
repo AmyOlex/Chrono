@@ -50,7 +50,7 @@ from Chrono import utils
 class TimePhraseEntity :
     
     ## The constructor
-    def __init__(self, id, text, start_span, end_span, type, mod, value, doctime) :
+    def __init__(self, id, text, start_span, end_span, type, mod, value, doctime, sent_membership, sent_text) :
         self.id = id
         self.text = text
         self.start_span = start_span #this is the token-level span, not character
@@ -59,11 +59,13 @@ class TimePhraseEntity :
         self.mod = mod
         self.value = value
         self.doctime = doctime
+        self.sent_membership = sent_membership
+        self.sent_text = sent_text
       
     ## String representation    
     def __str__(self) :
         span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
-        return(str(self.id) + " " + str(self.text) + span_str + " Type: " +str(self.type) + " Mod: " +str(self.mod) + " Value: " + str(self.value) + " DocTime: " + str(self.doctime))
+        return(str(self.id) + " " + str(self.text) + span_str + " Type: " +str(self.type) + " Mod: " +str(self.mod) + " Value: " + str(self.value) + " DocTime: " + str(self.doctime) + " sent_membership: " + str(self.sent_membership) + "\nFULL SENTENCE:\n" + str(self.sent_text))
     
 
     #### Methods to SET properties ###
@@ -102,6 +104,12 @@ class TimePhraseEntity :
     
     def setDoctime(self, doctime) :
         self.doctime = doctime
+
+    def setSentMembership(self, sent_membership) :
+        self.sent_membership = sent_membership
+
+    def setSentText(self, sent_text) :
+        self.sent_text = sent_text
         
     #### Methods to GET properties ####
     
@@ -132,6 +140,12 @@ class TimePhraseEntity :
     ## Gets the entity's doctime
     def getDoctime(self):
         return(self.doctime)
+
+    def getSentMembership(self):
+        return(self.sent_membership)
+
+    def getSentText(self):
+        return(self.sent_text)
     
     ## Print i2b2 format
     def i2b2format(self):

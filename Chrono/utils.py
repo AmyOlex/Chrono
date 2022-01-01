@@ -574,7 +574,7 @@ def temporalTest(tok, include_relative=True):
 # @author Amy Olex
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
-def getTemporalPhrases(chroList, doctime):
+def getTemporalPhrases(chroList, sent_list, doctime):
     #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
     id_counter = 0
     
@@ -594,7 +594,7 @@ def getTemporalPhrases(chroList, doctime):
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
                 if inphrase:
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -605,7 +605,7 @@ def getTemporalPhrases(chroList, doctime):
                 #if e1+1 != s2 and inphrase:
                 if chroList[n].getSentBoundary() and inphrase:
                     #print("Found Sentence Boundary Word!!!!!!!!!")
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -629,7 +629,7 @@ def getTemporalPhrases(chroList, doctime):
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
                 if inphrase:
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -640,7 +640,7 @@ def getTemporalPhrases(chroList, doctime):
                 #if e1+1 != s2 and inphrase:
                 if chroList[n].getSentBoundary() and inphrase:
                     #print("Found Sentence Boundary Word!!!!!!!!!")
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -660,17 +660,17 @@ def getTemporalPhrases(chroList, doctime):
                 #check to see if only a single element and element is numeric, then do not add.
                 if len(tmpPhrase) != 1:
                     #print("multi element phrase ")
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif not tmpPhrase[0].isNumeric():
                     #print("not numeric: " + str(chroList[n-1]))
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif tmpPhrase[0].isNumeric() and tmpPhrase[0].isTemporal():
                     #print("temporal and numeric: " + str(chroList[n-1]))
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 else:
@@ -825,14 +825,17 @@ def getSentList(refToks):
 # @param counter The ID this TimePhrase entity should have
 # @param doctime The document time.
 # @return A single TimePhrase entity with the text span and string concatenated.
-def createTPEntity(items, counter, doctime):
+def createTPEntity(items, counter, sent_list, doctime):
     start_span, tmp = items[0].getSpan()
     tmp, end_span = items[len(items)-1].getSpan()
+    sent_idx = items[0].getSentMembership()
     text = ""
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, type=None, mod=None, value=None, doctime=doctime)
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span,
+                               type=None, mod=None, value=None,
+                               sent_membership=sent_idx, sent_text=sent_list[sent_idx], doctime=doctime)
 
 ####
 #END_MODULE
