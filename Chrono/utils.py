@@ -160,7 +160,7 @@ def getWhitespaceTokens2(file_path):
     #        sent_membership[tok_counter:nw_idx + 1] = [s] * ((nw_idx + 1) - tok_counter)
     #        tok_counter = tok_counter + len(sent_split)
             
-    return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries, sentences, sent_membership
+    return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries, new_sent_list, sent_membership
 
  ####
  #END_MODULE
