@@ -95,6 +95,7 @@ def getWhitespaceTokens2(file_path):
     ## Tokenize the sentences
     sentences = sent_tokenize(text)
 
+    print("Initial sentence 0: " + str(sentences[0]))
     ## Then create a new sentence list by breaking down those with new lines.
     new_sent_list = []
     for s in sentences:
@@ -103,7 +104,8 @@ def getWhitespaceTokens2(file_path):
             new_sent_list.extend(s.split("\n"))
         else:
             new_sent_list.append(s)
-    
+
+    print("New Sent 0: " + str(new_sent_list[0]))
     ## Get spans of the sentences
     sent_spans = align_tokens(new_sent_list, text)
     
@@ -138,7 +140,7 @@ def getWhitespaceTokens2(file_path):
 
     for s in range(0,len(new_sent_list)):
         sent = new_sent_list[s]
-        print(sent)
+        #print(sent)
         sent_split = WhitespaceTokenizer().tokenize(sent)
         nw_idx = len(sent_split) + tok_counter - 1
         sent_boundaries[nw_idx] = 1

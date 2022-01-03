@@ -4,9 +4,10 @@ from Chrono import BuildEntities
 from chronoML import NB_nltk_classifier as NBclass
 from transformers import BertModel, BertTokenizer
 
-raw_text, text, tokens, spans, tags, sents, sent_text, sent_membership = utils.getWhitespaceTokens2("i2b2_train/1.xml.txt")
+raw_text, text, tokens, abs_text_spans, rel_text_spans, tags, sents, sent_text, sent_membership = utils.getWhitespaceTokens2("i2b2_train/1.xml.txt")
 
-my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents, sent_membership=sent_membership)
+my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, abs_span=abs_text_spans, rel_span=rel_text_spans,
+                                               pos=tags, sent_boundaries=sents, sent_membership=sent_membership)
 
 chroList = utils.markTemporal(my_refToks, include_relative=True)
 

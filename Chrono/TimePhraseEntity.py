@@ -52,7 +52,7 @@ class TimePhraseEntity :
     ## The constructor
     def __init__(self, id, text, abs_start_span, abs_end_span, rel_start_span, rel_end_span,
                  abs_token_idx_start, abs_token_idx_end, rel_token_idx_start, rel_token_idx_end,
-                 type, mod, value, doctime, sent_membership, sent_offset, sent_text) :
+                 type, mod, value, doctime, sent_membership, sent_text) :
         self.id = id
         self.text = text
         self.abs_start_span = abs_start_span  # this is the character-level span, not token
@@ -68,7 +68,6 @@ class TimePhraseEntity :
         self.value = value
         self.doctime = doctime
         self.sent_membership = sent_membership
-        self.sent_offset = sent_offset
         self.sent_text = sent_text
       
     ## String representation    
@@ -133,7 +132,19 @@ class TimePhraseEntity :
     ## Gets the entity's span
     def getSpan(self) :
         return(self.abs_start_span, self.abs_end_span)
-        
+
+    ## Gets the entity's span
+    def getRelSpan(self):
+        return (self.rel_start_span, self.rel_end_span)
+
+    ## Gets the entity's token abs span
+    def getTokenSpan(self) :
+        return(self.abs_token_idx_start, self.abs_token_idx_end)
+
+    ## Gets the entity's token relative span
+    def getTokenRelSpan(self):
+        return (self.rel_token_idx_start, self.rel_token_idx_end)
+
     ## Gets the entity's type
     def getType(self) :
         return(self.type)
@@ -301,7 +312,7 @@ class TimePhraseEntity :
             if interval or period:
                 print("HELLO DURATION")
                 mytype = "DURATION"
-                tmp = utils.bert_classify(self.abs_start_span, self.abs_end_span, self.sent_text, self.sent_membership, bert_model, bert_tokenizer)
+                tmp = utils.bert_classify(self.rel_token_idx_start, self.rel_token_idx_end, self.sent_text, self.sent_membership, bert_model, bert_tokenizer)
                 
                 if interval:
                     duration = interval.get_value()

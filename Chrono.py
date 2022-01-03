@@ -47,7 +47,7 @@ from Chrono import utils
 from keras.models import load_model
 from transformers import BertModel, BertTokenizer
 
-debug=False
+debug=True
 
 
 
