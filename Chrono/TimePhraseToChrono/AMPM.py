@@ -16,7 +16,7 @@ def buildAMPM(s, chrono_id, chrono_list, flags):
     ## Identify if a time zone string exists
     # tz = hasTimeZone(s)
     # if tz is not None:
-    #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+    #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", abs_start_span =tz.span(0)[0] + ref_Sspan, abs_end_span=tz.span(0)[1] + ref_Sspan)
     #     chrono_list.append(my_tz_entity)
     #     chrono_id = chrono_id + 1
     # else:

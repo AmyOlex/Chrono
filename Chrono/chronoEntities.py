@@ -44,8 +44,8 @@
 #
 # Entities are either an Interval, Period, Repeating-Interval, or Operator
 # @param entityID Assigned ID number
-# @param start_span The location of the first character
-# @param end_span The location of the last character
+# @param abs_start_span The location of the first character
+# @param abs_end_span The location of the last character
 # @param type The type of the entity
 # @param parent_type The parent type of the entity
 class ChronoEntity:
@@ -65,7 +65,7 @@ class ChronoEntity:
 	## Compares two ChronoEntities (ex. entity1 == entity2)
 	# @return Return True if they have the same span and type, false otherwise
 	def __eq__(self, other):
-		return self.start_span == other.start_span and self.end_span == other.end_span and self.type == other.type
+		return self.start_span == other.abs_start_span and self.end_span == other.abs_end_span and self.type == other.type
 
 	## Hashes an entity based on the span and type
 	# @return Return true if hashes are the same
@@ -83,7 +83,7 @@ class ChronoEntity:
 		return self.entityID
 
     ## Sets the entity's start span
-    # @param start_span Where in the text the entity starts
+    # @param abs_start_span Where in the text the entity starts
 	def set_start_span(self, start_span):
 		self.start_span = start_span
 
@@ -93,7 +93,7 @@ class ChronoEntity:
 		return self.start_span
 
     ## Sets the entity's end span
-    # @param start_span Where in the text the entity ends
+    # @param abs_start_span Where in the text the entity ends
 	def set_end_span(self, end_span):
 		self.end_span = end_span
 

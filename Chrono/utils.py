@@ -58,6 +58,9 @@ import dateutil.parser as dup
 import datetime
 import inspect
 import os
+from Chrono.ChronoBert import SentenceObj
+
+
 
 ## Load the dictionary files
 
@@ -91,19 +94,29 @@ def getWhitespaceTokens2(file_path):
     
     ## Tokenize the sentences
     sentences = sent_tokenize(text)
+
+    ## Then create a new sentence list by breaking down those with new lines.
+    new_sent_list = []
+    for s in sentences:
+        #print(s)
+        if "\n" in s:
+            new_sent_list.extend(s.split("\n"))
+        else:
+            new_sent_list.append(s)
     
     ## Get spans of the sentences
-    sent_spans = align_tokens(sentences, text)
+    sent_spans = align_tokens(new_sent_list, text)
     
     ## create empty arrays for white space tokens and sentence delimiters
     tokenized_text = []
-    text_spans = []
+    rel_text_spans = []
+    abs_text_spans = []
     
     ## Loop through each sentence and get the tokens and token spans
-    for s in range(0,len(sentences)):
+    for s in range(0,len(new_sent_list)):
         # get the tokens and token spans within the sentence
-        toks = WhitespaceTokenizer().tokenize(sentences[s])
-        span_generator = WhitespaceTokenizer().span_tokenize(sentences[s])
+        toks = WhitespaceTokenizer().tokenize(new_sent_list[s])
+        span_generator = WhitespaceTokenizer().span_tokenize(new_sent_list[s])
         rel_spans = [span for span in span_generator]
         
         # convert the relative spans into absolute spans
@@ -112,22 +125,13 @@ def getWhitespaceTokens2(file_path):
             abs_spans = abs_spans + [(sent_spans[s][0]+start, sent_spans[s][0]+end)]
         
         tokenized_text = tokenized_text + toks
-        text_spans = text_spans + abs_spans
+        abs_text_spans = abs_text_spans + abs_spans
+        rel_text_spans = rel_text_spans + rel_spans
     
     ## Now we have the token list and the spans.  We should be able to continue finding sentnence boundaries as before
     tags = nltk.pos_tag(tokenized_text)
     sent_boundaries = [0] * len(tokenized_text)
     sent_membership = [0] * len(tokenized_text)
-    new_sent_list = []
-
-    ## first create the new sentence list by breaking down those with new lines.
-    for s in sentences:
-        #print(s)
-        if "\n" in s:
-            new_sent_list.extend(s.split("\n"))
-        else:
-            new_sent_list.append(s)
-
 
     ## figure out which tokens are at the end of a sentence
     tok_counter = 0
@@ -160,7 +164,7 @@ def getWhitespaceTokens2(file_path):
     #        sent_membership[tok_counter:nw_idx + 1] = [s] * ((nw_idx + 1) - tok_counter)
     #        tok_counter = tok_counter + len(sent_split)
             
-    return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries, new_sent_list, sent_membership
+    return raw_text, text, tokenized_text, abs_text_spans, rel_text_spans, tags, sent_boundaries, new_sent_list, sent_membership
 
  ####
  #END_MODULE
@@ -575,7 +579,7 @@ def temporalTest(tok, include_relative=True):
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
 def getTemporalPhrases(chroList, sent_list, doctime):
-    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
+    #TimePhraseEntity(id=id_counter, text=j['text'], abs_start_span=j['start'], abs_end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
     id_counter = 0
     
     phrases = [] #the empty phrases list of TimePhrase entities
@@ -692,7 +696,7 @@ def getTemporalPhrases(chroList, sent_list, doctime):
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
 def getTemporalPhrasesWithSents(chroList, doctime):
-    # TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
+    # TimePhraseEntity(id=id_counter, text=j['text'], abs_start_span=j['start'], abs_end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
     id_counter = 0
 
     phrases = []  # the empty phrases list of TimePhrase entities
@@ -821,20 +825,29 @@ def getSentList(refToks):
 
 ## Takes in a list of reference tokens identified as a temporal phrase and returns one TimePhraseEntity.
 # @author Amy Olex
-# @param items The list of reference tokesn
+# @param items The list of reference tokens
 # @param counter The ID this TimePhrase entity should have
+# @param sent_list The list of sentences with full text.
 # @param doctime The document time.
 # @return A single TimePhrase entity with the text span and string concatenated.
 def createTPEntity(items, counter, sent_list, doctime):
-    start_span, tmp = items[0].getSpan()
-    tmp, end_span = items[len(items)-1].getSpan()
+    abs_start_span, tmp = items[0].getSpan()
+    tmp, abs_end_span = items[len(items)-1].getSpan()
+    rel_start, tmp = items[0].getRelSpan()
+    tmp, rel_end = items[len(items) - 1].getRelSpan()
+    abs_token_idx_start = items[0].getID()
+    abs_token_idx_end = items[len(items)-1].getID()
+    rel_token_idx_start = items[0].getRelID()
+    rel_token_idx_end = items[len(items)-1].getRelID()
     sent_idx = items[0].getSentMembership()
-    text = ""
+    text = ''
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span,
-                               type=None, mod=None, value=None,
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), abs_start_span=abs_start_span, abs_end_span=abs_end_span,
+                               rel_start_span=rel_start, rel_end_span=rel_end, abs_token_idx_start=abs_token_idx_start,
+                               abs_token_idx_end=abs_token_idx_end, rel_token_idx_start=rel_token_idx_start,
+                               rel_token_idx_end=rel_token_idx_end, type=None, mod=None, value=None,
                                sent_membership=sent_idx, sent_text=sent_list[sent_idx], doctime=doctime)
 
 ####
@@ -845,8 +858,8 @@ def createTPEntity(items, counter, sent_list, doctime):
 ## Takes in a reference list of tokens, a start span and an end span
 # @author Amy Olex
 # @param ref_list The list of reference tokens we want an index for.
-# @param start_span The start span of the token we need to find in ref_list
-# @param end_span The ending span of the token we need to find
+# @param abs_start_span The start span of the token we need to find in ref_list
+# @param abs_end_span The ending span of the token we need to find
 # @return Returns the index of the ref_list token that overlaps the start and end spans provided, or -1 if not found.
 def getRefIdx(ref_list, start_span, end_span):
     for i in range(0,len(ref_list)):
@@ -1181,7 +1194,31 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
                 return(1,"NA")
     return("","NA")
 
-    
+
+def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer):
+    print("Start Span: " + str(start_span))
+    print("End Span: " + str(end_span))
+    print("Sentence: " + str(sent_text))
+    print("Parsing into BERT")
+    this_sent = SentenceObj.SentenceObj(text=sent_text, sentence_num=sent_idx, global_sent_char_start_coord=0,
+                                        global_sentence_start_coord=0, phrase_idxs=[range(start_span, end_span+1)],
+                                        max_length=256, bert_model=bert_model, bert_tokenizer=bert_tokenizer,
+                                        context_window=3, gold_labels="", filt=False)
+    print("BERT tokenized sentence: " + str(this_sent.bert_tokenized_sentence))
+
+
+    ## Parse with BERT/create a Document obj with just this sentence??
+    ## Extract out the embeddings according to set options.
+    ## run through classifier
+    ## /Users/alolex/Desktop/CCTR_Git_Repos/PycharmProjects/ChronoBERT/SVM_models_rerun/SVM_trainFull_clinbert2chrono_seq2seq_BIO_4epochs_pretrained_final.pkl
+    ## return string of "DATE" or "DURATION".
+
+    ## Once back in the getISO() method, if DURATION, continue as currently coded.  But if DATE, identify an anchor date
+    ## then the quantity, and before or after the anchor date.  Calculate date based on that information.
+    ## to start the anchor date can just be the document date for now, but implement as a method so it can be updated later.
+
+    return "TMP"
+
     
     
     

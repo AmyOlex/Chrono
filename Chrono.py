@@ -45,6 +45,7 @@ from Chrono import BuildEntities
 from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
+from transformers import BertModel, BertTokenizer
 
 debug=False
 
@@ -70,6 +71,9 @@ if __name__ == "__main__":
     parser.add_argument('-d', metavar='MLTrainData', type=str, help='A string representing the file name that contains the CSV file with the training data matrix.', required=False, default=False)
     parser.add_argument('-c', metavar='MLTrainClass', type=str, help='A string representing the file name that contains the known classes for the training data matrix.', required=False, default=False)
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
+    parser.add_argument('-b', metavar='BERTmodel', type=str,
+                        help='The path and file name of a pre-built BERT model for loading.', required=False,
+                        default=None)
     #parser.add_argument('-r',metavar='includeRelative', type=str2bool, help='Tell Chrono to mark relative phrases temporal words as temporal.', action="store_true", default=False)
     parser.add_argument('--includeRelative', action="store_true")
     
@@ -176,9 +180,9 @@ if __name__ == "__main__":
         ## parse out reference tokens.  The spans returned are character spans, not token spans.
         ## sents is per token, a 1 indicates that token is the last in the sentence.
         ##
-        raw_text, text, tokens, spans, tags, sents, sent_text, sent_membership = utils.getWhitespaceTokens(infiles[f]+args.x)
+        raw_text, text, tokens, abs_text_spans, rel_text_spans, tags, sents, sent_text, sent_membership = utils.getWhitespaceTokens2(infiles[f]+args.x)
         #my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, remove_stopwords="./Chrono/stopwords_short2.txt")
-        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, span=spans, pos=tags, sent_boundaries=sents, sent_membership=sent_membership)
+        my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, abs_span=abs_text_spans, rel_span=rel_text_spans, pos=tags, sent_boundaries=sents, sent_membership=sent_membership)
         
         if(args.includeRelative):
             print("Including Relative Terms")
@@ -196,8 +200,16 @@ if __name__ == "__main__":
             for c in tempPhrases:
                 print(c)
     
+        # load in BERT model
+        bert_model = BertModel.from_pretrained(args.b, output_hidden_states=True, use_cache=True, output_attentions=True)
+        bert_tokenizer = BertTokenizer.from_pretrained(args.b)
 
-        chrono_master_list, my_chrono_ID_counter, timex_phrases = BuildEntities.buildChronoList(tempPhrases, my_chrono_ID_counter, chroList, (classifier, args.m), feats, doctime)
+        chrono_master_list, my_chrono_ID_counter, timex_phrases = BuildEntities.buildChronoList(tempPhrases,
+                                                                                                my_chrono_ID_counter,
+                                                                                                chroList,
+                                                                                                (classifier, args.m),
+                                                                                                feats, bert_model,
+                                                                                                bert_tokenizer, doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         

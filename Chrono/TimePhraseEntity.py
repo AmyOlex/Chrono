@@ -33,38 +33,47 @@
 
 ## Class definitions to represent a temporal phrase
 
-import json
 import dateutil.parser as dp
 from datetime import timedelta as td
-import datetime
 from Chrono import utils
+from Chrono.ChronoBert import bert_utils
+
 
 ## Class to define a TimePhrase entity parsed from the json output of TimePhrase
 # @author Amy Olex
 # @param id Unique numerical ID
 # @param text The text parsed out by TimePhrase
-# @param start_span The location of the first character
-# @param end_span The location of the last character
+# @param abs_start_span The location of the first character
+# @param abs_end_span The location of the last character
 # @param type The type of temporal entity parsed by TimePhrase.  Can be one of DATE, TIME, SET, DURATION, RANGE...I think!
 # @param value The normalized date/time value from TimePhrase.
 class TimePhraseEntity :
     
     ## The constructor
-    def __init__(self, id, text, start_span, end_span, type, mod, value, doctime, sent_membership, sent_text) :
+    def __init__(self, id, text, abs_start_span, abs_end_span, rel_start_span, rel_end_span,
+                 abs_token_idx_start, abs_token_idx_end, rel_token_idx_start, rel_token_idx_end,
+                 type, mod, value, doctime, sent_membership, sent_offset, sent_text) :
         self.id = id
         self.text = text
-        self.start_span = start_span #this is the token-level span, not character
-        self.end_span = end_span #this is the token-level span, not character
+        self.abs_start_span = abs_start_span  # this is the character-level span, not token
+        self.abs_end_span = abs_end_span  # this is the character-level span, not token
+        self.rel_start_span = rel_start_span  # this is the character-level span, not token
+        self.rel_end_span = rel_end_span  # this is the character-level span, not token
+        self.abs_token_idx_start = abs_token_idx_start  # this is the token-level span
+        self.abs_token_idx_end = abs_token_idx_end  # this is the token-level span
+        self.rel_token_idx_start = rel_token_idx_start  # this is the token-level span
+        self.rel_token_idx_end = rel_token_idx_end  # this is the token-level span
         self.type = type
         self.mod = mod
         self.value = value
         self.doctime = doctime
         self.sent_membership = sent_membership
+        self.sent_offset = sent_offset
         self.sent_text = sent_text
       
     ## String representation    
     def __str__(self) :
-        span_str = "" if self.start_span is None else (" <" + str(self.start_span) + "," + str(self.end_span) + "> ")
+        span_str = "" if self.abs_start_span is None else (" <" + str(self.abs_start_span) + "," + str(self.abs_end_span) + "> ")
         return(str(self.id) + " " + str(self.text) + span_str + " Type: " +str(self.type) + " Mod: " +str(self.mod) + " Value: " + str(self.value) + " DocTime: " + str(self.doctime) + " sent_membership: " + str(self.sent_membership) + "\nFULL SENTENCE:\n" + str(self.sent_text))
     
 
@@ -84,8 +93,8 @@ class TimePhraseEntity :
     #  @param start The start index
     #  @param end The ending index
     def setSpan(self, start, end) :
-        self.start_span = start
-        self.end_span = end
+        self.abs_start_span = start
+        self.abs_end_span = end
         
     ## Sets the entity's type
     #  @param type The type of TimePhrase temporal expression
@@ -123,7 +132,7 @@ class TimePhraseEntity :
         
     ## Gets the entity's span
     def getSpan(self) :
-        return(self.start_span, self.end_span)
+        return(self.abs_start_span, self.abs_end_span)
         
     ## Gets the entity's type
     def getType(self) :
@@ -151,12 +160,13 @@ class TimePhraseEntity :
     def i2b2format(self):
         #<TIMEX3 id="T0" start="18" end="26" text="10/17/95" type="DATE" val="1995-10-17" mod="NA" />
     
-        return("<TIMEX3 id=\"T" + str(self.id) + "\" start=\"" + str(self.start_span) + "\" end=\"" + str(self.end_span) + "\" text=\"" + str(self.text) + "\" type=\"" + str(self.type) + "\" val=\"" + str(self.value) + "\" mod=\"" + str(self.mod) + "\" />")
+        return("<TIMEX3 id=\"T" + str(self.id) + "\" start=\"" + str(self.abs_start_span) + "\" end=\"" + str(self.abs_end_span) + "\" text=\"" + str(self.text) + "\" type=\"" + str(self.type) + "\" val=\"" + str(self.value) + "\" mod=\"" + str(self.mod) + "\" />")
         
         
     
-    ## Uses the parsed Chrono entities to create the ISO value   
-    def getISO(self, chronolist):
+    ## Uses the parsed Chrono entities to create the ISO value
+    # chronolist is a list of the SCATE entities for this phrase only.
+    def getISO(self, chronolist, bert_model, bert_tokenizer):
         
         mytype = "TIME"
         mymod = "NA"
@@ -291,6 +301,7 @@ class TimePhraseEntity :
             if interval or period:
                 print("HELLO DURATION")
                 mytype = "DURATION"
+                tmp = utils.bert_classify(self.abs_start_span, self.abs_end_span, self.sent_text, self.sent_membership, bert_model, bert_tokenizer)
                 
                 if interval:
                     duration = interval.get_value()
@@ -381,7 +392,7 @@ class TimePhraseEntity :
 def import_TimePhrase(tempt_json, doctime = None, id_counter=0) :
     temp_list = []
     for j in tempt_json:
-        temp_list.append(TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime))
+        temp_list.append(TimePhraseEntity(id=id_counter, text=j['text'], abs_start_span=j['start'], abs_end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime))
         id_counter = id_counter +1
         
     return temp_list

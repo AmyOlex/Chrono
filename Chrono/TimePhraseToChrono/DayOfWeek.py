@@ -38,12 +38,12 @@ def buildDayOfWeek(s, chrono_id, chrono_list):
                                                              semantics="Interval-Included"))
                 chrono_id = chrono_id + 1
             # else:
-            #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
+            #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", abs_start_span=abs_Sspan, abs_end_span=abs_Espan, repeating_interval=my_entity.get_id(), semantics="Interval-Included"))
             #    chrono_id = chrono_id + 1
 
         # else:
         # TODO all last operators are getting added here except yesterday...
-        #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, semantics="Interval-Included", repeating_interval=my_entity.get_id()))
+        #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", abs_start_span=abs_Sspan, abs_end_span=abs_Espan, semantics="Interval-Included", repeating_interval=my_entity.get_id()))
         #    chrono_id = chrono_id + 1
 
     return chrono_list, chrono_id
