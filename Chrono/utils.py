@@ -1197,7 +1197,9 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
     return("","NA")
 
 
-def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer):
+def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier):
+
+    ## First parse into the SentenceObj structure
     print("Start Span: " + str(start_span))
     print("End Span: " + str(end_span))
     print("Sentence: " + str(sent_text))
@@ -1207,9 +1209,19 @@ def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_to
                                         max_length=256, bert_model=bert_model, bert_tokenizer=bert_tokenizer,
                                         context_window=3, gold_labels="", filt=False)
     print("BERT tokenized sentence: " + str(this_sent.bert_tokenized_sentence))
+    print("Temporal Phrase Text: " + this_sent.datedur_phrases[0].getText())
+
+    ## Second extract BERT embeddings as features for the first and only temporal phrase
+    embedding = this_sent.datedur_phrases[0].getSummarizedEmbedding(include_context=False, include_attention=False)
+
+    print("BERT Embedding: " + str(embedding))
+
+    ## Third use the embedding to classify the phrase as a DATE or DURATION
+    pred = bert_classifier.predict(np.reshape(embedding.numpy(), (1, -1)))
+    label_dict = {0:"DURATION", 1:"DATE"}
+    print("PREDICTION: " + str(pred) + " LABEL: " + str(label_dict[pred[0]]))
 
 
-    ## Parse with BERT/create a Document obj with just this sentence??
     ## Extract out the embeddings according to set options.
     ## run through classifier
     ## /Users/alolex/Desktop/CCTR_Git_Repos/PycharmProjects/ChronoBERT/SVM_models_rerun/SVM_trainFull_clinbert2chrono_seq2seq_BIO_4epochs_pretrained_final.pkl
@@ -1219,7 +1231,7 @@ def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_to
     ## then the quantity, and before or after the anchor date.  Calculate date based on that information.
     ## to start the anchor date can just be the document date for now, but implement as a method so it can be updated later.
 
-    return "TMP"
+    return label_dict[pred[0]]
 
     
     

@@ -53,7 +53,7 @@ from Chrono import utils
 # @param list of TimePhrase Output
 # @param document creation time (optional)
 # @return List of Chrono entities and the ChronoID
-def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeatures, bert_model, bert_tokenizer, dct=None):
+def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeatures, bert_model, bert_tokenizer, bert_classifier, dct=None):
     chrono_list = []
     
     ## Do some further pre-processing on the ref token list
@@ -128,7 +128,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         
         if len(tmplist) > 0:
             print("Converting phrase to ISO: " + str(s))
-            s.getISO(tmplist, bert_model, bert_tokenizer)
+            s.getISO(tmplist, bert_model, bert_tokenizer, bert_classifier)
             print("ISO Value: " + str(s))
             print("TIMEX3 String: " + s.i2b2format())
             timex_list.append(s)

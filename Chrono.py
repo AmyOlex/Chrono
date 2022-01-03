@@ -46,6 +46,7 @@ from Chrono import referenceToken
 from Chrono import utils
 from keras.models import load_model
 from transformers import BertModel, BertTokenizer
+from joblib import load
 
 debug=True
 
@@ -73,6 +74,9 @@ if __name__ == "__main__":
     parser.add_argument('-M', metavar='MLmodel', type=str, help='The path and file name of a pre-build ML model for loading.', required=False, default=None)
     parser.add_argument('-b', metavar='BERTmodel', type=str,
                         help='The path and file name of a pre-built BERT model for loading.', required=False,
+                        default=None)
+    parser.add_argument('-B', metavar='BERTClassificationModel', type=str,
+                        help='The path and file name of a pre-trained SVM or CNN classification model from ChronoBERT.', required=False,
                         default=None)
     #parser.add_argument('-r',metavar='includeRelative', type=str2bool, help='Tell Chrono to mark relative phrases temporal words as temporal.', action="store_true", default=False)
     parser.add_argument('--includeRelative', action="store_true")
@@ -203,13 +207,15 @@ if __name__ == "__main__":
         # load in BERT model
         bert_model = BertModel.from_pretrained(args.b, output_hidden_states=True, use_cache=True, output_attentions=True)
         bert_tokenizer = BertTokenizer.from_pretrained(args.b)
+        bert_classifier = load(args.B)
 
         chrono_master_list, my_chrono_ID_counter, timex_phrases = BuildEntities.buildChronoList(tempPhrases,
                                                                                                 my_chrono_ID_counter,
                                                                                                 chroList,
                                                                                                 (classifier, args.m),
                                                                                                 feats, bert_model,
-                                                                                                bert_tokenizer, doctime)
+                                                                                                bert_tokenizer,
+                                                                                                bert_classifier, doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         
