@@ -93,14 +93,14 @@ class PhraseObj(object):
 
         #print("\nGETTING BEFORE ATTN MATRIX\n")
         self.attention_before_matrix = utils.getEmbeddingMtxDisconnected(bert_sent, sent_embeddings, attn_before, self.filter)
-        #print("\nGETTING AFTER ATTN MATRIX\n")
+        ##print("\nGETTING AFTER ATTN MATRIX\n")
         self.attention_after_matrix = utils.getEmbeddingMtxDisconnected(bert_sent, sent_embeddings, attn_after, self.filter)
 
 
     def getMtxFormattedPhrase(self, pad_to, include_context = False, include_attention = False):
 
         if include_context:
-            print("\nReturning CONTEXT with phrase matrix")
+            #print("\nReturning CONTEXT with phrase matrix")
             #print("Length of context before: " + str(len(self.context_before_matrix)))
             embed_mtx = self.context_before_matrix[:]
             embed_mtx.extend(self.phrase_embedding_matrix)

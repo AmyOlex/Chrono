@@ -95,7 +95,7 @@ def getWhitespaceTokens2(file_path):
     ## Tokenize the sentences
     sentences = sent_tokenize(text)
 
-    print("Initial sentence 0: " + str(sentences[0]))
+    #print("Initial sentence 0: " + str(sentences[0]))
     ## Then create a new sentence list by breaking down those with new lines.
     new_sent_list = []
     for s in sentences:
@@ -105,7 +105,7 @@ def getWhitespaceTokens2(file_path):
         else:
             new_sent_list.append(s)
 
-    print("New Sent 0: " + str(new_sent_list[0]))
+    #print("New Sent 0: " + str(new_sent_list[0]))
     ## Get spans of the sentences
     sent_spans = align_tokens(new_sent_list, text)
     
@@ -201,7 +201,7 @@ def write_i2b2(text, phrase_list, outfile):
     fout.write(text)
     fout.write("\n")
     fout.write("]]></TEXT>\n<TAGS>\n")
-    print("Phrase list length: " + str(len(phrase_list)))
+    #print("Phrase list length: " + str(len(phrase_list)))
     for c in phrase_list :
         fout.write(c.i2b2format())
         fout.write("\n")
@@ -653,7 +653,7 @@ def getTemporalPhrases(chroList, sent_list, doctime):
         
         ## Now look for a linking term.  Only continue the phrase if the term is surrounded by numeric or temporal tokens. 
         ## Also, only consider linking terms if we are already in a phrase.
-        elif chroList[n].isLinkTerm() and inphrase:
+        elif chroList[n].isLinkTerm() and inphrase and not chroList[n].getSentBoundary():
             if (chroList[n-1].isTemporal() or chroList[n-1].isNumeric()) and (chroList[n+1].isTemporal() or chroList[n+1].isNumeric()):
                 tmpPhrase.append(copy.copy(chroList[n]))
         
@@ -1161,26 +1161,26 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
     if eid:
         for e in chrono_list:
             if e.get_id() == eid:
-                print("RETURNING VALUE OF " + str(e.get_value()))
+                #print("RETURNING VALUE OF " + str(e.get_value()))
                 return(e.get_value(), "NA")
     else:
-        print("NO NUMBER")
-        print(phrase_text)
+        #print("NO NUMBER")
+        #print(phrase_text)
         
         phrase_set = set(phrase_text.split())
-        print(phrase_set)
+        #print(phrase_set)
         
         #intersect2 = list(set(APPROX2) & phrase_set)
         #print(intersect2)
         
         intersect3 = list(set(APPROX3) & phrase_set)
-        print(intersect3)
+        #print(intersect3)
         
         intersect10 = list(set(APPROX10) & phrase_set)
-        print(intersect10)
+        #print(intersect10)
         
         intersectperiodint = list(set(PERIODINT) & phrase_set)
-        print(intersectperiodint)
+        #print(intersectperiodint)
         
         #if len(intersect2) == 1:
         #    return(2, "APPROX")
@@ -1189,7 +1189,7 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
         elif len(intersect10) == 1:
             return(10,"APPROX")
         elif len(intersectperiodint) == 1:
-            print("In PERIODINT")
+            #print("In PERIODINT")
             if intersectperiodint[0][-1:] == "s":
                 return(2,"NA")
             else:
@@ -1198,7 +1198,7 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
 
 
 def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier):
-
+    print("In BERT CLASSIFY")
     ## First parse into the SentenceObj structure
     print("Start Span: " + str(start_span))
     print("End Span: " + str(end_span))

@@ -20,14 +20,14 @@ bert_classifier = load("/Users/alolex/Desktop/CCTR_Git_Repos/PycharmProjects/Chr
 
 
 raw_text, text, tokens, abs_text_spans, rel_text_spans, tags, sents, sent_text, \
-sent_membership = utils.getWhitespaceTokens2("i2b2_train/1.xml.txt")
+sent_membership = utils.getWhitespaceTokens2("i2b2_eval/257.xml.txt")
 
 my_refToks = referenceToken.convertToRefTokens(tok_list=tokens, abs_span=abs_text_spans, rel_span=rel_text_spans,
                                                pos=tags, sent_boundaries=sents, sent_membership=sent_membership)
 
 chroList = utils.markTemporal(my_refToks, include_relative=True)
 
-doctime = utils.getDocTime("i2b2_train/1.xml.txt", i2b2=True)
+doctime = utils.getDocTime("i2b2_eval/257.xml.txt", i2b2=True)
 
 tempPhrases = utils.getTemporalPhrases(chroList, sent_text, doctime)
 

@@ -114,7 +114,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id = Frequency.buildFrequency(s, chrono_id, chrono_tmp_list)
         
         
-        print("XXXXXXXXX")
+        #print("XXXXXXXXX")
         
        # if len(chrono_tmp_list) > 0:
         #    print(s)

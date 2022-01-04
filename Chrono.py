@@ -48,7 +48,7 @@ from keras.models import load_model
 from transformers import BertModel, BertTokenizer
 from joblib import load
 
-debug=True
+debug=False
 
 
 
