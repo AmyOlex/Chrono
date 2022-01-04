@@ -92,6 +92,7 @@ class SentenceObj(object):
     def extractPhrases(self, phrase_idxs, context_window, gold_labels, filt):
         ## input: [[2,3,4],[8,9]]
         ## input: ['DATE','DURATION'] or ''
+        print("My phrase idxs: " + str(phrase_idxs) + " Type: " + str(type(phrase_idxs)))
 
         local_datedur_phrases = []
         if gold_labels:
@@ -131,8 +132,13 @@ class SentenceObj(object):
             for p in phrase_idxs:
                 phrase_start = p if isinstance(p, int) else p[0]
                 phrase_end = p if isinstance(p, int) else p[-1]
-                ptext = self.text[phrase_start:phrase_end + 1]
+                ptext = self.whitespace_tokenized_sentence[phrase_start:phrase_end + 1]
                 pcoords = (phrase_start, phrase_end)
+                print("PROCESSING p: " + str(p))
+                print("Phrase p start,end: " + str(phrase_start) + "," + str(phrase_end))
+                print("self.text: " + str(self.text))
+                print("self.whitespace_tokenized_sentence: " + str(self.whitespace_tokenized_sentence))
+                print("Phrase text: " + str(ptext))
                 # now get character coords
                 # sentence start to phrase_start token, plus one character (for the missing space) is the char start:
                 phrase_char_start = len(' '.join(self.whitespace_tokenized_sentence[0:max(0, phrase_start)])) + 1

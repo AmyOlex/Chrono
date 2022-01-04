@@ -1204,12 +1204,14 @@ def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_to
     print("End Span: " + str(end_span))
     print("Sentence: " + str(sent_text))
     print("Parsing into BERT")
+    phrase_idx_list = []
+    phrase_idx_list.append(list(range(start_span, end_span+1)))  ## based on the way I coded the method I have to have a nested list.
     this_sent = SentenceObj.SentenceObj(text=sent_text, sentence_num=sent_idx, global_sent_char_start_coord=0,
-                                        global_sentence_start_coord=0, phrase_idxs=[range(start_span, end_span+1)],
+                                        global_sentence_start_coord=0, phrase_idxs=phrase_idx_list,
                                         max_length=256, bert_model=bert_model, bert_tokenizer=bert_tokenizer,
                                         context_window=3, gold_labels="", filt=False)
     print("BERT tokenized sentence: " + str(this_sent.bert_tokenized_sentence))
-    print("Temporal Phrase Text: " + this_sent.datedur_phrases[0].getText())
+    print("Temporal Phrase Text: " + str(this_sent.datedur_phrases[0].getText()))
 
     ## Second extract BERT embeddings as features for the first and only temporal phrase
     embedding = this_sent.datedur_phrases[0].getSummarizedEmbedding(include_context=False, include_attention=False)

@@ -311,56 +311,84 @@ class TimePhraseEntity :
             
             if interval or period:
                 print("HELLO DURATION")
-                mytype = "DURATION"
-                bert_type = utils.bert_classify(self.rel_token_idx_start, self.rel_token_idx_end, self.sent_text,
+                mytype = utils.bert_classify(self.rel_token_idx_start, self.rel_token_idx_end, self.sent_text,
                                           self.sent_membership, bert_model, bert_tokenizer, bert_classifier)
-                
+
+
                 if interval:
-                    duration = interval.get_value()
-                    dtime,mymod = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
-                    print("INTERVAL HERE: " + str(duration) + " Num: " + str(dtime))
+                    granulatiry = intervalV
+                    dtime,na = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
+                    print("INTERVAL HERE: " + str(granulatiry) + " Num: " + str(dtime) + " Mod: " + str(mymod))
 
                 else:
-                    duration = period.get_value()
-                    dtime,mymod = utils.getPhraseNumber(self.text, chronolist, period.get_number())
-                    print("PERIOD HERE: " + str(duration) + " Num: " + str(dtime))
+                    granulatiry = periodV
+                    dtime,na = utils.getPhraseNumber(self.text, chronolist, period.get_number())
+                    print("PERIOD HERE: " + str(granulatiry) + " Num: " + str(dtime) + " Mod: " + str(mymod))
 
-                if duration in "Days" and dtime:
-                    iso = "P" + str(dtime) + "D"
-                if duration in "Weeks" and dtime:
-                    iso = "P" + str(dtime) + "W"
-                if duration in "Months" and dtime:
-                    iso = "P" + str(dtime) + "M"
-                if duration in "Years" and dtime:
-                    iso = "P" + str(dtime) + "Y"
-                if duration in "Hours" and dtime:
-                    iso = "PT" + str(dtime) + "H"
-                if duration in "Minutes" and dtime:
-                    iso = "PT" + str(dtime) + "M"
-                if duration in "Seconds" and dtime:
-                    iso = "PT" + str(dtime) + "S"
-                if duration in "Decades" and dtime:
-                    iso = "P" + str(int(dtime) * 10) + "Y"
-                if duration in "Century" and dtime:
-                    iso = "P100Y"
-                if duration in "Centuries" and dtime:
-                    iso = "P" + str(int(dtime) * 100) + "Y"
-                if duration in "Day" and dtime:
-                    iso = "P" + str(dtime) + "D"
-                if duration in "Week" and dtime:
-                    iso = "P" + str(dtime) + "W"
-                if duration in "Month" and dtime:
-                    iso = "P" + str(dtime) + "M"
-                if duration in "Year" and dtime:
-                    iso = "P" + str(dtime) + "Y"
-                if duration in "Hour" and dtime:
-                    iso = "PT" + str(dtime) + "H"
-                if duration in "Minute" and dtime:
-                    iso = "PT" + str(dtime) + "M"
-                if duration in "Second" and dtime:
-                    iso = "PT" + str(dtime) + "S"
-                if duration in "Decade" and dtime:
-                    iso = "P" + str(int(dtime) * 10) + "Y"
+                if mytype == "DATE":
+                    print("BERT Type is a DATE!!!\n")
+                    delta = 0  # delta is at the granularity of days. If the granularity is hours, seconds or minutes, our day delta is going to be zero.
+
+                    if granulatiry in "Days":
+                        delta = 1
+                    if granulatiry in "Weeks":
+                        delta = 7
+                    if granulatiry in "Months":
+                        delta = 30
+                    if granulatiry in "Years":
+                        delta = 365
+
+                    multiple = dtime if dtime else 1  # this is how many days, weeks, etc. set to 1 by default
+
+                    direction = "FUTURE" if nxt or thisx else "PAST"
+
+                    print("Modifier Value: " + str(modifierV))
+                    print("Direction: " + str(direction))
+                    print("Multiple: " + str(multiple))
+                    print("Delta: " + str(delta))
+
+                    if direction == "FUTURE":
+                        iso = (self.doctime + td(days=int(delta)*int(multiple))).isoformat()
+                    else:
+                        iso = (self.doctime - td(days=int(delta)*int(multiple))).isoformat()
+
+                if mytype == "DURATION":
+                    if granulatiry in "Days" and dtime:
+                        iso = "P" + str(dtime) + "D"
+                    if granulatiry in "Weeks" and dtime:
+                        iso = "P" + str(dtime) + "W"
+                    if granulatiry in "Months" and dtime:
+                        iso = "P" + str(dtime) + "M"
+                    if granulatiry in "Years" and dtime:
+                        iso = "P" + str(dtime) + "Y"
+                    if granulatiry in "Hours" and dtime:
+                        iso = "PT" + str(dtime) + "H"
+                    if granulatiry in "Minutes" and dtime:
+                        iso = "PT" + str(dtime) + "M"
+                    if granulatiry in "Seconds" and dtime:
+                        iso = "PT" + str(dtime) + "S"
+                    if granulatiry in "Decades" and dtime:
+                        iso = "P" + str(int(dtime) * 10) + "Y"
+                    if granulatiry in "Century" and dtime:
+                        iso = "P100Y"
+                    if granulatiry in "Centuries" and dtime:
+                        iso = "P" + str(int(dtime) * 100) + "Y"
+                    if granulatiry in "Day" and dtime:
+                        iso = "P" + str(dtime) + "D"
+                    if granulatiry in "Week" and dtime:
+                        iso = "P" + str(dtime) + "W"
+                    if granulatiry in "Month" and dtime:
+                        iso = "P" + str(dtime) + "M"
+                    if granulatiry in "Year" and dtime:
+                        iso = "P" + str(dtime) + "Y"
+                    if granulatiry in "Hour" and dtime:
+                        iso = "PT" + str(dtime) + "H"
+                    if granulatiry in "Minute" and dtime:
+                        iso = "PT" + str(dtime) + "M"
+                    if granulatiry in "Second" and dtime:
+                        iso = "PT" + str(dtime) + "S"
+                    if granulatiry in "Decade" and dtime:
+                        iso = "P" + str(int(dtime) * 10) + "Y"
                     
             if daypart:
                 print("hello8")

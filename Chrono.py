@@ -166,7 +166,12 @@ if __name__ == "__main__":
             feats = utils.get_features(args.d)
     
     ## Pass the ML classifier through to the parse SUTime entities method.
-  
+
+    # load in BERT model
+    bert_model = BertModel.from_pretrained(args.b, output_hidden_states=True, use_cache=True, output_attentions=True)
+    bert_tokenizer = BertTokenizer.from_pretrained(args.b)
+    bert_classifier = load(args.B)
+
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
         print("Parsing "+ infiles[f] +" ...")
@@ -204,10 +209,7 @@ if __name__ == "__main__":
             for c in tempPhrases:
                 print(c)
     
-        # load in BERT model
-        bert_model = BertModel.from_pretrained(args.b, output_hidden_states=True, use_cache=True, output_attentions=True)
-        bert_tokenizer = BertTokenizer.from_pretrained(args.b)
-        bert_classifier = load(args.B)
+
 
         chrono_master_list, my_chrono_ID_counter, timex_phrases = BuildEntities.buildChronoList(tempPhrases,
                                                                                                 my_chrono_ID_counter,
