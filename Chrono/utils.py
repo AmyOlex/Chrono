@@ -179,8 +179,8 @@ def getWhitespaceTokens2(file_path):
 def getDocTime(file, i2b2):
     file = open(file, "r")
     lines = file.readlines()
-    print("In get DocTime. Admit Date: " + lines[1])
-    print("In get DocTime. Discharge Date: " + lines[3])
+    #print("In get DocTime. Admit Date: " + lines[1])
+    #print("In get DocTime. Discharge Date: " + lines[3])
     return(dateutil.parser.parse(lines[1]))
 
  ####
@@ -1202,30 +1202,30 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
 
 
 def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier):
-    print("In BERT CLASSIFY")
+    #print("In BERT CLASSIFY")
     ## First parse into the SentenceObj structure
-    print("Start Span: " + str(start_span))
-    print("End Span: " + str(end_span))
-    print("Sentence: " + str(sent_text))
-    print("Parsing into BERT")
+    #print("Start Span: " + str(start_span))
+    #print("End Span: " + str(end_span))
+    #print("Sentence: " + str(sent_text))
+    #print("Parsing into BERT")
     phrase_idx_list = []
     phrase_idx_list.append(list(range(start_span, end_span+1)))  ## based on the way I coded the method I have to have a nested list.
     this_sent = SentenceObj.SentenceObj(text=sent_text, sentence_num=sent_idx, global_sent_char_start_coord=0,
                                         global_sentence_start_coord=0, phrase_idxs=phrase_idx_list,
                                         max_length=256, bert_model=bert_model, bert_tokenizer=bert_tokenizer,
                                         context_window=3, gold_labels="", filt=False)
-    print("BERT tokenized sentence: " + str(this_sent.bert_tokenized_sentence))
-    print("Temporal Phrase Text: " + str(this_sent.datedur_phrases[0].getText()))
+    #print("BERT tokenized sentence: " + str(this_sent.bert_tokenized_sentence))
+    #print("Temporal Phrase Text: " + str(this_sent.datedur_phrases[0].getText()))
 
     ## Second extract BERT embeddings as features for the first and only temporal phrase
     embedding = this_sent.datedur_phrases[0].getSummarizedEmbedding(include_context=False, include_attention=False)
 
-    print("BERT Embedding: " + str(embedding))
+    #print("BERT Embedding: " + str(embedding))
 
     ## Third use the embedding to classify the phrase as a DATE or DURATION
     pred = bert_classifier.predict(np.reshape(embedding.numpy(), (1, -1)))
     label_dict = {0:"DURATION", 1:"DATE"}
-    print("PREDICTION: " + str(pred) + " LABEL: " + str(label_dict[pred[0]]))
+    #print("PREDICTION: " + str(pred) + " LABEL: " + str(label_dict[pred[0]]))
 
 
     ## Extract out the embeddings according to set options.

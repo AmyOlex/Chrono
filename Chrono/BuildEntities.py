@@ -127,10 +127,10 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         ## Need to add ISO conversion here!
         
         if len(tmplist) > 0:
-            print("Converting phrase to ISO: " + str(s))
+            #print("Converting phrase to ISO: " + str(s))
             s.getISO(tmplist, bert_model, bert_tokenizer, bert_classifier)
-            print("ISO Value: " + str(s))
-            print("TIMEX3 String: " + s.i2b2format())
+            #print("ISO Value: " + str(s))
+            #print("TIMEX3 String: " + s.i2b2format())
             timex_list.append(s)
             
         

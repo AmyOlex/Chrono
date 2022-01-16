@@ -183,7 +183,7 @@ class TimePhraseEntity :
         mymod = "NA"
         
         for e in chronolist:
-            print("ENTITY: " + str(e))
+            #print("ENTITY: " + str(e))
         
         #determine which types are in the phrase
         #year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
@@ -198,9 +198,9 @@ class TimePhraseEntity :
         minuteV = minute.get_value() if minute else ""
         secondV = second.get_value() if second else ""
 
-        #print("Year Value: " + str(yearV))
-        #print("Month Value: " + str(monthV))
-        #print("Day Value: " + str(dayV))
+        ##print("Year Value: " + str(yearV))
+        ##print("Month Value: " + str(monthV))
+        ##print("Day Value: " + str(dayV))
 
 
         daypartV = daypart.get_value() if daypart else ""
@@ -220,7 +220,7 @@ class TimePhraseEntity :
         hour_flag = 0
         if hour and ampm:
             if ampmV == "PM" and int(hour.get_value()) < 12:
-                #print("Converting hour to 24-hour time.")
+                ##print("Converting hour to 24-hour time.")
                 hourV = int(hour.get_value()) + 12
                 
             
@@ -231,15 +231,15 @@ class TimePhraseEntity :
         try:
             #if month or day or year or hour or minute or second:
             tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime)
-            #    #print("First date parse attempt: " + str(tmpdate))
+            #    ##print("First date parse attempt: " + str(tmpdate))
             #else:
             #    tmpdate = ""
-            #print("TMPDATE IS: " + str(tmpdate.isoformat()))
+            ##print("TMPDATE IS: " + str(tmpdate.isoformat()))
            
         except:
             if month or day or year or hour or minute or second:
                 mytext = str(monthV) + " " + str(dayV) + ", " + str(yearV) + " " + str(hourV) + ":" + str(minuteV) + ":" + str(secondV)
-                print("My Full Date Text is: " + mytext)
+                #print("My Full Date Text is: " + mytext)
                 tmpdate = dp.parse(mytext, fuzzy = True, default=self.doctime)
 
             else:
@@ -247,18 +247,18 @@ class TimePhraseEntity :
         else:
             ### This code does not work.  It gets overwritten by the interval or period control below.  I need to figure this out.
             if lastx and period:
-                #print("HELLO LASTX")
+                ##print("HELLO LASTX")
                 if periodV in "Weeks" or dayweek:
-                    #print("try parsing Weeks: " + self.text)
+                    ##print("try parsing Weeks: " + self.text)
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
                 elif periodV in "Months":
-                    #print("try parsing Months: " + self.text)
+                    ##print("try parsing Months: " + self.text)
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=30))
                 elif periodV in "Years":
-                    #print("try parsing Years: " + self.text)
+                    ##print("try parsing Years: " + self.text)
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=365))
                 else:
-                    #print("assume 7 days: " + self.text)
+                    ##print("assume 7 days: " + self.text)
                     tmpdate = dp.parse(self.text, fuzzy = True, default=self.doctime - td(days=7))
         finally:
             
@@ -304,7 +304,7 @@ class TimePhraseEntity :
             ## I will have to pull out Frequency from this as the term "daily" is a frequency, but will work on that later.
             
             if interval or period:
-                #print("HELLO DURATION")
+                ##print("HELLO DURATION")
                 mytype = utils.bert_classify(self.rel_token_idx_start, self.rel_token_idx_end, self.sent_text,
                                           self.sent_membership, bert_model, bert_tokenizer, bert_classifier)
 
@@ -312,15 +312,15 @@ class TimePhraseEntity :
                 if interval:
                     granulatiry = intervalV
                     dtime,na = utils.getPhraseNumber(self.text, chronolist, interval.get_number())
-                    print("INTERVAL HERE: " + str(granulatiry) + " Num: " + str(dtime) + " Mod: " + str(mymod))
+                    #print("INTERVAL HERE: " + str(granulatiry) + " Num: " + str(dtime) + " Mod: " + str(mymod))
 
                 else:
                     granulatiry = periodV
                     dtime,na = utils.getPhraseNumber(self.text, chronolist, period.get_number())
-                    print("PERIOD HERE: " + str(granulatiry) + " Num: " + str(dtime) + " Mod: " + str(mymod))
+                    #print("PERIOD HERE: " + str(granulatiry) + " Num: " + str(dtime) + " Mod: " + str(mymod))
 
                 if mytype == "DATE":
-                    #print("BERT Type is a DATE!!!\n")
+                    ##print("BERT Type is a DATE!!!\n")
                     delta = 0  # delta is at the granularity of days. If the granularity is hours, seconds or minutes, our day delta is going to be zero.
 
                     if granulatiry in "Days":
@@ -336,10 +336,10 @@ class TimePhraseEntity :
 
                     direction = "FUTURE" if nxt or thisx else "PAST"
 
-                    print("Modifier Value: " + str(modifierV))
-                    print("Direction: " + str(direction))
-                    print("Multiple: " + str(multiple))
-                    print("Delta: " + str(delta))
+                    #print("Modifier Value: " + str(modifierV))
+                    #print("Direction: " + str(direction))
+                    #print("Multiple: " + str(multiple))
+                    #print("Delta: " + str(delta))
 
                     if direction == "FUTURE":
                         iso = (self.doctime + td(days=int(delta)*int(multiple))).isoformat()
@@ -385,18 +385,18 @@ class TimePhraseEntity :
                         iso = "P" + str(int(dtime) * 10) + "Y"
                     
             if daypart:
-                #print("hello8")
+                ##print("hello8")
                 #look for last, this, or next
-                #print("Found Daypart: " + str(daypart) + " " + str(daypartV) + " " + self.text.lower())
+                ##print("Found Daypart: " + str(daypart) + " " + str(daypartV) + " " + self.text.lower())
                 if "night" in self.text.lower() and "over" in self.text.lower():
                     mytype = "DURATION"
                     iso = "PT12H"
                 #elif lastx:
-                #    print("Found LAST: " + str(lastx) + str(lastV))
+                #    #print("Found LAST: " + str(lastx) + str(lastV))
                 #    mytype = "DATE"
                 #    iso = (self.doctime - td(days=1)).isoformat()
                 #elif nxt:
-                #    print("Found NEXT: " + str(nxt) + str(nxtV))
+                #    #print("Found NEXT: " + str(nxt) + str(nxtV))
                 #    mytype = "DATE"
                 #    iso = (self.doctime + td(days=1)).isoformat()
                 else:
@@ -414,7 +414,7 @@ class TimePhraseEntity :
             self.value = iso.replace("T00:00:00", "")
             self.type = mytype
             self.mod = mymod
-            print("MY ISO:::: " + iso)
+            ##print("MY ISO:::: " + iso)
              
             
             
