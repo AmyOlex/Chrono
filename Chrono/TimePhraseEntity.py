@@ -187,7 +187,7 @@ class TimePhraseEntity :
         
         #determine which types are in the phrase
         #year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
-        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx = utils.getPhraseEntities(chronolist)
+        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx,freq = utils.getPhraseEntities(chronolist)
         
         
         
@@ -239,7 +239,7 @@ class TimePhraseEntity :
         except:
             if month or day or year or hour or minute or second:
                 mytext = str(monthV) + " " + str(dayV) + ", " + str(yearV) + " " + str(hourV) + ":" + str(minuteV) + ":" + str(secondV)
-                #print("My Full Date Text is: " + mytext)
+                print("My Full Date Text is: " + mytext)
                 tmpdate = dp.parse(mytext, fuzzy = True, default=self.doctime)
 
             else:
@@ -263,7 +263,6 @@ class TimePhraseEntity :
         finally:
             
             if month and day and year and not (hour or minute or second):
-                #print("hello1")
                 m = tmpdate.month
                 y = tmpdate.year
                 d = tmpdate.day
@@ -274,8 +273,7 @@ class TimePhraseEntity :
                 iso = str(y) + "-" + str(m) + "-" + str(d)
                 mytype = "DATE"
                 
-            elif month and year and not day:
-                #print("hello2")
+            elif month and year and not (day or hour or minute or second):
                 m = tmpdate.month
                 y = tmpdate.year
                 if m < 10:
@@ -283,23 +281,19 @@ class TimePhraseEntity :
                 iso = str(y) + "-" + str(m)
                 mytype = "DATE"
                 
-            elif year and not (day or month):
-                #print("hello3")
+            elif year and not (day or month or hour or minute or second):
                 iso = str(tmpdate.year)
                 mytype = "DATE"
             elif dayweek:
-                #print("hello4")
                 iso = str(dp.parse(self.text, fuzzy = True, default=self.doctime).isoformat())
                 mytype = "DATE"
-            elif tmpdate:
-                #print("hello5")
-                #print(str(tmpdate))
+            elif tmpdate and not (hour or minute or second):
                 iso = tmpdate.isoformat()
                 mytype = "DATE"
-                #print("GOOD: " + str(iso))
+            elif tmpdate:
+                iso = tmpdate.isoformat()
+                mytype = "TIME"
             else:
-                #print("hello6")
-                #print("tmpdate should be blank: " + tmpdate)
                 iso = tmpdate
             
             
@@ -410,7 +404,12 @@ class TimePhraseEntity :
                     mytype = "DATE"
                     iso = (self.doctime).isoformat()
                     
-            
+            ## The frequency code is just giving a dummy value for the frequency as I'm only looking at
+            ## label classification at the moment.  This code will need to be updated when I get a better frequency
+            ## detection method constructed.
+            if freq:
+                mytype = "FREQUENCY"
+                iso = "RP1D"
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
             self.type = mytype

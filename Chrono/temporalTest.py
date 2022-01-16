@@ -379,7 +379,7 @@ def hasTempText(text):
     temp_text = ["this","now", "current", "last", "before", "previously", "ago", "pre", "after", "later", 
     "earlier", "early", "until", "quarter", "time", "next", "previous", "coming", "past", "point", "long", "period",
     "lately", "future", "awhile", "briefly", "longstanding", "soon", "shortly", "length", "final", "latest", "prior", "recent",
-    "recently"]
+    "recently","post-op","postoperative","hospital","life"]
  
                 
     
