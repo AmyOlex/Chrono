@@ -63,8 +63,8 @@ def convert_to_sentence_classification(s):
 
     for line in s.split('\n'):
         if line == '':
-            # print("sentence:" + ' '.join(sentence))
-            # print("labels:" + str(labels))
+            # #print("sentence:" + ' '.join(sentence))
+            # #print("labels:" + str(labels))
             all_sents.append(' '.join(sentence))
             all_labels.append(max(labels))
             sentence = []
@@ -98,8 +98,8 @@ def convert_to_date_duration_locations(s):
 
     for line in s.split('\n'):
         if line == '':
-            # print("sentence:" + ' '.join(sentence))
-            # print("labels:" + str(labels))
+            # #print("sentence:" + ' '.join(sentence))
+            # #print("labels:" + str(labels))
             all_sents.append(' '.join(sentence))
             all_dates.append(dates)
             all_durations.append(durations)
@@ -140,8 +140,8 @@ def convert_to_date_duration_locations2(s):
     for line in s.split('\n'):
 
         if line == '':
-            # print("sentence:" + ' '.join(sentence))
-            # print("labels:" + str(labels))
+            # #print("sentence:" + ' '.join(sentence))
+            # #print("labels:" + str(labels))
             all_sents.append(' '.join(sentence))
             all_patients.append(patient)
 
@@ -226,7 +226,7 @@ def bert_text_preparation(sentences, tokenizer):
 
 
     """
-    print("Number of input sentences: " + str(len(sentences)))
+    #print("Number of input sentences: " + str(len(sentences)))
     # Get maximum length of sentences
     max_length = get_max_length(sentences, tokenizer)
 
@@ -262,7 +262,7 @@ def bert_text_preparation(sentences, tokenizer):
     # )
     # encoded_dict.update({'labels': torch.tensor(labels)})
 
-    # print("Returning the following encoded_dict with size: " + str(len(encoded_dict['input_ids'])))
+    # #print("Returning the following encoded_dict with size: " + str(len(encoded_dict['input_ids'])))
 
     return tokenized_text, indexed_tensor, segments_tensor, attention_tensor
     # return encoded_dict
@@ -299,21 +299,21 @@ def pull_date_dur_embeddings(model_sents, orig_sents, model_embedings, orig_dura
     if len(model_sents) == len(orig_sents) == len(model_embedings) == len(orig_duration_idxs) == len(orig_date_idxs):
         this_data = zip(model_sents, model_embedings, orig_sents, orig_date_idxs, orig_duration_idxs)
     else:
-        print("WARNING: number of this_model and original sentences does not match.")
+        #print("WARNING: number of this_model and original sentences does not match.")
         exit(1)
 
     # loop through each sentence
     for i, model_s, model_e, orig_s, orig_s_dates, orig_s_durations in zip(count(), model_sents, model_embedings,
                                                                            orig_sents, orig_date_idxs,
                                                                            orig_duration_idxs):
-        # print("FOR EACH SENTENCE:")
+        # #print("FOR EACH SENTENCE:")
         # Map to BERT tokenization
         tokens_a = orig_s.split()
         tokens_b = model_s
-        # print(tokens_a)
-        # print(tokens_b)
+        # #print(tokens_a)
+        # #print(tokens_b)
         a2b, b2a = tokenizations.get_alignments(tokens_a, tokens_b)
-        # print(a2b)
+        # #print(a2b)
 
         # define tokens to remove:
         to_remove = []
@@ -323,8 +323,8 @@ def pull_date_dur_embeddings(model_sents, orig_sents, model_embedings, orig_dura
 
         # get list of converted DATE and DURATION indices for this sentence
         if orig_s_durations:
-            # print("Found DURATION")
-            # print(orig_s_durations)
+            # #print("Found DURATION")
+            # #print(orig_s_durations)
             my_durs = list(numpy.concatenate([a2b[j] for j in orig_s_durations]))
             # my_durs now contains a single list of indexes related to BERT tokens.
             # process my_durs to extract the embeddings and add data to final lists
@@ -339,25 +339,25 @@ def pull_date_dur_embeddings(model_sents, orig_sents, model_embedings, orig_dura
                 # phrase length counter for filtered phrases
                 filt_length = 0
                 for k in phrase:  ## k is the BERT index for this token in the phrase
-                    # print("K: "+str(k))
-                    # print(model_s[k])
-                    # print(model_tokens[i][k] not in to_remove)
-                    # print(not (re.match("[0-9]*", model_tokens[i][k])))
+                    # #print("K: "+str(k))
+                    # #print(model_s[k])
+                    # #print(model_tokens[i][k] not in to_remove)
+                    # #print(not (re.match("[0-9]*", model_tokens[i][k])))
 
                     if filter and model_s[k] not in to_remove and not re.match("[0-9]*", model_s[k]).group(0):
-                        # print("Filter is TRUE")
+                        # #print("Filter is TRUE")
                         filt_length = filt_length + 1
                         if not merge:
                             my_text.append(model_s[k])
                             my_embeddings.append(model_e[k])
                             my_labels.append("DURATION")
                         else:
-                            # print("this should print")
+                            # #print("this should print")
                             this_phrase_text.append(model_s[k])
                             sum_embedding = sum_embedding + model_e[k]
 
                     elif not filter:  ## else include all the tokens
-                        # print("this should NOT print")
+                        # #print("this should NOT print")
                         if not merge:
                             my_text.append(model_s[k])
                             my_embeddings.append(model_e[k])
@@ -369,15 +369,15 @@ def pull_date_dur_embeddings(model_sents, orig_sents, model_embedings, orig_dura
                 # if merging phrase tokens, then append to the global tracking variables
                 div_length = filt_length if filter else full_phrase_length
                 if merge and div_length > 0:  ## if div_length is zero then the full phrase was removed so don't add anything.
-                    print("Filt_length:" + str(filt_length))
-                    print("Full lenth: " + str(full_phrase_length))
+                    #print("Filt_length:" + str(filt_length))
+                    #print("Full lenth: " + str(full_phrase_length))
                     my_text.append(" ".join(this_phrase_text))
                     my_embeddings.append(sum_embedding / div_length)
                     my_labels.append("DURATION")
 
         if orig_s_dates:
-            # print("Found DATE")
-            # print(orig_s_dates)
+            # #print("Found DATE")
+            # #print(orig_s_dates)
             my_dates = list(numpy.concatenate([a2b[j] for j in orig_s_dates]))
             # my_dates now contains a single list of indexes related to BERT tokens.
             # process my_dates to extract the embeddings and add data to final lists
@@ -392,10 +392,10 @@ def pull_date_dur_embeddings(model_sents, orig_sents, model_embedings, orig_dura
                 # phrase length counter for filtered phrases
                 filt_length = 0
                 for k in phrase:  ## k is the BERT index for this token in the phrase
-                    # print("K: " + str(k))
-                    # print(model_s[k])
-                    # print(model_tokens[i][k] not in to_remove)
-                    # print(not (re.match("[0-9]*", model_tokens[i][k])))
+                    # #print("K: " + str(k))
+                    # #print(model_s[k])
+                    # #print(model_tokens[i][k] not in to_remove)
+                    # #print(not (re.match("[0-9]*", model_tokens[i][k])))
 
                     if filter and model_s[k] not in to_remove and not re.match("[0-9]*", model_s[k]).group(0):
                         filt_length = filt_length + 1
@@ -419,18 +419,18 @@ def pull_date_dur_embeddings(model_sents, orig_sents, model_embedings, orig_dura
                 # if merging phrase tokens, then append to the global tracking variables
                 div_length = filt_length if filter else full_phrase_length
                 if merge and div_length > 0:  ## if div_length is zero then the full phrase was removed so don't add anything.
-                    print("Filt_length:" + str(filt_length))
-                    print("Full lenth: " + str(full_phrase_length))
+                    #print("Filt_length:" + str(filt_length))
+                    #print("Full lenth: " + str(full_phrase_length))
                     my_text.append(" ".join(this_phrase_text))
                     my_embeddings.append(sum_embedding / div_length)
                     my_labels.append("DATE")
 
     # in end we want to append text, embedding, label
 
-    print("My Tokens:")
-    print(my_text)
-    print(my_labels)
-    # print(my_embeddings)
+    #print("My Tokens:")
+    #print(my_text)
+    #print(my_labels)
+    # #print(my_embeddings)
 
     return my_text, my_embeddings, my_labels
 
@@ -443,21 +443,21 @@ def pull_date_dur_embeddings2(model_sents, orig_sents, model_embedings, orig_dur
     if len(model_sents) == len(orig_sents) == len(model_embedings) == len(orig_duration_idxs) == len(orig_date_idxs):
         this_data = zip(model_sents, model_embedings, orig_sents, orig_date_idxs, orig_duration_idxs)
     else:
-        print("WARNING: number of this_model and original sentences does not match.")
+        #print("WARNING: number of this_model and original sentences does not match.")
         exit(1)
 
     # loop through each sentence
     for i, model_s, model_e, orig_s, orig_s_dates, orig_s_durations in zip(count(), model_sents, model_embedings,
                                                                            orig_sents, orig_date_idxs,
                                                                            orig_duration_idxs):
-        # print("FOR EACH SENTENCE:")
+        # #print("FOR EACH SENTENCE:")
         # Map to BERT tokenization
         tokens_a = orig_s.split()
         tokens_b = model_s
-        # print(tokens_a)
-        # print(tokens_b)
+        # #print(tokens_a)
+        # #print(tokens_b)
         a2b, b2a = tokenizations.get_alignments(tokens_a, tokens_b)
-        # print(a2b)
+        # #print(a2b)
 
         # define tokens to remove:
         to_remove = []
@@ -481,25 +481,25 @@ def pull_date_dur_embeddings2(model_sents, orig_sents, model_embedings, orig_dur
                 # phrase length counter for filtered phrases
                 filt_length = 0
                 for k in phrase:  ## k is the BERT index for this token in the phrase
-                    # print("K: "+str(k))
-                    # print(model_s[k])
-                    # print(model_tokens[i][k] not in to_remove)
-                    # print(not (re.match("[0-9]*", model_tokens[i][k])))
+                    # #print("K: "+str(k))
+                    # #print(model_s[k])
+                    # #print(model_tokens[i][k] not in to_remove)
+                    # #print(not (re.match("[0-9]*", model_tokens[i][k])))
 
                     if filter and model_s[k] not in to_remove and not re.match("[0-9]*", model_s[k]).group(0):
-                        # print("Filter is TRUE")
+                        # #print("Filter is TRUE")
                         filt_length = filt_length + 1
                         if not merge:
                             my_text.append(model_s[k])
                             my_embeddings.append(model_e[k])
                             my_labels.append("DURATION")
                         else:
-                            # print("this should print")
+                            # #print("this should print")
                             this_phrase_text.append(model_s[k])
                             sum_embedding = sum_embedding + model_e[k]
 
                     elif not filter:  ## else include all the tokens
-                        # print("this should NOT print")
+                        # #print("this should NOT print")
                         if not merge:
                             my_text.append(model_s[k])
                             my_embeddings.append(model_e[k])
@@ -511,15 +511,15 @@ def pull_date_dur_embeddings2(model_sents, orig_sents, model_embedings, orig_dur
                 # if merging phrase tokens, then append to the global tracking variables
                 div_length = filt_length if filter else full_phrase_length
                 if merge and div_length > 0:  ## if div_length is zero then the full phrase was removed so don't add anything.
-                    print("Filt_length:" + str(filt_length))
-                    print("Full lenth: " + str(full_phrase_length))
+                    #print("Filt_length:" + str(filt_length))
+                    #print("Full lenth: " + str(full_phrase_length))
                     my_text.append(" ".join(this_phrase_text))
                     my_embeddings.append(sum_embedding / div_length)
                     my_labels.append("DURATION")
 
         if orig_s_dates:
-            # print("Found DATE")
-            # print(orig_s_dates)
+            # #print("Found DATE")
+            # #print(orig_s_dates)
             my_dates = list(numpy.concatenate([a2b[j] for j in orig_s_dates]))
             # my_dates now contains a single list of indexes related to BERT tokens.
             # process my_dates to extract the embeddings and add data to final lists
@@ -534,10 +534,10 @@ def pull_date_dur_embeddings2(model_sents, orig_sents, model_embedings, orig_dur
                 # phrase length counter for filtered phrases
                 filt_length = 0
                 for k in phrase:  ## k is the BERT index for this token in the phrase
-                    # print("K: " + str(k))
-                    # print(model_s[k])
-                    # print(model_tokens[i][k] not in to_remove)
-                    # print(not (re.match("[0-9]*", model_tokens[i][k])))
+                    # #print("K: " + str(k))
+                    # #print(model_s[k])
+                    # #print(model_tokens[i][k] not in to_remove)
+                    # #print(not (re.match("[0-9]*", model_tokens[i][k])))
 
                     if filter and model_s[k] not in to_remove and not re.match("[0-9]*", model_s[k]).group(0):
                         filt_length = filt_length + 1
@@ -561,18 +561,18 @@ def pull_date_dur_embeddings2(model_sents, orig_sents, model_embedings, orig_dur
                 # if merging phrase tokens, then append to the global tracking variables
                 div_length = filt_length if filter else full_phrase_length
                 if merge and div_length > 0:  ## if div_length is zero then the full phrase was removed so don't add anything.
-                    print("Filt_length:" + str(filt_length))
-                    print("Full lenth: " + str(full_phrase_length))
+                    #print("Filt_length:" + str(filt_length))
+                    #print("Full lenth: " + str(full_phrase_length))
                     my_text.append(" ".join(this_phrase_text))
                     my_embeddings.append(sum_embedding / div_length)
                     my_labels.append("DATE")
 
     # in end we want to append text, embedding, label
 
-    print("My Tokens:")
-    print(my_text)
-    print(my_labels)
-    # print(my_embeddings)
+    #print("My Tokens:")
+    #print(my_text)
+    #print(my_labels)
+    # #print(my_embeddings)
 
     return my_text, my_embeddings, my_labels
 
@@ -762,7 +762,7 @@ def getEmbeddingMtxDisconnected(bert_sent, sent_embeddings, token_idx_list, this
     """
     to_remove = []
     if this_filter:
-        #print("filtering...")
+        ##print("filtering...")
         to_remove = ["at", "of", "the", "a", "on", "which", "this", "then", "that", "to", ".", "/", "-", ":", ";", ",",
                      "#", "&"]
 
@@ -770,14 +770,14 @@ def getEmbeddingMtxDisconnected(bert_sent, sent_embeddings, token_idx_list, this
 
     ## k is the BERT index for this token in the phrase
     ## for each BERT token in the phrase filter out or extract the embedding
-    #print("getting matrix for tokens: " + str(token_idx_list))
+    ##print("getting matrix for tokens: " + str(token_idx_list))
     for k in token_idx_list:
 
         if this_filter and bert_sent[k] not in to_remove: #and not re.match("[0-9]*", bert_sent[k]).group(0):
             embedding_list.append(sent_embeddings[k])
 
         elif not this_filter:  ## else if self.filter is False then include all the tokens
-            #print(bert_sent[k])
+            ##print(bert_sent[k])
             embedding_list.append(sent_embeddings[k])
 
     return embedding_list
@@ -793,25 +793,25 @@ def padMtx(vec_list, pad_to):
         list: List of torch tensors with length set to pad_to.
 
     """
-    #print("length of incoming list: " + str(vec_list))
-    #print("padding: " + str(pad_to))
+    ##print("length of incoming list: " + str(vec_list))
+    ##print("padding: " + str(pad_to))
 
     if len(vec_list) < pad_to:
         to_add = pad_to - len(vec_list)
         dim = vec_list[0].size()[0]
-        print("Adding padding: " + str(to_add) + " With dim: " + str(dim))
+        #print("Adding padding: " + str(to_add) + " With dim: " + str(dim))
 
         for m in list(range(0, to_add)):
             vec_list.extend([torch.zeros(dim, dtype=int)])
-            #print("For m=" + str(m) + " vec list length = " + str(len(vec_list)) + " vec content: " + str(vec_list))
+            ##print("For m=" + str(m) + " vec list length = " + str(len(vec_list)) + " vec content: " + str(vec_list))
         return vec_list
     elif len(vec_list) > pad_to:
-        #print("removing padding")
+        ##print("removing padding")
         to_rm = (len(vec_list) - pad_to)*-1
-        print("removing padding: " + str(to_rm))
+        #print("removing padding: " + str(to_rm))
         return vec_list[0:pad_to]
     else:
-        print("returning as-is")
+        #print("returning as-is")
         return vec_list
 
 
@@ -834,7 +834,7 @@ def get_bert_embeddings(tokens_tensor, segments_tensors, model):
 
     """
     list_token_embeddings = []
-    print(tokens_tensor.size())
+    #print(tokens_tensor.size())
 
     for t, s in zip(tokens_tensor, segments_tensors):
         # Gradient calculation id disabled
@@ -871,8 +871,8 @@ def merge_word_pieces(tokenized_text, sentence_token_embeddings, uselast=True):
     merged_tokenized_text = []
     merged_sentence_token_embeddings = []
 
-    # print("My tokens:")
-    # print(tokenized_text_bert)
+    # #print("My tokens:")
+    # #print(tokenized_text_bert)
 
     for sent, embed in zip(tokenized_text, sentence_token_embeddings):
         merged_text_tmp = []
@@ -912,10 +912,10 @@ def merge_label_pieces(orig_sentences, tokenized_texts, tokenized_labels):
     Returns:
         converted_labels: A list of labels merged to match the whitespace tokenized sentences.
     """
-    print(len(orig_sentences))
-    print(len(tokenized_texts))
-    print("Length of tokenized_labels: " + str(len(tokenized_labels)))
-    #print("Tokenized_labels: " + str(tokenized_labels))
+    #print(len(orig_sentences))
+    #print(len(tokenized_texts))
+    #print("Length of tokenized_labels: " + str(len(tokenized_labels)))
+    ##print("Tokenized_labels: " + str(tokenized_labels))
 
     index_conversion = []
 
@@ -923,23 +923,23 @@ def merge_label_pieces(orig_sentences, tokenized_texts, tokenized_labels):
         a2b, b2a = tokenizations.get_alignments(sent, tok)
         index_conversion.append(a2b)
 
-    #print("Length of converted indexes: " + str(len(index_conversion)))
+    ##print("Length of converted indexes: " + str(len(index_conversion)))
     #there are 22 sentences
     #each sentence is a list of lists where each sub list is a lsit of
     # token ids that map to that lists position in the true sentence
     converted_labels = []
 
     for sent_idx, sent in enumerate(index_conversion):
-        #print("sent_idx: "+str(sent_idx))
-        #print("sent"+str(sent))
+        ##print("sent_idx: "+str(sent_idx))
+        ##print("sent"+str(sent))
 
         merged_sent_labels = []
 
         for tok_idx, tok in enumerate(sent):
-            #print("tok_idx: "+str(tok_idx))
-            #print("tok: "+str(tok))
-            #print(tokenized_labels[sent_idx])
-            #print(len(tokenized_labels[sent_idx]))
+            ##print("tok_idx: "+str(tok_idx))
+            ##print("tok: "+str(tok))
+            ##print(tokenized_labels[sent_idx])
+            ##print(len(tokenized_labels[sent_idx]))
             labs = [tokenized_labels[sent_idx][m] for m in tok]
 
             if len(set(labs)) > 1:
@@ -979,9 +979,9 @@ def writeAnnFile(filename, sentences, labels):
     if len(sents_flat) == len(labels_flat):
         timex_count = 1
         for i, lab in enumerate(labels_flat):
-            #print("i="+str(i))
-            #print(lab)
-            #print(sents_flat[i])
+            ##print("i="+str(i))
+            ##print(lab)
+            ##print(sents_flat[i])
             if lab not in ['O', 'PAD']:
                 f.write("T" + str(timex_count) + "\t" + lab + " " + str(i) + " " + str(i + 1) + "\t" + sents_flat[i] + "\n")
                 c.write("T" + str(timex_count) + "\t" + lab + "\t" + str(i) + "\t" + str(i + 1) + "\t" + sents_flat[i] + "\n")
@@ -1000,7 +1000,7 @@ def merge_phrase_pieces(labeled_tokens):
         converted_phrases: A dataframe of tokens merged to contain the whole phrase.
     """
 
-    print("Length of df: " + str(len(labeled_tokens)))
+    #print("Length of df: " + str(len(labeled_tokens)))
     #["id", "label", "start", "end", "text"]
 
     id = 1
@@ -1012,12 +1012,12 @@ def merge_phrase_pieces(labeled_tokens):
         if not current_phrase.empty:
             ## if we have a current phrase test to see if this row is part of it.
             if (current_phrase['end']) == row['start']:
-                #print("the phrase continues")
+                ##print("the phrase continues")
                 current_phrase['end'] = row['end']
                 current_phrase['text'] = current_phrase['text'] + ' ' + row['text']
                 current_label_list.append(row['label'])
             else:
-                #print("the phrase ended")
+                ##print("the phrase ended")
                 ## submit current phrase to phrase_df
                 ## first resolve the label issue
                 fdist = dict(zip(*numpy.unique(current_label_list, return_counts=True)))
@@ -1153,14 +1153,14 @@ def mergeLenient(gold, pred):
         for p, prow in pred.iterrows():
             if prow.start <= grow.start <= prow.end:
                 ## we have overlap
-                #print("Pred Start: " + str(prow.start) + "\nPred End: " + str(prow.end) + "\nGold Start: " +
+                ##print("Pred Start: " + str(prow.start) + "\nPred End: " + str(prow.end) + "\nGold Start: " +
                 #     str(grow.start) + "\nPredicted Row: " + str(prow) + "\n Gold Row: " + str(grow))
                 gused = True
                 pred["used"][p] = 1
 
                 df.append(grow.tolist() + prow.tolist())
             elif prow.start <= grow.end <= prow.end:
-                #print("Pred Start: " + str(prow.start) + "\nPred End: " + str(prow.end) + "\nGold End: " +
+                ##print("Pred Start: " + str(prow.start) + "\nPred End: " + str(prow.end) + "\nGold End: " +
                 #      str(grow.end) + "\nPredicted Row: " + str(prow) + "\n Gold Row: " + str(grow))
                 ## we have overlap
                 gused = True
@@ -1181,7 +1181,7 @@ def mergeLenient(gold, pred):
     return pd.DataFrame(df, columns=["id_x", "label_x", "start_x", "end_x", "text_x", "context_x", "coords_x",
                                      "id_y", "label_y", "start_y", "end_y", "text_y", "context_y", "coords_y", "used_y"])
 
-    print("done merging!")
+    #print("done merging!")
 
 def format_attention(attention, layers=None, heads=None):
     if layers:

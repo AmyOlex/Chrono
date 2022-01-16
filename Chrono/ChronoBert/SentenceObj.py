@@ -59,7 +59,7 @@ class SentenceObj(object):
         self.max_phrase_length = self.calc_max_phrase_length()
 
     def tokenizeSentence(self, bert_tokenizer, max_length):
-        #print("Tokenizing sentence: Max Sentence Length: " + str(max_length))
+        ##print("Tokenizing sentence: Max Sentence Length: " + str(max_length))
         local_whitespace_tokenized_sentence = self.text.split()
         local_bert_tokenized_sentence, local_tokens_tensor, local_segments_mask, local_attention_mask = \
             self.bert_text_prep(self.text, bert_tokenizer, max_length)
@@ -92,33 +92,33 @@ class SentenceObj(object):
     def extractPhrases(self, phrase_idxs, context_window, gold_labels, filt):
         ## input: [[2,3,4],[8,9]]
         ## input: ['DATE','DURATION'] or ''
-        print("My phrase idxs: " + str(phrase_idxs) + " Type: " + str(type(phrase_idxs)))
+        #print("My phrase idxs: " + str(phrase_idxs) + " Type: " + str(type(phrase_idxs)))
 
         local_datedur_phrases = []
         if gold_labels:
             # get phrase groups with labels
-            #print("Phrase idxs: " + str(phrase_idxs))
-            #print("Gold Labels: " + str(gold_labels))
+            ##print("Phrase idxs: " + str(phrase_idxs))
+            ##print("Gold Labels: " + str(gold_labels))
             #idxs, labs = utils.get_phrase_groups_with_labels(zip(phrase_idxs, gold_labels))
-            #print("Type of phrase_idxs: " + str(type))
+            ##print("Type of phrase_idxs: " + str(type))
             for p, g in zip(phrase_idxs, gold_labels):
-                #print("p is: " + str(p))
-                #print("g is: " + str(g))
+                ##print("p is: " + str(p))
+                ##print("g is: " + str(g))
 
                 phrase_start = p if isinstance(p, int) else p[0]  ## get first in list
                 phrase_end = p if isinstance(p, int) else p[-1]  ## get last in list
 
                 ptext = self.whitespace_tokenized_sentence[phrase_start:phrase_end + 1]
-                #print("ptext: " + str(ptext))
+                ##print("ptext: " + str(ptext))
                 pcoords = (phrase_start, phrase_end)
 
                 #now get character coords
                 # sentence start to phrase_start, plus one character (for the missing space) is the char start:
-                #print("-----PARSING PHRASE---------")
-                #print("Sentence Fragment to START: " + str(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_start)])))
-                #print("Sentence Fragment to START LENGTH: " + str(len(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_start)]) )))
-                #print("Sentence Fragment to END: " + str(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_end + 1)] )))
-                #print("Sentence Fragment to END LENGTH: " + str(len(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_end + 1)] ) ) ) )
+                ##print("-----PARSING PHRASE---------")
+                ##print("Sentence Fragment to START: " + str(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_start)])))
+                ##print("Sentence Fragment to START LENGTH: " + str(len(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_start)]) )))
+                ##print("Sentence Fragment to END: " + str(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_end + 1)] )))
+                ##print("Sentence Fragment to END LENGTH: " + str(len(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_end + 1)] ) ) ) )
 
                 phrase_char_start = len(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_start)]) ) + 1
                 phrase_char_end = len(' '.join(self.whitespace_tokenized_sentence[0:max(0,phrase_end + 1)] ) )
@@ -134,11 +134,11 @@ class SentenceObj(object):
                 phrase_end = p if isinstance(p, int) else p[-1]
                 ptext = self.whitespace_tokenized_sentence[phrase_start:phrase_end + 1]
                 pcoords = (phrase_start, phrase_end)
-                print("PROCESSING p: " + str(p))
-                print("Phrase p start,end: " + str(phrase_start) + "," + str(phrase_end))
-                print("self.text: " + str(self.text))
-                print("self.whitespace_tokenized_sentence: " + str(self.whitespace_tokenized_sentence))
-                print("Phrase text: " + str(ptext))
+                #print("PROCESSING p: " + str(p))
+                #print("Phrase p start,end: " + str(phrase_start) + "," + str(phrase_end))
+                #print("self.text: " + str(self.text))
+                #print("self.whitespace_tokenized_sentence: " + str(self.whitespace_tokenized_sentence))
+                #print("Phrase text: " + str(ptext))
                 # now get character coords
                 # sentence start to phrase_start token, plus one character (for the missing space) is the char start:
                 phrase_char_start = len(' '.join(self.whitespace_tokenized_sentence[0:max(0, phrase_start)])) + 1
@@ -221,17 +221,17 @@ class SentenceObj(object):
     def SVMPredict(self, model_svm, include_context, include_attention, label_dict=''):
         for phrase in self.datedur_phrases:
             if phrase:
-                #print("Including Context:")
-                #print(phrase.getSummarizedEmbedding(include_context).shape)
+                ##print("Including Context:")
+                ##print(phrase.getSummarizedEmbedding(include_context).shape)
                 pred = model_svm.predict(np.reshape(phrase.getSummarizedEmbedding(include_context, include_attention).numpy(), (1,-1)))
                 phrase.setPredictedLabel(label_dict[pred[0]])
 
     def CNNPredict(self, model_cnn, pad_to, include_context, include_attention, label_dict=''):
         for phrase in self.datedur_phrases:
             if phrase:
-                #print("running CNN prediction")
+                ##print("running CNN prediction")
                 pred = model_cnn.predict(np.expand_dims(phrase.getMtxFormattedPhrase(pad_to, include_context, include_attention), 0)).tolist()[0]
-                #print("\nPrediction is: " + str(pred) + "  With label: " + str(label_dict[ int(round(pred[0])) ]))
+                ##print("\nPrediction is: " + str(pred) + "  With label: " + str(label_dict[ int(round(pred[0])) ]))
                 phrase.setPredictedLabel( label_dict[ int(round(pred[0])) ] )
 
     def getContextWhiteSpace(self, start, end, window):
