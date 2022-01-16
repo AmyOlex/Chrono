@@ -51,3 +51,7 @@ POD
 hs
 h.s.
 h
+postoperative
+post-op
+hospital
+life
