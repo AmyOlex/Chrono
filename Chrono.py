@@ -79,7 +79,9 @@ if __name__ == "__main__":
                         help='The path and file name of a pre-trained SVM or CNN classification model from ChronoBERT.', required=False,
                         default=None)
     #parser.add_argument('-r',metavar='includeRelative', type=str2bool, help='Tell Chrono to mark relative phrases temporal words as temporal.', action="store_true", default=False)
-    parser.add_argument('--includeRelative', action="store_true")
+    parser.add_argument('--includeRelative', action="store_true", default=False)
+    parser.add_argument('--includeContext', action="store_true", default=False)
+    parser.add_argument('--includeAttention', action="store_true", default=False)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -217,7 +219,10 @@ if __name__ == "__main__":
                                                                                                 (classifier, args.m),
                                                                                                 feats, bert_model,
                                                                                                 bert_tokenizer,
-                                                                                                bert_classifier, doctime)
+                                                                                                bert_classifier,
+                                                                                                args.includeContext,
+                                                                                                args.includeAttention,
+                                                                                                doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))
         

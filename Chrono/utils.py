@@ -1201,7 +1201,7 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
     return("","NA")
 
 
-def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier):
+def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention):
     #print("In BERT CLASSIFY")
     ## First parse into the SentenceObj structure
     #print("Start Span: " + str(start_span))
@@ -1218,7 +1218,7 @@ def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_to
     #print("Temporal Phrase Text: " + str(this_sent.datedur_phrases[0].getText()))
 
     ## Second extract BERT embeddings as features for the first and only temporal phrase
-    embedding = this_sent.datedur_phrases[0].getSummarizedEmbedding(include_context=False, include_attention=False)
+    embedding = this_sent.datedur_phrases[0].getSummarizedEmbedding(include_context=includeContext, include_attention=includeAttention)
 
     #print("BERT Embedding: " + str(embedding))
 

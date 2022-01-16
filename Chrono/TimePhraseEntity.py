@@ -177,12 +177,12 @@ class TimePhraseEntity :
     
     ## Uses the parsed Chrono entities to create the ISO value
     # chronolist is a list of the SCATE entities for this phrase only.
-    def getISO(self, chronolist, bert_model, bert_tokenizer, bert_classifier):
+    def getISO(self, chronolist, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention):
         
         mytype = "TIME"
         mymod = "NA"
         
-        for e in chronolist:
+        #for e in chronolist:
             #print("ENTITY: " + str(e))
         
         #determine which types are in the phrase
@@ -306,7 +306,8 @@ class TimePhraseEntity :
             if interval or period:
                 ##print("HELLO DURATION")
                 mytype = utils.bert_classify(self.rel_token_idx_start, self.rel_token_idx_end, self.sent_text,
-                                          self.sent_membership, bert_model, bert_tokenizer, bert_classifier)
+                                          self.sent_membership, bert_model, bert_tokenizer, bert_classifier,
+                                             includeContext, includeAttention)
 
 
                 if interval:
