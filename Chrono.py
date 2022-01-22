@@ -44,8 +44,8 @@ from chronoML import SVM_classifier as SVMclass
 from Chrono import BuildEntities
 from Chrono import referenceToken
 from Chrono import utils
-from keras.models import load_model
 from transformers import BertModel, BertTokenizer
+from tensorflow.keras.models import load_model
 from joblib import load
 
 debug=False
@@ -82,6 +82,7 @@ if __name__ == "__main__":
     parser.add_argument('--includeRelative', action="store_true", default=False)
     parser.add_argument('--includeContext', action="store_true", default=False)
     parser.add_argument('--includeAttention', action="store_true", default=False)
+    parser.add_argument('--cnn', action="store_true", default=False)
     
     args = parser.parse_args()
     ## Now we can access each argument as args.i, args.o, args.r
@@ -172,7 +173,11 @@ if __name__ == "__main__":
     # load in BERT model
     bert_model = BertModel.from_pretrained(args.b, output_hidden_states=True, use_cache=True, output_attentions=True)
     bert_tokenizer = BertTokenizer.from_pretrained(args.b)
-    bert_classifier = load(args.B)
+
+    if args.cnn:
+        bert_classifier = load_model(args.B)
+    else:
+        bert_classifier = load(args.B)
 
     ## Loop through each file and parse
     for f in range(0,len(infiles)) :
@@ -222,6 +227,7 @@ if __name__ == "__main__":
                                                                                                 bert_classifier,
                                                                                                 args.includeContext,
                                                                                                 args.includeAttention,
+                                                                                                args.cnn,
                                                                                                 doctime)
         
         print("Number of Chrono Entities: " + str(len(chrono_master_list)))

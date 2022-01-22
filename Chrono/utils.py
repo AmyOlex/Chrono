@@ -1201,7 +1201,7 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
     return("","NA")
 
 
-def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention):
+def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention, cnn):
     #print("In BERT CLASSIFY")
     ## First parse into the SentenceObj structure
     #print("Start Span: " + str(start_span))
@@ -1223,7 +1223,10 @@ def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_to
     #print("BERT Embedding: " + str(embedding))
 
     ## Third use the embedding to classify the phrase as a DATE or DURATION
-    pred = bert_classifier.predict(np.reshape(embedding.numpy(), (1, -1)))
+    if cnn:
+        pred = bert_classifier.predict(np.expand_dims(this_sent.datedur_phrases[0].getMtxFormattedPhrase(15, includeContext, includeAttention), 0)).tolist()[0]
+    else:
+        pred = bert_classifier.predict(np.reshape(embedding.numpy(), (1, -1)))
     label_dict = {0:"DURATION", 1:"DATE"}
     #print("PREDICTION: " + str(pred) + " LABEL: " + str(label_dict[pred[0]]))
 
@@ -1237,7 +1240,8 @@ def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_to
     ## then the quantity, and before or after the anchor date.  Calculate date based on that information.
     ## to start the anchor date can just be the document date for now, but implement as a method so it can be updated later.
 
-    return label_dict[pred[0]]
+    result = 1 if pred[0] >=0.5 else 0
+    return label_dict[result]
 
     
     

@@ -107,9 +107,9 @@ class PhraseObj(object):
             embed_mtx.extend(self.context_after_matrix)
             pad_mtx = utils.padMtx(embed_mtx, pad_to)
             if(len(pad_mtx) != 15):
-                #print("ERROR")
-                #print("length of embed_mtx before padding: " + str(len(embed_mtx)))
-                #print("length of embed_mtx after padding: " + str(len(pad_mtx)))
+                print("ERROR")
+                print("length of embed_mtx before padding: " + str(len(embed_mtx)))
+                print("length of embed_mtx after padding: " + str(len(pad_mtx)))
             return torch.stack(pad_mtx).numpy()
 
         elif include_attention:
