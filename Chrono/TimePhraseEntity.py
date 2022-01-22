@@ -152,7 +152,7 @@ class TimePhraseEntity :
         
         #determine which types are in the phrase
         #year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
-        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx = utils.getPhraseEntities(chronolist)
+        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx,freq = utils.getPhraseEntities(chronolist)
         
         
         
@@ -239,7 +239,7 @@ class TimePhraseEntity :
                 iso = str(y) + "-" + str(m) + "-" + str(d)
                 mytype = "DATE"
                 
-            elif month and year and not day:
+            elif month and year and not (day or hour or minute or second):
                 print("hello2")
                 m = tmpdate.month
                 y = tmpdate.year
@@ -248,7 +248,7 @@ class TimePhraseEntity :
                 iso = str(y) + "-" + str(m)
                 mytype = "DATE"
                 
-            elif year and not (day or month):
+            elif year and not (day or month or hour or minute or second):
                 print("hello3")
                 iso = str(tmpdate.year)
                 mytype = "DATE"
@@ -256,12 +256,16 @@ class TimePhraseEntity :
                 print("hello4")
                 iso = str(dp.parse(self.text, fuzzy = True, default=self.doctime).isoformat())
                 mytype = "DATE"
-            elif tmpdate:
+            elif tmpdate and not (hour or minute or second):
                 print("hello5")
                 print(str(tmpdate))
                 iso = tmpdate.isoformat()
                 mytype = "DATE"
                 print("GOOD: " + str(iso))
+            elif tmpdate:
+                iso = tmpdate.isoformat()
+                mytype = "TIME"
+
             else:
                 print("hello6")
                 print("tmpdate should be blank: " + tmpdate)
@@ -344,8 +348,13 @@ class TimePhraseEntity :
                     #assume it is this or doesn't have a modifier.
                     mytype = "DATE"
                     iso = (self.doctime).isoformat()
-                    
-            
+
+            ## The frequency code is just giving a dummy value for the frequency as I'm only looking at
+            ## label classification at the moment.  This code will need to be updated when I get a better frequency
+            ## detection method constructed.
+            if freq:
+                mytype = "FREQUENCY"
+                iso = "RP1D"
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
             self.type = mytype
