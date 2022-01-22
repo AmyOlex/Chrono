@@ -34,7 +34,3 @@ t.d.s.
 TID
 tid
 t.i.d.
-daily
-weekly
-monthly
-yearly
