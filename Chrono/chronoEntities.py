@@ -1358,7 +1358,7 @@ class ChronoEvent(ChronoOtherEntity):
     
 class ChronoFrequency(ChronoOtherEntity):
     def __init__(self, entityID, start_span, end_span, every=None, number=None, modifier=None):
-        super().__init__(entityID, start_span, end_span, "Frequency")
+        super().__init__(entityID, start_span, end_span, "Other")
         self.every = every
         self.number = number
 

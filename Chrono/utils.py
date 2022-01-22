@@ -1087,7 +1087,7 @@ def getPhraseEntities(chrono_list):
     ampm = ""
     modifier = ""
     last = ""
-    frequency = ""
+    #frequency = ""
    
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
@@ -1147,11 +1147,11 @@ def getPhraseEntities(chrono_list):
         elif e_type == "Last":
             last = chrono_list[e]
 
-        elif e_type == "Frequency":
-            frequency = chrono_list[e]
+        #elif e_type == "Frequency":
+        #    frequency = chrono_list[e]
             
             
-    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last, frequency)
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last)
 
    
 ## Takes in list of ChronoEntities and an entity ID and returns the associated number or blank string if no value

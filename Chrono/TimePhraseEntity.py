@@ -187,7 +187,7 @@ class TimePhraseEntity :
         
         #determine which types are in the phrase
         #year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last = utils.getEntityValues(chronolist)
-        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx,freq = utils.getPhraseEntities(chronolist)
+        year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,thisx,tz,ampm,modifier,lastx = utils.getPhraseEntities(chronolist)
         
         
         
@@ -273,7 +273,7 @@ class TimePhraseEntity :
                 iso = str(y) + "-" + str(m) + "-" + str(d)
                 mytype = "DATE"
                 
-            elif month and year and not (day or hour or minute or second):
+            elif month and year and not day:
                 m = tmpdate.month
                 y = tmpdate.year
                 if m < 10:
@@ -281,18 +281,18 @@ class TimePhraseEntity :
                 iso = str(y) + "-" + str(m)
                 mytype = "DATE"
                 
-            elif year and not (day or month or hour or minute or second):
+            elif year and not (day or month):
                 iso = str(tmpdate.year)
                 mytype = "DATE"
             elif dayweek:
                 iso = str(dp.parse(self.text, fuzzy = True, default=self.doctime).isoformat())
                 mytype = "DATE"
-            elif tmpdate and not (hour or minute or second):
-                iso = tmpdate.isoformat()
-                mytype = "DATE"
             elif tmpdate:
                 iso = tmpdate.isoformat()
-                mytype = "TIME"
+                mytype = "DATE"
+                #elif tmpdate:
+                #    iso = tmpdate.isoformat()
+                #    mytype = "TIME"
             else:
                 iso = tmpdate
             
@@ -408,9 +408,9 @@ class TimePhraseEntity :
             ## The frequency code is just giving a dummy value for the frequency as I'm only looking at
             ## label classification at the moment.  This code will need to be updated when I get a better frequency
             ## detection method constructed.
-            if freq:
-                mytype = "FREQUENCY"
-                iso = "RP1D"
+            #if freq:
+            #    mytype = "FREQUENCY"
+            #    iso = "RP1D"
             #if the ISO value has T00:00:00 in it, remove it.
             self.value = iso.replace("T00:00:00", "")
             self.type = mytype
