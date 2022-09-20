@@ -36,11 +36,11 @@ def buildSeasonOfYear(s, chrono_id, chrono_list, ref_list):
                 chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
                 chrono_id = chrono_id + 1
             #else:
-            #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+            #    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", abs_start_span=abs_Sspan, abs_end_span=abs_Espan, repeating_interval=my_entity.get_id()))
             #    chrono_id = chrono_id + 1
 
        # else:
-    #        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=abs_Sspan, end_span=abs_Espan, repeating_interval=my_entity.get_id()))
+    #        chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", abs_start_span=abs_Sspan, abs_end_span=abs_Espan, repeating_interval=my_entity.get_id()))
      #       chrono_id = chrono_id+1
 
         #check to see if it has a number associated with it.  We assume the number comes before the interval string

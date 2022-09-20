@@ -53,7 +53,7 @@ from Chrono import utils
 # @param list of TimePhrase Output
 # @param document creation time (optional)
 # @return List of Chrono entities and the ChronoID
-def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeatures, dct=None):
+def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeatures, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention, cnn, dct=None):
     chrono_list = []
     
     ## Do some further pre-processing on the ref token list
@@ -114,7 +114,7 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         chrono_tmp_list, chrono_id = Frequency.buildFrequency(s, chrono_id, chrono_tmp_list)
         
         
-        print("XXXXXXXXX")
+        #print("XXXXXXXXX")
         
        # if len(chrono_tmp_list) > 0:
         #    print(s)
@@ -127,10 +127,10 @@ def buildChronoList(TimePhraseList, chrono_id, ref_list, PIclassifier, PIfeature
         ## Need to add ISO conversion here!
         
         if len(tmplist) > 0:
-            print("Converting phrase to ISO: " + str(s))
-            s.getISO(tmplist)
-            print("ISO Value: " + str(s))
-            print("TIMEX3 String: " + s.i2b2format())
+            #print("Converting phrase to ISO: " + str(s))
+            s.getISO(tmplist, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention, cnn)
+            #print("ISO Value: " + str(s))
+            #print("TIMEX3 String: " + s.i2b2format())
             timex_list.append(s)
             
         
@@ -226,12 +226,12 @@ def buildSubIntervals(chrono_list, chrono_id, dct, ref_list):
                 my_dayweek = weekdays[chrono_list[dayweek].get_day_type()]
                 
                 if my_dayweek < dct_day:
-                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                    chrono_list.append(chrono.ChronoLastOperator(entityID=str(chrono_id) + "entity", abs_start_span=mStart, abs_end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
                     chrono_id = chrono_id + 1
                     print("FOUND DAYWEEK LAST")
                     
                 elif my_dayweek > dct_day:
-                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", start_span=mStart, end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
+                    chrono_list.append(chrono.ChronoNextOperator(entityID=str(chrono_id) + "entity", abs_start_span=mStart, abs_end_span=mEnd, repeating_interval=chrono_list[dayweek].get_id()))
                     chrono_id = chrono_id + 1  
                     print("FOUND DAYWEEK NEXT")        
                 '''

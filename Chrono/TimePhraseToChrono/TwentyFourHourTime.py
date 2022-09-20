@@ -25,8 +25,8 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
             # minute = w2n.word_to_num(val[2:4])
         #     print("TIME ZONE: {}".format(val))
         #     tz = hasTimeZone(s)
-        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span=tz.span(0)[0] + ref_Sspan,
-        #                                                end_span=tz.span(0)[1] + ref_Sspan)
+        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", abs_start_span=tz.span(0)[0] + ref_Sspan,
+        #                                                abs_end_span=tz.span(0)[1] + ref_Sspan)
         #     chrono_list.append(my_tz_entity)
         #     chrono_id = chrono_id + 1
         #     return chrono_list, chrono_id
@@ -34,7 +34,7 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
         # ## Identify if a time zone string exists
         # tz = hasTimeZone(s)
         # if tz is not None:
-        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", start_span =tz.span(0)[0] + ref_Sspan, end_span=tz.span(0)[1] + ref_Sspan)
+        #     my_tz_entity = chrono.ChronoTimeZoneEntity(str(chrono_id) + "entity", abs_start_span =tz.span(0)[0] + ref_Sspan, abs_end_span=tz.span(0)[1] + ref_Sspan)
         #     chrono_list.append(my_tz_entity)
         #     chrono_id = chrono_id + 1
         # else:
@@ -47,7 +47,7 @@ def build24HourTime(s, chrono_id, chrono_list, flags):
         chrono_id = chrono_id + 1
 
         # if my_tz_entity is not None:
-        #     hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
+        #     hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", abs_start_span=ref_Sspan + idxstart, abs_end_span=ref_Sspan + idxstart + 2, value=hour, time_zone=my_tz_entity.get_id())
         # else:
         hour_entity = chrono.ChronoHourOfDayEntity(entityID=str(chrono_id) + "entity", start_span=ref_Sspan + idxstart, end_span=ref_Sspan + idxstart + 2, value=hour)
         # print("24Hour Value Added: " + str(hour_entity.get_value()))

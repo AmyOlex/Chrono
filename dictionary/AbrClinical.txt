@@ -13,6 +13,11 @@ PH
 PHx
 PMH
 POD
+P.O.D
+HD
+H.D.
+DOL
+D.O.L.
 prn
 PRN
 PSH

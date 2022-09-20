@@ -58,6 +58,9 @@ import dateutil.parser as dup
 import datetime
 import inspect
 import os
+from Chrono.ChronoBert import SentenceObj
+
+
 
 ## Load the dictionary files
 
@@ -83,7 +86,7 @@ PERIODINT = [line.rstrip() for line in open(os.path.join(dictpath,"Period-Interv
 # @return text String containing the raw text blob from reading in the file.
 # @return tokenized_text A list containing each token that was seperated by white space.
 # @return spans The coordinates for each token.
-def getWhitespaceTokens(file_path):
+def getWhitespaceTokens2(file_path):
     file = open(file_path, "r")
     raw_text = file.read()
     ## Testing the replacement of all "=" signs by spaces before tokenizing.
@@ -91,19 +94,31 @@ def getWhitespaceTokens(file_path):
     
     ## Tokenize the sentences
     sentences = sent_tokenize(text)
-    
+
+    #print("Initial sentence 0: " + str(sentences[0]))
+    ## Then create a new sentence list by breaking down those with new lines.
+    new_sent_list = []
+    for s in sentences:
+        #print(s)
+        if "\n" in s:
+            new_sent_list.extend(s.split("\n"))
+        else:
+            new_sent_list.append(s)
+
+    #print("New Sent 0: " + str(new_sent_list[0]))
     ## Get spans of the sentences
-    sent_spans = align_tokens(sentences, text)
+    sent_spans = align_tokens(new_sent_list, text)
     
     ## create empty arrays for white space tokens and sentence delimiters
     tokenized_text = []
-    text_spans = []
+    rel_text_spans = []
+    abs_text_spans = []
     
     ## Loop through each sentence and get the tokens and token spans
-    for s in range(0,len(sentences)):
+    for s in range(0,len(new_sent_list)):
         # get the tokens and token spans within the sentence
-        toks = WhitespaceTokenizer().tokenize(sentences[s])
-        span_generator = WhitespaceTokenizer().span_tokenize(sentences[s])
+        toks = WhitespaceTokenizer().tokenize(new_sent_list[s])
+        span_generator = WhitespaceTokenizer().span_tokenize(new_sent_list[s])
         rel_spans = [span for span in span_generator]
         
         # convert the relative spans into absolute spans
@@ -112,33 +127,46 @@ def getWhitespaceTokens(file_path):
             abs_spans = abs_spans + [(sent_spans[s][0]+start, sent_spans[s][0]+end)]
         
         tokenized_text = tokenized_text + toks
-        text_spans = text_spans + abs_spans
+        abs_text_spans = abs_text_spans + abs_spans
+        rel_text_spans = rel_text_spans + rel_spans
     
     ## Now we have the token list and the spans.  We should be able to continue finding sentnence boundaries as before
     tags = nltk.pos_tag(tokenized_text)
     sent_boundaries = [0] * len(tokenized_text)
-    
+    sent_membership = [0] * len(tokenized_text)
+
     ## figure out which tokens are at the end of a sentence
     tok_counter = 0
-    
-    for s in range(0,len(sentences)):
-        sent = sentences[s]
-        
-        if "\n" in sent:
-            sent_newline = sent.split("\n")
-            for sn in sent_newline:
-                sent_split = WhitespaceTokenizer().tokenize(sn)
-                nw_idx = len(sent_split) + tok_counter - 1
-                sent_boundaries[nw_idx] = 1
-                tok_counter = tok_counter + len(sent_split)
-                 
-        else:
-            sent_split = WhitespaceTokenizer().tokenize(sent)
-            nw_idx = len(sent_split) + tok_counter - 1
-            sent_boundaries[nw_idx] = 1
-            tok_counter = tok_counter + len(sent_split)
+
+    for s in range(0,len(new_sent_list)):
+        sent = new_sent_list[s]
+        #print(sent)
+        sent_split = WhitespaceTokenizer().tokenize(sent)
+        nw_idx = len(sent_split) + tok_counter - 1
+        sent_boundaries[nw_idx] = 1
+        sent_membership[tok_counter:nw_idx + 1] = [s] * ((nw_idx + 1) - tok_counter)
+        tok_counter = tok_counter + len(sent_split)
+
+    #for s in range(0, len(sentences)):
+    #    sent = sentences[s]
+    #
+    #    if "\n" in sent:
+    #        sent_newline = sent.split("\n")
+    #        for sn in sent_newline:
+    #            sent_split = WhitespaceTokenizer().tokenize(sn)
+    #            nw_idx = len(sent_split) + tok_counter - 1
+    #            sent_boundaries[nw_idx] = 1
+    #            sent_membership[tok_counter:nw_idx + 1] = [s] * ((nw_idx + 1) - tok_counter)
+    #            tok_counter = tok_counter + len(sent_split)
+    #
+    #    else:
+    #        sent_split = WhitespaceTokenizer().tokenize(sent)
+    #        nw_idx = len(sent_split) + tok_counter - 1
+    #        sent_boundaries[nw_idx] = 1
+    #        sent_membership[tok_counter:nw_idx + 1] = [s] * ((nw_idx + 1) - tok_counter)
+    #        tok_counter = tok_counter + len(sent_split)
             
-    return raw_text, text, tokenized_text, text_spans, tags, sent_boundaries
+    return raw_text, text, tokenized_text, abs_text_spans, rel_text_spans, tags, sent_boundaries, new_sent_list, sent_membership
 
  ####
  #END_MODULE
@@ -151,8 +179,8 @@ def getWhitespaceTokens(file_path):
 def getDocTime(file, i2b2):
     file = open(file, "r")
     lines = file.readlines()
-    print("In get DocTime. Admit Date: " + lines[1])
-    print("In get DocTime. Discharge Date: " + lines[3])
+    #print("In get DocTime. Admit Date: " + lines[1])
+    #print("In get DocTime. Discharge Date: " + lines[3])
     return(dateutil.parser.parse(lines[1]))
 
  ####
@@ -173,7 +201,7 @@ def write_i2b2(text, phrase_list, outfile):
     fout.write(text)
     fout.write("\n")
     fout.write("]]></TEXT>\n<TAGS>\n")
-    print("Phrase list length: " + str(len(phrase_list)))
+    #print("Phrase list length: " + str(len(phrase_list)))
     for c in phrase_list :
         fout.write(c.i2b2format())
         fout.write("\n")
@@ -552,8 +580,8 @@ def temporalTest(tok, include_relative=True):
 # @author Amy Olex
 # @param chroList The list of temporally marked reference tokens
 # @return A list of temporal phrases for parsing
-def getTemporalPhrases(chroList, doctime):
-    #TimePhraseEntity(id=id_counter, text=j['text'], start_span=j['start'], end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
+def getTemporalPhrases(chroList, sent_list, doctime):
+    #TimePhraseEntity(id=id_counter, text=j['text'], abs_start_span=j['start'], abs_end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
     id_counter = 0
     
     phrases = [] #the empty phrases list of TimePhrase entities
@@ -572,7 +600,7 @@ def getTemporalPhrases(chroList, doctime):
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
                 if inphrase:
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -583,7 +611,7 @@ def getTemporalPhrases(chroList, doctime):
                 #if e1+1 != s2 and inphrase:
                 if chroList[n].getSentBoundary() and inphrase:
                     #print("Found Sentence Boundary Word!!!!!!!!!")
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -607,7 +635,7 @@ def getTemporalPhrases(chroList, doctime):
             # if this is the last token of the file, end the phrase.
             if n == len(chroList)-1:
                 if inphrase:
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
@@ -618,14 +646,14 @@ def getTemporalPhrases(chroList, doctime):
                 #if e1+1 != s2 and inphrase:
                 if chroList[n].getSentBoundary() and inphrase:
                     #print("Found Sentence Boundary Word!!!!!!!!!")
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                     inphrase = False
         
         ## Now look for a linking term.  Only continue the phrase if the term is surrounded by numeric or temporal tokens. 
         ## Also, only consider linking terms if we are already in a phrase.
-        elif chroList[n].isLinkTerm() and inphrase:
+        elif chroList[n].isLinkTerm() and inphrase and not chroList[n].getSentBoundary():
             if (chroList[n-1].isTemporal() or chroList[n-1].isNumeric()) and (chroList[n+1].isTemporal() or chroList[n+1].isNumeric()):
                 tmpPhrase.append(copy.copy(chroList[n]))
         
@@ -638,17 +666,17 @@ def getTemporalPhrases(chroList, doctime):
                 #check to see if only a single element and element is numeric, then do not add.
                 if len(tmpPhrase) != 1:
                     #print("multi element phrase ")
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif not tmpPhrase[0].isNumeric():
                     #print("not numeric: " + str(chroList[n-1]))
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 elif tmpPhrase[0].isNumeric() and tmpPhrase[0].isTemporal():
                     #print("temporal and numeric: " + str(chroList[n-1]))
-                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, sent_list, doctime))
                     id_counter = id_counter + 1
                     tmpPhrase = []
                 else:
@@ -663,20 +691,166 @@ def getTemporalPhrases(chroList, doctime):
 #### 
 
 
+## Takes in a Reference List that has had numeric and temporal tokens marked, and identifies all the
+## temporal phrases by finding consecutive temporal tokens.
+## it also extracts and saves related sentence information for later processing with BERT.
+# @author Amy Olex
+# @param chroList The list of temporally marked reference tokens
+# @return A list of temporal phrases for parsing
+def getTemporalPhrasesWithSents(chroList, doctime):
+    # TimePhraseEntity(id=id_counter, text=j['text'], abs_start_span=j['start'], abs_end_span=j['end'], type=j['type'], value=j['value'], doctime=doctime)
+    id_counter = 0
+
+    phrases = []  # the empty phrases list of TimePhrase entities
+    tmpPhrase = []  # the temporary phrases list.
+    inphrase = False
+    for n in range(0, len(chroList)):
+        # if temporal start building a list
+        # print("Filter Start Phrase: " + str(chroList[n]))
+        if chroList[n].isTemporal():
+            # print("Is Temporal: " + str(chroList[n]))
+            if not inphrase:
+                inphrase = True
+            # in phrase, so add new element
+            tmpPhrase.append(copy.copy(chroList[n]))
+            # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
+            # if this is the last token of the file, end the phrase.
+            if n == len(chroList) - 1:
+                if inphrase:
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
+            else:
+                s1, e1 = chroList[n].getSpan()
+                s2, e2 = chroList[n + 1].getSpan()
+
+                # if e1+1 != s2 and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    # print("Found Sentence Boundary Word!!!!!!!!!")
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
+
+
+        elif chroList[n].isNumeric():
+            # print("Not Temporal, but Numeric: " + str(chroList[n]))
+            # if the token has a dollar sign or percent sign do not count it as temporal
+            m = re.search('[#$%]', chroList[n].getText())
+            if m is None:
+                # print("No #$%: " + str(chroList[n]))
+                # check for the "million" text phrase
+                answer = next((m for m in ["million", "billion", "trillion"] if m in chroList[n].getText().lower()),
+                              None)
+                if answer is None:
+                    # print("No million/billion/trillion: " + str(chroList[n]))
+                    if not inphrase:
+                        inphrase = True
+                    # in phrase, so add new element
+                    tmpPhrase.append(copy.copy(chroList[n]))
+            # test to see if a new line is present.  If it is AND we are in a temporal phrase, end the phrase and start a new one.
+            # if this is the last token of the file, end the phrase.
+            if n == len(chroList) - 1:
+                if inphrase:
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
+            else:
+                s1, e1 = chroList[n].getSpan()
+                s2, e2 = chroList[n + 1].getSpan()
+
+                # if e1+1 != s2 and inphrase:
+                if chroList[n].getSentBoundary() and inphrase:
+                    # print("Found Sentence Boundary Word!!!!!!!!!")
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                    inphrase = False
+
+        ## Now look for a linking term.  Only continue the phrase if the term is surrounded by numeric or temporal tokens.
+        ## Also, only consider linking terms if we are already in a phrase.
+        elif chroList[n].isLinkTerm() and inphrase:
+            if (chroList[n - 1].isTemporal() or chroList[n - 1].isNumeric()) and (
+                    chroList[n + 1].isTemporal() or chroList[n + 1].isNumeric()):
+                tmpPhrase.append(copy.copy(chroList[n]))
+
+        else:
+            # current element is not temporal, check to see if inphrase
+            # print("Not Temporal, or numeric " + str(chroList[n]))
+            if inphrase:
+                # set to False, add tmpPhrase as TimePhrase entitiy to phrases, then reset tmpPhrase
+                inphrase = False
+                # check to see if only a single element and element is numeric, then do not add.
+                if len(tmpPhrase) != 1:
+                    # print("multi element phrase ")
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                elif not tmpPhrase[0].isNumeric():
+                    # print("not numeric: " + str(chroList[n-1]))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                elif tmpPhrase[0].isNumeric() and tmpPhrase[0].isTemporal():
+                    # print("temporal and numeric: " + str(chroList[n-1]))
+                    phrases.append(createTPEntity(tmpPhrase, id_counter, doctime))
+                    id_counter = id_counter + 1
+                    tmpPhrase = []
+                else:
+                    # print("Element not added: " + str(chroList[n-1]))
+                    tmpPhrase = []
+
+    return phrases
+
+
+####
+# END_MODULE
+####
+
+## Takes in a reference list and returns an updated reference list with sentence membership
+## along with a list of sentences as strings.
+# @author Amy Olex
+# @param refToks: The list of reference tokens
+# @return updated_refToks: The list of reference tokens updated to include sentence membership
+# @return sentList: a list of strings where each string is a sentence.
+def getSentList(refToks):
+    sents = []
+
+
+
+
+####
+# END_MODULE
+####
+
 ## Takes in a list of reference tokens identified as a temporal phrase and returns one TimePhraseEntity.
 # @author Amy Olex
-# @param items The list of reference tokesn
+# @param items The list of reference tokens
 # @param counter The ID this TimePhrase entity should have
+# @param sent_list The list of sentences with full text.
 # @param doctime The document time.
 # @return A single TimePhrase entity with the text span and string concatenated.
-def createTPEntity(items, counter, doctime):
-    start_span, tmp = items[0].getSpan()
-    tmp, end_span = items[len(items)-1].getSpan()
-    text = ""
+def createTPEntity(items, counter, sent_list, doctime):
+    abs_start_span, tmp = items[0].getSpan()
+    tmp, abs_end_span = items[len(items)-1].getSpan()
+    rel_start, tmp = items[0].getRelSpan()
+    tmp, rel_end = items[len(items) - 1].getRelSpan()
+    abs_token_idx_start = items[0].getID()
+    abs_token_idx_end = items[len(items)-1].getID()
+    rel_token_idx_start = items[0].getRelID()
+    rel_token_idx_end = items[len(items)-1].getRelID()
+    sent_idx = items[0].getSentMembership()
+    text = ''
     for i in items:
         text = text + ' ' + i.getText()
     
-    return tp.TimePhraseEntity(id=counter, text=text.strip(), start_span=start_span, end_span=end_span, type=None, mod=None, value=None, doctime=doctime)
+    return tp.TimePhraseEntity(id=counter, text=text.strip(), abs_start_span=abs_start_span, abs_end_span=abs_end_span,
+                               rel_start_span=rel_start, rel_end_span=rel_end, abs_token_idx_start=abs_token_idx_start,
+                               abs_token_idx_end=abs_token_idx_end, rel_token_idx_start=rel_token_idx_start,
+                               rel_token_idx_end=rel_token_idx_end, type=None, mod=None, value=None,
+                               sent_membership=sent_idx, sent_text=sent_list[sent_idx], doctime=doctime)
 
 ####
 #END_MODULE
@@ -686,8 +860,8 @@ def createTPEntity(items, counter, doctime):
 ## Takes in a reference list of tokens, a start span and an end span
 # @author Amy Olex
 # @param ref_list The list of reference tokens we want an index for.
-# @param start_span The start span of the token we need to find in ref_list
-# @param end_span The ending span of the token we need to find
+# @param abs_start_span The start span of the token we need to find in ref_list
+# @param abs_end_span The ending span of the token we need to find
 # @return Returns the index of the ref_list token that overlaps the start and end spans provided, or -1 if not found.
 def getRefIdx(ref_list, start_span, end_span):
     for i in range(0,len(ref_list)):
@@ -913,6 +1087,7 @@ def getPhraseEntities(chrono_list):
     ampm = ""
     modifier = ""
     last = ""
+    frequency = ""
    
     ## loop through all entities and pull out the approriate IDs
     for e in range(0,len(chrono_list)):
@@ -971,9 +1146,12 @@ def getPhraseEntities(chrono_list):
             
         elif e_type == "Last":
             last = chrono_list[e]
+
+        elif e_type == "Frequency":
+            frequency = chrono_list[e]
             
             
-    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last)
+    return(year,month,day,hour,minute,second,daypart,dayweek,interval,period,nth,nxt,this,tz,ampm,modifier,last, frequency)
 
    
 ## Takes in list of ChronoEntities and an entity ID and returns the associated number or blank string if no value
@@ -987,26 +1165,26 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
     if eid:
         for e in chrono_list:
             if e.get_id() == eid:
-                print("RETURNING VALUE OF " + str(e.get_value()))
+                #print("RETURNING VALUE OF " + str(e.get_value()))
                 return(e.get_value(), "NA")
     else:
-        print("NO NUMBER")
-        print(phrase_text)
+        #print("NO NUMBER")
+        #print(phrase_text)
         
         phrase_set = set(phrase_text.split())
-        print(phrase_set)
+        #print(phrase_set)
         
         #intersect2 = list(set(APPROX2) & phrase_set)
         #print(intersect2)
         
         intersect3 = list(set(APPROX3) & phrase_set)
-        print(intersect3)
+        #print(intersect3)
         
         intersect10 = list(set(APPROX10) & phrase_set)
-        print(intersect10)
+        #print(intersect10)
         
         intersectperiodint = list(set(PERIODINT) & phrase_set)
-        print(intersectperiodint)
+        #print(intersectperiodint)
         
         #if len(intersect2) == 1:
         #    return(2, "APPROX")
@@ -1015,14 +1193,56 @@ def getPhraseNumber(phrase_text, chrono_list, eid):
         elif len(intersect10) == 1:
             return(10,"APPROX")
         elif len(intersectperiodint) == 1:
-            print("In PERIODINT")
+            #print("In PERIODINT")
             if intersectperiodint[0][-1:] == "s":
                 return(2,"NA")
             else:
                 return(1,"NA")
     return("","NA")
 
-    
+
+def bert_classify(start_span, end_span, sent_text, sent_idx, bert_model, bert_tokenizer, bert_classifier, includeContext, includeAttention, cnn):
+    #print("In BERT CLASSIFY")
+    ## First parse into the SentenceObj structure
+    #print("Start Span: " + str(start_span))
+    #print("End Span: " + str(end_span))
+    #print("Sentence: " + str(sent_text))
+    #print("Parsing into BERT")
+    phrase_idx_list = []
+    phrase_idx_list.append(list(range(start_span, end_span+1)))  ## based on the way I coded the method I have to have a nested list.
+    this_sent = SentenceObj.SentenceObj(text=sent_text, sentence_num=sent_idx, global_sent_char_start_coord=0,
+                                        global_sentence_start_coord=0, phrase_idxs=phrase_idx_list,
+                                        max_length=256, bert_model=bert_model, bert_tokenizer=bert_tokenizer,
+                                        context_window=3, gold_labels="", filt=False)
+    #print("BERT tokenized sentence: " + str(this_sent.bert_tokenized_sentence))
+    #print("Temporal Phrase Text: " + str(this_sent.datedur_phrases[0].getText()))
+
+    ## Second extract BERT embeddings as features for the first and only temporal phrase
+    embedding = this_sent.datedur_phrases[0].getSummarizedEmbedding(include_context=includeContext, include_attention=includeAttention)
+
+    #print("BERT Embedding: " + str(embedding))
+
+    ## Third use the embedding to classify the phrase as a DATE or DURATION
+    if cnn:
+        pred = bert_classifier.predict(np.expand_dims(this_sent.datedur_phrases[0].getMtxFormattedPhrase(15, includeContext, includeAttention), 0)).tolist()[0]
+    else:
+        pred = bert_classifier.predict(np.reshape(embedding.numpy(), (1, -1)))
+    label_dict = {0:"DURATION", 1:"DATE"}
+    #print("PREDICTION: " + str(pred) + " LABEL: " + str(label_dict[pred[0]]))
+
+
+    ## Extract out the embeddings according to set options.
+    ## run through classifier
+    ## /Users/alolex/Desktop/CCTR_Git_Repos/PycharmProjects/ChronoBERT/SVM_models_rerun/SVM_trainFull_clinbert2chrono_seq2seq_BIO_4epochs_pretrained_final.pkl
+    ## return string of "DATE" or "DURATION".
+
+    ## Once back in the getISO() method, if DURATION, continue as currently coded.  But if DATE, identify an anchor date
+    ## then the quantity, and before or after the anchor date.  Calculate date based on that information.
+    ## to start the anchor date can just be the document date for now, but implement as a method so it can be updated later.
+
+    result = 1 if pred[0] >=0.5 else 0
+    return label_dict[result]
+
     
     
     

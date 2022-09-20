@@ -73,3 +73,13 @@ Chrono_SemEval2018_PostEvalSubmission_NB_NewswireModel_060818/Chrono_TempEval201
 *.tiff
 *.dct
 SemEval-OfficialTrain/*
+*.xml.txt
+*.list
+*.out
+i2b2_*
+results*
+062120_i2b2chrono.txt
+062120_i2b2gold.txt
+SemEval-OfficialTrain-Subset
+THYME
+THYME_subset
