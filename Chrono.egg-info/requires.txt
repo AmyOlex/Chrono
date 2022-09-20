@@ -1,0 +1,6 @@
+nltk
+python-dateutil
+numpy
+sklearn
+keras
+tensorflow
