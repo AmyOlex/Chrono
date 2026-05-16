@@ -469,6 +469,7 @@ def markTemporal(refToks, include_relative = True):
         #mark if numeric
         ref.setNumeric(numericTest(ref.getText(), ref.getPos()))
         #mark if temporal
+        print("TOFIX: temporalTest.py : convert all methods to using the dictionary.")
         ref.setTemporal(temporalTest(ref.getText(), include_relative))
     
     ## read in the link terms dictionary

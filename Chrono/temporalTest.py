@@ -124,10 +124,14 @@ def hasPeriodInterval(text):
     text_list = text_norm.split(" ")
     
     #define my period lists
+    #terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
+    #         "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly",
+    #         "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time",
+    #         "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
     terms = ["decades", "decade", "yesterday", "yesterdays", "today", "todays", "tomorrow", "tomorrows", "day", "week",
-             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly", 
-             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time", 
-             "annual", "hr", "hrs", "min", "mins", "quarter"] #, "date"]
+             "month", "year", "daily", "weekly", "monthly", "yearly", "century", "minute", "second", "hour", "hourly",
+             "days", "weeks", "months", "years", "centuries", "century", "minutes", "seconds", "hours", "time",
+             "annual", "quarter"]
              # removed relative terms: "shortly", "soon", "briefly", "awhile", "future", "lately", 
              
     ## possibly add in abbreviations like yr, sec, min, etc.
